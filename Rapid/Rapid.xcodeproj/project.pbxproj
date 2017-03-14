@@ -209,7 +209,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BUILD_PRODUCTS=\"${SYMROOT}/../../../../Products\"\nDEVICE_BIN=\"${BUILD_PRODUCTS}/Develop-iphoneos/${TARGET_NAME}.framework\"\nSIMULATOR_BIN=\"${BUILD_PRODUCTS}/Develop-iphonesimulator/${TARGET_NAME}.framework\"\n\nARCHIVE_PATH=\"${SRCROOT}/Framework\"\nrm -rf \"${ARCHIVE_PATH}\"\nmkdir \"${ARCHIVE_PATH}\"\n\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\ncp -R \"${DEVICE_BIN}\" \"${ARCHIVE_PATH}\"\nif [ -d \"${DEVICE_BIN}\" ] && [ -d \"${SIMULATOR_BIN}\" ]; then\ncp -R \"${DEVICE_BIN}\" \"${ARCHIVE_PATH}\"\ncp -R \"${SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${DEVICE_BIN}/${TARGET_NAME}\" \"${SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\nfi\n\nEXAMPLE_PROJECT=\"${SRCROOT}/../Example/ExampleApp\"\nif [ -d \"${EXAMPLE_PROJECT}\" ]; then\nrm -rf \"${EXAMPLE_PROJECT}/${TARGET_NAME}.framework\"\ncp -R \"${ARCHIVE_PATH}/${TARGET_NAME}.framework\" \"${EXAMPLE_PROJECT}/\"\nfi\nfi\n";
+			shellScript = "DEVICE_BIN=\"${BUILD_DIR}/Develop-iphoneos/${TARGET_NAME}.framework\"\nSIMULATOR_BIN=\"${BUILD_DIR}/Develop-iphonesimulator/${TARGET_NAME}.framework\"\n\nARCHIVE_PATH=\"${SRCROOT}/Framework\"\nrm -rf \"${ARCHIVE_PATH}\"\nmkdir \"${ARCHIVE_PATH}\"\n\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Develop \\\n-sdk iphonesimulator \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Develop \\\n-sdk iphoneos \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${DEVICE_BIN}\" ] && [ -d \"${SIMULATOR_BIN}\" ]; then\ncp -RL \"${DEVICE_BIN}\" \"${ARCHIVE_PATH}\"\ncp -RL \"${SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${DEVICE_BIN}/${TARGET_NAME}\" \"${SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\nfi\n\nEXAMPLE_PROJECT=\"${SRCROOT}/../Example/ExampleApp\"\nif [ -d \"${EXAMPLE_PROJECT}\" ]; then\nrm -rf \"${EXAMPLE_PROJECT}/${TARGET_NAME}.framework\"\ncp -RL \"${ARCHIVE_PATH}/${TARGET_NAME}.framework\" \"${EXAMPLE_PROJECT}/\"\nfi\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -296,6 +296,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = Rapid/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -310,6 +311,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEFINES_MODULE = NO;
 				INFOPLIST_FILE = RapidTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
@@ -373,6 +375,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = Rapid/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -387,6 +390,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEFINES_MODULE = NO;
 				INFOPLIST_FILE = RapidTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
