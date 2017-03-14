@@ -1,0 +1,16 @@
+PODS:
+  - Rapid (0.0.1)
+
+DEPENDENCIES:
+  - Rapid (from `../../`)
+
+EXTERNAL SOURCES:
+  Rapid:
+    :path: ../../
+
+SPEC CHECKSUMS:
+  Rapid: 8511065257f4b0d991b785211cbf051021d90d6a
+
+PODFILE CHECKSUM: 88540657d89b8626ba9fca42bbf3c551eeefdcb9
+
+COCOAPODS: 1.1.1
