@@ -13,8 +13,8 @@
 		C13034831E76F8AC00A87626 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C13034821E76F8AC00A87626 /* Assets.xcassets */; };
 		C13034861E76F8AC00A87626 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C13034841E76F8AC00A87626 /* LaunchScreen.storyboard */; };
 		C13034911E76F8AC00A87626 /* ExampleAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13034901E76F8AC00A87626 /* ExampleAppTests.swift */; };
-		C13034A61E770F0700A87626 /* RapidSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C13034A51E770F0700A87626 /* RapidSDK.framework */; };
-		C13034A71E770F0700A87626 /* RapidSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C13034A51E770F0700A87626 /* RapidSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1D6E79D1E781982007589FC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1D6E79C1E781982007589FC /* Rapid.framework */; };
+		C1D6E79E1E781982007589FC /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1D6E79C1E781982007589FC /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,7 +34,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C13034A71E770F0700A87626 /* RapidSDK.framework in Embed Frameworks */,
+				C1D6E79E1E781982007589FC /* Rapid.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,7 +52,7 @@
 		C130348C1E76F8AC00A87626 /* ExampleAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C13034901E76F8AC00A87626 /* ExampleAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleAppTests.swift; sourceTree = "<group>"; };
 		C13034921E76F8AC00A87626 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C13034A51E770F0700A87626 /* RapidSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RapidSDK.framework; sourceTree = "<group>"; };
+		C1D6E79C1E781982007589FC /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Rapid.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C13034A61E770F0700A87626 /* RapidSDK.framework in Frameworks */,
+				C1D6E79D1E781982007589FC /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,7 +77,7 @@
 		C130346F1E76F8AC00A87626 = {
 			isa = PBXGroup;
 			children = (
-				C13034A51E770F0700A87626 /* RapidSDK.framework */,
+				C1D6E79C1E781982007589FC /* Rapid.framework */,
 				C130347A1E76F8AC00A87626 /* ExampleApp */,
 				C130348F1E76F8AC00A87626 /* ExampleAppTests */,
 				C13034791E76F8AC00A87626 /* Products */,
