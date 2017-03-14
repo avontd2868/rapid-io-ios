@@ -7,81 +7,84 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C1E0CDF71E76925300D5A59E /* RapidSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1E0CDED1E76925300D5A59E /* RapidSDK.framework */; };
-		C1E0CDFC1E76925300D5A59E /* RapidSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E0CDFB1E76925300D5A59E /* RapidSDKTests.swift */; };
-		C1E0CDFE1E76925300D5A59E /* RapidSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = C1E0CDF01E76925300D5A59E /* RapidSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C130345D1E76F6FA00A87626 /* RapidSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C13034531E76F6FA00A87626 /* RapidSDK.framework */; };
+		C13034621E76F6FA00A87626 /* RapidSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13034611E76F6FA00A87626 /* RapidSDKTests.swift */; };
+		C13034641E76F6FA00A87626 /* RapidSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = C13034561E76F6FA00A87626 /* RapidSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C130346E1E76F84B00A87626 /* Rapid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C130346D1E76F84B00A87626 /* Rapid.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		C1E0CDF81E76925300D5A59E /* PBXContainerItemProxy */ = {
+		C130345E1E76F6FA00A87626 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = C1E0CDE41E76925300D5A59E /* Project object */;
+			containerPortal = C130344A1E76F6FA00A87626 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C1E0CDEC1E76925300D5A59E;
+			remoteGlobalIDString = C13034521E76F6FA00A87626;
 			remoteInfo = RapidSDK;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C1E0CDED1E76925300D5A59E /* RapidSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RapidSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1E0CDF01E76925300D5A59E /* RapidSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RapidSDK.h; sourceTree = "<group>"; };
-		C1E0CDF11E76925300D5A59E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C1E0CDF61E76925300D5A59E /* RapidSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RapidSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1E0CDFB1E76925300D5A59E /* RapidSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RapidSDKTests.swift; sourceTree = "<group>"; };
-		C1E0CDFD1E76925300D5A59E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C13034531E76F6FA00A87626 /* RapidSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RapidSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C13034561E76F6FA00A87626 /* RapidSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RapidSDK.h; sourceTree = "<group>"; };
+		C13034571E76F6FA00A87626 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C130345C1E76F6FA00A87626 /* RapidSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RapidSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C13034611E76F6FA00A87626 /* RapidSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RapidSDKTests.swift; sourceTree = "<group>"; };
+		C13034631E76F6FA00A87626 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C130346D1E76F84B00A87626 /* Rapid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rapid.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		C1E0CDE91E76925300D5A59E /* Frameworks */ = {
+		C130344F1E76F6FA00A87626 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C1E0CDF31E76925300D5A59E /* Frameworks */ = {
+		C13034591E76F6FA00A87626 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1E0CDF71E76925300D5A59E /* RapidSDK.framework in Frameworks */,
+				C130345D1E76F6FA00A87626 /* RapidSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C1E0CDE31E76925300D5A59E = {
+		C13034491E76F6FA00A87626 = {
 			isa = PBXGroup;
 			children = (
-				C1E0CDEF1E76925300D5A59E /* RapidSDK */,
-				C1E0CDFA1E76925300D5A59E /* RapidSDKTests */,
-				C1E0CDEE1E76925300D5A59E /* Products */,
+				C13034551E76F6FA00A87626 /* RapidSDK */,
+				C13034601E76F6FA00A87626 /* RapidSDKTests */,
+				C13034541E76F6FA00A87626 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		C1E0CDEE1E76925300D5A59E /* Products */ = {
+		C13034541E76F6FA00A87626 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C1E0CDED1E76925300D5A59E /* RapidSDK.framework */,
-				C1E0CDF61E76925300D5A59E /* RapidSDKTests.xctest */,
+				C13034531E76F6FA00A87626 /* RapidSDK.framework */,
+				C130345C1E76F6FA00A87626 /* RapidSDKTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C1E0CDEF1E76925300D5A59E /* RapidSDK */ = {
+		C13034551E76F6FA00A87626 /* RapidSDK */ = {
 			isa = PBXGroup;
 			children = (
-				C1E0CDF01E76925300D5A59E /* RapidSDK.h */,
-				C1E0CDF11E76925300D5A59E /* Info.plist */,
+				C13034561E76F6FA00A87626 /* RapidSDK.h */,
+				C130346D1E76F84B00A87626 /* Rapid.swift */,
+				C13034571E76F6FA00A87626 /* Info.plist */,
 			);
 			path = RapidSDK;
 			sourceTree = "<group>";
 		};
-		C1E0CDFA1E76925300D5A59E /* RapidSDKTests */ = {
+		C13034601E76F6FA00A87626 /* RapidSDKTests */ = {
 			isa = PBXGroup;
 			children = (
-				C1E0CDFB1E76925300D5A59E /* RapidSDKTests.swift */,
-				C1E0CDFD1E76925300D5A59E /* Info.plist */,
+				C13034611E76F6FA00A87626 /* RapidSDKTests.swift */,
+				C13034631E76F6FA00A87626 /* Info.plist */,
 			);
 			path = RapidSDKTests;
 			sourceTree = "<group>";
@@ -89,25 +92,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		C1E0CDEA1E76925300D5A59E /* Headers */ = {
+		C13034501E76F6FA00A87626 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1E0CDFE1E76925300D5A59E /* RapidSDK.h in Headers */,
+				C13034641E76F6FA00A87626 /* RapidSDK.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		C1E0CDEC1E76925300D5A59E /* RapidSDK */ = {
+		C13034521E76F6FA00A87626 /* RapidSDK */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C1E0CE011E76925300D5A59E /* Build configuration list for PBXNativeTarget "RapidSDK" */;
+			buildConfigurationList = C13034671E76F6FA00A87626 /* Build configuration list for PBXNativeTarget "RapidSDK" */;
 			buildPhases = (
-				C1E0CDE81E76925300D5A59E /* Sources */,
-				C1E0CDE91E76925300D5A59E /* Frameworks */,
-				C1E0CDEA1E76925300D5A59E /* Headers */,
-				C1E0CDEB1E76925300D5A59E /* Resources */,
+				C130344E1E76F6FA00A87626 /* Sources */,
+				C130344F1E76F6FA00A87626 /* Frameworks */,
+				C13034501E76F6FA00A87626 /* Headers */,
+				C13034511E76F6FA00A87626 /* Resources */,
+				C13034A81E77110900A87626 /* Universal Binary */,
 			);
 			buildRules = (
 			);
@@ -115,74 +119,75 @@
 			);
 			name = RapidSDK;
 			productName = RapidSDK;
-			productReference = C1E0CDED1E76925300D5A59E /* RapidSDK.framework */;
+			productReference = C13034531E76F6FA00A87626 /* RapidSDK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		C1E0CDF51E76925300D5A59E /* RapidSDKTests */ = {
+		C130345B1E76F6FA00A87626 /* RapidSDKTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C1E0CE041E76925300D5A59E /* Build configuration list for PBXNativeTarget "RapidSDKTests" */;
+			buildConfigurationList = C130346A1E76F6FA00A87626 /* Build configuration list for PBXNativeTarget "RapidSDKTests" */;
 			buildPhases = (
-				C1E0CDF21E76925300D5A59E /* Sources */,
-				C1E0CDF31E76925300D5A59E /* Frameworks */,
-				C1E0CDF41E76925300D5A59E /* Resources */,
+				C13034581E76F6FA00A87626 /* Sources */,
+				C13034591E76F6FA00A87626 /* Frameworks */,
+				C130345A1E76F6FA00A87626 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C1E0CDF91E76925300D5A59E /* PBXTargetDependency */,
+				C130345F1E76F6FA00A87626 /* PBXTargetDependency */,
 			);
 			name = RapidSDKTests;
 			productName = RapidSDKTests;
-			productReference = C1E0CDF61E76925300D5A59E /* RapidSDKTests.xctest */;
+			productReference = C130345C1E76F6FA00A87626 /* RapidSDKTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		C1E0CDE41E76925300D5A59E /* Project object */ = {
+		C130344A1E76F6FA00A87626 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = Rapid.io;
 				TargetAttributes = {
-					C1E0CDEC1E76925300D5A59E = {
+					C13034521E76F6FA00A87626 = {
 						CreatedOnToolsVersion = 8.2.1;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
-					C1E0CDF51E76925300D5A59E = {
+					C130345B1E76F6FA00A87626 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = C1E0CDE71E76925300D5A59E /* Build configuration list for PBXProject "RapidSDK" */;
+			buildConfigurationList = C130344D1E76F6FA00A87626 /* Build configuration list for PBXProject "RapidSDK" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = C1E0CDE31E76925300D5A59E;
-			productRefGroup = C1E0CDEE1E76925300D5A59E /* Products */;
+			mainGroup = C13034491E76F6FA00A87626;
+			productRefGroup = C13034541E76F6FA00A87626 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C1E0CDEC1E76925300D5A59E /* RapidSDK */,
-				C1E0CDF51E76925300D5A59E /* RapidSDKTests */,
+				C13034521E76F6FA00A87626 /* RapidSDK */,
+				C130345B1E76F6FA00A87626 /* RapidSDKTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		C1E0CDEB1E76925300D5A59E /* Resources */ = {
+		C13034511E76F6FA00A87626 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C1E0CDF41E76925300D5A59E /* Resources */ = {
+		C130345A1E76F6FA00A87626 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -191,34 +196,52 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXSourcesBuildPhase section */
-		C1E0CDE81E76925300D5A59E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
+/* Begin PBXShellScriptBuildPhase section */
+		C13034A81E77110900A87626 /* Universal Binary */ = {
+			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputPaths = (
+			);
+			name = "Universal Binary";
+			outputPaths = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "BUILD_PRODUCTS=\"${SYMROOT}/../../../../Products\"\nDEVICE_BIN=\"${BUILD_PRODUCTS}/Release-iphoneos/${TARGET_NAME}.framework\"\nSIMULATOR_BIN=\"${BUILD_PRODUCTS}/Release-iphonesimulator/${TARGET_NAME}.framework\"\n\nARCHIVE_PATH=\"${SRCROOT}/Framework\"\nrm -rf \"${ARCHIVE_PATH}\"\nmkdir \"${ARCHIVE_PATH}\"\n\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\ncp -R \"${DEVICE_BIN}\" \"${ARCHIVE_PATH}\"\nif [ -d \"${DEVICE_BIN}\" ] && [ -d \"${SIMULATOR_BIN}\" ]; then\ncp -R \"${DEVICE_BIN}\" \"${ARCHIVE_PATH}\"\ncp -R \"${SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${DEVICE_BIN}/${TARGET_NAME}\" \"${SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\nfi\n                                                            \nEXAMPLE_PROJECT=\"${SRCROOT}/../Example/ExampleApp\"\nif [ -d \"${EXAMPLE_PROJECT}\" ]; then\nrm -rf \"${EXAMPLE_PROJECT}/${TARGET_NAME}.framework\"\ncp -R \"${ARCHIVE_PATH}/${TARGET_NAME}.framework\" \"${EXAMPLE_PROJECT}/\"\nfi\nfi\n";
 		};
-		C1E0CDF21E76925300D5A59E /* Sources */ = {
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C130344E1E76F6FA00A87626 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1E0CDFC1E76925300D5A59E /* RapidSDKTests.swift in Sources */,
+				C130346E1E76F84B00A87626 /* Rapid.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C13034581E76F6FA00A87626 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C13034621E76F6FA00A87626 /* RapidSDKTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		C1E0CDF91E76925300D5A59E /* PBXTargetDependency */ = {
+		C130345F1E76F6FA00A87626 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C1E0CDEC1E76925300D5A59E /* RapidSDK */;
-			targetProxy = C1E0CDF81E76925300D5A59E /* PBXContainerItemProxy */;
+			target = C13034521E76F6FA00A87626 /* RapidSDK */;
+			targetProxy = C130345E1E76F6FA00A87626 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		C1E0CDFF1E76925300D5A59E /* Debug */ = {
+		C13034651E76F6FA00A87626 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -271,7 +294,7 @@
 			};
 			name = Debug;
 		};
-		C1E0CE001E76925300D5A59E /* Release */ = {
+		C13034661E76F6FA00A87626 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -317,41 +340,39 @@
 			};
 			name = Release;
 		};
-		C1E0CE021E76925300D5A59E /* Debug */ = {
+		C13034681E76F6FA00A87626 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/lib/$(CONFIGURATION)";
 				INFOPLIST_FILE = RapidSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/lib/$(CONFIGURATION)";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
-		C1E0CE031E76925300D5A59E /* Release */ = {
+		C13034691E76F6FA00A87626 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/lib/$(CONFIGURATION)";
 				INFOPLIST_FILE = RapidSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/lib/$(CONFIGURATION)";
-				ONLY_ACTIVE_ARCH = NO;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -359,26 +380,24 @@
 			};
 			name = Release;
 		};
-		C1E0CE051E76925300D5A59E /* Debug */ = {
+		C130346B1E76F6FA00A87626 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/lib/$(CONFIGURATION)";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = RapidSDKTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/lib/$(CONFIGURATION)";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidSDKTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
-		C1E0CE061E76925300D5A59E /* Release */ = {
+		C130346C1E76F6FA00A87626 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/lib/$(CONFIGURATION)";
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = RapidSDKTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/lib/$(CONFIGURATION)";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidSDKTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -388,32 +407,32 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C1E0CDE71E76925300D5A59E /* Build configuration list for PBXProject "RapidSDK" */ = {
+		C130344D1E76F6FA00A87626 /* Build configuration list for PBXProject "RapidSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C1E0CDFF1E76925300D5A59E /* Debug */,
-				C1E0CE001E76925300D5A59E /* Release */,
+				C13034651E76F6FA00A87626 /* Debug */,
+				C13034661E76F6FA00A87626 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C1E0CE011E76925300D5A59E /* Build configuration list for PBXNativeTarget "RapidSDK" */ = {
+		C13034671E76F6FA00A87626 /* Build configuration list for PBXNativeTarget "RapidSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C1E0CE021E76925300D5A59E /* Debug */,
-				C1E0CE031E76925300D5A59E /* Release */,
+				C13034681E76F6FA00A87626 /* Debug */,
+				C13034691E76F6FA00A87626 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
-		C1E0CE041E76925300D5A59E /* Build configuration list for PBXNativeTarget "RapidSDKTests" */ = {
+		C130346A1E76F6FA00A87626 /* Build configuration list for PBXNativeTarget "RapidSDKTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C1E0CE051E76925300D5A59E /* Debug */,
-				C1E0CE061E76925300D5A59E /* Release */,
+				C130346B1E76F6FA00A87626 /* Debug */,
+				C130346C1E76F6FA00A87626 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = C1E0CDE41E76925300D5A59E /* Project object */;
+	rootObject = C130344A1E76F6FA00A87626 /* Project object */;
 }

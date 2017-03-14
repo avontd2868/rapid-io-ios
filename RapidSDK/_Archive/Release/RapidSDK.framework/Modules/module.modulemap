@@ -1,6 +1,0 @@
-framework module RapidSDK {
-  umbrella header "RapidSDK.h"
-
-  export *
-  module * { export * }
-}

@@ -1,0 +1,10 @@
+framework module RapidSDK {
+  umbrella header "RapidSDK.h"
+
+  export *
+  module * { export * }
+}
+
+module RapidSDK.Swift {
+    header "RapidSDK-Swift.h"
+}
