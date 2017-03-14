@@ -1,13 +1,12 @@
 //
 //  AppDelegate.swift
-//  ExampleApp
+//  ExamplePodApp
 //
 //  Created by Jan on 14/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
 import UIKit
-import Rapid
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        Rapid.configure(withAPIKey: "")
+        // Override point for customization after application launch.
         return true
     }
 

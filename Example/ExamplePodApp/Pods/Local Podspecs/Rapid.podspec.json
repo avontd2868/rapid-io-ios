@@ -1,0 +1,30 @@
+{
+  "name": "Rapid",
+  "version": "0.0.1",
+  "summary": "Rapid.io iOS SDK",
+  "description": "Rapid is an iOS SDK for Rapid.io realtime database. It allows you to comfortably connect to your Rapid.io database, authorize a user, subscribe for realtime changes in a database and update database values.",
+  "homepage": "https://www.rapid.io",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Jan Schwarz": "jan.schwarz@strv.com"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source": {
+    "git": "https://github.com/Rapid-SDK/ios.git",
+    "tag": "0.0.1"
+  },
+  "source_files": [
+    "Rapid",
+    "Rapid/**/*.{h,m,swift}"
+  ],
+  "public_header_files": "Rapid/**/*.h",
+  "requires_arc": true,
+  "pod_target_xcconfig": {
+    "SWIFT_VERSION": "3"
+  }
+}
