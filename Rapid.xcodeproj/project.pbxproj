@@ -28,9 +28,9 @@
 		C1D6E8281E7856AD007589FC /* RapidTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RapidTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E82D1E7856AD007589FC /* RapidTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RapidTests.swift; sourceTree = "<group>"; };
 		C1D6E82F1E7856AD007589FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C1D6E8391E785BF5007589FC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Source/Info.plist; sourceTree = SOURCE_ROOT; };
-		C1D6E83A1E785BF5007589FC /* Rapid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rapid.h; path = Source/Rapid.h; sourceTree = SOURCE_ROOT; };
-		C1D6E8A71E785D72007589FC /* Rapid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Rapid.swift; path = Example/Rapid.swift; sourceTree = SOURCE_ROOT; };
+		C1D6E8391E785BF5007589FC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C1D6E83A1E785BF5007589FC /* Rapid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rapid.h; sourceTree = "<group>"; };
+		C1D6E8A71E785D72007589FC /* Rapid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rapid.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,9 +55,9 @@
 		C1D6E8151E7856AD007589FC = {
 			isa = PBXGroup;
 			children = (
-				C1D6E8211E7856AD007589FC /* Source */,
-				C1D6E82C1E7856AD007589FC /* RapidTests */,
 				C1D6E8201E7856AD007589FC /* Products */,
+				C1D6E82C1E7856AD007589FC /* RapidTests */,
+				C1D6E8211E7856AD007589FC /* Source */,
 			);
 			sourceTree = "<group>";
 		};
@@ -77,15 +77,14 @@
 				C1D6E83A1E785BF5007589FC /* Rapid.h */,
 				C1D6E8A71E785D72007589FC /* Rapid.swift */,
 			);
-			name = Source;
-			path = Rapid;
+			path = Source;
 			sourceTree = "<group>";
 		};
 		C1D6E82C1E7856AD007589FC /* RapidTests */ = {
 			isa = PBXGroup;
 			children = (
-				C1D6E82D1E7856AD007589FC /* RapidTests.swift */,
 				C1D6E82F1E7856AD007589FC /* Info.plist */,
+				C1D6E82D1E7856AD007589FC /* RapidTests.swift */,
 			);
 			path = RapidTests;
 			sourceTree = "<group>";
