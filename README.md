@@ -84,7 +84,7 @@ Run `carthage update` to build the framework and drag the built `Rapid.framework
 
 ### Manually
 
-If you prefer not to use either of the dependency managers, you can download the latest [framework](Framework/Rapid.framework) and integrate Rapid iOS SDK into your project manually.
+If you prefer not to use either of the dependency managers, you can download the latest [framework](Framework/Rapid.framework.zip) and integrate Rapid iOS SDK into your project manually.
 
 ---
 
