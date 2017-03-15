@@ -1,0 +1,10 @@
+framework module Rapid {
+  umbrella header "Rapid.h"
+
+  export *
+  module * { export * }
+}
+
+module Rapid.Swift {
+    header "Rapid-Swift.h"
+}
