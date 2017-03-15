@@ -7,16 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0645C465A3DCF20BB7FF367B0B4CAA57 /* Rapid.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CC9DF906FD1637D7675CB464EBF040B /* Rapid.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0CC4DC58626B5FE97F30120DE9A4ACAF /* Pods-ExamplePodApp-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D3B59500DE123D132ABB2A33BDED0FB1 /* Pods-ExamplePodApp-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2D801495B025BB9555A6D04A777CA3F5 /* Rapid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7CDA731FF03E6E82D89BE98499AFF9 /* Rapid.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		304997D6F6E0842062373ED8AE3CFD88 /* Rapid-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = AED08BF66E1B7310E43CF8EFB3F19AA9 /* Rapid-dummy.m */; };
 		489D1972C08DF44B5D84279F00EF9050 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
-		A5F925F20D120F9606CBB583F06C4B1B /* Rapid-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 99CE12EF1A0E6965E932E9B143642BE1 /* Rapid-Swift.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B5778F50179F457C7B322C3272E2148C /* Rapid-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7B80AC33DC109E300FE7749A5EE8E621 /* Rapid-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		48B78611625579548D157C6618E7AB5E /* Rapid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8A084154BFC008CF059F56D05000F8 /* Rapid.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		9D2BFA5E60BFDAF842C1653ED360AC9E /* Rapid-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C177B2153D36036524B94CE313312BE /* Rapid-dummy.m */; };
+		B5D71A259AF5A320E3C72A7697488992 /* Rapid-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E5C569520231096810692EC1FD63C68 /* Rapid-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C39167AE997D0E8817FE8A9149EFB9B0 /* Pods-ExamplePodApp-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 23AC0E669B84AEE650B4763F598D5FEB /* Pods-ExamplePodApp-dummy.m */; };
 		C890B9F9761374004F50F5DFF16A162C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
-		E91597064DDD5D85F09AA7D961134D9D /* RapidTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78BE5ED7E3824606C31C070F32BB610 /* RapidTests.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,31 +27,27 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		19D4A38FC14B365EB83AF7CCF8E9A269 /* Rapid.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Rapid.xcconfig; sourceTree = "<group>"; };
-		1CC9DF906FD1637D7675CB464EBF040B /* Rapid.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Rapid.h; sourceTree = "<group>"; };
 		23AC0E669B84AEE650B4763F598D5FEB /* Pods-ExamplePodApp-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-ExamplePodApp-dummy.m"; sourceTree = "<group>"; };
-		2A7CDA731FF03E6E82D89BE98499AFF9 /* Rapid.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Rapid.swift; sourceTree = "<group>"; };
+		24633142B2333AE463CA81FA8F1988CA /* Rapid-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Rapid-prefix.pch"; sourceTree = "<group>"; };
 		2C02285C83EEADFC649C7C2373FEEFE4 /* Pods-ExamplePodApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ExamplePodApp.debug.xcconfig"; sourceTree = "<group>"; };
+		2C177B2153D36036524B94CE313312BE /* Rapid-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Rapid-dummy.m"; sourceTree = "<group>"; };
+		3E5C569520231096810692EC1FD63C68 /* Rapid-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Rapid-umbrella.h"; sourceTree = "<group>"; };
+		4526EB89239089DA6F78AD713840DE19 /* Rapid.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = Rapid.modulemap; sourceTree = "<group>"; };
+		4A8A084154BFC008CF059F56D05000F8 /* Rapid.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Rapid.swift; path = Source/Rapid.swift; sourceTree = "<group>"; };
 		70389369211572C92997E006A7BB6D15 /* Pods-ExamplePodApp-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-ExamplePodApp-resources.sh"; sourceTree = "<group>"; };
 		734CF62456E2FC1E58D915B769590DB2 /* Pods-ExamplePodApp.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-ExamplePodApp.modulemap"; sourceTree = "<group>"; };
-		7B80AC33DC109E300FE7749A5EE8E621 /* Rapid-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Rapid-umbrella.h"; sourceTree = "<group>"; };
 		8128DF75B363F1B9D5C94ED1574C8188 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		849CB5ABF995DB4BF18928E7FE951E26 /* Rapid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Rapid.framework; path = Rapid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		85E1A9B5A260CC030251A816F449DCB0 /* Rapid.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Rapid.h; sourceTree = "<group>"; };
+		86E85BD4EA9E700F62D65A408E8CF3CC /* Rapid.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Rapid.xcconfig; sourceTree = "<group>"; };
 		8975CD6ED419EC09571E3CA0E3109452 /* Pods-ExamplePodApp-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-ExamplePodApp-acknowledgements.markdown"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		99CE12EF1A0E6965E932E9B143642BE1 /* Rapid-Swift.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Rapid-Swift.h"; sourceTree = "<group>"; };
 		9E3E861DEF74DD0B8254E715A0195AA7 /* Pods-ExamplePodApp-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-ExamplePodApp-frameworks.sh"; sourceTree = "<group>"; };
-		A053613FEF4059E9E6A1D91331A8C525 /* Rapid-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Rapid-prefix.pch"; sourceTree = "<group>"; };
-		A86894DCA416925436A4BFC069C45494 /* Rapid.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = Rapid.modulemap; sourceTree = "<group>"; };
 		AB6E801CBAD792F3F2E2891159ECE007 /* Pods-ExamplePodApp-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-ExamplePodApp-acknowledgements.plist"; sourceTree = "<group>"; };
 		AD9346E24E7CD641C6C78A5C2A374B35 /* Pods_ExamplePodApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_ExamplePodApp.framework; path = "Pods-ExamplePodApp.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AED08BF66E1B7310E43CF8EFB3F19AA9 /* Rapid-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Rapid-dummy.m"; sourceTree = "<group>"; };
 		C85BD923FF7C62ABEF25599A21B0C7FA /* Pods-ExamplePodApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ExamplePodApp.release.xcconfig"; sourceTree = "<group>"; };
 		CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		D3B59500DE123D132ABB2A33BDED0FB1 /* Pods-ExamplePodApp-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-ExamplePodApp-umbrella.h"; sourceTree = "<group>"; };
-		DB34EF44E8EA12D151C2DF54AABFA84E /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F78BE5ED7E3824606C31C070F32BB610 /* RapidTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RapidTests.swift; sourceTree = "<group>"; };
+		D877406BC35979AE9A02F8EC2F091E12 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,26 +70,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		21114B5EE3F3BF77A0F76C48CEFBD5C2 /* Rapid.framework */ = {
-			isa = PBXGroup;
-			children = (
-				E71E74C1AC001FD2655630320DCB93A0 /* Headers */,
-			);
-			name = Rapid.framework;
-			path = Rapid.framework;
-			sourceTree = "<group>";
-		};
-		2AACA13877CD619DBAC870FD09EF52F6 /* Rapid */ = {
-			isa = PBXGroup;
-			children = (
-				7B9FE66971424F698B6925769AC38F85 /* Framework */,
-				7E9D01FBD69F39258BB9E02F3856B919 /* Rapid */,
-				C01F298482C3B69D4E28164E7D9AC12A /* RapidTests */,
-			);
-			name = Rapid;
-			path = Rapid;
-			sourceTree = "<group>";
-		};
 		30992FC6AA35EA2392B7C2366DD9D0BC /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,12 +78,14 @@
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
-		6D9F3E0E1AF21EC449914E8562A3C643 /* Development Pods */ = {
+		528C8B8526EFB83113556C0A45D36D9C /* Rapid */ = {
 			isa = PBXGroup;
 			children = (
-				87C2D6AA911FAE746B815983E39743D5 /* Rapid */,
+				4A8A084154BFC008CF059F56D05000F8 /* Rapid.swift */,
+				B890ABFCF0EFC256A8EB7624313279E4 /* Support Files */,
 			);
-			name = "Development Pods";
+			name = Rapid;
+			path = Rapid;
 			sourceTree = "<group>";
 		};
 		7531C8F8DE19F1AA3C8A7AC97A91DC29 /* iOS */ = {
@@ -121,44 +96,29 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		7B9FE66971424F698B6925769AC38F85 /* Framework */ = {
-			isa = PBXGroup;
-			children = (
-				21114B5EE3F3BF77A0F76C48CEFBD5C2 /* Rapid.framework */,
-			);
-			name = Framework;
-			path = Framework;
-			sourceTree = "<group>";
-		};
 		7DB346D0F39D3F0E887471402A8071AB = {
 			isa = PBXGroup;
 			children = (
 				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
-				6D9F3E0E1AF21EC449914E8562A3C643 /* Development Pods */,
 				BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */,
+				D09D0F9C20B7CA024E59905C45C51CEA /* Pods */,
 				E1CAB7A5BC32DFD3BAA0529F276E8D55 /* Products */,
 				30992FC6AA35EA2392B7C2366DD9D0BC /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
-		7E9D01FBD69F39258BB9E02F3856B919 /* Rapid */ = {
+		B890ABFCF0EFC256A8EB7624313279E4 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				1CC9DF906FD1637D7675CB464EBF040B /* Rapid.h */,
-				2A7CDA731FF03E6E82D89BE98499AFF9 /* Rapid.swift */,
+				D877406BC35979AE9A02F8EC2F091E12 /* Info.plist */,
+				4526EB89239089DA6F78AD713840DE19 /* Rapid.modulemap */,
+				86E85BD4EA9E700F62D65A408E8CF3CC /* Rapid.xcconfig */,
+				2C177B2153D36036524B94CE313312BE /* Rapid-dummy.m */,
+				24633142B2333AE463CA81FA8F1988CA /* Rapid-prefix.pch */,
+				3E5C569520231096810692EC1FD63C68 /* Rapid-umbrella.h */,
 			);
-			name = Rapid;
-			path = Rapid;
-			sourceTree = "<group>";
-		};
-		87C2D6AA911FAE746B815983E39743D5 /* Rapid */ = {
-			isa = PBXGroup;
-			children = (
-				2AACA13877CD619DBAC870FD09EF52F6 /* Rapid */,
-				FF4B6D45AD7A47361A1392F7E58B5325 /* Support Files */,
-			);
-			name = Rapid;
-			path = ../../..;
+			name = "Support Files";
+			path = "../Target Support Files/Rapid";
 			sourceTree = "<group>";
 		};
 		BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */ = {
@@ -169,13 +129,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		C01F298482C3B69D4E28164E7D9AC12A /* RapidTests */ = {
+		D09D0F9C20B7CA024E59905C45C51CEA /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F78BE5ED7E3824606C31C070F32BB610 /* RapidTests.swift */,
+				528C8B8526EFB83113556C0A45D36D9C /* Rapid */,
 			);
-			name = RapidTests;
-			path = RapidTests;
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		E1CAB7A5BC32DFD3BAA0529F276E8D55 /* Products */ = {
@@ -185,16 +144,6 @@
 				849CB5ABF995DB4BF18928E7FE951E26 /* Rapid.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		E71E74C1AC001FD2655630320DCB93A0 /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-				85E1A9B5A260CC030251A816F449DCB0 /* Rapid.h */,
-				99CE12EF1A0E6965E932E9B143642BE1 /* Rapid-Swift.h */,
-			);
-			name = Headers;
-			path = Headers;
 			sourceTree = "<group>";
 		};
 		EFEAAF75EAD0682E6E9D46CA7DE5B9AD /* Pods-ExamplePodApp */ = {
@@ -215,20 +164,6 @@
 			path = "Target Support Files/Pods-ExamplePodApp";
 			sourceTree = "<group>";
 		};
-		FF4B6D45AD7A47361A1392F7E58B5325 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				DB34EF44E8EA12D151C2DF54AABFA84E /* Info.plist */,
-				A86894DCA416925436A4BFC069C45494 /* Rapid.modulemap */,
-				19D4A38FC14B365EB83AF7CCF8E9A269 /* Rapid.xcconfig */,
-				AED08BF66E1B7310E43CF8EFB3F19AA9 /* Rapid-dummy.m */,
-				A053613FEF4059E9E6A1D91331A8C525 /* Rapid-prefix.pch */,
-				7B80AC33DC109E300FE7749A5EE8E621 /* Rapid-umbrella.h */,
-			);
-			name = "Support Files";
-			path = "Example/ExamplePodApp/Pods/Target Support Files/Rapid";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -240,14 +175,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		60BAFEBE57A18E3851754B73741CDBE3 /* Headers */ = {
+		107AA1B01398D58900E857F23176C883 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5F925F20D120F9606CBB583F06C4B1B /* Rapid-Swift.h in Headers */,
-				B5778F50179F457C7B322C3272E2148C /* Rapid-umbrella.h in Headers */,
-				0645C465A3DCF20BB7FF367B0B4CAA57 /* Rapid.h in Headers */,
-				0645C465A3DCF20BB7FF367B0B4CAA57 /* Rapid.h in Headers */,
+				B5D71A259AF5A320E3C72A7697488992 /* Rapid-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,9 +190,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2B0CD7433216F5B9093FD952A0F90F9C /* Build configuration list for PBXNativeTarget "Rapid" */;
 			buildPhases = (
-				12D90C9F94FBC26978E1414ECA87EE8C /* Sources */,
+				119507492BB3A46F446CAC8E9B86FAD8 /* Sources */,
 				2DC1F7B0BBED6BEE0A9AEF5D83AD6597 /* Frameworks */,
-				60BAFEBE57A18E3851754B73741CDBE3 /* Headers */,
+				107AA1B01398D58900E857F23176C883 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -317,13 +249,12 @@
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		12D90C9F94FBC26978E1414ECA87EE8C /* Sources */ = {
+		119507492BB3A46F446CAC8E9B86FAD8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				304997D6F6E0842062373ED8AE3CFD88 /* Rapid-dummy.m in Sources */,
-				2D801495B025BB9555A6D04A777CA3F5 /* Rapid.swift in Sources */,
-				E91597064DDD5D85F09AA7D961134D9D /* RapidTests.swift in Sources */,
+				9D2BFA5E60BFDAF842C1653ED360AC9E /* Rapid-dummy.m in Sources */,
+				48B78611625579548D157C6618E7AB5E /* Rapid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,7 +324,7 @@
 		};
 		A3444F1BD6125E92BFDB68FE92ED9BB3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 19D4A38FC14B365EB83AF7CCF8E9A269 /* Rapid.xcconfig */;
+			baseConfigurationReference = 86E85BD4EA9E700F62D65A408E8CF3CC /* Rapid.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -460,7 +391,7 @@
 		};
 		DF75C2D6F3F781376F1915FA255D64E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 19D4A38FC14B365EB83AF7CCF8E9A269 /* Rapid.xcconfig */;
+			baseConfigurationReference = 86E85BD4EA9E700F62D65A408E8CF3CC /* Rapid.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";

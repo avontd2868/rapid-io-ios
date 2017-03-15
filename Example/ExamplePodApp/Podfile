@@ -8,7 +8,7 @@ use_frameworks!
 
 def shared_pods
 
-pod 'Rapid', :path => '../../'
+pod 'Rapid'
 
 end
 
