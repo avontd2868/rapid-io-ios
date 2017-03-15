@@ -1,0 +1,18 @@
+{
+  "name": "Rapid",
+  "version": "0.0.3",
+  "license": "MIT",
+  "summary": "Rapid.io iOS SDK",
+  "homepage": "https://github.com/Rapid-SDK/ios",
+  "authors": {
+    "Jan Schwarz": "jan.schwarz@strv.com"
+  },
+  "source": {
+    "git": "https://github.com/Rapid-SDK/ios.git",
+    "tag": "0.0.3"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "Source/*.swift"
+}

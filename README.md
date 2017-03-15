@@ -77,7 +77,7 @@ $ brew install carthage
 To integrate Rapid iOS SDK into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "Alamofire/Alamofire" ~> 4.4
+github "Rapid-SDK/ios"
 ```
 
 Run `carthage update` to build the framework and drag the built `Rapid.framework` into your Xcode project.
