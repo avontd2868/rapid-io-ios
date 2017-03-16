@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Rapid
 
 class ViewController: UIViewController {
 
@@ -20,6 +21,13 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    @IBAction func subscribe(_ sender: Any) {
+    }
 
+    @IBAction func mutate(_ sender: Any) {
+        Rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { (error, object) in
+            print(error, object)
+        }
+    }
 }
 
