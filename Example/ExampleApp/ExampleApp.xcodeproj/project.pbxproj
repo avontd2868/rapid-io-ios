@@ -197,6 +197,7 @@
 				TargetAttributes = {
 					C1D6E8711E785CFA007589FC = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = B4866X7S79;
 						ProvisioningStyle = Automatic;
 					};
 					C1D6E8851E785CFB007589FC = {
@@ -419,6 +420,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = B4866X7S79;
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.ExampleApp;
@@ -432,6 +435,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = B4866X7S79;
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.ExampleApp;
