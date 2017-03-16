@@ -10,7 +10,13 @@ import Foundation
 
 public class Rapid {
     
+    let socketManager: SocketManager
+    
     public class func configure(withAPIKey key: String) {
         
+    }
+    
+    public init(apiKey: String) {
+        socketManager = SocketManager(apiKey: apiKey)
     }
 }
