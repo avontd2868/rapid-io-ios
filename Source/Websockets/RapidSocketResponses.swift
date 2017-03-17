@@ -8,7 +8,11 @@
 
 import Foundation
 
-class RapidSocketAcknowledgement: RapidResponse {
+protocol RapidSocketAcknowledgement: RapidResponse {
+    var userInfo: Any? { get }
+}
+
+struct RapidSocketSimpleAck: RapidSocketAcknowledgement {
     
     let eventID: String
     let userInfo: Any?
@@ -25,16 +29,14 @@ class RapidSocketAcknowledgement: RapidResponse {
         self.eventID = eventID
         self.userInfo = nil
     }
-    
-    init(eventID: String, userInfo: Any) {
-        self.eventID = eventID
-        self.userInfo = userInfo
-    }
 }
 
-class RapidSubscriptionInitialValue: RapidSocketAcknowledgement {
+struct RapidSubscriptionInitialValue: RapidSocketAcknowledgement {
     
-    override init?(json: Any?) {
+    let eventID: String
+    let userInfo: Any?
+    
+    init?(json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {
             return nil
         }
@@ -47,7 +49,8 @@ class RapidSubscriptionInitialValue: RapidSocketAcknowledgement {
             return nil
         }
         
-        super.init(eventID: eventID, userInfo: documents)
+        self.eventID = eventID
+        self.userInfo = documents
     }
 }
 

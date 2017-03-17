@@ -129,7 +129,7 @@ fileprivate extension SocketManager {
             case let response as RapidSubscriptionInitialValue:
                 request.eventAcknowledged(response)
                 
-            case let response as RapidSocketAcknowledgement:
+            case let response as RapidSocketSimpleAck:
                 request.eventAcknowledged(response)
                 
             default:

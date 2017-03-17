@@ -69,7 +69,7 @@ fileprivate extension RapidSerialization {
     
     fileprivate class func parseEvent(json: [AnyHashable: Any]) -> RapidResponse? {
         if let ack = json[Acknowledgement.name] as? [AnyHashable: Any] {
-            return RapidSocketAcknowledgement(json: ack)
+            return RapidSocketSimpleAck(json: ack)
         }
         else if let err = json[Error.name] as? [AnyHashable: Any] {
             return RapidSocketError(json: err)
