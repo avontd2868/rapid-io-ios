@@ -17,8 +17,13 @@ public class Rapid: NSObject {
     
     fileprivate var collections: [RapidCollection] = []
     
-    public init(apiKey: String) {
-        socketManager = SocketManager(apiKey: apiKey)
+    public init?(apiKey: String) {
+        if let connectionValues = Decoder.decode(apiKey: apiKey) {
+            socketManager = SocketManager(socketURL: connectionValues.hostURL)
+        }
+        else {
+            return nil
+        }
     }
     
     public func collection(named: String) -> RapidCollection {

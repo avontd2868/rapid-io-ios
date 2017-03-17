@@ -10,20 +10,22 @@ import Foundation
 
 public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
 
-protocol MutationEntity {
+protocol MutationRequest: RapidRequest {
     func mutationJSON(withEventID eventID: String) -> [AnyHashable: Any]
 }
 
-class RapidDocumentMutation: NSObject, MutationEntity {
+class RapidDocumentMutation: NSObject, MutationRequest {
     
     let value: [AnyHashable: Any]?
     let collectionID: String
     let documentID: String
+    let callback: RapidMutationCallback?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any]?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, callback: RapidMutationCallback?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
+        self.callback = callback
     }
     
     func mutationJSON(withEventID eventID: String) -> [AnyHashable : Any] {
@@ -31,9 +33,22 @@ class RapidDocumentMutation: NSObject, MutationEntity {
         
         json["evt-id"] = eventID
         json["col-id"] = collectionID
-        json["doc-id"] = documentID
-        json["doc"] = value
+        //json["doc-id"] = documentID
+        var doc = value
+        doc?["id"] = documentID
+        json["doc"] = doc
         
         return json
+    }
+}
+
+extension RapidDocumentMutation: RapidRequest {
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        callback?(nil, value)
+    }
+    
+    func eventFailed(withError error: RapidSocketError) {
+        callback?(error, nil)
     }
 }

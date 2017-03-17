@@ -19,8 +19,8 @@ public class RapidDocument: NSObject {
     }
     
     public func mutate(value: [AnyHashable: Any], completion: RapidMutationCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collection.collectionID, documentID: documentID, value: value)
-        collection.rapid.socketManager.sendMutation(forObject: mutation, withCompletion: completion)
+        let mutation = RapidDocumentMutation(collectionID: collection.collectionID, documentID: documentID, value: value, callback: completion)
+        collection.rapid.socketManager.sendMutation(mutationRequest: mutation)
     }
     
     public func merge(value: [AnyHashable: Any], completion: RapidMutationCallback? = nil) {
@@ -28,7 +28,7 @@ public class RapidDocument: NSObject {
     }
     
     public func delete(completion: RapidMutationCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collection.collectionID, documentID: documentID, value: nil)
-        collection.rapid.socketManager.sendMutation(forObject: mutation, withCompletion: completion)
+        let mutation = RapidDocumentMutation(collectionID: collection.collectionID, documentID: documentID, value: nil, callback: completion)
+        collection.rapid.socketManager.sendMutation(mutationRequest: mutation)
     }
 }

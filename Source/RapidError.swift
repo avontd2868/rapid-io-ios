@@ -10,5 +10,4 @@ import Foundation
 
 enum RapidError: Error {
     case mainInstanceNotInitialized
-    case invalidData
 }

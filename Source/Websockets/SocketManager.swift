@@ -18,17 +18,22 @@ class SocketManager {
     
     enum Event: String {
         case mutate = "mut"
+        case merge = "mer"
         case subscribe = "sub"
-        case unsubscribe = "unsub"
+        case unsubscribe = "uns"
+        case valueReceived = "val"
+        case updateReceived = "upd"
+        case error = "err"
+        case acknowledgement = "ack"
     }
     
     let socket: WebSocket
     fileprivate(set) var status: Status = .disconnected
     
-    fileprivate var requestQueue: [String: RapidMutationCallback] = [:]
+    fileprivate var requestQueue: [String: RapidRequest] = [:]
     
-    init(apiKey: String) {
-        socket = WebSocket(url: URL(string: "ws://13.64.77.202:8080")!)
+    init(socketURL: URL) {
+        socket = WebSocket(url: socketURL)
         socket.delegate = self
         
         status = .connecting
@@ -36,11 +41,11 @@ class SocketManager {
         socket.connect()
     }
     
-    func sendMutation(forObject object: MutationEntity, withCompletion completion: RapidMutationCallback? = nil) {
+    func sendMutation(mutationRequest: MutationRequest) {
         let eventID = NSUUID().uuidString
-        requestQueue[eventID] = completion
+        requestQueue[eventID] = mutationRequest
         
-        let json = [Event.mutate.rawValue: object.mutationJSON(withEventID: eventID)]
+        let json = [Event.mutate.rawValue: mutationRequest.mutationJSON(withEventID: eventID)]
         
         write(eventWithID: eventID, json: json)
     }
@@ -49,7 +54,9 @@ class SocketManager {
 fileprivate extension SocketManager {
     
     func parse(message: String) {
-        print(message)
+        if let data = message.data(using: .utf8) {
+            parse(data: data)
+        }
     }
     
     func parse(data: Data) {
@@ -63,23 +70,38 @@ fileprivate extension SocketManager {
             json = nil
         }
         
-        print(json ?? [:])
+        if let responses = RapidSocketParser.parse(json: json) {
+            for response in responses {
+                completeRequest(withResponse: response)
+            }
+        }
     }
     
     func write(eventWithID eventID: String, json: [AnyHashable: Any]) {
         do {
             let data = try JSONSerialization.data(withJSONObject: json, options: [])
-            socket.write(data: data)
+            let jsonString = String(data: data, encoding: .utf8)
+            socket.write(string: jsonString ?? "")
         }
         catch {
-            completeMutation(withID: eventID, object: nil, error: RapidError.invalidData)
+            completeRequest(withResponse: RapidSocketError.invalidData(eventID: eventID, message: nil))
         }
     }
     
-    func completeMutation(withID eventID: String, object: Any?, error: Error?) {
-        if let completion = requestQueue[eventID] {
-            requestQueue[eventID] = nil
-            completion(error, object)
+    func completeRequest(withResponse response: RapidResponse) {
+        if let request = requestQueue[response.eventID] {
+            requestQueue[response.eventID] = nil
+            
+            switch response {
+            case let response as RapidSocketError:
+                request.eventFailed(withError: response)
+                
+            case let response as RapidSocketAcknowledgement:
+                request.eventAcknowledged(response)
+                
+            default:
+                request.eventFailed(withError: RapidSocketError.default(eventID: response.eventID))
+            }
         }
     }
 }
