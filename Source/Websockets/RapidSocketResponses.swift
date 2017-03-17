@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct RapidSocketAcknowledgement: RapidResponse {
+class RapidSocketAcknowledgement: RapidResponse {
     
     let eventID: String
     let userInfo: Any?
@@ -18,12 +18,36 @@ struct RapidSocketAcknowledgement: RapidResponse {
             return nil
         }
         
-        guard let eventID = dict[RapidSocketParser.Acknowledgement.EventID.name] as? String else {
+        guard let eventID = dict[RapidSerialization.Acknowledgement.EventID.name] as? String else {
             return nil
         }
 
         self.eventID = eventID
         self.userInfo = nil
+    }
+    
+    init(eventID: String, userInfo: Any) {
+        self.eventID = eventID
+        self.userInfo = userInfo
+    }
+}
+
+class RapidSubscriptionInitialValue: RapidSocketAcknowledgement {
+    
+    override init?(json: Any?) {
+        guard let dict = json as? [AnyHashable: Any] else {
+            return nil
+        }
+        
+        guard let eventID = dict[RapidSerialization.SubscriptionValue.EventID.name] as? String else {
+            return nil
+        }
+        
+        guard let documents = dict[RapidSerialization.SubscriptionValue.Documents.name] as? [[AnyHashable: Any]] else {
+            return nil
+        }
+        
+        super.init(eventID: eventID, userInfo: documents)
     }
 }
 
@@ -38,12 +62,12 @@ enum RapidSocketError: Error, RapidResponse {
             return nil
         }
         
-        guard let eventID = dict[RapidSocketParser.Error.EventID.name] as? String else {
+        guard let eventID = dict[RapidSerialization.Error.EventID.name] as? String else {
             return nil
         }
         
-        let key = dict[RapidSocketParser.Error.ErrorType.name] as? String
-        let message = dict[RapidSocketParser.Error.ErrorMessage.name] as? String
+        let key = dict[RapidSerialization.Error.ErrorType.name] as? String
+        let message = dict[RapidSerialization.Error.ErrorMessage.name] as? String
         
         switch key ?? "" {
         case "acc-den":

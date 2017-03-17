@@ -39,6 +39,10 @@ public class Rapid: NSObject {
         }
         
         self.apiKey = apiKey
+        
+        super.init()
+
+        Rapid.instances.append(WRO(object: self))
     }
     
     public func collection(named: String) -> RapidCollection {

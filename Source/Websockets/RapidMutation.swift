@@ -10,8 +10,7 @@ import Foundation
 
 public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
 
-protocol MutationRequest: RapidRequest {
-    func mutationJSON(withEventID eventID: String) -> [AnyHashable: Any]
+protocol MutationRequest: RapidRequest, RapidSerializable {
 }
 
 class RapidDocumentMutation: NSObject, MutationRequest {
@@ -28,17 +27,12 @@ class RapidDocumentMutation: NSObject, MutationRequest {
         self.callback = callback
     }
     
-    func mutationJSON(withEventID eventID: String) -> [AnyHashable : Any] {
-        var json = [AnyHashable: Any]()
-        
-        json["evt-id"] = eventID
-        json["col-id"] = collectionID
-        //json["doc-id"] = documentID
-        var doc = value
-        doc?["id"] = documentID
-        json["doc"] = doc
-        
-        return json
+}
+
+extension RapidDocumentMutation: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        return try RapidSerialization.serialize(mutation: self, withIdentifiers: identifiers)
     }
 }
 

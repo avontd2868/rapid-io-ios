@@ -16,21 +16,22 @@ class SocketManager {
         case connected
     }
     
-    enum Event: String {
-        case mutate = "mut"
-        case merge = "mer"
-        case subscribe = "sub"
-        case unsubscribe = "uns"
-        case valueReceived = "val"
-        case updateReceived = "upd"
-        case error = "err"
-        case acknowledgement = "ack"
+    enum Event {
+        case mutate
+        case merge
+        case subscribe
+        case unsubscribe
+        case valueReceived
+        case updateReceived
+        case error
+        case acknowledgement
     }
     
     let socket: WebSocket
     fileprivate(set) var status: Status = .disconnected
     
     fileprivate var requestQueue: [String: RapidRequest] = [:]
+    fileprivate var activeSubscriptions: [String: NSObject] = [:]
     
     init(socketURL: URL) {
         socket = WebSocket(url: socketURL)
@@ -41,17 +42,47 @@ class SocketManager {
         socket.connect()
     }
     
-    func sendMutation(mutationRequest: MutationRequest) {
+    deinit {
+        socket.disconnect()
+    }
+    
+    func mutate(mutationRequest: MutationRequest) {
         let eventID = NSUUID().uuidString
         requestQueue[eventID] = mutationRequest
         
-        let json = [Event.mutate.rawValue: mutationRequest.mutationJSON(withEventID: eventID)]
-        
-        write(eventWithID: eventID, json: json)
+        writeEvent(withID: eventID, withIdentifiers: [RapidSerialization.Mutation.EventID.name: eventID], serializableObject: mutationRequest)
+    }
+    
+    func subscribe<T: RapidSubscription>(_ subscription: T) {
+        if let activeSubscription = activeSubscriptions[subscription.hash] as? RapidSubscriptionHandler<T> {
+            activeSubscription.registerSubscription(subscription: subscription)
+        }
+        else {
+            let eventID = NSUUID().uuidString
+            let subscriptionID = NSUUID().uuidString
+            
+            let subscriptionHandler = RapidSubscriptionHandler(withSubscriptionID: subscriptionID, subscription: subscription, unsubscribeHandler: { [weak self] handler in
+                self?.unsubscribe(handler)
+            })
+            
+            activeSubscriptions[subscriptionHandler.subscriptionHash] = subscriptionHandler
+            requestQueue[eventID] = subscriptionHandler
+            
+            let identifiers: [AnyHashable: Any] = [
+                RapidSerialization.Subscription.EventID.name: eventID,
+                RapidSerialization.Subscription.SubscriptionID.name: subscriptionID
+            ]
+            
+            writeEvent(withID: eventID, withIdentifiers: identifiers, serializableObject: subscription)
+        }
     }
 }
 
 fileprivate extension SocketManager {
+    
+    func unsubscribe<T>(_ subscription: RapidSubscriptionHandler<T>) {
+        
+    }
     
     func parse(message: String) {
         if let data = message.data(using: .utf8) {
@@ -70,18 +101,17 @@ fileprivate extension SocketManager {
             json = nil
         }
         
-        if let responses = RapidSocketParser.parse(json: json) {
+        if let responses = RapidSerialization.parse(json: json) {
             for response in responses {
                 completeRequest(withResponse: response)
             }
         }
     }
     
-    func write(eventWithID eventID: String, json: [AnyHashable: Any]) {
+    func writeEvent(withID eventID: String, withIdentifiers identifiers: [AnyHashable: Any], serializableObject: RapidSerializable) {
         do {
-            let data = try JSONSerialization.data(withJSONObject: json, options: [])
-            let jsonString = String(data: data, encoding: .utf8)
-            socket.write(string: jsonString ?? "")
+            let jsonString = try serializableObject.serialize(withIdentifiers: identifiers)
+            socket.write(string: jsonString)
         }
         catch {
             completeRequest(withResponse: RapidSocketError.invalidData(eventID: eventID, message: nil))
@@ -95,6 +125,9 @@ fileprivate extension SocketManager {
             switch response {
             case let response as RapidSocketError:
                 request.eventFailed(withError: response)
+                
+            case let response as RapidSubscriptionInitialValue:
+                request.eventAcknowledged(response)
                 
             case let response as RapidSocketAcknowledgement:
                 request.eventAcknowledged(response)
