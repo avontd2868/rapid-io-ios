@@ -10,14 +10,13 @@ import Foundation
 
 public class RapidCollection: NSObject {
     
+    weak var handler: RapidHandler?
+    
     let collectionID: String
-    unowned let rapid: Rapid
-    
-    fileprivate var documents: [RapidDocument] = []
-    
-    init(id: String, inRapid rapid: Rapid) {
+
+    init(id: String, handler: RapidHandler) {
         self.collectionID = id
-        self.rapid = rapid
+        self.handler = handler
     }
     
     public func newDocument() -> RapidDocument {
@@ -25,8 +24,16 @@ public class RapidCollection: NSObject {
     }
     
     public func document(id: String) -> RapidDocument {
-        let document = RapidDocument(id: id, inCollection: self)
-        documents.append(document)
-        return document
+        return try! document(withID: id)
+    }
+    
+    func document(withID id: String) throws -> RapidDocument {
+        if let handler = handler {
+            return RapidDocument(id: id, inCollection: collectionID, handler: handler)
+        }
+        else {
+            print(RapidError.rapidInstanceNotInitialized.message)
+            throw RapidError.rapidInstanceNotInitialized
+        }
     }
 }

@@ -10,17 +10,23 @@ import Foundation
 
 public class RapidDocument: NSObject {
     
-    unowned let collection: RapidCollection
+    weak var handler: RapidHandler?
+    var socketManager: SocketManager {
+        return try! getSocketManager()
+    }
+    
+    let collectionID: String
     let documentID: String
     
-    init(id: String, inCollection collection: RapidCollection) {
+    init(id: String, inCollection collectionID: String, handler: RapidHandler) {
         self.documentID = id
-        self.collection = collection
+        self.collectionID = collectionID
+        self.handler = handler
     }
     
     public func mutate(value: [AnyHashable: Any], completion: RapidMutationCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collection.collectionID, documentID: documentID, value: value, callback: completion)
-        collection.rapid.socketManager.sendMutation(mutationRequest: mutation)
+        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, callback: completion)
+        socketManager.sendMutation(mutationRequest: mutation)
     }
     
     public func merge(value: [AnyHashable: Any], completion: RapidMutationCallback? = nil) {
@@ -28,7 +34,20 @@ public class RapidDocument: NSObject {
     }
     
     public func delete(completion: RapidMutationCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collection.collectionID, documentID: documentID, value: nil, callback: completion)
-        collection.rapid.socketManager.sendMutation(mutationRequest: mutation)
+        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: nil, callback: completion)
+        socketManager.sendMutation(mutationRequest: mutation)
+    }
+}
+
+extension RapidDocument {
+    
+    func getSocketManager() throws -> SocketManager {
+        if let manager = handler?.socketManager {
+            return manager
+        }
+        else {
+            print(RapidError.rapidInstanceNotInitialized.message)
+            throw RapidError.rapidInstanceNotInitialized
+        }
     }
 }

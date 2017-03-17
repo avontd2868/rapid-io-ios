@@ -42,6 +42,7 @@ fileprivate extension RapidSocketParser {
     }
 }
 
+//swiftlint:disable nesting
 extension RapidSocketParser {
     
     struct Acknowledgement {

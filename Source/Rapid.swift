@@ -5,31 +5,44 @@
 //  Created by Jan on 14/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
-//  swiftlint:disable force_try
 
 import Foundation
 
 public class Rapid: NSObject {
     
-    let socketManager: SocketManager
-    
+    static var instances: [WRO<Rapid>] = []
     static var sharedInstance: Rapid?
     
-    fileprivate var collections: [RapidCollection] = []
+    public let apiKey: String
+    
+    let handler: RapidHandler
     
     public init?(apiKey: String) {
-        if let connectionValues = Decoder.decode(apiKey: apiKey) {
-            socketManager = SocketManager(socketURL: connectionValues.hostURL)
+        Rapid.instances = Rapid.instances.filter({ $0.object != nil })
+        
+        var existingInstance: Rapid?
+        for weakInstance in Rapid.instances {
+            if let rapid = weakInstance.object, rapid.apiKey == apiKey {
+                existingInstance = rapid
+                break
+            }
+        }
+        
+        if let rapid = existingInstance {
+            self.handler = RapidHandler(socketManager: rapid.handler.socketManager)
+        }
+        else if let handler = RapidHandler(apiKey: apiKey) {
+            self.handler = handler
         }
         else {
             return nil
         }
+        
+        self.apiKey = apiKey
     }
     
     public func collection(named: String) -> RapidCollection {
-        let collection = RapidCollection(id: named, inRapid: self)
-        collections.append(collection)
-        return collection
+        return RapidCollection(id: named, handler: handler)
     }
 }
 
@@ -41,7 +54,7 @@ extension Rapid {
             return shared
         }
         else {
-            throw RapidError.mainInstanceNotInitialized
+            throw RapidError.rapidInstanceNotInitialized
         }
     }
     

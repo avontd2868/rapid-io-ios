@@ -9,5 +9,12 @@
 import Foundation
 
 enum RapidError: Error {
-    case mainInstanceNotInitialized
+    case rapidInstanceNotInitialized
+    
+    var message: String {
+        switch self {
+        case .rapidInstanceNotInitialized:
+            return "Rapid instance not initialized"
+        }
+    }
 }
