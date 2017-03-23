@@ -22,12 +22,28 @@ class ViewController: UIViewController {
     }
 
     @IBAction func subscribe(_ sender: Any) {
+        print(Rapid.connectionState)
     }
 
     @IBAction func mutate(_ sender: Any) {
         Rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { (error, object) in
-            print(error, object)
+            if let error = error as? RapidError {
+                switch error {
+                case .permissionDenied(let message):
+                    print("Permission denied: \(message)")
+                    
+                case .timeout:
+                    print("Timeout")
+                    
+                default:
+                    print("Other error")
+                }
+            }
+            else {
+                print("Message successfuly written.")
+            }
         }
+        Rapid.collection(named: "users").document(withID: "1").mutate(value: ["name": "Jan"])
     }
 }
 

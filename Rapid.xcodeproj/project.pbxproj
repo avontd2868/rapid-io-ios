@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C12692201E82BC37002577B2 /* RapidSubscriptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */; };
+		C12692221E82D27A002577B2 /* RapidUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692211E82D27A002577B2 /* RapidUpdate.swift */; };
+		C12692241E83D6F4002577B2 /* DictionaryJSONExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */; };
 		C1D6E8291E7856AD007589FC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1D6E81F1E7856AD007589FC /* Rapid.framework */; };
 		C1D6E82E1E7856AD007589FC /* RapidTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E82D1E7856AD007589FC /* RapidTests.swift */; };
 		C1D6E8A81E785D72007589FC /* Rapid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8A71E785D72007589FC /* Rapid.swift */; };
@@ -40,6 +43,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionHandler.swift; sourceTree = "<group>"; };
+		C12692211E82D27A002577B2 /* RapidUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidUpdate.swift; sourceTree = "<group>"; };
+		C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryJSONExtension.swift; sourceTree = "<group>"; };
 		C1D6E81F1E7856AD007589FC /* Rapid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rapid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E8281E7856AD007589FC /* RapidTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RapidTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E82D1E7856AD007589FC /* RapidTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RapidTests.swift; sourceTree = "<group>"; };
@@ -143,6 +149,7 @@
 				C1D6E9911E7AD822007589FC /* SSLSecurity.swift */,
 				C1D6E90D1E7A9131007589FC /* SocketManager.swift */,
 				C1D6E9A41E7BE3C0007589FC /* RapidSocketResponses.swift */,
+				C12692211E82D27A002577B2 /* RapidUpdate.swift */,
 				C1D6E98F1E7AD7E3007589FC /* WebSocket.swift */,
 				C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */,
 			);
@@ -154,6 +161,7 @@
 			children = (
 				C1D6E99B1E7AE523007589FC /* RapidMutation.swift */,
 				C1D6E9AE1E7C0D59007589FC /* RapidSubscription.swift */,
+				C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */,
 				C1D6E9A21E7BE356007589FC /* RapidRequest.swift */,
 				C1D6E9A81E7BECA4007589FC /* RapidResponse.swift */,
 			);
@@ -166,6 +174,7 @@
 			children = (
 				C1D6E9A01E7AFE6E007589FC /* Helpers.swift */,
 				C1D6E9AC1E7BFED2007589FC /* WRO.swift */,
+				C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */,
 			);
 			name = Utils;
 			path = Websockets;
@@ -331,13 +340,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1D6E90E1E7A9131007589FC /* SocketManager.swift in Sources */,
+				C12692241E83D6F4002577B2 /* DictionaryJSONExtension.swift in Sources */,
 				C1D6E9B11E7C0FAE007589FC /* RapidQuery.swift in Sources */,
+				C12692201E82BC37002577B2 /* RapidSubscriptionHandler.swift in Sources */,
 				C1D6E9A91E7BECA4007589FC /* RapidResponse.swift in Sources */,
 				C1D6E9951E7ADC78007589FC /* RapidCollection.swift in Sources */,
 				C1D6E9AD1E7BFED2007589FC /* WRO.swift in Sources */,
 				C1D6E9901E7AD7E3007589FC /* WebSocket.swift in Sources */,
 				C1D6E9971E7ADE35007589FC /* RapidError.swift in Sources */,
 				C1D6E9A71E7BE942007589FC /* RapidSerialization.swift in Sources */,
+				C12692221E82D27A002577B2 /* RapidUpdate.swift in Sources */,
 				C1D6E9AF1E7C0D59007589FC /* RapidSubscription.swift in Sources */,
 				C1D6E9A11E7AFE6E007589FC /* Helpers.swift in Sources */,
 				C1D6E9921E7AD822007589FC /* SSLSecurity.swift in Sources */,

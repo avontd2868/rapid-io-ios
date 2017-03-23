@@ -8,6 +8,31 @@
 
 import Foundation
 
+public class RapidDocumentSnapshot {
+    
+    public let id: String
+    public let value: [AnyHashable: Any]?
+    let predecessorID: String?
+    
+    init?(json: Any?) {
+        guard let dict = json as? [AnyHashable: Any] else {
+            return nil
+        }
+        
+        guard let id = dict[RapidSerialization.Document.DocumentID.name] as? String else {
+            return nil
+        }
+        
+        let body = dict[RapidSerialization.Document.Body.name] as? [AnyHashable: Any]
+        let predecessor = dict[RapidSerialization.Document.Predecessor.name] as? String
+        
+        self.id = id
+        self.value = body
+        self.predecessorID = predecessor
+    }
+    
+}
+
 public class RapidDocument: NSObject {
     
     weak var handler: RapidHandler?
@@ -37,6 +62,15 @@ public class RapidDocument: NSObject {
         let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: nil, callback: completion)
         socketManager.mutate(mutationRequest: mutation)
     }
+    
+    public func subscribe(completion: @escaping RapidDocSubCallback) -> RapidSubscription {
+        let subscription = RapidDocumentSub(collectionID: collectionID, documentID: documentID, callback: completion)
+        
+        socketManager.subscribe(subscription)
+        
+        return subscription
+    }
+    
 }
 
 extension RapidDocument {
@@ -46,8 +80,8 @@ extension RapidDocument {
             return manager
         }
         else {
-            print(RapidError.rapidInstanceNotInitialized.message)
-            throw RapidError.rapidInstanceNotInitialized
+            print(RapidInternalError.rapidInstanceNotInitialized.message)
+            throw RapidInternalError.rapidInstanceNotInitialized
         }
     }
 }

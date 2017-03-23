@@ -14,40 +14,5 @@ protocol RapidSerializable {
 
 protocol RapidRequest {
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement)
-    func eventFailed(withError error: RapidSocketError)
-}
-
-class RapidSubscriptionHandler<Subscription: RapidSubscription>: NSObject {
-    
-    var subscriptionHash: String {
-        return subscriptions.first?.hash ?? ""
-    }
-    
-    let subscriptionID: String
-    fileprivate let unsubscribeHandler: (RapidSubscriptionHandler<Subscription>) -> Void
-    fileprivate var subscriptions: [Subscription] = []
-    
-    init(withSubscriptionID subscriptionID: String, subscription: Subscription, unsubscribeHandler: @escaping (RapidSubscriptionHandler<Subscription>) -> Void) {
-        self.unsubscribeHandler = unsubscribeHandler
-        self.subscriptionID = subscriptionID
-        
-        super.init()
-        
-        subscriptions.append(subscription)
-    }
-    
-    func registerSubscription(subscription: Subscription) {
-        subscriptions.append(subscription)
-    }
-}
-
-extension RapidSubscriptionHandler: RapidRequest {
-    
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        
-    }
-    
-    func eventFailed(withError error: RapidSocketError) {
-        
-    }
+    func eventFailed(withError error: RapidErrorInstance)
 }

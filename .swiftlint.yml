@@ -31,12 +31,9 @@ variable_name:
     warning: 2
   max_length:
     warning: 40
-cyclomatic_complexity:
-  - 30
-  - 40
 large_tuple:
-  - 3
-  - 5
+  - 4
+  - 6
 generic_type_name:
   min_length:
     warning: 1

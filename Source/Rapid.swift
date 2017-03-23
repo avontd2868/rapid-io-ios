@@ -15,6 +15,10 @@ public class Rapid: NSObject {
     
     public let apiKey: String
     
+    public var connectionState: ConnectionState {
+        return handler.socketManager.state
+    }
+    
     let handler: RapidHandler
     
     public init?(apiKey: String) {
@@ -50,32 +54,37 @@ public class Rapid: NSObject {
     }
 }
 
-// MARK: Class methods
-extension Rapid {
+// MARK: Singleton methods
+public extension Rapid {
     
     class func shared() throws -> Rapid {
         if let shared = sharedInstance {
             return shared
         }
         else {
-            throw RapidError.rapidInstanceNotInitialized
+            throw RapidInternalError.rapidInstanceNotInitialized
         }
     }
     
-}
-
-// MARK: Singleton methods
-public extension Rapid {
+    enum ConnectionState {
+        case disconnected
+        case connecting
+        case connected
+    }
     
-    public class var uniqueID: String {
+    class var uniqueID: String {
         return NSUUID().uuidString
     }
     
-    public class func configure(withAPIKey key: String) {
+    class var connectionState: ConnectionState {
+        return try! shared().connectionState
+    }
+    
+    class func configure(withAPIKey key: String) {
         sharedInstance = Rapid(apiKey: key)
     }
     
-    public class func collection(named: String) -> RapidCollection {
+    class func collection(named: String) -> RapidCollection {
         return try! shared().collection(named: named)
     }
 }

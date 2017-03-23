@@ -42,7 +42,7 @@ extension RapidDocumentMutation: RapidRequest {
         callback?(nil, value)
     }
     
-    func eventFailed(withError error: RapidSocketError) {
-        callback?(error, nil)
+    func eventFailed(withError error: RapidErrorInstance) {
+        callback?(error.error, nil)
     }
 }

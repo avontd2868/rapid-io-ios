@@ -10,12 +10,6 @@ import Foundation
 
 class SocketManager {
     
-    enum Status {
-        case disconnected
-        case connecting
-        case connected
-    }
-    
     enum Event {
         case mutate
         case merge
@@ -28,16 +22,16 @@ class SocketManager {
     }
     
     let socket: WebSocket
-    fileprivate(set) var status: Status = .disconnected
+    fileprivate(set) var state: Rapid.ConnectionState = .disconnected
     
     fileprivate var requestQueue: [String: RapidRequest] = [:]
-    fileprivate var activeSubscriptions: [String: NSObject] = [:]
+    fileprivate var activeSubscriptions: [String: RapidSubscriptionHandler] = [:]
     
     init(socketURL: URL) {
         socket = WebSocket(url: socketURL)
         socket.delegate = self
         
-        status = .connecting
+        state = .connecting
         
         socket.connect()
     }
@@ -47,25 +41,25 @@ class SocketManager {
     }
     
     func mutate(mutationRequest: MutationRequest) {
-        let eventID = NSUUID().uuidString
+        let eventID = Generator.uniqueID
         requestQueue[eventID] = mutationRequest
         
         writeEvent(withID: eventID, withIdentifiers: [RapidSerialization.Mutation.EventID.name: eventID], serializableObject: mutationRequest)
     }
     
-    func subscribe<T: RapidSubscription>(_ subscription: T) {
-        if let activeSubscription = activeSubscriptions[subscription.hash] as? RapidSubscriptionHandler<T> {
+    func subscribe(_ subscription: RapidSubscriptionInstance) {
+        if let activeSubscription = activeSubscription(withHash: subscription.subscriptionHash) {
             activeSubscription.registerSubscription(subscription: subscription)
         }
         else {
-            let eventID = NSUUID().uuidString
-            let subscriptionID = NSUUID().uuidString
+            let eventID = Generator.uniqueID
+            let subscriptionID = Generator.uniqueID
             
             let subscriptionHandler = RapidSubscriptionHandler(withSubscriptionID: subscriptionID, subscription: subscription, unsubscribeHandler: { [weak self] handler in
                 self?.unsubscribe(handler)
             })
             
-            activeSubscriptions[subscriptionHandler.subscriptionHash] = subscriptionHandler
+            activeSubscriptions[subscriptionID] = subscriptionHandler
             requestQueue[eventID] = subscriptionHandler
             
             let identifiers: [AnyHashable: Any] = [
@@ -73,15 +67,37 @@ class SocketManager {
                 RapidSerialization.Subscription.SubscriptionID.name: subscriptionID
             ]
             
-            writeEvent(withID: eventID, withIdentifiers: identifiers, serializableObject: subscription)
+            writeEvent(withID: eventID, withIdentifiers: identifiers, serializableObject: subscriptionHandler)
         }
     }
 }
 
 fileprivate extension SocketManager {
     
-    func unsubscribe<T>(_ subscription: RapidSubscriptionHandler<T>) {
+    func activeSubscription(withHash hash: String) -> RapidSubscriptionHandler? {
+        for (_, subscription) in activeSubscriptions where subscription.subscriptionHash == hash {
+            return subscription
+        }
         
+        return nil
+    }
+}
+
+fileprivate extension SocketManager {
+    
+    func acknowledge(eventWithID eventID: String) {
+        let acknowledgement = RapidSocketAcknowledgement(eventID: eventID)
+        
+        writeEvent(withID: eventID, withIdentifiers: [RapidSerialization.Acknowledgement.EventID.name: eventID], serializableObject: acknowledgement)
+    }
+    
+    func unsubscribe(_ handler: RapidUnsubscriptionHandler) {
+        activeSubscriptions[handler.subscription.subscriptionID] = nil
+        
+        let eventID = Generator.uniqueID
+        requestQueue[eventID] = handler
+        
+        writeEvent(withID: eventID, withIdentifiers: [RapidSerialization.Unsubscribe.EventID.name: eventID], serializableObject: handler)
     }
     
     func parse(message: String) {
@@ -114,27 +130,34 @@ fileprivate extension SocketManager {
             socket.write(string: jsonString)
         }
         catch {
-            completeRequest(withResponse: RapidSocketError.invalidData(eventID: eventID, message: nil))
+            completeRequest(withResponse: RapidErrorInstance(eventID: eventID, error: .invalidData))
         }
     }
     
     func completeRequest(withResponse response: RapidResponse) {
-        if let request = requestQueue[response.eventID] {
+        switch response {
+        case let response as RapidErrorInstance:
+            let request = requestQueue[response.eventID]
+            request?.eventFailed(withError: response)
             requestQueue[response.eventID] = nil
             
-            switch response {
-            case let response as RapidSocketError:
-                request.eventFailed(withError: response)
-                
-            case let response as RapidSubscriptionInitialValue:
-                request.eventAcknowledged(response)
-                
-            case let response as RapidSocketSimpleAck:
-                request.eventAcknowledged(response)
-                
-            default:
-                request.eventFailed(withError: RapidSocketError.default(eventID: response.eventID))
-            }
+        case let response as RapidSocketAcknowledgement:
+            let request = requestQueue[response.eventID]
+            request?.eventAcknowledged(response)
+            requestQueue[response.eventID] = nil
+            
+        case let response as RapidSubscriptionInitialValue:
+            let subscription = activeSubscriptions[response.subscriptionID]
+            subscription?.receivedInitialValue(response)
+            acknowledge(eventWithID: response.eventID)
+            
+        case let response as RapidSubscriptionUpdate:
+            let subscription = activeSubscriptions[response.subscriptionID]
+            subscription?.receivedUpdate(response)
+            acknowledge(eventWithID: response.eventID)
+            
+        default:
+            print("Unrecognized response")
         }
     }
 }
@@ -142,11 +165,11 @@ fileprivate extension SocketManager {
 extension SocketManager: WebSocketDelegate {
     
     func websocketDidConnect(socket: WebSocket) {
-        status = .connected
+        state = .connected
     }
     
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
-        status = .disconnected
+        state = .disconnected
     }
     
     func websocketDidReceiveData(socket: WebSocket, data: Data) {

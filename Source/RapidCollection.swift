@@ -26,11 +26,11 @@ public class RapidCollection: NSObject {
     }
     
     public func newDocument() -> RapidDocument {
-        return document(id: Rapid.uniqueID)
+        return document(withID: Rapid.uniqueID)
     }
     
-    public func document(id: String) -> RapidDocument {
-        return try! document(withID: id)
+    public func document(withID id: String) -> RapidDocument {
+        return try! document(id: id)
     }
     
     public func filter(by filter: RapidFilter) -> RapidCollection {
@@ -58,32 +58,32 @@ public class RapidCollection: NSObject {
         return self
     }
     
-    public func subscribe(completion: @escaping RapidColSubCallback) -> Int {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callBack: completion, callBackWithChanges: nil)
+    public func subscribe(completion: @escaping RapidColSubCallback) -> RapidSubscription {
+        let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callback: completion, callbackWithChanges: nil)
         
         socketManager.subscribe(subscription)
         
-        return 0
+        return subscription
     }
     
-    public func subscribe(completionWithChanges completion: @escaping RapidColSubCallbackWithChanges) -> Int {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callBack: nil, callBackWithChanges: completion)
+    public func subscribe(completionWithChanges completion: @escaping RapidColSubCallbackWithChanges) -> RapidSubscription {
+        let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callback: nil, callbackWithChanges: completion)
         
         socketManager.subscribe(subscription)
         
-        return 0
+        return subscription
     }
 }
 
 extension RapidCollection {
     
-    func document(withID id: String) throws -> RapidDocument {
+    func document(id: String) throws -> RapidDocument {
         if let handler = handler {
             return RapidDocument(id: id, inCollection: collectionID, handler: handler)
         }
         else {
-            print(RapidError.rapidInstanceNotInitialized.message)
-            throw RapidError.rapidInstanceNotInitialized
+            print(RapidInternalError.rapidInstanceNotInitialized.message)
+            throw RapidInternalError.rapidInstanceNotInitialized
         }
     }
     
@@ -92,8 +92,8 @@ extension RapidCollection {
             return manager
         }
         else {
-            print(RapidError.rapidInstanceNotInitialized.message)
-            throw RapidError.rapidInstanceNotInitialized
+            print(RapidInternalError.rapidInstanceNotInitialized.message)
+            throw RapidInternalError.rapidInstanceNotInitialized
         }
     }
 
