@@ -12,20 +12,22 @@ class SocketManager {
     
     typealias Request = RapidRequest & RapidSerializable
     
-    let socketURL: URL
-    let connectionID: String
+    fileprivate(set) var connectionID: String
     fileprivate(set) var state: Rapid.ConnectionState = .disconnected
     
-    fileprivate var socket: WebSocket?
+    fileprivate let socket: WebSocket
     fileprivate var requestQueue: [Request] = []
     fileprivate var pendingRequests: [String: Request] = [:]
     fileprivate var activeSubscriptions: [String: RapidSubscriptionHandler] = [:]
     
+    fileprivate var socketTerminated = false
+    
     init(socketURL: URL) {
-        self.socketURL = socketURL
         self.connectionID = Generator.uniqueID
+        self.socket = WebSocket(url: socketURL)
+        self.socket.delegate = self
         
-        createSocket()
+        createConnection()
     }
     
     deinit {
@@ -64,27 +66,48 @@ fileprivate extension SocketManager {
         return nil
     }
     
+    func socketDidDisconnect() {
+        let currentQueue = requestQueue.filter({
+            switch $0 {
+            case is RapidSubscriptionHandler, is RapidConnectionRequest, is RapidHeartbeat:
+                return false
+                
+            default:
+                return true
+            }
+        })
+        
+        requestQueue = activeSubscriptions.map({ $0.value })
+        requestQueue.append(contentsOf: Array(pendingRequests.values))
+        requestQueue.append(contentsOf: currentQueue)
+        
+        createConnection()
+    }
 }
 
 fileprivate extension SocketManager {
     
-    func createSocket() {
-        socket = WebSocket(url: socketURL)
-        socket?.delegate = self
-        
+    func createConnection() {
         state = .connecting
         
-        socket?.connect()
+        socket.connect()
+    }
+    
+    func restartSocket() {
+        if socket.isConnected {
+            socket.disconnect()
+        }
+        else if !socketTerminated {
+            socketDidDisconnect()
+        }
     }
     
     func destroySocket() {
         sendDisconnectionRequest()
         
-        state = .disconnected
+        socketTerminated = true
         
-        socket?.disconnect()
-        
-        socket = nil
+        socket.disconnect()
     }
     
     func sendConnectionRequest() {
@@ -95,6 +118,12 @@ fileprivate extension SocketManager {
     
     func sendDisconnectionRequest() {
         postEvent(serializableRequest: RapidDisconnectionRequest())
+    }
+    
+    @objc func sendHeartbeat() {
+        if state == .connected {
+            postEvent(serializableRequest: RapidHeartbeat(delegate: self))
+        }
     }
     
     func acknowledge(eventWithID eventID: String) {
@@ -160,7 +189,7 @@ fileprivate extension SocketManager {
         
         do {
             let jsonString = try serializableRequest.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
-            socket?.write(string: jsonString)
+            socket.write(string: jsonString)
         }
         catch {
             completeRequest(withResponse: RapidErrorInstance(eventID: eventID, error: .invalidData))
@@ -211,14 +240,24 @@ extension SocketManager: RapidConnectionRequestDelegate {
         state = .connected
         
         flushQueue()
+        sendHeartbeat()
     }
     
     func connectingFailed(_ request: RapidConnectionRequest, error: RapidErrorInstance) {
-        state = .disconnected
-        
-        socket?.disconnect()
+        restartSocket()
+    }
+}
 
-        createSocket()
+extension SocketManager: RapidHeartbeatDelegate {
+    
+    func connectionAlive(_ heartbeat: RapidHeartbeat) {
+        Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(self.sendHeartbeat), userInfo: nil, repeats: false)
+    }
+    
+    func connectionExpired(_ heartbeat: RapidHeartbeat) {
+        connectionID = Generator.uniqueID
+        
+        restartSocket()
     }
 }
 
@@ -229,26 +268,10 @@ extension SocketManager: WebSocketDelegate {
     }
     
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
-        guard socket == self.socket else {
-            return
-        }
+        state = .disconnected
         
-        if state != .disconnected {
-            let currentQueue = requestQueue.filter({
-                switch $0 {
-                case is RapidSubscriptionHandler, is RapidConnectionRequest:
-                    return false
-                    
-                default:
-                    return true
-                }
-            })
-            
-            requestQueue = activeSubscriptions.map({ $0.value })
-            requestQueue.append(contentsOf: Array(pendingRequests.values))
-            requestQueue.append(contentsOf: currentQueue)
-            
-            createSocket()
+        if !socketTerminated {
+            socketDidDisconnect()
         }
     }
     

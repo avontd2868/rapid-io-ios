@@ -22,6 +22,11 @@ protocol RapidConnectionRequestDelegate: class {
     func connectingFailed(_ request: RapidConnectionRequest, error: RapidErrorInstance)
 }
 
+protocol RapidHeartbeatDelegate: class {
+    func connectionExpired(_ heartbeat: RapidHeartbeat)
+    func connectionAlive(_ heartbeat: RapidHeartbeat)
+}
+
 struct RapidConnectionRequest: RapidRequest, RapidSerializable {
     
     let connectionID: String
@@ -55,5 +60,26 @@ struct RapidDisconnectionRequest: RapidSerializable, RapidRequest {
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
+    }
+}
+
+struct RapidHeartbeat: RapidSerializable, RapidRequest {
+    
+    fileprivate weak var delegate: RapidHeartbeatDelegate?
+    
+    init(delegate: RapidHeartbeatDelegate) {
+        self.delegate = delegate
+    }
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(heartbeat: self, withIdentifiers: identifiers)
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        delegate?.connectionExpired(self)
+    }
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        delegate?.connectionAlive(self)
     }
 }

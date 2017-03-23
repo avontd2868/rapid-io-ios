@@ -166,6 +166,11 @@ class RapidSerialization {
         let resultDict = [Disconnect.name: identifiers]
         return try resultDict.jsonString()
     }
+    
+    class func serialize(heartbeat: RapidHeartbeat, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        let resultDict = [Heartbeat.name: identifiers]
+        return try resultDict.jsonString()
+    }
 }
 
 fileprivate extension RapidSerialization {
@@ -347,5 +352,9 @@ extension RapidSerialization {
     
     struct Disconnect {
         static let name = "dis"
+    }
+    
+    struct Heartbeat {
+        static let name = "hb"
     }
 }
