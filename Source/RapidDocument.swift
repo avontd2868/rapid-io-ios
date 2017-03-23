@@ -31,6 +31,12 @@ public class RapidDocumentSnapshot {
         self.predecessorID = predecessor
     }
     
+    init(id: String, value: [AnyHashable: Any]?) {
+        self.id = id
+        self.value = value
+        self.predecessorID = nil
+    }
+    
 }
 
 public class RapidDocument: NSObject {
@@ -63,6 +69,7 @@ public class RapidDocument: NSObject {
         socketManager.mutate(mutationRequest: mutation)
     }
     
+    @discardableResult
     public func subscribe(completion: @escaping RapidDocSubCallback) -> RapidSubscription {
         let subscription = RapidDocumentSub(collectionID: collectionID, documentID: documentID, callback: completion)
         

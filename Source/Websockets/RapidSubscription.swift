@@ -8,7 +8,7 @@
 
 import Foundation
 
-public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocumentSnapshot?) -> Void
+public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocumentSnapshot) -> Void
 public typealias RapidColSubCallback = (_ error: Error?, _ value: [RapidDocumentSnapshot]) -> Void
 public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ deleted: [RapidDocumentSnapshot]) -> Void
 
@@ -144,8 +144,9 @@ class RapidDocumentSub: NSObject {
         
         super.init()
         
-        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: nil, ordering: nil, paging: nil, callback: { [weak self] (error, documents) in
-            self?.callback?(error, documents.last)
+        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(key: RapidFilterSimple.documentIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, callback: { [weak self] (error, documents) in
+            let document = documents.last ?? RapidDocumentSnapshot(id: documentID, value: nil)
+            self?.callback?(error, document)
         }, callbackWithChanges: nil)
     }
     

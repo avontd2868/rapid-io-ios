@@ -58,6 +58,7 @@ public class RapidCollection: NSObject {
         return self
     }
     
+    @discardableResult
     public func subscribe(completion: @escaping RapidColSubCallback) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callback: completion, callbackWithChanges: nil)
         
@@ -66,6 +67,7 @@ public class RapidCollection: NSObject {
         return subscription
     }
     
+    @discardableResult
     public func subscribe(completionWithChanges completion: @escaping RapidColSubCallbackWithChanges) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callback: nil, callbackWithChanges: completion)
         

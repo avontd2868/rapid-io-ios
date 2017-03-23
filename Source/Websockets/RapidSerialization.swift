@@ -91,7 +91,7 @@ class RapidSerialization {
     class func serialize(simpleFilter: RapidFilterSimple) -> [AnyHashable: Any] {
         switch simpleFilter.relation {
         case .equal:
-            return [simpleFilter.key: simpleFilter.value]
+            return [simpleFilter.key: simpleFilter.value ?? NSNull()]
             
         case .greaterThanOrEqual:
             return [simpleFilter.key: ["gte": simpleFilter.value]]
@@ -152,6 +152,20 @@ class RapidSerialization {
         let resultDict = [Acknowledgement.name: identifiers]
         return try resultDict.jsonString()
     }
+    
+    class func serialize(connection: RapidConnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Connect.ConnectionID.name] = connection.connectionID
+        
+        let resultDict = [Connect.name: json]
+        return try resultDict.jsonString()
+    }
+    
+    class func serialize(disconnection: RapidDisconnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        let resultDict = [Disconnect.name: identifiers]
+        return try resultDict.jsonString()
+    }
 }
 
 fileprivate extension RapidSerialization {
@@ -183,20 +197,16 @@ extension RapidSerialization {
         static let name = "batch"
     }
     
+    struct EventID {
+        static let name = "evt-id"
+    }
+    
     struct Acknowledgement {
         static let name = "ack"
-        
-        struct EventID {
-            static let name = "evt-id"
-        }
     }
     
     struct Error {
         static let name = "err"
-        
-        struct EventID {
-            static let name = "evt-id"
-        }
         
         struct ErrorType {
             static let name = "err-type"
@@ -222,10 +232,6 @@ extension RapidSerialization {
     struct Mutation {
         static let name = "mut"
         
-        struct EventID {
-            static let name = "evt-id"
-        }
-        
         struct CollectionID {
             static let name = "col-id"
         }
@@ -245,10 +251,6 @@ extension RapidSerialization {
     
     struct Subscription {
         static let name = "sub"
-        
-        struct EventID {
-            static let name = "evt-id"
-        }
         
         struct SubscriptionID {
             static let name = "sub-id"
@@ -278,10 +280,6 @@ extension RapidSerialization {
     struct SubscriptionValue {
         static let name = "val"
         
-        struct EventID {
-            static let name = "evt-id"
-        }
-        
         struct SubscriptionID {
             static let name = "sub-id"
         }
@@ -297,10 +295,6 @@ extension RapidSerialization {
     
     struct SubscriptionUpdate {
         static let name = "upd"
-        
-        struct EventID {
-            static let name = "evt-id"
-        }
         
         struct SubscriptionID {
             static let name = "sub-id"
@@ -338,13 +332,20 @@ extension RapidSerialization {
     struct Unsubscribe {
         static let name = "uns"
         
-        struct EventID {
-            static let name = "evt-id"
-        }
-        
         struct SubscriptionID {
             static let name = "sub-id"
         }
     }
     
+    struct Connect {
+        static let name = "con"
+        
+        struct ConnectionID {
+            static let name = "con-id"
+        }
+    }
+    
+    struct Disconnect {
+        static let name = "dis"
+    }
 }

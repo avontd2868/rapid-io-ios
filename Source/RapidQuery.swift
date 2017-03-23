@@ -14,6 +14,8 @@ public protocol RapidFilter {
 
 public struct RapidFilterSimple: RapidFilter {
     
+    public static let documentIdKey = "@id"
+    
     public enum Relation {
         case equal
         case greaterThanOrEqual
@@ -36,10 +38,16 @@ public struct RapidFilterSimple: RapidFilter {
     
     public let key: String
     public let relation: Relation
-    public let value: Any
+    public let value: Any?
+    
+    public init(key: String, relation: Relation, value: Any?) {
+        self.key = key
+        self.relation = relation
+        self.value = value
+    }
     
     public var filterHash: String {
-        return "\(key)-\(relation.hash)-\(value)"
+        return "\(key)-\(relation.hash)-\(value ?? "null")"
     }
 }
 
@@ -105,6 +113,11 @@ public struct RapidOrdering {
     
     public let key: String
     public let ordering: Ordering
+    
+    public init(key: String, ordering: Ordering) {
+        self.key = key
+        self.ordering = ordering
+    }
     
     var orderingHash: String {
         return "o-\(key)-\(ordering.hash)"

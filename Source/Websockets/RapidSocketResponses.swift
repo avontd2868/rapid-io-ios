@@ -17,7 +17,7 @@ struct RapidSocketAcknowledgement: RapidResponse {
             return nil
         }
         
-        guard let eventID = dict[RapidSerialization.Acknowledgement.EventID.name] as? String else {
+        guard let eventID = dict[RapidSerialization.EventID.name] as? String else {
             return nil
         }
 
@@ -29,7 +29,15 @@ struct RapidSocketAcknowledgement: RapidResponse {
     }
 }
 
-extension RapidSocketAcknowledgement: RapidSerializable {
+extension RapidSocketAcknowledgement: RapidSerializable, RapidRequest {
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        
+    }
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(acknowledgement: self, withIdentifiers: identifiers)

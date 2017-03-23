@@ -29,7 +29,7 @@ struct RapidErrorInstance: RapidResponse {
             return nil
         }
         
-        guard let eventID = dict[RapidSerialization.Error.EventID.name] as? String else {
+        guard let eventID = dict[RapidSerialization.EventID.name] as? String else {
             return nil
         }
         

@@ -10,7 +10,7 @@ import Foundation
 
 public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
 
-protocol MutationRequest: RapidRequest, RapidSerializable {
+protocol MutationRequest: class, RapidRequest, RapidSerializable {
 }
 
 class RapidDocumentMutation: NSObject, MutationRequest {

@@ -63,6 +63,10 @@ extension RapidSubscriptionHandler: RapidSerializable {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         if let subscription = subscriptions.first {
+            var idef = identifiers
+            
+            idef[RapidSerialization.Subscription.SubscriptionID.name] = subscriptionID
+            
             return try subscription.serialize(withIdentifiers: identifiers)
         }
         else {
