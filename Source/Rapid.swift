@@ -13,6 +13,8 @@ public class Rapid: NSObject {
     static var instances: [WRO<Rapid>] = []
     static var sharedInstance: Rapid?
     
+    public static var timeout: TimeInterval?
+    
     public let apiKey: String
     
     public var connectionState: ConnectionState {

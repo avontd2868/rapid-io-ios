@@ -10,15 +10,21 @@ import Foundation
 
 public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
 
-protocol MutationRequest: class, RapidRequest, RapidSerializable {
+protocol MutationRequest: RapidTimeoutRequest, RapidSerializable {
 }
 
 class RapidDocumentMutation: NSObject, MutationRequest {
+    
+    let alwaysTimeout = false
     
     let value: [AnyHashable: Any]?
     let collectionID: String
     let documentID: String
     let callback: RapidMutationCallback?
+    
+    fileprivate weak var timoutDelegate: RapidTimeoutRequestDelegate?
+    
+    fileprivate var timer: Timer?
     
     init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, callback: RapidMutationCallback?) {
         self.value = value
@@ -36,7 +42,19 @@ extension RapidDocumentMutation: RapidSerializable {
     }
 }
 
-extension RapidDocumentMutation: RapidRequest {
+extension RapidDocumentMutation: RapidTimeoutRequest {
+    
+    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
+        self.timoutDelegate = delegate
+        
+        timer = Timer.scheduledTimer(timeInterval: timeout, target: self, selector: #selector(self.requestTimeout), userInfo: nil, repeats: false)
+    }
+    
+    @objc func requestTimeout() {
+        timer = nil
+        
+        timoutDelegate?.requestTimeout(self)
+    }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
         callback?(nil, value)
@@ -51,16 +69,22 @@ extension RapidDocumentMutation: RapidRequest {
 
 public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
 
-protocol MergeRequest: class, RapidRequest, RapidSerializable {
+protocol MergeRequest: RapidTimeoutRequest, RapidSerializable {
     
 }
 
 class RapidDocumentMerge: NSObject, MergeRequest {
     
+    let alwaysTimeout = false
+    
     let value: [AnyHashable: Any]?
     let collectionID: String
     let documentID: String
     let callback: RapidMutationCallback?
+    
+    fileprivate weak var timoutDelegate: RapidTimeoutRequestDelegate?
+    
+    fileprivate var timer: Timer?
     
     init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, callback: RapidMergeCallback?) {
         self.value = value
@@ -78,13 +102,31 @@ extension RapidDocumentMerge: RapidSerializable {
     }
 }
 
-extension RapidDocumentMerge: RapidRequest {
+extension RapidDocumentMerge: RapidTimeoutRequest {
+    
+    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
+        self.timoutDelegate = delegate
+        
+        timer = Timer.scheduledTimer(timeInterval: timeout, target: self, selector: #selector(self.requestTimeout), userInfo: nil, repeats: false)
+    }
+    
+    @objc func requestTimeout() {
+        timer = nil
+        
+        timoutDelegate?.requestTimeout(self)
+    }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        timer?.invalidate()
+        timer = nil
+        
         callback?(nil, value)
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
+        timer?.invalidate()
+        timer = nil
+        
         callback?(error.error, nil)
     }
 }

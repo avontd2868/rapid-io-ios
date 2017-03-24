@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct RapidSocketAcknowledgement: RapidResponse {
+class RapidSocketAcknowledgement: RapidResponse {
     
     let eventID: String
     

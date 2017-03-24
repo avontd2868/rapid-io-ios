@@ -12,6 +12,8 @@ class SocketManager {
     
     typealias Request = RapidRequest & RapidSerializable
     
+    fileprivate let defaultTimeout: TimeInterval = 300
+    
     fileprivate(set) var connectionID: String
     fileprivate(set) var state: Rapid.ConnectionState = .disconnected
     
@@ -68,6 +70,11 @@ fileprivate extension SocketManager {
         }
         
         return nil
+    }
+    
+    func eventID(forPendingRequest request: RapidRequest) -> String? {
+        let pendingTuples = pendingRequests.filter({ $0.value === request })
+        return pendingTuples.first?.key
     }
     
     func socketDidDisconnect() {
@@ -193,6 +200,14 @@ fileprivate extension SocketManager {
         
         do {
             let jsonString = try serializableRequest.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
+            
+            if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, let timeout = Rapid.timeout {
+                timeoutRequest.requestSent(withTimeout: timeout, delegate: self)
+            }
+            else if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
+                timeoutRequest.requestSent(withTimeout: defaultTimeout, delegate: self)
+            }
+            
             socket.write(string: jsonString)
         }
         catch {
@@ -262,6 +277,16 @@ extension SocketManager: RapidHeartbeatDelegate {
         connectionID = Generator.uniqueID
         
         restartSocket()
+    }
+}
+
+extension SocketManager: RapidTimeoutRequestDelegate {
+    
+    func requestTimeout(_ request: RapidTimeoutRequest) {
+        if let eventID = eventID(forPendingRequest: request) {
+            let error = RapidErrorInstance(eventID: eventID, error: .timeout)
+            completeRequest(withResponse: error)
+        }
     }
 }
 

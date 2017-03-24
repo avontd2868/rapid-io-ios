@@ -12,9 +12,19 @@ protocol RapidSerializable {
     func serialize(withIdentifiers identifiers: [AnyHashable: Any]) throws -> String
 }
 
-protocol RapidRequest {
+protocol RapidRequest: class {
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement)
     func eventFailed(withError error: RapidErrorInstance)
+}
+
+protocol RapidTimeoutRequest: RapidRequest {
+    var alwaysTimeout: Bool { get }
+    
+    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate)
+}
+
+protocol RapidTimeoutRequestDelegate: class {
+    func requestTimeout(_ request: RapidTimeoutRequest)
 }
 
 protocol RapidConnectionRequestDelegate: class {
@@ -27,10 +37,15 @@ protocol RapidHeartbeatDelegate: class {
     func connectionAlive(_ heartbeat: RapidHeartbeat)
 }
 
-struct RapidConnectionRequest: RapidRequest, RapidSerializable {
+class RapidConnectionRequest: RapidTimeoutRequest, RapidSerializable {
+    
+    let alwaysTimeout = true
     
     let connectionID: String
     fileprivate weak var delegate: RapidConnectionRequestDelegate?
+    fileprivate weak var timoutDelegate: RapidTimeoutRequestDelegate?
+    
+    fileprivate var timer: Timer?
     
     init(connectionID: String, delegate: RapidConnectionRequestDelegate) {
         self.connectionID = connectionID
@@ -41,16 +56,34 @@ struct RapidConnectionRequest: RapidRequest, RapidSerializable {
         return try RapidSerialization.serialize(connection: self, withIdentifiers: identifiers)
     }
     
+    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
+        self.timoutDelegate = delegate
+        
+        timer = Timer.scheduledTimer(timeInterval: timeout, target: self, selector: #selector(self.requestTimeout), userInfo: nil, repeats: false)
+    }
+    
+    @objc func requestTimeout() {
+        timer = nil
+        
+        timoutDelegate?.requestTimeout(self)
+    }
+    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        timer?.invalidate()
+        timer = nil
+        
         delegate?.connectionEstablished(self)
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
+        timer?.invalidate()
+        timer = nil
+        
         delegate?.connectingFailed(self, error: error)
     }
 }
 
-struct RapidDisconnectionRequest: RapidSerializable, RapidRequest {
+class RapidDisconnectionRequest: RapidSerializable, RapidRequest {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(disconnection: self, withIdentifiers: identifiers)
@@ -63,9 +96,14 @@ struct RapidDisconnectionRequest: RapidSerializable, RapidRequest {
     }
 }
 
-struct RapidHeartbeat: RapidSerializable, RapidRequest {
+class RapidHeartbeat: RapidSerializable, RapidTimeoutRequest {
     
     fileprivate weak var delegate: RapidHeartbeatDelegate?
+    fileprivate weak var timoutDelegate: RapidTimeoutRequestDelegate?
+    
+    fileprivate var timer: Timer?
+    
+    let alwaysTimeout = true
     
     init(delegate: RapidHeartbeatDelegate) {
         self.delegate = delegate
@@ -75,11 +113,35 @@ struct RapidHeartbeat: RapidSerializable, RapidRequest {
         return try RapidSerialization.serialize(heartbeat: self, withIdentifiers: identifiers)
     }
     
+    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
+        self.timoutDelegate = delegate
+        
+        timer = Timer.scheduledTimer(timeInterval: timeout, target: self, selector: #selector(self.requestTimeout), userInfo: nil, repeats: false)
+    }
+    
+    @objc func requestTimeout() {
+        timer = nil
+        
+        timoutDelegate?.requestTimeout(self)
+    }
+    
     func eventFailed(withError error: RapidErrorInstance) {
-        delegate?.connectionExpired(self)
+        timer?.invalidate()
+        timer = nil
+        
+        switch error.error {
+        case .timeout, .connectionTerminated:
+            delegate?.connectionExpired(self)
+            
+        default:
+            break
+        }
     }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        timer?.invalidate()
+        timer = nil
+        
         delegate?.connectionAlive(self)
     }
 }
