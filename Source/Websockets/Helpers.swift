@@ -18,6 +18,11 @@ class Generator {
 class Decoder {
     
     class func decode(apiKey: String) -> (hostURL: URL, appSecret: String)? {
-        return (URL(string: "ws://13.64.77.202:8080")!, "")
+        if let url = URL(string: apiKey) {
+            return (url, "")
+        }
+        else {
+            return nil
+        }
     }
 }

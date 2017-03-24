@@ -12,8 +12,6 @@ class SocketManager {
     
     typealias Request = RapidRequest & RapidSerializable
     
-    fileprivate let defaultTimeout: TimeInterval = 300
-    
     fileprivate(set) var connectionID: String
     fileprivate(set) var state: Rapid.ConnectionState = .disconnected
     
@@ -142,7 +140,7 @@ fileprivate extension SocketManager {
             connection.requestSent(withTimeout: timeout, delegate: self)
         }
         else {
-            connection.requestSent(withTimeout: defaultTimeout, delegate: self)
+            connection.requestSent(withTimeout: Rapid.defaultTimeout, delegate: self)
         }
 
         writeEvent(serializableRequest: connection)
@@ -205,13 +203,7 @@ fileprivate extension SocketManager {
     func writeEvent(serializableRequest: Request) {
         let eventID = Generator.uniqueID
         
-        switch serializableRequest {
-        case is RapidDisconnectionRequest, is RapidSocketAcknowledgement:
-            break
-            
-        default:
-            pendingRequests[eventID] = serializableRequest
-        }
+        registerPendingRequest(serializableRequest, withID: eventID)
         
         do {
             let jsonString = try serializableRequest.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
@@ -223,13 +215,23 @@ fileprivate extension SocketManager {
         }
     }
     
+    func registerPendingRequest(_ request: Request, withID eventID: String) {
+        switch request {
+        case is RapidDisconnectionRequest, is RapidSocketAcknowledgement:
+            break
+            
+        default:
+            pendingRequests[eventID] = request
+        }
+    }
+    
     func postEvent(serializableRequest: Request) {
         
         if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, let timeout = Rapid.timeout {
             timeoutRequest.requestSent(withTimeout: timeout, delegate: self)
         }
         else if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
-            timeoutRequest.requestSent(withTimeout: defaultTimeout, delegate: self)
+            timeoutRequest.requestSent(withTimeout: Rapid.defaultTimeout, delegate: self)
         }
 
         requestQueue.append(serializableRequest)
@@ -292,7 +294,11 @@ extension SocketManager: RapidConnectionRequestDelegate {
 extension SocketManager: RapidHeartbeatDelegate {
     
     func connectionAlive(_ heartbeat: RapidHeartbeat) {
-        Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(self.sendHeartbeat), userInfo: nil, repeats: false)
+        DispatchQueue.main.async { [weak self] in
+            if let strongSelf = self {
+                Timer.scheduledTimer(timeInterval: 10, target: strongSelf, selector: #selector(strongSelf.sendHeartbeat), userInfo: nil, repeats: false)
+            }
+        }
     }
     
     @objc func sendHeartbeat() {
@@ -318,6 +324,15 @@ extension SocketManager: RapidTimeoutRequestDelegate {
     func requestTimeout(_ request: RapidTimeoutRequest) {
         websocketQueue.async { [weak self] in
             if let eventID = self?.eventID(forPendingRequest: request) {
+                let error = RapidErrorInstance(eventID: eventID, error: .timeout)
+                self?.completeRequest(withResponse: error)
+            }
+            else if let index = self?.requestQueue.index(where: { request === $0 }), let request = request as? Request {
+                self?.requestQueue.remove(at: index)
+                
+                let eventID = Generator.uniqueID
+                self?.registerPendingRequest(request, withID: eventID)
+                
                 let error = RapidErrorInstance(eventID: eventID, error: .timeout)
                 self?.completeRequest(withResponse: error)
             }

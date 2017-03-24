@@ -110,7 +110,6 @@ class ViewController: UIViewController {
                 print("Message successfuly written.")
             }
         }
-        Rapid.collection(named: "users").document(withID: "1").mutate(value: ["name": "Jan"])
     }
 }
 

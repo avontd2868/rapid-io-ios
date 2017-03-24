@@ -45,7 +45,11 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
     func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
         self.timoutDelegate = delegate
         
-        timer = Timer.scheduledTimer(timeInterval: timeout, target: self, selector: #selector(self.requestTimeout), userInfo: nil, repeats: false)
+        DispatchQueue.main.async { [weak self] in
+            if let strongSelf = self {
+                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
+            }
+        }
     }
     
     @objc func requestTimeout() {
@@ -55,20 +59,20 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
     }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        timer?.invalidate()
-        timer = nil
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.callback?(nil, self?.value)
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.callback?(nil, self.value)
         }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        timer?.invalidate()
-        timer = nil
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.callback?(error.error, nil)
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.callback?(error.error, nil)
         }
     }
 }
@@ -113,7 +117,11 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
     func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
         self.timoutDelegate = delegate
         
-        timer = Timer.scheduledTimer(timeInterval: timeout, target: self, selector: #selector(self.requestTimeout), userInfo: nil, repeats: false)
+        DispatchQueue.main.async { [weak self] in
+            if let strongSelf = self {
+                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
+            }
+        }
     }
     
     @objc func requestTimeout() {
@@ -123,20 +131,20 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
     }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        timer?.invalidate()
-        timer = nil
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.callback?(nil, self?.value)
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.callback?(nil, self.value)
         }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        timer?.invalidate()
-        timer = nil
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.callback?(error.error, nil)
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.callback?(error.error, nil)
         }
     }
 }

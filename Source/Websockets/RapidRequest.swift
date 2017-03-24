@@ -59,7 +59,11 @@ class RapidConnectionRequest: RapidTimeoutRequest, RapidSerializable {
     func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
         self.timoutDelegate = delegate
         
-        timer = Timer.scheduledTimer(timeInterval: timeout, target: self, selector: #selector(self.requestTimeout), userInfo: nil, repeats: false)
+        DispatchQueue.main.async { [weak self] in
+            if let strongSelf = self {
+                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
+            }
+        }
     }
     
     @objc func requestTimeout() {
@@ -69,17 +73,21 @@ class RapidConnectionRequest: RapidTimeoutRequest, RapidSerializable {
     }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        timer?.invalidate()
-        timer = nil
-        
-        delegate?.connectionEstablished(self)
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.delegate?.connectionEstablished(self)
+        }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        timer?.invalidate()
-        timer = nil
-        
-        delegate?.connectingFailed(self, error: error)
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.delegate?.connectingFailed(self, error: error)
+        }
     }
 }
 
@@ -116,7 +124,11 @@ class RapidHeartbeat: RapidSerializable, RapidTimeoutRequest {
     func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
         self.timoutDelegate = delegate
         
-        timer = Timer.scheduledTimer(timeInterval: timeout, target: self, selector: #selector(self.requestTimeout), userInfo: nil, repeats: false)
+        DispatchQueue.main.async { [weak self] in
+            if let strongSelf = self {
+                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
+            }
+        }
     }
     
     @objc func requestTimeout() {
@@ -126,22 +138,26 @@ class RapidHeartbeat: RapidSerializable, RapidTimeoutRequest {
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        timer?.invalidate()
-        timer = nil
-        
-        switch error.error {
-        case .timeout, .connectionTerminated:
-            delegate?.connectionExpired(self)
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
             
-        default:
-            break
+            switch error.error {
+            case .timeout, .connectionTerminated:
+                self.delegate?.connectionExpired(self)
+                
+            default:
+                break
+            }
         }
     }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        timer?.invalidate()
-        timer = nil
-        
-        delegate?.connectionAlive(self)
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.delegate?.connectionAlive(self)
+        }
     }
 }

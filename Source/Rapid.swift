@@ -17,6 +17,7 @@ public class Rapid: NSObject {
     static var instances: [WRO<Rapid>] = []
     static var sharedInstance: Rapid?
     
+    static var defaultTimeout: TimeInterval = 300
     public static var timeout: TimeInterval?
     
     public let apiKey: String
@@ -27,7 +28,7 @@ public class Rapid: NSObject {
     
     let handler: RapidHandler
     
-    public init?(apiKey: String) {
+    public class func getInstance(withAPIKey apiKey: String) -> Rapid? {
         Rapid.instances = Rapid.instances.filter({ $0.object != nil })
         
         var existingInstance: Rapid?
@@ -39,9 +40,15 @@ public class Rapid: NSObject {
         }
         
         if let rapid = existingInstance {
-            self.handler = RapidHandler(socketManager: rapid.handler.socketManager)
+            return rapid
         }
-        else if let handler = RapidHandler(apiKey: apiKey) {
+        else {
+            return Rapid(apiKey: apiKey)
+        }
+    }
+    
+    init?(apiKey: String) {
+        if let handler = RapidHandler(apiKey: apiKey) {
             self.handler = handler
         }
         else {
@@ -79,7 +86,7 @@ public extension Rapid {
     }
     
     class var uniqueID: String {
-        return NSUUID().uuidString
+        return Generator.uniqueID
     }
     
     class var connectionState: ConnectionState {
@@ -92,5 +99,9 @@ public extension Rapid {
     
     class func collection(named: String) -> RapidCollection {
         return try! shared().collection(named: named)
+    }
+    
+    class func deinitialize() {
+        sharedInstance = nil
     }
 }
