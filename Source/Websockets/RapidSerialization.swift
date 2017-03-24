@@ -63,6 +63,20 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    class func serialize(merge: RapidDocumentMerge, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        var doc = [AnyHashable: Any]()
+        doc[Merge.Document.DocumentID.name] = merge.documentID
+        doc[Merge.Document.Body.name] = merge.value
+        
+        json[Merge.CollectionID.name] = merge.collectionID
+        json[Merge.Document.name] = doc
+        
+        let resultDict: [AnyHashable: Any] = [Merge.name: json]
+        return try resultDict.jsonString()
+    }
+    
     class func serialize(subscription: RapidCollectionSub, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -104,14 +118,14 @@ class RapidSerialization {
     class func serialize(compoundFilter: RapidFilterCompound) -> [AnyHashable: Any] {
         switch compoundFilter.compoundOperator {
         case .and:
-            return ["and": compoundFilter.operands.map({serialize(filter: $0)})]
+            return ["$and": compoundFilter.operands.map({serialize(filter: $0)})]
             
         case .or:
-            return ["or": compoundFilter.operands.map({serialize(filter: $0)})]
+            return ["$or": compoundFilter.operands.map({serialize(filter: $0)})]
             
         case .not:
             if let filter = compoundFilter.operands.first, let serializedFilter = serialize(filter: filter) {
-                return ["not": serializedFilter]
+                return ["$not": serializedFilter]
             }
             else {
                 return [:]
@@ -236,6 +250,26 @@ extension RapidSerialization {
     
     struct Mutation {
         static let name = "mut"
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
+        
+        struct Document {
+            static let name = "doc"
+            
+            struct DocumentID {
+                static let name = "id"
+            }
+            
+            struct Body {
+                static let name = "body"
+            }
+        }
+    }
+    
+    struct Merge {
+        static let name = "mer"
         
         struct CollectionID {
             static let name = "col-id"

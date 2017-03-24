@@ -14,7 +14,7 @@ public protocol RapidFilter {
 
 public struct RapidFilterSimple: RapidFilter {
     
-    public static let documentIdKey = "@id"
+    public static let documentIdKey = "$id"
     
     public enum Relation {
         case equal

@@ -38,6 +38,10 @@ class SocketManager {
         postEvent(serializableRequest: mutationRequest)
     }
     
+    func merge<T: MergeRequest>(mergeRequest: T) {
+        postEvent(serializableRequest: mergeRequest)
+    }
+    
     func subscribe(_ subscription: RapidSubscriptionInstance) {
         if let activeSubscription = activeSubscription(withHash: subscription.subscriptionHash) {
             activeSubscription.registerSubscription(subscription: subscription)

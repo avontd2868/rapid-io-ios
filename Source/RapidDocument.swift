@@ -60,8 +60,9 @@ public class RapidDocument: NSObject {
         socketManager.mutate(mutationRequest: mutation)
     }
     
-    public func merge(value: [AnyHashable: Any], completion: RapidMutationCallback? = nil) {
-        //TODO: Implement merge
+    public func merge(value: [AnyHashable: Any], completion: RapidMergeCallback? = nil) {
+        let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, callback: completion)
+        socketManager.merge(mergeRequest: merge)
     }
     
     public func delete(completion: RapidMutationCallback? = nil) {
