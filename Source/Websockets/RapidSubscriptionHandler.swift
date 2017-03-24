@@ -23,6 +23,7 @@ class RapidSubscriptionHandler: NSObject {
     
     let subscriptionID: String
     
+    fileprivate let dispatchQueue: DispatchQueue
     fileprivate let unsubscribeHandler: (RapidUnsubscriptionHandler) -> Void
     fileprivate var subscriptions: [RapidSubscriptionInstance] = []
     
@@ -30,9 +31,10 @@ class RapidSubscriptionHandler: NSObject {
     
     fileprivate var state: State = .unsubscribed
     
-    init(withSubscriptionID subscriptionID: String, subscription: RapidSubscriptionInstance, unsubscribeHandler: @escaping (RapidUnsubscriptionHandler) -> Void) {
+    init(withSubscriptionID subscriptionID: String, subscription: RapidSubscriptionInstance, dispatchQueue: DispatchQueue, unsubscribeHandler: @escaping (RapidUnsubscriptionHandler) -> Void) {
         self.unsubscribeHandler = unsubscribeHandler
         self.subscriptionID = subscriptionID
+        self.dispatchQueue = dispatchQueue
         
         super.init()
         
@@ -79,7 +81,9 @@ fileprivate extension RapidSubscriptionHandler {
     
     func appendSubscription(_ subscription: RapidSubscriptionInstance) {
         subscription.registerUnsubscribeCallback { [weak self] instance in
-            self?.unsubscribe(instance: instance)
+            self?.dispatchQueue.async {
+                self?.unsubscribe(instance: instance)
+            }
         }
         subscriptions.append(subscription)
     }

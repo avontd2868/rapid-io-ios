@@ -8,20 +8,12 @@
 
 import Foundation
 
-public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocumentSnapshot) -> Void
-public typealias RapidColSubCallback = (_ error: Error?, _ value: [RapidDocumentSnapshot]) -> Void
-public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ deleted: [RapidDocumentSnapshot]) -> Void
-
 protocol RapidSubscriptionInstance: class, RapidSerializable {
     var subscriptionHash: String { get }
     
     func receivedNewValue(_ value: [RapidDocumentSnapshot], oldValue: [RapidDocumentSnapshot]?)
     func subscriptionFailed(withError error: RapidError)
     func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void)
-}
-
-public protocol RapidSubscription {
-    func unsubscribe()
 }
 
 class RapidCollectionSub: NSObject {
@@ -104,8 +96,10 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     }
     
     func subscriptionFailed(withError error: RapidError) {
-        callback?(error, [])
-        callbackWithChanges?(error, [], [], [], [])
+        DispatchQueue.main.async { [weak self] in
+            self?.callback?(error, [])
+            self?.callbackWithChanges?(error, [], [], [], [])
+        }
     }
     
     func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void) {
@@ -115,8 +109,10 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     func receivedNewValue(_ value: [RapidDocumentSnapshot], oldValue: [RapidDocumentSnapshot]?) {
         let changes = incorporateChanges(newValue: value, oldValue: oldValue)
         
-        callback?(nil, changes.dataSet)
-        callbackWithChanges?(nil, changes.dataSet, changes.insert, changes.update, changes.delete)
+        DispatchQueue.main.async { [weak self] in
+            self?.callback?(nil, changes.dataSet)
+            self?.callbackWithChanges?(nil, changes.dataSet, changes.insert, changes.update, changes.delete)
+        }
         
     }
 }

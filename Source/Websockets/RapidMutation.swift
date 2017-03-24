@@ -8,8 +8,6 @@
 
 import Foundation
 
-public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
-
 protocol MutationRequest: RapidTimeoutRequest, RapidSerializable {
 }
 
@@ -57,17 +55,25 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
     }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        callback?(nil, value)
+        timer?.invalidate()
+        timer = nil
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.callback?(nil, self?.value)
+        }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        callback?(error.error, nil)
+        timer?.invalidate()
+        timer = nil
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.callback?(error.error, nil)
+        }
     }
 }
 
 // MARK: Merge
-
-public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
 
 protocol MergeRequest: RapidTimeoutRequest, RapidSerializable {
     
@@ -120,13 +126,17 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
         timer?.invalidate()
         timer = nil
         
-        callback?(nil, value)
+        DispatchQueue.main.async { [weak self] in
+            self?.callback?(nil, self?.value)
+        }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
         timer?.invalidate()
         timer = nil
         
-        callback?(error.error, nil)
+        DispatchQueue.main.async { [weak self] in
+            self?.callback?(error.error, nil)
+        }
     }
 }

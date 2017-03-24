@@ -8,6 +8,10 @@
 
 import Foundation
 
+public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocumentSnapshot) -> Void
+public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
+public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
+
 public class RapidDocumentSnapshot {
     
     public let id: String

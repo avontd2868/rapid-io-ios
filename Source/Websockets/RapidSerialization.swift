@@ -118,14 +118,14 @@ class RapidSerialization {
     class func serialize(compoundFilter: RapidFilterCompound) -> [AnyHashable: Any] {
         switch compoundFilter.compoundOperator {
         case .and:
-            return ["$and": compoundFilter.operands.map({serialize(filter: $0)})]
+            return ["and": compoundFilter.operands.map({serialize(filter: $0)})]
             
         case .or:
-            return ["$or": compoundFilter.operands.map({serialize(filter: $0)})]
+            return ["or": compoundFilter.operands.map({serialize(filter: $0)})]
             
         case .not:
             if let filter = compoundFilter.operands.first, let serializedFilter = serialize(filter: filter) {
-                return ["$not": serializedFilter]
+                return ["not": serializedFilter]
             }
             else {
                 return [:]

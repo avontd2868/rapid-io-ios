@@ -17,6 +17,7 @@ class SocketManager {
     fileprivate(set) var connectionID: String
     fileprivate(set) var state: Rapid.ConnectionState = .disconnected
     
+    fileprivate let websocketQueue: DispatchQueue
     fileprivate let socket: WebSocket
     fileprivate var requestQueue: [Request] = []
     fileprivate var pendingRequests: [String: Request] = [:]
@@ -25,11 +26,14 @@ class SocketManager {
     fileprivate var socketTerminated = false
     
     init(socketURL: URL) {
+        self.websocketQueue = DispatchQueue(label: "RapidWebsocketQueue-\(socketURL.lastPathComponent)", attributes: [])
         self.connectionID = Generator.uniqueID
         self.socket = WebSocket(url: socketURL)
         self.socket.delegate = self
         
-        createConnection()
+        websocketQueue.async { [weak self] in
+            self?.createConnection()
+        }
     }
     
     deinit {
@@ -37,27 +41,37 @@ class SocketManager {
     }
     
     func mutate<T: MutationRequest>(mutationRequest: T) {
-        postEvent(serializableRequest: mutationRequest)
+        websocketQueue.async { [weak self] in
+            self?.postEvent(serializableRequest: mutationRequest)
+        }
     }
     
     func merge<T: MergeRequest>(mergeRequest: T) {
-        postEvent(serializableRequest: mergeRequest)
+        websocketQueue.async { [weak self] in
+            self?.postEvent(serializableRequest: mergeRequest)
+        }
     }
     
     func subscribe(_ subscription: RapidSubscriptionInstance) {
-        if let activeSubscription = activeSubscription(withHash: subscription.subscriptionHash) {
-            activeSubscription.registerSubscription(subscription: subscription)
-        }
-        else {
-            let subscriptionID = Generator.uniqueID
+        websocketQueue.async { [weak self] in
+            guard let queue = self?.websocketQueue else {
+                return
+            }
             
-            let subscriptionHandler = RapidSubscriptionHandler(withSubscriptionID: subscriptionID, subscription: subscription, unsubscribeHandler: { [weak self] handler in
-                self?.unsubscribe(handler)
-            })
-            
-            activeSubscriptions[subscriptionID] = subscriptionHandler
-            
-            postEvent(serializableRequest: subscriptionHandler)
+            if let activeSubscription = self?.activeSubscription(withHash: subscription.subscriptionHash) {
+                activeSubscription.registerSubscription(subscription: subscription)
+            }
+            else {
+                let subscriptionID = Generator.uniqueID
+                
+                let subscriptionHandler = RapidSubscriptionHandler(withSubscriptionID: subscriptionID, subscription: subscription, dispatchQueue: queue, unsubscribeHandler: { [weak self] handler in
+                    self?.unsubscribe(handler)
+                })
+                
+                self?.activeSubscriptions[subscriptionID] = subscriptionHandler
+                
+                self?.postEvent(serializableRequest: subscriptionHandler)
+            }
         }
     }
 }
@@ -124,17 +138,18 @@ fileprivate extension SocketManager {
     func sendConnectionRequest() {
         let connection = RapidConnectionRequest(connectionID: connectionID, delegate: self)
 
+        if let timeout = Rapid.timeout {
+            connection.requestSent(withTimeout: timeout, delegate: self)
+        }
+        else {
+            connection.requestSent(withTimeout: defaultTimeout, delegate: self)
+        }
+
         writeEvent(serializableRequest: connection)
     }
     
     func sendDisconnectionRequest() {
         postEvent(serializableRequest: RapidDisconnectionRequest())
-    }
-    
-    @objc func sendHeartbeat() {
-        if state == .connected {
-            postEvent(serializableRequest: RapidHeartbeat(delegate: self))
-        }
     }
     
     func acknowledge(eventWithID eventID: String) {
@@ -201,13 +216,6 @@ fileprivate extension SocketManager {
         do {
             let jsonString = try serializableRequest.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
             
-            if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, let timeout = Rapid.timeout {
-                timeoutRequest.requestSent(withTimeout: timeout, delegate: self)
-            }
-            else if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
-                timeoutRequest.requestSent(withTimeout: defaultTimeout, delegate: self)
-            }
-            
             socket.write(string: jsonString)
         }
         catch {
@@ -216,6 +224,14 @@ fileprivate extension SocketManager {
     }
     
     func postEvent(serializableRequest: Request) {
+        
+        if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, let timeout = Rapid.timeout {
+            timeoutRequest.requestSent(withTimeout: timeout, delegate: self)
+        }
+        else if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
+            timeoutRequest.requestSent(withTimeout: defaultTimeout, delegate: self)
+        }
+
         requestQueue.append(serializableRequest)
         flushQueue()
     }
@@ -253,62 +269,90 @@ fileprivate extension SocketManager {
     }
 }
 
+// MARK: Connection request delegate
 extension SocketManager: RapidConnectionRequestDelegate {
     
     func connectionEstablished(_ request: RapidConnectionRequest) {
-        state = .connected
-        
-        flushQueue()
-        sendHeartbeat()
+        websocketQueue.async { [weak self] in
+            self?.state = .connected
+            
+            self?.flushQueue()
+            self?.sendHeartbeat()
+        }
     }
     
     func connectingFailed(_ request: RapidConnectionRequest, error: RapidErrorInstance) {
-        restartSocket()
+        websocketQueue.async { [weak self] in
+            self?.restartSocket()
+        }
     }
 }
 
+// MARK: Heartbeat delegate
 extension SocketManager: RapidHeartbeatDelegate {
     
     func connectionAlive(_ heartbeat: RapidHeartbeat) {
         Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(self.sendHeartbeat), userInfo: nil, repeats: false)
     }
     
-    func connectionExpired(_ heartbeat: RapidHeartbeat) {
-        connectionID = Generator.uniqueID
-        
-        restartSocket()
+    @objc func sendHeartbeat() {
+        websocketQueue.async { [weak self] in
+            if let strongSelf = self, strongSelf.state == .connected {
+                self?.postEvent(serializableRequest: RapidHeartbeat(delegate: strongSelf))
+            }
+        }
     }
-}
-
-extension SocketManager: RapidTimeoutRequestDelegate {
     
-    func requestTimeout(_ request: RapidTimeoutRequest) {
-        if let eventID = eventID(forPendingRequest: request) {
-            let error = RapidErrorInstance(eventID: eventID, error: .timeout)
-            completeRequest(withResponse: error)
+    func connectionExpired(_ heartbeat: RapidHeartbeat) {
+        websocketQueue.async { [weak self] in
+            self?.connectionID = Generator.uniqueID
+            
+            self?.restartSocket()
         }
     }
 }
 
+// MARK: Timout request delegate
+extension SocketManager: RapidTimeoutRequestDelegate {
+    
+    func requestTimeout(_ request: RapidTimeoutRequest) {
+        websocketQueue.async { [weak self] in
+            if let eventID = self?.eventID(forPendingRequest: request) {
+                let error = RapidErrorInstance(eventID: eventID, error: .timeout)
+                self?.completeRequest(withResponse: error)
+            }
+        }
+    }
+}
+
+// MARK: Websocket delegate
 extension SocketManager: WebSocketDelegate {
     
     func websocketDidConnect(socket: WebSocket) {
-        sendConnectionRequest()
+        websocketQueue.async { [weak self] in
+            self?.sendConnectionRequest()
+        }
     }
     
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
-        state = .disconnected
-        
-        if !socketTerminated {
-            socketDidDisconnect()
+        websocketQueue.async { [weak self] in
+            self?.state = .disconnected
+            
+            if !(self?.socketTerminated ?? true) {
+                self?.socketDidDisconnect()
+            }
         }
     }
     
     func websocketDidReceiveData(socket: WebSocket, data: Data) {
-        parse(data: data)
+        websocketQueue.async { [weak self] in
+            self?.parse(data: data)
+        }
     }
     
     func websocketDidReceiveMessage(socket: WebSocket, text: String) {
-        parse(message: text)
+        websocketQueue.async { [weak self] in
+            self?.parse(message: text)
+        }
     }
 }

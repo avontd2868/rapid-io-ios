@@ -8,6 +8,10 @@
 
 import Foundation
 
+public protocol RapidSubscription {
+    func unsubscribe()
+}
+
 public class Rapid: NSObject {
     
     static var instances: [WRO<Rapid>] = []
