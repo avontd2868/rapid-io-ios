@@ -20,8 +20,5 @@ class RapidHandler: NSObject {
             return nil
         }
     }
-    
-    init(socketManager: SocketManager) {
-        self.socketManager = socketManager
-    }
+
 }

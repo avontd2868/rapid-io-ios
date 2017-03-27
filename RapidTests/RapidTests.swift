@@ -9,6 +9,10 @@
 import XCTest
 @testable import Rapid
 
+func ==(lhs: [AnyHashable: Any], rhs: [AnyHashable: Any] ) -> Bool {
+    return NSDictionary(dictionary: lhs).isEqual(to: rhs)
+}
+
 class RapidTests: XCTestCase {
     
     let apiKey = "ws://13.64.77.202:8080"
@@ -18,8 +22,12 @@ class RapidTests: XCTestCase {
     }
     
     override func tearDown() {
+        Rapid.deinitialize()
+
         super.tearDown()
     }
+    
+    // MARK: Test general stuff
     
     func testWrongAPIKey() {
         let rapid = Rapid.getInstance(withAPIKey: "")
@@ -40,8 +48,6 @@ class RapidTests: XCTestCase {
         }
         
         XCTAssertNotNil(subscription, "Subscription not returned")
-        
-        Rapid.deinitialize()
     }
     
     func testInstanceHandling() {
@@ -78,7 +84,48 @@ class RapidTests: XCTestCase {
         }
         
         waitForExpectations(timeout: 3, handler: nil)
-        
-        Rapid.deinitialize()
     }
+    
+    func testConnectionStates() {
+        Rapid.configure(withAPIKey: apiKey+"5/fake")
+
+        XCTAssertEqual(Rapid.connectionState, Rapid.ConnectionState.connecting, "Rapid is not connecting")
+        
+        do {
+            try Rapid.shared().goOffline()
+        }
+        catch {
+            XCTFail("Shared Instance not configured")
+        }
+        
+        let promise = expectation(description: "Rapid forced disconnect")
+        
+        runAfter(1) {
+            if Rapid.connectionState == .disconnected {
+                
+                do {
+                    try Rapid.shared().goOnline()
+                }
+                catch {
+                    XCTFail("Shared Instance not configured")
+                }
+
+                runAfter(1, closure: {
+                    if Rapid.connectionState == .connecting {
+                        promise.fulfill()
+                    }
+                    else {
+                        XCTFail("Rapid is not connecting")
+                    }
+                })
+            }
+            else {
+                XCTFail("Rapid is not disconnected")
+            }
+        }
+        
+        waitForExpectations(timeout: 3, handler: nil)
+        
+    }
+    
 }

@@ -65,6 +65,14 @@ public class Rapid: NSObject {
     public func collection(named: String) -> RapidCollection {
         return RapidCollection(id: named, handler: handler)
     }
+    
+    func goOffline() {
+        handler.socketManager.goOffline()
+    }
+    
+    func goOnline() {
+        handler.socketManager.goOnline()
+    }
 }
 
 // MARK: Singleton methods

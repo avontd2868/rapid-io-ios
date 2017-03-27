@@ -15,3 +15,23 @@ extension Dictionary {
         return String(data: data, encoding: .utf8) ?? ""
     }
 }
+
+extension String {
+    
+    func json() throws -> [AnyHashable: Any]? {
+        if let data = self.data(using: .utf8) {
+            return try data.json()
+        }
+        else {
+            return nil
+        }
+    }
+}
+
+extension Data {
+    
+    func json() throws -> [AnyHashable: Any]? {
+        let object = try JSONSerialization.jsonObject(with: self, options: [])
+        return object as? [AnyHashable: Any]
+    }
+}

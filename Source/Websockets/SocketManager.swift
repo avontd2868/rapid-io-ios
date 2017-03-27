@@ -23,6 +23,8 @@ class SocketManager {
     
     fileprivate var socketTerminated = false
     
+    fileprivate var socketConnectTimer: Timer?
+    
     init(socketURL: URL) {
         self.websocketQueue = DispatchQueue(label: "RapidWebsocketQueue-\(socketURL.lastPathComponent)", attributes: [])
         self.connectionID = Generator.uniqueID
@@ -72,9 +74,25 @@ class SocketManager {
             }
         }
     }
-}
-
-fileprivate extension SocketManager {
+    
+    func goOnline() {
+        websocketQueue.async { [weak self] in
+            if let state = self?.state, state == .disconnected {
+                self?.createConnection()
+            }
+        }
+    }
+    
+    func goOffline() {
+        websocketQueue.async { [weak self] in
+            if let state = self?.state, state != .disconnected {
+                self?.socketTerminated = true
+                self?.state = .disconnected
+                
+                self?.socket.disconnect()
+            }
+        }
+    }
     
     func activeSubscription(withHash hash: String) -> RapidSubscriptionHandler? {
         for (_, subscription) in activeSubscriptions where subscription.subscriptionHash == hash {
@@ -88,6 +106,10 @@ fileprivate extension SocketManager {
         let pendingTuples = pendingRequests.filter({ $0.value === request })
         return pendingTuples.first?.key
     }
+    
+}
+
+fileprivate extension SocketManager {
     
     func socketDidDisconnect() {
         let currentQueue = requestQueue.filter({
@@ -112,6 +134,13 @@ fileprivate extension SocketManager {
     
     func createConnection() {
         state = .connecting
+        
+        DispatchQueue.main.async { [weak self] in
+            if let strongSelf = self {
+                self?.socketConnectTimer?.invalidate()
+                self?.socketConnectTimer = Timer.scheduledTimer(timeInterval: Rapid.defaultTimeout, target: strongSelf, selector: #selector(strongSelf.connectSocketTimout), userInfo: nil, repeats: false)
+            }
+        }
         
         socket.connect()
     }
@@ -172,8 +201,7 @@ fileprivate extension SocketManager {
         let json: [AnyHashable: Any]?
         
         do {
-            let object = try JSONSerialization.jsonObject(with: data, options: [])
-            json = object as? [AnyHashable: Any]
+            json = try data.json()
         }
         catch {
             json = nil
@@ -338,18 +366,36 @@ extension SocketManager: RapidTimeoutRequestDelegate {
             }
         }
     }
+    
+    @objc func connectSocketTimout() {
+        socketConnectTimer = nil
+
+        websocketQueue.async {
+            self.restartSocket()
+        }
+    }
 }
 
 // MARK: Websocket delegate
 extension SocketManager: WebSocketDelegate {
     
     func websocketDidConnect(socket: WebSocket) {
+        DispatchQueue.main.async { [weak self] in
+            self?.socketConnectTimer?.invalidate()
+            self?.socketConnectTimer = nil
+        }
+        
         websocketQueue.async { [weak self] in
             self?.sendConnectionRequest()
         }
     }
     
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
+        DispatchQueue.main.async { [weak self] in
+            self?.socketConnectTimer?.invalidate()
+            self?.socketConnectTimer = nil
+        }
+        
         websocketQueue.async { [weak self] in
             self?.state = .disconnected
             

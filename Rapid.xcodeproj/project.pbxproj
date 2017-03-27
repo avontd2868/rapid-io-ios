@@ -10,6 +10,7 @@
 		C12692201E82BC37002577B2 /* RapidSubscriptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */; };
 		C12692221E82D27A002577B2 /* RapidUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692211E82D27A002577B2 /* RapidUpdate.swift */; };
 		C12692241E83D6F4002577B2 /* DictionaryJSONExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */; };
+		C140F9341E894871002AB9C5 /* RapidSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */; };
 		C1D6E8291E7856AD007589FC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1D6E81F1E7856AD007589FC /* Rapid.framework */; };
 		C1D6E82E1E7856AD007589FC /* RapidTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E82D1E7856AD007589FC /* RapidTests.swift */; };
 		C1D6E8A81E785D72007589FC /* Rapid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8A71E785D72007589FC /* Rapid.swift */; };
@@ -46,6 +47,7 @@
 		C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionHandler.swift; sourceTree = "<group>"; };
 		C12692211E82D27A002577B2 /* RapidUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidUpdate.swift; sourceTree = "<group>"; };
 		C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryJSONExtension.swift; sourceTree = "<group>"; };
+		C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionTests.swift; sourceTree = "<group>"; };
 		C1D6E81F1E7856AD007589FC /* Rapid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rapid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E8281E7856AD007589FC /* RapidTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RapidTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E82D1E7856AD007589FC /* RapidTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RapidTests.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 			children = (
 				C1D6E82F1E7856AD007589FC /* Info.plist */,
 				C1D6E82D1E7856AD007589FC /* RapidTests.swift */,
+				C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */,
 			);
 			path = RapidTests;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1D6E82E1E7856AD007589FC /* RapidTests.swift in Sources */,
+				C140F9341E894871002AB9C5 /* RapidSubscriptionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
