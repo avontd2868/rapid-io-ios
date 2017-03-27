@@ -115,8 +115,119 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 # define SWIFT_UNAVAILABLE __attribute__((unavailable))
 #endif
 #if defined(__has_feature) && __has_feature(modules)
+@import ObjectiveC;
+@import Foundation;
+@import Security.CipherSuite;
 #endif
 
 #pragma clang diagnostic ignored "-Wproperty-attribute-mismatch"
 #pragma clang diagnostic ignored "-Wduplicate-method-arg"
+@class RapidCollection;
+
+SWIFT_CLASS("_TtC5Rapid5Rapid")
+@interface Rapid : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull apiKey;
++ (Rapid * _Nullable)getInstanceWithAPIKey:(NSString * _Nonnull)apiKey;
+- (RapidCollection * _Nonnull)collectionWithNamed:(NSString * _Nonnull)named;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+@interface Rapid (SWIFT_EXTENSION(Rapid))
++ (Rapid * _Nullable)sharedAndReturnError:(NSError * _Nullable * _Nullable)error;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull uniqueID;)
++ (NSString * _Nonnull)uniqueID;
++ (void)configureWithAPIKey:(NSString * _Nonnull)key;
++ (RapidCollection * _Nonnull)collectionWithNamed:(NSString * _Nonnull)named;
++ (void)deinitialize;
+@end
+
+@class RapidDocument;
+
+SWIFT_CLASS("_TtC5Rapid15RapidCollection")
+@interface RapidCollection : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull collectionID;
+- (RapidDocument * _Nonnull)newDocument;
+- (RapidDocument * _Nonnull)documentWithID:(NSString * _Nonnull)id;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+@interface RapidCollection (SWIFT_EXTENSION(Rapid))
+@end
+
+
+SWIFT_CLASS("_TtC5Rapid13RapidDocument")
+@interface RapidDocument : NSObject
+- (void)mutateWithValue:(NSDictionary * _Nonnull)value completion:(void (^ _Nullable)(NSError * _Nullable, id _Nullable))completion;
+- (void)mergeWithValue:(NSDictionary * _Nonnull)value completion:(void (^ _Nullable)(NSError * _Nullable, id _Nullable))completion;
+- (void)deleteWithCompletion:(void (^ _Nullable)(NSError * _Nullable, id _Nullable))completion;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+@interface RapidDocument (SWIFT_EXTENSION(Rapid))
+@end
+
+@class OS_dispatch_queue;
+@class NSError;
+@class NSStream;
+
+SWIFT_CLASS("_TtC5Rapid9WebSocket")
+@interface WebSocket : NSObject <NSStreamDelegate>
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull ErrorDomain;)
++ (NSString * _Nonnull)ErrorDomain;
+@property (nonatomic, strong) OS_dispatch_queue * _Nonnull callbackQueue;
+@property (nonatomic, copy) void (^ _Nullable onConnect)(void);
+@property (nonatomic, copy) void (^ _Nullable onDisconnect)(NSError * _Nullable);
+@property (nonatomic, copy) void (^ _Nullable onText)(NSString * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable onData)(NSData * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable onPong)(NSData * _Nullable);
+@property (nonatomic, copy) NSDictionary<NSString *, NSString *> * _Nonnull headers;
+@property (nonatomic) BOOL voipEnabled;
+@property (nonatomic) BOOL disableSSLCertValidation;
+@property (nonatomic, copy) NSArray<NSNumber *> * _Nullable enabledSSLCipherSuites;
+@property (nonatomic, copy) NSString * _Nullable origin;
+@property (nonatomic) NSInteger timeout;
+@property (nonatomic, readonly) BOOL isConnected;
+@property (nonatomic, readonly, copy) NSURL * _Nonnull currentURL;
+/**
+  Used for setting protocols.
+*/
+- (nonnull instancetype)initWithUrl:(NSURL * _Nonnull)url protocols:(NSArray<NSString *> * _Nullable)protocols OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithUrl:(NSURL * _Nonnull)url writeQueueQOS:(NSQualityOfService)writeQueueQOS protocols:(NSArray<NSString *> * _Nullable)protocols;
+/**
+  Connect to the WebSocket server on a background thread.
+*/
+- (void)connect;
+/**
+  Write a string to the websocket. This sends it as a text frame.
+  If you supply a non-nil completion block, I will perform it when the write completes.
+  \param string The string to write.
+
+  \param completion The (optional) completion handler.
+
+*/
+- (void)writeWithString:(NSString * _Nonnull)string completion:(void (^ _Nullable)(void))completion;
+/**
+  Write binary data to the websocket. This sends it as a binary frame.
+  If you supply a non-nil completion block, I will perform it when the write completes.
+  \param data The data to write.
+
+  \param completion The (optional) completion handler.
+
+*/
+- (void)writeWithData:(NSData * _Nonnull)data completion:(void (^ _Nullable)(void))completion;
+/**
+  Write a ping to the websocket. This sends it as a control frame.
+  Yodel a   sound  to the planet.    This sends it as an astroid. http://youtu.be/Eu5ZJELRiJ8?t=42s
+*/
+- (void)writeWithPing:(NSData * _Nonnull)ping completion:(void (^ _Nullable)(void))completion;
+/**
+  Delegate for the stream methods. Processes incoming bytes
+*/
+- (void)stream:(NSStream * _Nonnull)aStream handleEvent:(NSStreamEvent)eventCode;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
 #pragma clang diagnostic pop

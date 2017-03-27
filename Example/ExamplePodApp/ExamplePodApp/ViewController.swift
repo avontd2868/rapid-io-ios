@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Rapid
 
 class ViewController: UIViewController {
 
@@ -20,6 +21,21 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
+    func subscribe() {
+        if Rapid.connectionState == .connected {
+            Rapid.collection(named: "messages").subscribe(completion: { (error, documents) in
+                if let error = error as? RapidError {
+                    print(error)
+                }
+                else {
+                    print(documents)
+                }
+            })
+        }
+    }
+    
+    func mutate() {
+        Rapid.collection(named: "messages").document(withID: "1").mutate(value: ["text": "texty text"])
+    }
 }
 
