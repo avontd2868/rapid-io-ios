@@ -8,26 +8,37 @@
 
 import Foundation
 
+/// Protocol for handling existing subscription
 public protocol RapidSubscription {
     func unsubscribe()
 }
 
+/// Class representing a connection to Rapid.io database
 public class Rapid: NSObject {
     
     static var instances: [WRO<Rapid>] = []
     static var sharedInstance: Rapid?
     
     static var defaultTimeout: TimeInterval = 300
+    
+    /// Optional timeout for Rapid requests. If timeout is nil requests never end up with timout error
     public static var timeout: TimeInterval?
     
+    /// API key that serves to connect to Rapid.io database
     public let apiKey: String
     
+    /// Current state of Rapid instance
     public var connectionState: ConnectionState {
         return handler.socketManager.state
     }
     
     let handler: RapidHandler
     
+    /// Initializes a Rapid instance
+    ///
+    /// - parameter withAPIKey:     API key that contains necessary information about a database to which you want to connect
+    ///
+    /// - returns: New or previously initialized instance
     public class func getInstance(withAPIKey apiKey: String) -> Rapid? {
         Rapid.instances = Rapid.instances.filter({ $0.object != nil })
         
@@ -62,6 +73,11 @@ public class Rapid: NSObject {
         Rapid.instances.append(WRO(object: self))
     }
     
+    /// Creates a new object representing Rapid collection
+    ///
+    /// - parameter named:     Collection identifier
+    ///
+    /// - returns: New object representing Rapid collection
     public func collection(named: String) -> RapidCollection {
         return RapidCollection(id: named, handler: handler)
     }
@@ -78,6 +94,11 @@ public class Rapid: NSObject {
 // MARK: Singleton methods
 public extension Rapid {
     
+    /// Returns shared Rapid instance if it was previously configured by Rapid.configure()
+    ///
+    /// - Throws: `RapidInternalError.rapidInstanceNotInitialized` if shared instance hasn't been initialized with Rapid.configure()
+    ///
+    /// - Returns: Shared Rapid instance
     class func shared() throws -> Rapid {
         if let shared = sharedInstance {
             return shared
@@ -87,28 +108,42 @@ public extension Rapid {
         }
     }
     
+    /// Possible connection states
     enum ConnectionState {
         case disconnected
         case connecting
         case connected
     }
     
+    /// Generates an unique ID which can be safely used as your document ID
     class var uniqueID: String {
         return Generator.uniqueID
     }
     
+    /// Current state of shared Rapid instance
     class var connectionState: ConnectionState {
         return try! shared().connectionState
     }
     
+    /// Configures shared Rapid instance
+    ///
+    /// Initializes an instance that can be lately accessed through singleton class functions
+    ///
+    /// - parameter withAPIKey:     API key that contains necessary information about a database to which you want to connect
     class func configure(withAPIKey key: String) {
         sharedInstance = Rapid(apiKey: key)
     }
     
+    /// Creates a new object representing Rapid collection
+    ///
+    /// - parameter named:     Collection identifier
+    ///
+    /// - returns: New object representing Rapid collection
     class func collection(named: String) -> RapidCollection {
         return try! shared().collection(named: named)
     }
     
+    /// Deinitialize shared Rapid instance
     class func deinitialize() {
         sharedInstance = nil
     }
