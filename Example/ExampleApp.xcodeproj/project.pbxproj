@@ -7,44 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; };
+		C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C1D6E8761E785CFA007589FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8751E785CFA007589FC /* AppDelegate.swift */; };
 		C1D6E8781E785CFA007589FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8771E785CFA007589FC /* ViewController.swift */; };
 		C1D6E87B1E785CFA007589FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E8791E785CFA007589FC /* Main.storyboard */; };
 		C1D6E87D1E785CFA007589FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E87C1E785CFA007589FC /* Assets.xcassets */; };
 		C1D6E8801E785CFA007589FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E87E1E785CFA007589FC /* LaunchScreen.storyboard */; };
 		C1D6E88B1E785CFB007589FC /* ExampleAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E88A1E785CFB007589FC /* ExampleAppTests.swift */; };
-		C1D6E8AE1E785F6D007589FC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1D6E8A41E785D52007589FC /* Rapid.framework */; };
-		C1D6E8AF1E785F6D007589FC /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1D6E8A41E785D52007589FC /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C140F92A1E891C91002AB9C5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C1D6E81F1E7856AD007589FC;
+			remoteInfo = Rapid;
+		};
+		C140F92C1E891C91002AB9C5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C1D6E8281E7856AD007589FC;
+			remoteInfo = RapidTests;
+		};
+		C140F9301E891CA0002AB9C5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = C1D6E81E1E7856AD007589FC;
+			remoteInfo = Rapid;
+		};
 		C1D6E8871E785CFB007589FC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C1D6E86A1E785CFA007589FC /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C1D6E8711E785CFA007589FC;
 			remoteInfo = ExampleApp;
-		};
-		C1D6E8A31E785D52007589FC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C1D6E89E1E785D52007589FC /* Rapid.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C1D6E81F1E7856AD007589FC;
-			remoteInfo = Rapid;
-		};
-		C1D6E8A51E785D52007589FC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C1D6E89E1E785D52007589FC /* Rapid.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C1D6E8281E7856AD007589FC;
-			remoteInfo = RapidTests;
-		};
-		C1D6E8B01E785F6D007589FC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C1D6E89E1E785D52007589FC /* Rapid.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = C1D6E81E1E7856AD007589FC;
-			remoteInfo = Rapid;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -55,7 +55,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C1D6E8AF1E785F6D007589FC /* Rapid.framework in Embed Frameworks */,
+				C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -63,6 +63,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Rapid.xcodeproj; path = ../Rapid.xcodeproj; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E8751E785CFA007589FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1D6E8771E785CFA007589FC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -73,7 +74,6 @@
 		C1D6E8861E785CFB007589FC /* ExampleAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E88A1E785CFB007589FC /* ExampleAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleAppTests.swift; sourceTree = "<group>"; };
 		C1D6E88C1E785CFB007589FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C1D6E89E1E785D52007589FC /* Rapid.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Rapid.xcodeproj; path = ../../Rapid.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1D6E8AE1E785F6D007589FC /* Rapid.framework in Frameworks */,
+				C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,10 +95,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C140F9261E891C91002AB9C5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C140F92B1E891C91002AB9C5 /* Rapid.framework */,
+				C140F92D1E891C91002AB9C5 /* RapidTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		C1D6E8691E785CFA007589FC = {
 			isa = PBXGroup;
 			children = (
-				C1D6E89E1E785D52007589FC /* Rapid.xcodeproj */,
+				C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */,
 				C1D6E8741E785CFA007589FC /* ExampleApp */,
 				C1D6E8891E785CFB007589FC /* ExampleAppTests */,
 				C1D6E8731E785CFA007589FC /* Products */,
@@ -136,15 +145,6 @@
 			path = ExampleAppTests;
 			sourceTree = "<group>";
 		};
-		C1D6E89F1E785D52007589FC /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				C1D6E8A41E785D52007589FC /* Rapid.framework */,
-				C1D6E8A61E785D52007589FC /* RapidTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -160,7 +160,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				C1D6E8B11E785F6D007589FC /* PBXTargetDependency */,
+				C140F9311E891CA0002AB9C5 /* PBXTargetDependency */,
 			);
 			name = ExampleApp;
 			productName = ExampleApp;
@@ -220,8 +220,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = C1D6E89F1E785D52007589FC /* Products */;
-					ProjectRef = C1D6E89E1E785D52007589FC /* Rapid.xcodeproj */;
+					ProductGroup = C140F9261E891C91002AB9C5 /* Products */;
+					ProjectRef = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -233,18 +233,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		C1D6E8A41E785D52007589FC /* Rapid.framework */ = {
+		C140F92B1E891C91002AB9C5 /* Rapid.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Rapid.framework;
-			remoteRef = C1D6E8A31E785D52007589FC /* PBXContainerItemProxy */;
+			remoteRef = C140F92A1E891C91002AB9C5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C1D6E8A61E785D52007589FC /* RapidTests.xctest */ = {
+		C140F92D1E891C91002AB9C5 /* RapidTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = RapidTests.xctest;
-			remoteRef = C1D6E8A51E785D52007589FC /* PBXContainerItemProxy */;
+			remoteRef = C140F92C1E891C91002AB9C5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -290,15 +290,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C140F9311E891CA0002AB9C5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Rapid;
+			targetProxy = C140F9301E891CA0002AB9C5 /* PBXContainerItemProxy */;
+		};
 		C1D6E8881E785CFB007589FC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C1D6E8711E785CFA007589FC /* ExampleApp */;
 			targetProxy = C1D6E8871E785CFB007589FC /* PBXContainerItemProxy */;
-		};
-		C1D6E8B11E785F6D007589FC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Rapid;
-			targetProxy = C1D6E8B01E785F6D007589FC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
