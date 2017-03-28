@@ -2,7 +2,7 @@
 //  RapidMutateProtocol.swift
 //  Rapid
 //
-//  Created by Jan on 16/03/2017.
+//  Created by Jan Schwarz on 16/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
@@ -14,6 +14,7 @@ protocol MutationRequest: RapidTimeoutRequest, RapidSerializable {
 class RapidDocumentMutation: NSObject, MutationRequest {
     
     let alwaysTimeout = false
+    let needsAcknowledgement = true
     
     let value: [AnyHashable: Any]?
     let collectionID: String
@@ -86,6 +87,7 @@ protocol MergeRequest: RapidTimeoutRequest, RapidSerializable {
 class RapidDocumentMerge: NSObject, MergeRequest {
     
     let alwaysTimeout = false
+    let needsAcknowledgement = true
     
     let value: [AnyHashable: Any]?
     let collectionID: String

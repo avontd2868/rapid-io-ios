@@ -2,14 +2,18 @@
 //  RapidSocketError.swift
 //  Rapid
 //
-//  Created by Jan on 17/03/2017.
+//  Created by Jan Schwarz on 17/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
 import Foundation
 
+/// Acknowledgement event object
+///
+/// This object represents either an acknowledgement from the server or an acknowledgement which is about to be sent to the server
 class RapidSocketAcknowledgement: RapidResponse {
     
+    let needsAcknowledgement = false
     let eventID: String
     
     init?(json: Any?) {

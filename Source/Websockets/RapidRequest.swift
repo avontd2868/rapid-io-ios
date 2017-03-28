@@ -2,7 +2,7 @@
 //  RapidRequest.swift
 //  Rapid
 //
-//  Created by Jan on 17/03/2017.
+//  Created by Jan Schwarz on 17/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
@@ -13,6 +13,8 @@ protocol RapidSerializable {
 }
 
 protocol RapidRequest: class {
+    var needsAcknowledgement: Bool { get }
+    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement)
     func eventFailed(withError error: RapidErrorInstance)
 }
@@ -33,13 +35,14 @@ protocol RapidConnectionRequestDelegate: class {
 }
 
 protocol RapidHeartbeatDelegate: class {
-    func connectionExpired(_ heartbeat: RapidHeartbeat)
+    func connectionDead(_ heartbeat: RapidHeartbeat, error: RapidErrorInstance)
     func connectionAlive(_ heartbeat: RapidHeartbeat)
 }
 
 class RapidConnectionRequest: RapidTimeoutRequest, RapidSerializable {
     
     let alwaysTimeout = true
+    let needsAcknowledgement = true
     
     let connectionID: String
     fileprivate weak var delegate: RapidConnectionRequestDelegate?
@@ -93,6 +96,8 @@ class RapidConnectionRequest: RapidTimeoutRequest, RapidSerializable {
 
 class RapidDisconnectionRequest: RapidSerializable, RapidRequest {
     
+    let needsAcknowledgement = false
+
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(disconnection: self, withIdentifiers: identifiers)
     }
@@ -112,6 +117,7 @@ class RapidHeartbeat: RapidSerializable, RapidTimeoutRequest {
     fileprivate var timer: Timer?
     
     let alwaysTimeout = true
+    let needsAcknowledgement = true
     
     init(delegate: RapidHeartbeatDelegate) {
         self.delegate = delegate
@@ -144,7 +150,7 @@ class RapidHeartbeat: RapidSerializable, RapidTimeoutRequest {
             
             switch error.error {
             case .timeout, .connectionTerminated:
-                self.delegate?.connectionExpired(self)
+                self.delegate?.connectionDead(self, error: error)
                 
             default:
                 break

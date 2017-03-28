@@ -2,7 +2,7 @@
 //  RapidSubscriptionHandler.swift
 //  Rapid
 //
-//  Created by Jan on 22/03/2017.
+//  Created by Jan Schwarz on 22/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
@@ -21,6 +21,7 @@ class RapidSubscriptionHandler: NSObject {
         return subscriptions.first?.subscriptionHash ?? ""
     }
     
+    let needsAcknowledgement = true
     let subscriptionID: String
     
     fileprivate let dispatchQueue: DispatchQueue
@@ -46,7 +47,7 @@ class RapidSubscriptionHandler: NSObject {
         appendSubscription(subscription)
         
         if state == .subscribed {
-            subscription.receivedNewValue(value ?? [], oldValue: nil)
+            subscription.receivedUpdate(value ?? [], [], [], [])
         }
     }
     
@@ -89,13 +90,90 @@ fileprivate extension RapidSubscriptionHandler {
     }
     
     func receivedNewValue(_ newValue: [RapidDocumentSnapshot]) {
+        let updates = incorporateChanges(newValue: newValue, oldValue: value)
+        
         for subsription in subscriptions {
-            subsription.receivedNewValue(newValue, oldValue: value)
+            subsription.receivedUpdate(updates.dataSet, updates.insert, updates.update, updates.delete)
         }
         
-        value = newValue
+        value = updates.dataSet
     }
     
+    func incorporateChanges(newValue rawArray: [RapidDocumentSnapshot], oldValue: [RapidDocumentSnapshot]?) -> (dataSet: [RapidDocumentSnapshot], insert: [RapidDocumentSnapshot], update: [RapidDocumentSnapshot], delete: [RapidDocumentSnapshot]) {
+        
+        var newValue = rawArray
+        var removeIndexes = [Int]()
+        var swapIndexes = [(Int,Int)]()
+        var indexForDocument = [String: Int]()
+        
+        for (index, document) in rawArray.enumerated() {
+            let existingIndex = indexForDocument[document.id]
+            
+            if existingIndex == nil {
+                indexForDocument[document.id] = index
+            }
+            else if oldValue == nil, let existingIndex = existingIndex {
+                swapIndexes.append((existingIndex, index))
+                removeIndexes.append(index)
+            }
+            else if let existingIndex = existingIndex {
+                indexForDocument[document.id] = index
+                removeIndexes.append(existingIndex)
+            }
+        }
+        
+        for swap in swapIndexes {
+            let tmp = newValue[swap.0]
+            newValue[swap.0] = newValue[swap.1]
+            newValue[swap.1] = tmp
+        }
+        
+        for index in removeIndexes.reversed() {
+            newValue.remove(at: index)
+        }
+        
+        guard var documents = oldValue else {
+            let dataSet = newValue.flatMap({ $0.value == nil ? nil : $0 })
+            return (dataSet, dataSet, [], [])
+        }
+        
+        var inserted = [RapidDocumentSnapshot]()
+        var updated = [RapidDocumentSnapshot]()
+        var deleted = [RapidDocumentSnapshot]()
+        
+        for value in newValue {
+            let index = documents.index(where: { $0.id == value.id })
+            
+            if let index = index, value.value == nil {
+                let document = documents.remove(at: index)
+                deleted.append(document)
+            }
+            else if let predID = value.predecessorID, let predIndex = documents.index(where: { $0.id == predID }) {
+                if let index = index {
+                    documents.remove(at: index)
+                    let newIndex = predIndex < index ? predIndex + 1 : predIndex
+                    documents.insert(value, at: newIndex)
+                    updated.append(value)
+                }
+                else {
+                    documents.insert(value, at: predIndex + 1)
+                    inserted.append(value)
+                }
+            }
+            else if let index = index {
+                documents.remove(at: index)
+                documents.insert(value, at: 0)
+                updated.append(value)
+            }
+            else {
+                documents.insert(value, at: 0)
+                inserted.append(value)
+            }
+        }
+        
+        return (documents, inserted, updated, deleted)
+    }
+
     func unsubscribe(instance: RapidSubscriptionInstance) {
         if subscriptions.count == 1 {
             state = .unsubscribing
@@ -121,11 +199,7 @@ extension RapidSubscriptionHandler: RapidRequest {
         }
     }
     
-    func receivedInitialValue(_ value: RapidSubscriptionInitialValue) {
-        receivedNewValue(value.documents)
-    }
-    
-    func receivedUpdate(_ update: RapidSubscriptionUpdate) {
+    func receivedSubscriptionEvent(_ update: RapidSubscriptionEvent) {
         receivedNewValue(update.documents)
     }
 }
@@ -133,6 +207,7 @@ extension RapidSubscriptionHandler: RapidRequest {
 class RapidUnsubscriptionHandler: NSObject {
     
     let subscription: RapidSubscriptionHandler
+    let needsAcknowledgement = true
     
     init(subscription: RapidSubscriptionHandler) {
         self.subscription = subscription

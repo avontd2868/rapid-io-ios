@@ -2,7 +2,7 @@
 //  RapidSubscriptionTests.swift
 //  Rapid
 //
-//  Created by Jan on 27/03/2017.
+//  Created by Jan Schwarz on 27/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 

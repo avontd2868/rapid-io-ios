@@ -2,7 +2,7 @@
 //  RapidSubscription.swift
 //  Rapid
 //
-//  Created by Jan on 17/03/2017.
+//  Created by Jan Schwarz on 17/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import Foundation
 protocol RapidSubscriptionInstance: class, RapidSerializable {
     var subscriptionHash: String { get }
     
-    func receivedNewValue(_ value: [RapidDocumentSnapshot], oldValue: [RapidDocumentSnapshot]?)
+    func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot])
     func subscriptionFailed(withError error: RapidError)
     func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void)
 }
@@ -106,15 +106,13 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
         unsubscribeCallback = callback
     }
 
-    func receivedNewValue(_ value: [RapidDocumentSnapshot], oldValue: [RapidDocumentSnapshot]?) {
-        let changes = incorporateChanges(newValue: value, oldValue: oldValue)
-        
+    func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) {
         DispatchQueue.main.async { [weak self] in
-            self?.callback?(nil, changes.dataSet)
-            self?.callbackWithChanges?(nil, changes.dataSet, changes.insert, changes.update, changes.delete)
+            self?.callback?(nil, documents)
+            self?.callbackWithChanges?(nil, documents, added, updated, removed)
         }
-        
     }
+
 }
 
 extension RapidCollectionSub: RapidSubscription {
@@ -166,9 +164,10 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
         subscription.registerUnsubscribeCallback(callback)
     }
     
-    func receivedNewValue(_ value: [RapidDocumentSnapshot], oldValue: [RapidDocumentSnapshot]?) {
-        subscription.receivedNewValue(value, oldValue: oldValue)
+    func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) {
+        subscription.receivedUpdate(documents, added, updated, removed)
     }
+
 }
 
 extension RapidDocumentSub: RapidSubscription {

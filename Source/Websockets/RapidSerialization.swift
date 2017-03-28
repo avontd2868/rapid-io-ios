@@ -2,7 +2,7 @@
 //  RapidSocketParser.swift
 //  Rapid
 //
-//  Created by Jan on 17/03/2017.
+//  Created by Jan Schwarz on 17/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
@@ -10,20 +10,27 @@ import Foundation
 
 class RapidSerialization {
     
+    /// Parse JSON received through websocket
+    ///
+    /// - Parameter json: Received JSON
+    /// - Returns: Array of deserialized objects
     class func parse(json: [AnyHashable: Any]?) -> [RapidResponse]? {
         guard let json = json else {
             return nil
         }
         
+        // If websocket received a batch of events
         if let batch = json[Batch.name] as? [[AnyHashable: Any]] {
             var events = [RapidResponse]()
-            var updates = [String: RapidSubscriptionUpdate]()
+            var updates = [String: RapidSubscriptionEvent]()
             
             for json in batch {
                 let event = parseEvent(json: json)
                 
-                if let update = event as? RapidSubscriptionUpdate {
+                // If the event is a subscription update treat it specially, otherwise just append it to the response array
+                if let update = event as? RapidSubscriptionEvent {
                     
+                    // If there was any update for the subscription combine it to one update
                     if var existingUpdate = updates[update.subscriptionID] {
                         existingUpdate.merge(withUpdate: update)
                         updates[existingUpdate.subscriptionID] = existingUpdate
@@ -49,6 +56,13 @@ class RapidSerialization {
         }
     }
     
+    /// Serialize a document mutation into JSON string
+    ///
+    /// - Parameters:
+    ///   - mutation: Mutation object
+    ///   - identifiers: Identifiers that are associated with the mutation event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
     class func serialize(mutation: RapidDocumentMutation, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -63,6 +77,13 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize a document merge into JSON string
+    ///
+    /// - Parameters:
+    ///   - merge: Merge object
+    ///   - identifiers: Identifiers that are associated with the merge event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
     class func serialize(merge: RapidDocumentMerge, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -77,6 +98,13 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize a collection subscription into JSON string
+    ///
+    /// - Parameters:
+    ///   - subscription: Subscription object
+    ///   - identifiers: Identifiers that are associated with the subscription event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
     class func serialize(subscription: RapidCollectionSub, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -90,6 +118,10 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize a subscription filter into JSON
+    ///
+    /// - Parameter filter: Filter object
+    /// - Returns: JSON dictionary
     class func serialize(filter: RapidFilter?) -> [AnyHashable: Any]? {
         if let filter = filter as? RapidFilterSimple {
             return serialize(simpleFilter: filter)
@@ -102,6 +134,10 @@ class RapidSerialization {
         }
     }
     
+    /// Serialize a simple subscription filter into JSON
+    ///
+    /// - Parameter simpleFilter: Simple filter object
+    /// - Returns: JSON dictionary
     class func serialize(simpleFilter: RapidFilterSimple) -> [AnyHashable: Any] {
         switch simpleFilter.relation {
         case .equal:
@@ -115,6 +151,10 @@ class RapidSerialization {
         }
     }
     
+    /// Serialize a compound subscription filter into JSON
+    ///
+    /// - Parameter compoundFilter: Compound filter object
+    /// - Returns: JSON dictionary
     class func serialize(compoundFilter: RapidFilterCompound) -> [AnyHashable: Any] {
         switch compoundFilter.compoundOperator {
         case .and:
@@ -133,6 +173,10 @@ class RapidSerialization {
         }
     }
     
+    /// Serialize an array of subscription orderings into JSON
+    ///
+    /// - Parameter ordering: Array of ordering objects
+    /// - Returns: JSON dictionary
     class func serialize(ordering: [RapidOrdering]?) -> [[AnyHashable: Any]]? {
         if let ordering = ordering {
             let orderingArray = ordering.map({ order -> [AnyHashable: Any] in
@@ -153,6 +197,13 @@ class RapidSerialization {
         }
     }
     
+    /// Serialize an unsubscription request into JSON string
+    ///
+    /// - Parameters:
+    ///   - unsubscription: Unsubscription object
+    ///   - identifiers: Identifiers that are associated with the unsubscription event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
     class func serialize(unsubscription: RapidUnsubscriptionHandler, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -162,11 +213,25 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize an event acknowledgement into JSON string
+    ///
+    /// - Parameters:
+    ///   - acknowledgement: Acknowledgement object
+    ///   - identifiers: Identifiers that are associated with the acknowledgement event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
     class func serialize(acknowledgement: RapidSocketAcknowledgement, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         let resultDict = [Acknowledgement.name: identifiers]
         return try resultDict.jsonString()
     }
     
+    /// Serialize an connection request into JSON string
+    ///
+    /// - Parameters:
+    ///   - connection: Connection request object
+    ///   - identifiers: Identifiers that are associated with the connection request event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
     class func serialize(connection: RapidConnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -176,19 +241,38 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize an disconnection request into JSON string
+    ///
+    /// - Parameters:
+    ///   - disconnection: Disconnection request object
+    ///   - identifiers: Identifiers that are associated with the disconnection request event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
     class func serialize(disconnection: RapidDisconnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         let resultDict = [Disconnect.name: identifiers]
         return try resultDict.jsonString()
     }
     
+    /// Serialize an hearbeat into JSON string
+    ///
+    /// - Parameters:
+    ///   - heartbeat: Heartbeat object
+    ///   - identifiers: Identifiers that are associated with the heartbeat event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
     class func serialize(heartbeat: RapidHeartbeat, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         let resultDict = [Heartbeat.name: identifiers]
         return try resultDict.jsonString()
     }
 }
 
+// MARK: Fileprivate methods
 fileprivate extension RapidSerialization {
     
+    /// Parse single event received from websocket
+    ///
+    /// - Parameter json: Event JSON
+    /// - Returns: Deserialized object
     class func parseEvent(json: [AnyHashable: Any]) -> RapidResponse? {
         if let ack = json[Acknowledgement.name] as? [AnyHashable: Any] {
             return RapidSocketAcknowledgement(json: ack)
@@ -208,6 +292,8 @@ fileprivate extension RapidSerialization {
     }
     
 }
+
+// MARK: Name constants
 
 //swiftlint:disable nesting
 extension RapidSerialization {
