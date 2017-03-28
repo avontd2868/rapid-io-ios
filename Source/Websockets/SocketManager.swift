@@ -63,7 +63,7 @@ class SocketManager {
     /// Send mutation event
     ///
     /// - Parameter mutationRequest: Mutation object
-    func mutate<T: MutationRequest>(mutationRequest: T) {
+    func mutate<T: RapidMutationRequest>(mutationRequest: T) {
         websocketQueue.async { [weak self] in
             self?.postEvent(serializableRequest: mutationRequest)
         }
@@ -72,7 +72,7 @@ class SocketManager {
     /// Send merge event
     ///
     /// - Parameter mergeRequest: Merge object
-    func merge<T: MergeRequest>(mergeRequest: T) {
+    func merge<T: RapidMergeRequest>(mergeRequest: T) {
         websocketQueue.async { [weak self] in
             self?.postEvent(serializableRequest: mergeRequest)
         }

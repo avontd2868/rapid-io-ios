@@ -1,17 +1,16 @@
 //
-//  RapidMutateProtocol.swift
+//  RapidMutations.swift
 //  Rapid
 //
-//  Created by Jan Schwarz on 16/03/2017.
+//  Created by Jan on 28/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
 import Foundation
 
-protocol MutationRequest: RapidTimeoutRequest, RapidSerializable {
-}
+// MARK: Document mutation
 
-class RapidDocumentMutation: NSObject, MutationRequest {
+class RapidDocumentMutation: NSObject, RapidMutationRequest {
     
     let alwaysTimeout = false
     let needsAcknowledgement = true
@@ -78,13 +77,9 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
     }
 }
 
-// MARK: Merge
+// MARK: Document merge
 
-protocol MergeRequest: RapidTimeoutRequest, RapidSerializable {
-    
-}
-
-class RapidDocumentMerge: NSObject, MergeRequest {
+class RapidDocumentMerge: NSObject, RapidMergeRequest {
     
     let alwaysTimeout = false
     let needsAcknowledgement = true

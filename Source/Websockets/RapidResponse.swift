@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Protocol for events received from the server
 protocol RapidResponse {
     var eventID: String { get }
 }
