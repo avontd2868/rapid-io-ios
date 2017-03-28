@@ -10,15 +10,20 @@ import Foundation
 
 /// Protocol for handling existing subscription
 public protocol RapidSubscription {
+    /// Remove subscription
     func unsubscribe()
 }
 
 /// Class representing a connection to Rapid.io database
 public class Rapid: NSObject {
     
-    static var instances: [WRO<Rapid>] = []
+    /// All instances which have been initialized
+    fileprivate static var instances: [WRO<Rapid>] = []
+    
+    /// Shared instance accessible by class methods
     static var sharedInstance: Rapid?
     
+    /// Internal timeout which is used for connection requests etc.
     static var defaultTimeout: TimeInterval = 300
     
     /// Optional timeout for Rapid requests. If timeout is nil requests never end up with timout error
@@ -40,7 +45,11 @@ public class Rapid: NSObject {
     ///
     /// - returns: New or previously initialized instance
     public class func getInstance(withAPIKey apiKey: String) -> Rapid? {
+        
+        // Delete released instances
         Rapid.instances = Rapid.instances.filter({ $0.object != nil })
+        
+        // Loop through existing instances and if there is on with the same API key return it
         
         var existingInstance: Rapid?
         for weakInstance in Rapid.instances {
@@ -82,10 +91,12 @@ public class Rapid: NSObject {
         return RapidCollection(id: named, handler: handler)
     }
     
+    /// Disconnect existing websocket
     func goOffline() {
         handler.socketManager.goOffline()
     }
     
+    /// Reconnect previously configured websocket
     func goOnline() {
         handler.socketManager.goOnline()
     }

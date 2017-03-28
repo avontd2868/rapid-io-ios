@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Internal errors
 enum RapidInternalError: Error {
     case rapidInstanceNotInitialized
     
@@ -19,6 +20,7 @@ enum RapidInternalError: Error {
     }
 }
 
+/// Wrapper structure for `RapidError`
 struct RapidErrorInstance: RapidResponse {
     
     let eventID: String
@@ -61,6 +63,14 @@ struct RapidErrorInstance: RapidResponse {
     }
 }
 
+/// Errors which can be thrown by Rapid SDK
+///
+/// - permissionDenied: Client doesn't have permisson to read or write specified data
+/// - server: Internal Rapid server error
+/// - connectionTerminated: Websocket connection expired and needs to be reestablished
+/// - invalidData: Data are in an invalid format
+/// - timeout: Request timout
+/// - `default`: General error
 public enum RapidError: Error {
     
     case permissionDenied(message: String?)

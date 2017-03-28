@@ -8,11 +8,13 @@
 
 import Foundation
 
+/// General dependency object containing managers
 class RapidHandler: NSObject {
     
     let socketManager: SocketManager
     
     init?(apiKey: String) {
+        // Decode connection information from API key
         if let connectionValues = Decoder.decode(apiKey: apiKey) {
             socketManager = SocketManager(socketURL: connectionValues.hostURL)
         }

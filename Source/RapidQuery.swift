@@ -8,14 +8,20 @@
 
 import Foundation
 
+/// Subscription filter protocol
 public protocol RapidFilter {
     var filterHash: String { get }
 }
 
+/// Structure that describes simple subscription filter
+///
+/// Simple filter can contain only a name of a filtering parameter, its reference value and a relation to the value.
 public struct RapidFilterSimple: RapidFilter {
     
+    /// Special key which stands for a document ID
     public static let documentIdKey = "$id"
     
+    /// Type of relation to a specified value
     public enum Relation {
         case equal
         case greaterThanOrEqual
@@ -36,10 +42,19 @@ public struct RapidFilterSimple: RapidFilter {
         }
     }
     
+    /// Name of a document parameter
     public let key: String
+    /// Ralation to a specified value
     public let relation: Relation
+    /// Reference value
     public let value: Any?
     
+    /// Simple filter initializer
+    ///
+    /// - Parameters:
+    ///   - key: Name of a document parameter
+    ///   - relation: Ralation to the `value`
+    ///   - value: Reference value
     public init(key: String, relation: Relation, value: Any?) {
         self.key = key
         self.relation = relation
@@ -51,8 +66,13 @@ public struct RapidFilterSimple: RapidFilter {
     }
 }
 
+/// Structure that describes compound subscription filter
+///
+/// Compound filter consists of one or more filters that are combined together with one of logical operators.
+/// Compound filter with the logical NOT operator must contain only one operand.
 public struct RapidFilterCompound: RapidFilter {
     
+    /// Type of logical operator
     public enum Operator {
         case and
         case or
@@ -72,9 +92,16 @@ public struct RapidFilterCompound: RapidFilter {
         }
     }
     
+    /// Logical operator
     public let compoundOperator: Operator
+    /// Array of filters
     public let operands: [RapidFilter]
     
+    /// Compound filter initializer
+    ///
+    /// - Parameters:
+    ///   - compoundOperator: Logical operator
+    ///   - operands: Array of filters that are combined together with the `compoundOperator`
     public init?(compoundOperator: Operator, operands: [RapidFilter]) {
         guard operands.count > 0 else {
             return nil
@@ -94,8 +121,10 @@ public struct RapidFilterCompound: RapidFilter {
     }
 }
 
+/// Structure that describes subscription ordering
 public struct RapidOrdering {
     
+    /// Type of ordering
     public enum Ordering {
         case ascending
         case descending
@@ -111,9 +140,16 @@ public struct RapidOrdering {
         }
     }
     
+    /// Name of a document parameter
     public let key: String
+    /// Ordering type
     public let ordering: Ordering
     
+    /// Ordering initializer
+    ///
+    /// - Parameters:
+    ///   - key: Name of a document parameter
+    ///   - ordering: Ordering type
     public init(key: String, ordering: Ordering) {
         self.key = key
         self.ordering = ordering
@@ -124,9 +160,12 @@ public struct RapidOrdering {
     }
 }
 
+/// Structure that contains subscription paging values
 public struct RapidPaging {
     
+    /// Number of documents to be skipped
     public let skip: Int?
+    /// Maximum number of documents to be returned
     public let take: Int
     
     var pagingHash: String {
