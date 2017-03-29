@@ -34,7 +34,7 @@ public class Rapid: NSObject {
     
     /// Current state of Rapid instance
     public var connectionState: ConnectionState {
-        return handler.socketManager.state
+        return handler.state
     }
     
     let handler: RapidHandler
@@ -142,7 +142,7 @@ public extension Rapid {
     ///
     /// - parameter withAPIKey:     API key that contains necessary information about a database to which you want to connect
     class func configure(withAPIKey key: String) {
-        sharedInstance = Rapid(apiKey: key)
+        sharedInstance = Rapid.getInstance(withAPIKey: key)
     }
     
     /// Creates a new object representing Rapid collection

@@ -12,6 +12,7 @@ import Foundation
 class RapidHandler: NSObject {
     
     let socketManager: SocketManager
+    fileprivate(set) var state: Rapid.ConnectionState = .disconnected
     
     init?(apiKey: String) {
         // Decode connection information from API key
@@ -21,6 +22,17 @@ class RapidHandler: NSObject {
         else {
             return nil
         }
+        
+        super.init()
+        
+        socketManager.connectionStateDelegate = self
     }
 
+}
+
+extension RapidHandler: RapidConnectionStateChangeDelegate {
+    
+    func connectionStateChanged(currentState: Rapid.ConnectionState) {
+        state = currentState
+    }
 }

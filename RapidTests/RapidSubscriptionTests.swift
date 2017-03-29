@@ -172,4 +172,57 @@ extension RapidTests {
         }
     }
 
+    func testSubscriptionInitialResponse() {
+        Rapid.configure(withAPIKey: apiKey)
+        
+        let promise = expectation(description: "Subscription initial value")
+        
+        Rapid.collection(named: testCollectionName).subscribe { (_, _) in
+            promise.fulfill()
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testUnsubscription() {
+        Rapid.configure(withAPIKey: apiKey)
+        
+        let promise = expectation(description: "Subscription initial value")
+        
+        var initialValue = true
+        let subscription = Rapid.collection(named: testCollectionName).subscribe { (_, _) in
+            if initialValue {
+                initialValue = false
+            }
+            else {
+                XCTFail("Subscription not uregistered")
+            }
+        }
+        
+        runAfter(1) {
+            subscription.unsubscribe()
+            self.mutate(documentID: "1", value: ["name": "testUnsubscriptiion"])
+        }
+        
+        runAfter(4) { 
+            promise.fulfill()
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+}
+
+// MARK: Helper methods
+fileprivate extension RapidTests {
+    
+    func mutate(documentID: String?, value: [AnyHashable: Any]?) {
+        if let id = documentID {
+            Rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value)
+        }
+        else {
+            Rapid.collection(named: testCollectionName).newDocument().mutate(value: value)
+        }
+    }
+    
 }
