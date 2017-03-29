@@ -14,6 +14,9 @@ public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocumentS
 /// Document mutation callback which provides a client either with an error or with a successfully mutated object
 public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
 
+/// Document deletion callback which provides a client with an possible error
+public typealias RapidDeletionCallback = (_ error: Error?) -> Void
+
 /// Document merge callback which provides a client either with an error or with a successfully merged values
 public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
 
@@ -103,8 +106,8 @@ public class RapidDocument: NSObject {
     /// `Delete` is equivalent to `Mutate` with a value equal to `nil`
     ///
     /// - Parameter completion: Delete callback which provides a client either with an error or with the document object how it looked before it was deleted
-    public func delete(completion: RapidMutationCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: nil, callback: completion)
+    public func delete(completion: RapidDeletionCallback? = nil) {
+        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: nil, deletionCallback: completion)
         socketManager.mutate(mutationRequest: mutation)
     }
     

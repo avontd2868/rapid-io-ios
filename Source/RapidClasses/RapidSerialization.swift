@@ -68,7 +68,7 @@ class RapidSerialization {
         
         var doc = [AnyHashable: Any]()
         doc[Mutation.Document.DocumentID.name] = mutation.documentID
-        doc[Mutation.Document.Body.name] = mutation.value
+        doc[Mutation.Document.Body.name] = mutation.value ?? NSNull()
         
         json[Mutation.CollectionID.name] = mutation.collectionID
         json[Mutation.Document.name] = doc

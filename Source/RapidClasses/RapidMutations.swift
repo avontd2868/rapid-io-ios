@@ -50,6 +50,20 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
         self.callback = callback
     }
     
+    /// Initialize mutation request
+    ///
+    /// - Parameters:
+    ///   - collectionID: Collection ID
+    ///   - documentID: Document ID
+    ///   - value: Document JSON
+    ///   - callback: Mutation callback
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, deletionCallback: RapidDeletionCallback?) {
+        self.value = value
+        self.collectionID = collectionID
+        self.documentID = documentID
+        self.callback = { error, _ in deletionCallback?(error) }
+    }
+    
 }
 
 extension RapidDocumentMutation: RapidSerializable {

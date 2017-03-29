@@ -100,7 +100,7 @@ extension RapidSubscriptionHandler: RapidSerializable {
             
             idef[RapidSerialization.Subscription.SubscriptionID.name] = subscriptionID
             
-            return try subscription.serialize(withIdentifiers: identifiers)
+            return try subscription.serialize(withIdentifiers: idef)
         }
         else {
             throw RapidError.invalidData

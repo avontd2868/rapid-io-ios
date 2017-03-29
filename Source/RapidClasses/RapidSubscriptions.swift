@@ -105,7 +105,6 @@ extension RapidCollectionSub: RapidSubscription {
 
 // MARK: Document subscription
 
-
 /// Document subscription object
 ///
 /// The class is a wrapper for `RapidCollectionSub`. Internally, it creates collection subscription filtered by `RapidFilterSimple.documentIdKey` = `documentID`

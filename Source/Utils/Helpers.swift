@@ -13,8 +13,8 @@ import Foundation
 /// - Parameters:
 ///   - delay: Run a block of code after `delay`
 ///   - closure: Block of code to be run
-func runAfter(_ delay: TimeInterval, closure: @escaping () -> Void) {
-    DispatchQueue.main.asyncAfter(
+func runAfter(_ delay: TimeInterval, queue: DispatchQueue = DispatchQueue.main, closure: @escaping () -> Void) {
+    queue.asyncAfter(
         deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
 }
 
