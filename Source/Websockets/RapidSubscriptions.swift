@@ -9,17 +9,40 @@
 import Foundation
 
 // MARK: Collection subscription
+
+/// Collection subscription object
 class RapidCollectionSub: NSObject {
     
+    /// Collection ID
     let collectionID: String
+    
+    /// Subscription filter
     let filter: RapidFilter?
+    
+    /// Subscription ordering
     let ordering: [RapidOrdering]?
+    
+    /// Subscription paging
     let paging: RapidPaging?
+    
+    /// Default subscription callback
     let callback: RapidColSubCallback?
+    
+    /// Subscription callback with lists of changes
     let callbackWithChanges: RapidColSubCallbackWithChanges?
     
+    /// Block of code to be called on unsubscribing
     fileprivate var unsubscribeCallback: ((RapidSubscriptionInstance) -> Void)?
     
+    /// Initialize collection subscription object
+    ///
+    /// - Parameters:
+    ///   - collectionID: Collection ID
+    ///   - filter: Subscription filter
+    ///   - ordering: Subscription ordering
+    ///   - paging: Subscription paging
+    ///   - callback: Default subscription callback
+    ///   - callbackWithChanges: Subscription callback with lists of changes
     init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, callback: RapidColSubCallback?, callbackWithChanges: RapidColSubCallbackWithChanges?) {
         self.collectionID = collectionID
         self.filter = filter
@@ -29,77 +52,40 @@ class RapidCollectionSub: NSObject {
         self.callbackWithChanges = callbackWithChanges
     }
     
+}
+
+extension RapidCollectionSub: RapidSerializable {
+    
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(subscription: self, withIdentifiers: identifiers)
     }
-    
-}
 
-fileprivate extension RapidCollectionSub {
-    
-    func incorporateChanges(newValue: [RapidDocumentSnapshot], oldValue: [RapidDocumentSnapshot]?) -> (dataSet: [RapidDocumentSnapshot], insert: [RapidDocumentSnapshot], update: [RapidDocumentSnapshot], delete: [RapidDocumentSnapshot]) {
-        guard var documents = oldValue else {
-            let dataSet = newValue.flatMap({ $0.value == nil ? nil : $0 })
-            return (dataSet, dataSet, [], [])
-        }
-        
-        var inserted = [RapidDocumentSnapshot]()
-        var updated = [RapidDocumentSnapshot]()
-        var deleted = [RapidDocumentSnapshot]()
-        
-        for value in newValue {
-            let index = documents.index(where: { $0.id == value.id })
-            
-            if let index = index, value.value == nil {
-                let document = documents.remove(at: index)
-                deleted.append(document)
-            }
-            else if let predID = value.predecessorID, let predIndex = documents.index(where: { $0.id == predID }) {
-                if let index = index {
-                    documents.remove(at: index)
-                    let newIndex = predIndex < index ? predIndex + 1 : predIndex
-                    documents.insert(value, at: newIndex)
-                    updated.append(value)
-                }
-                else {
-                    documents.insert(value, at: predIndex + 1)
-                    inserted.append(value)
-                }
-            }
-            else if let index = index {
-                documents.remove(at: index)
-                documents.insert(value, at: 0)
-                updated.append(value)
-            }
-            else {
-                documents.insert(value, at: 0)
-                inserted.append(value)
-            }
-        }
-        
-        return (documents, inserted, updated, deleted)
-    }
-    
 }
 
 extension RapidCollectionSub: RapidSubscriptionInstance {
     
+    /// Subscription identifier
     var subscriptionHash: String {
         return "\(collectionID)#\(filter?.filterHash ?? "")#\(ordering?.map({ $0.orderingHash }).joined(separator: "|") ?? "")#\(paging?.pagingHash ?? "")"
     }
     
     func subscriptionFailed(withError error: RapidError) {
+        // Pass error to callbacks
         DispatchQueue.main.async { [weak self] in
             self?.callback?(error, [])
             self?.callbackWithChanges?(error, [], [], [], [])
         }
     }
     
+    /// Assign a block of code that should be called on unsubscribing to `unsubscribeCallback`
+    ///
+    /// - Parameter callback: <#callback description#>
     func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void) {
         unsubscribeCallback = callback
     }
     
     func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) {
+        // Pass changes to callbacks
         DispatchQueue.main.async { [weak self] in
             self?.callback?(nil, documents)
             self?.callbackWithChanges?(nil, documents, added, updated, removed)
@@ -110,6 +96,7 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
 
 extension RapidCollectionSub: RapidSubscription {
     
+    /// Unregister subscription
     func unsubscribe() {
         unsubscribeCallback?(self)
     }
@@ -117,13 +104,31 @@ extension RapidCollectionSub: RapidSubscription {
 }
 
 // MARK: Document subscription
+
+
+/// Document subscription object
+///
+/// The class is a wrapper for `RapidCollectionSub`. Internally, it creates collection subscription filtered by `RapidFilterSimple.documentIdKey` = `documentID`
 class RapidDocumentSub: NSObject {
     
+    /// Collection ID
     let collectionID: String
+    
+    /// Document ID
     let documentID: String
+    
+    /// Subscription callback
     let callback: RapidDocSubCallback?
+    
+    /// Underlying collection subscription object
     fileprivate(set) var subscription: RapidCollectionSub!
     
+    /// Initialize document subscription object
+    ///
+    /// - Parameters:
+    ///   - collectionID: Collection ID
+    ///   - documentID: Document ID
+    ///   - callback: Subscription callback
     init(collectionID: String, documentID: String, callback: RapidDocSubCallback?) {
         self.collectionID = collectionID
         self.documentID = documentID
@@ -132,11 +137,15 @@ class RapidDocumentSub: NSObject {
         super.init()
         
         self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(key: RapidFilterSimple.documentIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, callback: { [weak self] (error, documents) in
+            // Return last document from a collection subscription callback
             let document = documents.last ?? RapidDocumentSnapshot(id: documentID, value: nil)
             self?.callback?(error, document)
             }, callbackWithChanges: nil)
     }
-    
+}
+
+extension RapidDocumentSub: RapidSerializable {
+
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try subscription.serialize(withIdentifiers: identifiers)
     }

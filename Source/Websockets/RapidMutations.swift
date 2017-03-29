@@ -10,20 +10,39 @@ import Foundation
 
 // MARK: Document mutation
 
+/// Document mutation request
 class RapidDocumentMutation: NSObject, RapidMutationRequest {
     
+    /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
+    
+    /// Requst waits for acknowledgement
     let needsAcknowledgement = true
     
+    /// Document JSON
     let value: [AnyHashable: Any]?
+    
+    /// Collection ID
     let collectionID: String
+    
+    /// Document ID
     let documentID: String
+    
+    /// Mutation callback
     let callback: RapidMutationCallback?
     
+    /// Timout delegate
     fileprivate weak var timoutDelegate: RapidTimeoutRequestDelegate?
     
     fileprivate var timer: Timer?
     
+    /// Initialize mutation request
+    ///
+    /// - Parameters:
+    ///   - collectionID: Collection ID
+    ///   - documentID: Document ID
+    ///   - value: Document JSON
+    ///   - callback: Mutation callback
     init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, callback: RapidMutationCallback?) {
         self.value = value
         self.collectionID = collectionID
@@ -43,6 +62,8 @@ extension RapidDocumentMutation: RapidSerializable {
 extension RapidDocumentMutation: RapidTimeoutRequest {
     
     func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
+        // Start timeout
+
         self.timoutDelegate = delegate
         
         DispatchQueue.main.async { [weak self] in
@@ -79,20 +100,39 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
 
 // MARK: Document merge
 
+/// Document merge request
 class RapidDocumentMerge: NSObject, RapidMergeRequest {
     
+    /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
+
+    /// Requst waits for acknowledgement
     let needsAcknowledgement = true
     
+    /// JSON with values to be merged
     let value: [AnyHashable: Any]?
+    
+    /// Collection ID
     let collectionID: String
+    
+    /// Document ID
     let documentID: String
+    
+    /// Merge callback
     let callback: RapidMutationCallback?
     
+    /// Timeout delegate
     fileprivate weak var timoutDelegate: RapidTimeoutRequestDelegate?
     
     fileprivate var timer: Timer?
     
+    /// Initialize merge request
+    ///
+    /// - Parameters:
+    ///   - collectionID: Collection ID
+    ///   - documentID: Document ID
+    ///   - value: JSON with values to be merged
+    ///   - callback: Merge callback
     init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, callback: RapidMergeCallback?) {
         self.value = value
         self.collectionID = collectionID
@@ -112,6 +152,8 @@ extension RapidDocumentMerge: RapidSerializable {
 extension RapidDocumentMerge: RapidTimeoutRequest {
     
     func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
+        // Start timeout countdown
+        
         self.timoutDelegate = delegate
         
         DispatchQueue.main.async { [weak self] in
