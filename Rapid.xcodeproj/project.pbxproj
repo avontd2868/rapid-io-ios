@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C12692201E82BC37002577B2 /* RapidSubscriptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */; };
-		C12692221E82D27A002577B2 /* RapidUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692211E82D27A002577B2 /* RapidUpdate.swift */; };
+		C12692221E82D27A002577B2 /* RapidSubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692211E82D27A002577B2 /* RapidSubscriptionEvent.swift */; };
 		C12692241E83D6F4002577B2 /* DictionaryJSONExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */; };
 		C1281A461E8AA3A50054AF73 /* RapidConnectionRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */; };
 		C1281A481E8AA8C20054AF73 /* RapidSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A471E8AA8C20054AF73 /* RapidSubscriptions.swift */; };
@@ -48,7 +48,7 @@
 
 /* Begin PBXFileReference section */
 		C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionHandler.swift; sourceTree = "<group>"; };
-		C12692211E82D27A002577B2 /* RapidUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidUpdate.swift; sourceTree = "<group>"; };
+		C12692211E82D27A002577B2 /* RapidSubscriptionEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionEvent.swift; sourceTree = "<group>"; };
 		C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryJSONExtension.swift; sourceTree = "<group>"; };
 		C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidConnectionRequests.swift; sourceTree = "<group>"; };
 		C1281A471E8AA8C20054AF73 /* RapidSubscriptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptions.swift; sourceTree = "<group>"; };
@@ -98,6 +98,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C1642F331E8BA4A700C455E1 /* RapidClasses */ = {
+			isa = PBXGroup;
+			children = (
+				C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */,
+				C1281A491E8AA9020054AF73 /* RapidMutations.swift */,
+				C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */,
+				C1D6E9A41E7BE3C0007589FC /* RapidSocketAcknowledgement.swift */,
+				C12692211E82D27A002577B2 /* RapidSubscriptionEvent.swift */,
+				C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */,
+				C1281A471E8AA8C20054AF73 /* RapidSubscriptions.swift */,
+			);
+			path = RapidClasses;
+			sourceTree = "<group>";
+		};
 		C1D6E8151E7856AD007589FC = {
 			isa = PBXGroup;
 			children = (
@@ -120,14 +134,15 @@
 		C1D6E8211E7856AD007589FC /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				C1D6E9881E7AD7A3007589FC /* Networking */,
 				C1D6E99A1E7AE505007589FC /* Protocols */,
-				C1D6E9881E7AD7A3007589FC /* Websockets */,
+				C1642F331E8BA4A700C455E1 /* RapidClasses */,
 				C1D6E99F1E7AFDFE007589FC /* Utils */,
 				C1D6E8A71E785D72007589FC /* Rapid.swift */,
-				C1D6E9AA1E7BF7F4007589FC /* RapidHandler.swift */,
-				C1D6E9961E7ADE35007589FC /* RapidError.swift */,
 				C1D6E9941E7ADC78007589FC /* RapidCollection.swift */,
 				C1D6E9981E7ADF0C007589FC /* RapidDocument.swift */,
+				C1D6E9961E7ADE35007589FC /* RapidError.swift */,
+				C1D6E9AA1E7BF7F4007589FC /* RapidHandler.swift */,
 				C1D6E9B01E7C0FAE007589FC /* RapidQuery.swift */,
 			);
 			path = Source;
@@ -137,8 +152,8 @@
 			isa = PBXGroup;
 			children = (
 				C1D6E82F1E7856AD007589FC /* Info.plist */,
-				C1D6E82D1E7856AD007589FC /* RapidTests.swift */,
 				C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */,
+				C1D6E82D1E7856AD007589FC /* RapidTests.swift */,
 			);
 			path = RapidTests;
 			sourceTree = "<group>";
@@ -152,44 +167,35 @@
 			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
-		C1D6E9881E7AD7A3007589FC /* Websockets */ = {
+		C1D6E9881E7AD7A3007589FC /* Networking */ = {
 			isa = PBXGroup;
 			children = (
 				C1D6E9911E7AD822007589FC /* SSLSecurity.swift */,
 				C1D6E90D1E7A9131007589FC /* SocketManager.swift */,
-				C1D6E9A41E7BE3C0007589FC /* RapidSocketAcknowledgement.swift */,
-				C12692211E82D27A002577B2 /* RapidUpdate.swift */,
 				C1D6E98F1E7AD7E3007589FC /* WebSocket.swift */,
-				C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */,
-				C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */,
-				C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */,
-				C1281A471E8AA8C20054AF73 /* RapidSubscriptions.swift */,
-				C1281A491E8AA9020054AF73 /* RapidMutations.swift */,
 			);
-			path = Websockets;
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		C1D6E99A1E7AE505007589FC /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
 				C1D6E99B1E7AE523007589FC /* RapidMutationProtocols.swift */,
-				C1D6E9AE1E7C0D59007589FC /* RapidSubscriptionProtocols.swift */,
 				C1D6E9A21E7BE356007589FC /* RapidRequest.swift */,
 				C1D6E9A81E7BECA4007589FC /* RapidResponse.swift */,
+				C1D6E9AE1E7C0D59007589FC /* RapidSubscriptionProtocols.swift */,
 			);
-			name = Protocols;
-			path = Websockets;
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		C1D6E99F1E7AFDFE007589FC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */,
 				C1D6E9A01E7AFE6E007589FC /* Helpers.swift */,
 				C1D6E9AC1E7BFED2007589FC /* WRO.swift */,
-				C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */,
 			);
-			name = Utils;
-			path = Websockets;
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -361,7 +367,7 @@
 				C1D6E9901E7AD7E3007589FC /* WebSocket.swift in Sources */,
 				C1D6E9971E7ADE35007589FC /* RapidError.swift in Sources */,
 				C1D6E9A71E7BE942007589FC /* RapidSerialization.swift in Sources */,
-				C12692221E82D27A002577B2 /* RapidUpdate.swift in Sources */,
+				C12692221E82D27A002577B2 /* RapidSubscriptionEvent.swift in Sources */,
 				C1281A461E8AA3A50054AF73 /* RapidConnectionRequests.swift in Sources */,
 				C1D6E9AF1E7C0D59007589FC /* RapidSubscriptionProtocols.swift in Sources */,
 				C1281A481E8AA8C20054AF73 /* RapidSubscriptions.swift in Sources */,
