@@ -17,7 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Rapid.configure(withAPIKey: "ws://13.64.77.202:8080")
-        Rapid.timeout = 5
         return true
     }
 

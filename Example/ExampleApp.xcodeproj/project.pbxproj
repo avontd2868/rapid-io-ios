@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; };
 		C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1D28AB41E8BB25F00EE5582 /* AppTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */; };
+		C1D28AB71E8BB4BB00EE5582 /* AppObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */; };
 		C1D6E8761E785CFA007589FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8751E785CFA007589FC /* AppDelegate.swift */; };
 		C1D6E8781E785CFA007589FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8771E785CFA007589FC /* ViewController.swift */; };
 		C1D6E87B1E785CFA007589FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E8791E785CFA007589FC /* Main.storyboard */; };
@@ -64,6 +66,8 @@
 
 /* Begin PBXFileReference section */
 		C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Rapid.xcodeproj; path = ../Rapid.xcodeproj; sourceTree = "<group>"; };
+		C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTableViewCell.swift; sourceTree = "<group>"; };
+		C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppObject.swift; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E8751E785CFA007589FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1D6E8771E785CFA007589FC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -128,6 +132,8 @@
 			children = (
 				C1D6E8751E785CFA007589FC /* AppDelegate.swift */,
 				C1D6E8771E785CFA007589FC /* ViewController.swift */,
+				C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */,
+				C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */,
 				C1D6E8791E785CFA007589FC /* Main.storyboard */,
 				C1D6E87C1E785CFA007589FC /* Assets.xcassets */,
 				C1D6E87E1E785CFA007589FC /* LaunchScreen.storyboard */,
@@ -275,6 +281,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1D6E8781E785CFA007589FC /* ViewController.swift in Sources */,
+				C1D28AB41E8BB25F00EE5582 /* AppTableViewCell.swift in Sources */,
+				C1D28AB71E8BB4BB00EE5582 /* AppObject.swift in Sources */,
 				C1D6E8761E785CFA007589FC /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

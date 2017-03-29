@@ -11,105 +11,81 @@ import Rapid
 
 class ViewController: UIViewController {
     
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var descTextField: UITextField!
+    
     var subscription: RapidSubscription?
+    
+    var apps: [AppObject] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        tableView.delegate = self
+        tableView.dataSource = self
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBAction func addApp(_ sender: Any) {
+        let value = [
+            "name": nameTextField.text ?? "Name",
+            "desc": descTextField.text ?? "Description"
+        ]
+        
+        Rapid.collection(named: "iosapps").newDocument().mutate(value: value) { (error, _) in
+            if let error = error {
+                print("App creation error \(error)")
+            }
+            else {
+                print("App created")
+            }
+        }
+        
+        nameTextField.text = nil
+        descTextField.text = nil
     }
-
+    
     @IBAction func subscribe(_ sender: Any) {
-        subscription = Rapid.collection(named: "messages").subscribe { (error, documents) in
+        subscription = Rapid.collection(named: "iosapps").subscribe { (error, documents) in
             if let error = error as? RapidError {
                 switch error {
                 case .permissionDenied(let message):
-                    print("Permission denied: \(message)")
+                    print("Permission denied: \(String(describing: message))")
                     
                 default:
                     print("Other error")
                 }
             }
             else {
-                let firstDoc = documents[0]
-                let id = firstDoc.id
-                let value = firstDoc.value
+                self.apps = documents.flatMap({ AppObject(document: $0) })
+                self.tableView.reloadData()
             }
         }
         
-        Rapid.collection(named: "messages").document(withID: "1").subscribe { (error, document) in
-            let message1 = document.value
-            print(message1)
-        }
-        
-        Rapid.collection(named: "messages").document(withID: "23").merge(value: ["reaction": "smile"]) { (error, value) in
-            if let error = error as? RapidError {
-                switch error {
-                case .permissionDenied(let message):
-                    print("Permission denied: \(message)")
-                    
-                case .timeout:
-                    print("Timeout")
-                    
-                default:
-                    print("Other error")
-                }
-            }
-            else {
-                print("Reaction successfuly added.")
-            }
-        }
-        
-        Rapid.collection(named: "messages")
-            .filter(by:
-                RapidFilterCompound(compoundOperator: .and, operands: [
-                    RapidFilterCompound(compoundOperator: .or, operands: [
-                        RapidFilterSimple(key: "sender", relation: .equal, value: "john123"),
-                        RapidFilterSimple(key: "urgency", relation: .greaterThanOrEqual, value: 1)
-                        ])!,
-                    RapidFilterSimple(key: "receiver", relation: .equal, value: "carl01")
-                    ])!)
-            .order(by: [
-                RapidOrdering(key: "sentDate", ordering: .descending),
-                RapidOrdering(key: "urgency", ordering: .ascending)
-                ])
-            .limit(to: 50, skip: 10)
-            .subscribe { (error, documents) in
-                if let error = error {
-                    print(error)
-                }
-                else {
-                    print(documents)
-                }
-        }
     }
 
     @IBAction func unsubscribe(_ sender: Any) {
         subscription?.unsubscribe()
     }
     
-    @IBAction func mutate(_ sender: Any) {
-        Rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { (error, object) in
-            if let error = error as? RapidError {
-                switch error {
-                case .permissionDenied(let message):
-                    print("Permission denied: \(message)")
-                    
-                case .timeout:
-                    print("Timeout")
-                    
-                default:
-                    print("Other error")
-                }
-            }
-            else {
-                print("Message successfuly written.")
-            }
-        }
+}
+
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return apps.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "AppCell", for: indexPath) as! AppTableViewCell
+        
+        cell.configure(withApp: apps[indexPath.row])
+        
+        return cell
     }
 }
 
