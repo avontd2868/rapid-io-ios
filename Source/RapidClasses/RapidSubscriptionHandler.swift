@@ -52,7 +52,7 @@ class RapidSubscriptionHandler: NSObject {
     /// - Parameters:
     ///   - subscriptionID: Subscription ID
     ///   - subscription: Subscription object
-    ///   - dispatchQueue: `SocketManager` dedicated thread
+    ///   - dispatchQueue: `SocketManager` dedicated thread for parsing
     ///   - unsubscribeHandler: Block of code which must be called to unregister the subscription
     init(withSubscriptionID subscriptionID: String, subscription: RapidSubscriptionInstance, dispatchQueue: DispatchQueue, unsubscribeHandler: @escaping (RapidUnsubscriptionHandler) -> Void) {
         self.unsubscribeHandler = unsubscribeHandler
@@ -61,19 +61,23 @@ class RapidSubscriptionHandler: NSObject {
         
         super.init()
         
-        state = .registering
-        appendSubscription(subscription)
+        dispatchQueue.async { [weak self] in
+            self?.state = .registering
+            self?.appendSubscription(subscription)
+        }
     }
     
     /// Add another subscription object to the handler
     ///
     /// - Parameter subscription: New subscription object
     func registerSubscription(subscription: RapidSubscriptionInstance) {
-        appendSubscription(subscription)
-        
-        // If the handler is subscribed pass the last known value immediatelly
-        if state == .subscribed, let value = value {
-            subscription.receivedUpdate(value, value, [], [])
+        dispatchQueue.async { [weak self] in
+            self?.appendSubscription(subscription)
+            
+            // If the handler is subscribed pass the last known value immediatelly
+            if self?.state == .subscribed, let value = self?.value {
+                subscription.receivedUpdate(value, value, [], [])
+            }
         }
     }
     
@@ -81,14 +85,18 @@ class RapidSubscriptionHandler: NSObject {
     ///
     /// - Parameter handler: Previously creaated unsubscription handler
     func retryUnsubscription(withHandler handler: RapidUnsubscriptionHandler) {
-        if state == .unsubscribing {
-            unsubscribeHandler(handler)
+        dispatchQueue.async { [weak self] in
+            if self?.state == .unsubscribing {
+                self?.unsubscribeHandler(handler)
+            }
         }
     }
     
     /// Inform handler about being unsubscribed
     func didUnsubscribe() {
-        state = .unsubscribed
+        dispatchQueue.async { [weak self] in
+            self?.state = .unsubscribed
+        }
     }
 }
 
@@ -262,19 +270,25 @@ fileprivate extension RapidSubscriptionHandler {
 extension RapidSubscriptionHandler: RapidRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        state = .subscribed
+        dispatchQueue.async { [weak self] in
+            self?.state = .subscribed
+        }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        state = .unsubscribed
-        
-        for subscription in subscriptions {
-            subscription.subscriptionFailed(withError: error.error)
+        dispatchQueue.async { [weak self] in
+            self?.state = .unsubscribed
+            
+            for subscription in self?.subscriptions ?? [] {
+                subscription.subscriptionFailed(withError: error.error)
+            }
         }
     }
     
     func receivedSubscriptionEvent(_ update: RapidSubscriptionEvent) {
-        receivedNewValue(update.documents)
+        dispatchQueue.async { [weak self] in
+            self?.receivedNewValue(update.documents)
+        }
     }
 }
 

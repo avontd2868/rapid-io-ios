@@ -46,7 +46,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func subscribe(_ sender: Any) {
-        subscription = Rapid.collection(named: "iosapps").subscribe { (error, documents) in
+        subscription = Rapid.collection(named: "iosapps").subscribe { (error, documents, insert, update, delete) in
             if let error = error as? RapidError {
                 switch error {
                 case .permissionDenied(let message):
@@ -57,6 +57,7 @@ class ViewController: UIViewController {
                 }
             }
             else {
+                print("\(insert) - \(update) - \(delete)")
                 self.apps = documents.flatMap({ AppObject(document: $0) })
                 self.tableView.reloadData()
             }

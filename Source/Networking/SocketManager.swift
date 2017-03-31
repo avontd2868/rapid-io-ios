@@ -33,8 +33,9 @@ class SocketManager {
     /// Delegate for informing about connection state change
     weak var connectionStateDelegate: RapidConnectionStateChangeDelegate?
     
-    /// Dedicated thread
+    /// Dedicated threads
     fileprivate let websocketQueue: DispatchQueue
+    fileprivate let parseQueue: DispatchQueue
     
     /// Websocket object
     fileprivate let socket: WebSocket
@@ -59,6 +60,7 @@ class SocketManager {
     
     init(socketURL: URL) {
         self.websocketQueue = DispatchQueue(label: "RapidWebsocketQueue-\(socketURL.lastPathComponent)", attributes: [])
+        self.parseQueue = DispatchQueue(label: "RapidParseQueue-\(socketURL.lastPathComponent)", attributes: [])
         self.connectionID = Generator.uniqueID
         self.socket = WebSocket(url: socketURL)
         self.socket.delegate = self
@@ -95,7 +97,7 @@ class SocketManager {
     /// - Parameter subscription: Subscription object
     func subscribe(_ subscription: RapidSubscriptionInstance) {
         websocketQueue.async { [weak self] in
-            guard let queue = self?.websocketQueue else {
+            guard let queue = self?.parseQueue else {
                 return
             }
             
@@ -109,7 +111,9 @@ class SocketManager {
                 
                 // Create a handler for the subscription
                 let subscriptionHandler = RapidSubscriptionHandler(withSubscriptionID: subscriptionID, subscription: subscription, dispatchQueue: queue, unsubscribeHandler: { [weak self] handler in
-                    self?.unsubscribe(handler)
+                    self?.websocketQueue.async {
+                        self?.unsubscribe(handler)
+                    }
                 })
                 
                 // Add handler to the dictionary of registered subscriptions
@@ -404,9 +408,13 @@ fileprivate extension SocketManager {
             json = nil
         }
         
-        if let responses = RapidSerialization.parse(json: json) {
-            for response in responses {
-                completeRequest(withResponse: response)
+        parseQueue.async { [weak self] in
+            if let responses = RapidSerialization.parse(json: json) {
+                self?.websocketQueue.async {
+                    for response in responses {
+                        self?.completeRequest(withResponse: response)
+                    }
+                }
             }
         }
     }

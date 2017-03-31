@@ -30,7 +30,7 @@ class RapidTests: XCTestCase {
         super.tearDown()
     }
     
-/*    // MARK: Test general stuff
+    // MARK: Test general stuff
     
     func testWrongAPIKey() {
         let rapid = Rapid.getInstance(withAPIKey: "")
@@ -158,7 +158,7 @@ class RapidTests: XCTestCase {
         }
         
         waitForExpectations(timeout: 4, handler: nil)
-    }*/
+    }
     
     func testReconnectWithFullQueue() {
         let socket = WebSocket(url: fakeSocketURL)
