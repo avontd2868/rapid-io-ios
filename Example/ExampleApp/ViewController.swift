@@ -62,7 +62,6 @@ class ViewController: UIViewController {
                 self.tableView.reloadData()
             }
         }
-        
     }
 
     @IBAction func unsubscribe(_ sender: Any) {

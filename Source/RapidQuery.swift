@@ -26,6 +26,8 @@ public struct RapidFilterSimple: RapidFilter {
         case equal
         case greaterThanOrEqual
         case lessThanOrEqual
+        case greaterThan
+        case lessThan
         
         var hash: String {
             switch self {
@@ -36,8 +38,13 @@ public struct RapidFilterSimple: RapidFilter {
                 return "gte"
                 
             case .lessThanOrEqual:
-                
                 return "lte"
+                
+            case .greaterThan:
+                return "gt"
+                
+            case .lessThan:
+                return "lt"
             }
         }
     }
@@ -55,7 +62,7 @@ public struct RapidFilterSimple: RapidFilter {
     ///   - key: Name of a document parameter
     ///   - relation: Ralation to the `value`
     ///   - value: Reference value
-    public init(key: String, relation: Relation, value: Any?) {
+    public init<Numeric: Comparable>(key: String, relation: Relation, value: Numeric?) {
         self.key = key
         self.relation = relation
         self.value = value

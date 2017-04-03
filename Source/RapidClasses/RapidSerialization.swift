@@ -148,6 +148,12 @@ class RapidSerialization {
             
         case .lessThanOrEqual:
             return [simpleFilter.key: ["lte": simpleFilter.value]]
+            
+        case .greaterThan:
+            return [simpleFilter.key: ["gt": simpleFilter.value]]
+            
+        case .lessThan:
+            return [simpleFilter.key: ["lt": simpleFilter.value]]
         }
     }
     
