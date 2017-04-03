@@ -18,8 +18,11 @@ class SocketManager {
     
     typealias Request = RapidRequest & RapidSerializable
     
+    /// Time interval between heartbeats
+    fileprivate let heartbeatInterval: TimeInterval = 30
+    
     /// ID that identifies a websocket connection to this client for reconnecting purposes
-    fileprivate(set) var connectionID: String
+    fileprivate(set) var connectionID: String?
     
     /// State of a websocket connection
     fileprivate var state: Rapid.ConnectionState = .disconnected {
@@ -58,10 +61,12 @@ class SocketManager {
     /// Timer that limits maximum time span when websocket connection is trying to be established
     fileprivate var socketConnectTimer: Timer?
     
+    /// Timer that limits maximum time without any websocket communication to reveal disconnections
+    fileprivate var heartbeatTimer: Timer?
+    
     init(socketURL: URL) {
         self.websocketQueue = DispatchQueue(label: "RapidWebsocketQueue-\(socketURL.lastPathComponent)", attributes: [])
         self.parseQueue = DispatchQueue(label: "RapidParseQueue-\(socketURL.lastPathComponent)", attributes: [])
-        self.connectionID = Generator.uniqueID
         self.socket = WebSocket(url: socketURL)
         self.socket.delegate = self
         
@@ -181,7 +186,11 @@ fileprivate extension SocketManager {
         let currentQueue = requestQueue.filter({
             // Do not include connection requests and heartbeats that are relevant to one physical websocket connection
             switch $0 {
-            case is RapidConnectionRequest, is RapidHeartbeat:
+            case is RapidConnectionRequest, is RapidEmptyRequest, is RapidReconnectionRequest:
+                // If the request is timeoutable then invalidate it
+                if let timeout = $0 as? RapidTimeoutRequest {
+                    timeout.invalidateTimer()
+                }
                 return false
                 
             default:
@@ -194,7 +203,7 @@ fileprivate extension SocketManager {
         // If abstract connection to the server was terminated
         if let error = error, case RapidError.connectionTerminated = error {
             //Because an abstract connection expired a new connection with a new connection ID needs to be established
-            connectionID = Generator.uniqueID
+            connectionID = nil
 
             // Add to the request queue those subscriptions that were already acknowledged by the server
             requestQueue = activeSubscriptions
@@ -284,7 +293,16 @@ fileprivate extension SocketManager {
     /// When socket is connected physically, the client still needs to identify itself by its connection ID.
     /// This creates an abstract connection which is not dependent on a physical one
     func sendConnectionRequest() {
-        let connection = RapidConnectionRequest(connectionID: connectionID, delegate: self)
+        let connection: RapidConnectionRequest
+        
+        if let connectionID = connectionID {
+            connection = RapidReconnectionRequest(connectionID: connectionID, delegate: self)
+        }
+        else {
+            let connectionID = Rapid.uniqueID
+            connection = RapidConnectionRequest(connectionID: connectionID, delegate: self)
+            self.connectionID = connectionID
+        }
 
         // Inform the connection request that it should start a timeout count down
         connection.requestSent(withTimeout: Rapid.defaultTimeout, delegate: self)
@@ -351,6 +369,9 @@ fileprivate extension SocketManager {
         for request in queueCopy {
             writeEvent(serializableRequest: request)
         }
+        
+        // Restart heartbeat timer
+        rescheduleHeartbeatTimer()
     }
     
     /// Post event to websocket
@@ -408,6 +429,9 @@ fileprivate extension SocketManager {
             json = nil
         }
         
+        // Restart heartbeat timer
+        rescheduleHeartbeatTimer()
+        
         parseQueue.async { [weak self] in
             if let responses = RapidSerialization.parse(json: json) {
                 self?.websocketQueue.async {
@@ -454,6 +478,31 @@ fileprivate extension SocketManager {
     }
 }
 
+// MARK: Heartbeat
+extension SocketManager {
+    
+    /// Send empty request to test the connection
+    @objc func sendEmptyRequest() {
+        websocketQueue.async { [weak self] in
+            let request = RapidEmptyRequest()
+            
+            print("Empty request")
+            self?.postEvent(serializableRequest: request)
+        }
+    }
+    
+    /// Invalidate previous heartbeat timer and start a new one
+    func rescheduleHeartbeatTimer() {
+        DispatchQueue.main.async { [weak self] in
+            self?.heartbeatTimer?.invalidate()
+            
+            if let strongSelf = self {
+                self?.heartbeatTimer = Timer.scheduledTimer(timeInterval: strongSelf.heartbeatInterval, target: strongSelf, selector: #selector(strongSelf.sendEmptyRequest), userInfo: nil, repeats: false)
+            }
+        }
+    }
+}
+
 // MARK: Connection request delegate
 extension SocketManager: RapidConnectionRequestDelegate {
     
@@ -461,11 +510,12 @@ extension SocketManager: RapidConnectionRequestDelegate {
     ///
     /// - Parameter request: Connection request that was acknowledged
     func connectionEstablished(_ request: RapidConnectionRequest) {
+        print("Connection established")
+        
         websocketQueue.async { [weak self] in
             self?.state = .connected
             
             self?.flushQueue()
-            self?.sendHeartbeat()
         }
     }
     
@@ -475,52 +525,9 @@ extension SocketManager: RapidConnectionRequestDelegate {
     ///   - request: Connection request that failed
     ///   - error: Reason of failure
     func connectingFailed(_ request: RapidConnectionRequest, error: RapidErrorInstance) {
-        websocketQueue.async { [weak self] in
-            self?.restartSocket(afterError: error.error)
-        }
-    }
-}
-
-// MARK: Heartbeat delegate
-extension SocketManager: RapidHeartbeatDelegate {
-    
-    /// Heartbeat was acknowledged
-    ///
-    /// - Parameter heartbeat: Heartbeat request that was acknowledged
-    func connectionAlive(_ heartbeat: RapidHeartbeat) {
-        print("Schedule hearbeat")
-        
-        // If heartbeat was acknowledged schedule next one
-        DispatchQueue.main.async { [weak self] in
-            if let strongSelf = self {
-                Timer.scheduledTimer(timeInterval: 10, target: strongSelf, selector: #selector(strongSelf.sendHeartbeat), userInfo: nil, repeats: false)
-            }
-        }
-    }
-    
-    /// Send heartbeat to the server
-    @objc func sendHeartbeat() {
-        print("Send hearbeat")
+        print("Connection failed")
         
         websocketQueue.async { [weak self] in
-            if let strongSelf = self, strongSelf.state == .connected {
-                self?.postEvent(serializableRequest: RapidHeartbeat(delegate: strongSelf))
-            }
-        }
-    }
-    
-    /// Heartbeat failed
-    ///
-    /// Heartbeat either timed out or the server returned `RapidError.connectionTerminated`
-    ///
-    /// - Parameters:
-    ///   - heartbeat: Heartbeat request that failed
-    ///   - error: Failure reason
-    func connectionDead(_ heartbeat: RapidHeartbeat, error: RapidErrorInstance) {
-        print("Connection dead")
-        
-        websocketQueue.async { [weak self] in
-            
             self?.restartSocket(afterError: error.error)
         }
     }
@@ -591,19 +598,10 @@ extension SocketManager: WebSocketDelegate {
             self?.socketConnectTimer = nil
         }
         
-        websocketQueue.async { [weak self] in
-            self?.state = .connected
-            
-            self?.flushQueue()
-            self?.sendHeartbeat()
-        }
         // Establish abstract connection
-        // FIXME: Send connection request
-        
-        /*
         websocketQueue.async { [weak self] in
             self?.sendConnectionRequest()
-        }*/
+        }
     }
     
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {

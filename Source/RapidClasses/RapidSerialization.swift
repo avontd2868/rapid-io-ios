@@ -68,7 +68,7 @@ class RapidSerialization {
         
         var doc = [AnyHashable: Any]()
         doc[Mutation.Document.DocumentID.name] = mutation.documentID
-        doc[Mutation.Document.Body.name] = mutation.value ?? NSNull()
+        doc[Mutation.Document.Body.name] = mutation.value
         
         json[Mutation.CollectionID.name] = mutation.collectionID
         json[Mutation.Document.name] = doc
@@ -225,7 +225,7 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
-    /// Serialize an connection request into JSON string
+    /// Serialize a connection request into JSON string
     ///
     /// - Parameters:
     ///   - connection: Connection request object
@@ -241,6 +241,22 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize a reconnection request into JSON string
+    ///
+    /// - Parameters:
+    ///   - reconnection: Reconnection request object
+    ///   - identifiers: Identifiers that are associated with the connection request event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` errors
+    class func serialize(reconnection: RapidReconnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Reconnect.ConnectionID.name] = reconnection.connectionID
+        
+        let resultDict = [Reconnect.name: json]
+        return try resultDict.jsonString()
+    }
+    
     /// Serialize an disconnection request into JSON string
     ///
     /// - Parameters:
@@ -253,15 +269,15 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
-    /// Serialize an hearbeat into JSON string
+    /// Serialize an empty request into JSON string
     ///
     /// - Parameters:
-    ///   - heartbeat: Heartbeat object
+    ///   - emptyRequest: Request object
     ///   - identifiers: Identifiers that are associated with the heartbeat event
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` errors
-    class func serialize(heartbeat: RapidHeartbeat, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
-        let resultDict = [Heartbeat.name: identifiers]
+    class func serialize(emptyRequest: RapidEmptyRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        let resultDict = [NoOperation.name: identifiers]
         return try resultDict.jsonString()
     }
 }
@@ -470,11 +486,19 @@ extension RapidSerialization {
         }
     }
     
+    struct Reconnect {
+        static let name = "rec"
+        
+        struct ConnectionID {
+            static let name = "con-id"
+        }
+    }
+    
     struct Disconnect {
         static let name = "dis"
     }
     
-    struct Heartbeat {
-        static let name = "hb"
+    struct NoOperation {
+        static let name = "nop"
     }
 }

@@ -33,6 +33,9 @@ protocol RapidTimeoutRequest: RapidRequest {
     ///   - timeout: Number of seconds before timeout occurs
     ///   - delegate: Timeout delegate
     func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate)
+    
+    /// Stop countdown because request is no more valid
+    func invalidateTimer()
 }
 
 /// Delegate for informing about timout

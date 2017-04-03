@@ -93,6 +93,13 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
         timoutDelegate?.requestTimeout(self)
     }
     
+    func invalidateTimer() {
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+        }
+    }
+    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
         DispatchQueue.main.async {
             self.timer?.invalidate()
@@ -181,6 +188,13 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
         timer = nil
         
         timoutDelegate?.requestTimeout(self)
+    }
+    
+    func invalidateTimer() {
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+        }
     }
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
