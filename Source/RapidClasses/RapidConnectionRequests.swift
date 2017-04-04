@@ -106,42 +106,19 @@ class RapidReconnectionRequest: RapidConnectionRequest {
 // MARK: Disconnect
 
 /// Disconnection request
-class RapidDisconnectionRequest {
+class RapidDisconnectionRequest: RapidSerializable, RapidClientEvent {
     
-    /// Requst doesn't wait for acknowledgement
-    let needsAcknowledgement = false
-}
-
-extension RapidDisconnectionRequest: RapidSerializable {
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(disconnection: self, withIdentifiers: identifiers)
+        return try RapidSerialization.serialize(disconnection: self)
     }
-}
-
-extension RapidDisconnectionRequest: RapidRequest {
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {}
-    func eventFailed(withError error: RapidErrorInstance) {}
 }
 
 // MARK: No operation
 
 /// Empty request for connection test
-class RapidEmptyRequest {
-    
-    /// Requst waits for acknowledgement
-    let needsAcknowledgement = false
-    
-}
-
-extension RapidEmptyRequest: RapidRequest {
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {}
-    func eventFailed(withError error: RapidErrorInstance) {}
-}
-
-extension RapidEmptyRequest: RapidSerializable {
+class RapidEmptyRequest: RapidSerializable, RapidClientEvent {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(emptyRequest: self, withIdentifiers: identifiers)
+        return try RapidSerialization.serialize(emptyRequest: self)
     }
-    
 }

@@ -22,6 +22,27 @@ protocol RapidRequest: class {
     func eventFailed(withError error: RapidErrorInstance)
 }
 
+/// Protocol inheriting from `RapidRequest`.
+///
+/// `RapidClientEvent` informs the server about an event and doesn't wait for an acknowledgement.
+protocol RapidClientEvent: RapidRequest {}
+
+extension RapidClientEvent {
+    
+    var needsAcknowledgement: Bool { return false }
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {}
+    
+    func eventFailed(withError error: RapidErrorInstance) {}
+}
+
+extension RapidClientEvent where Self: RapidSerializable {
+    
+    func serialize() throws -> String {
+        return try self.serialize(withIdentifiers: [:])
+    }
+}
+
 /// `RapidRequest` that implements timeout
 protocol RapidTimeoutRequest: RapidRequest {
     /// Request should timeout even if `Rapid.timeout` is `nil`

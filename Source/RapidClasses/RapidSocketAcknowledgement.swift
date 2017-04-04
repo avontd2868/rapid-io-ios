@@ -13,7 +13,6 @@ import Foundation
 /// This object represents either an acknowledgement from the server or an acknowledgement which is about to be sent to the server
 class RapidSocketAcknowledgement: RapidResponse {
     
-    let needsAcknowledgement = false
     let eventID: String
     
     init?(json: Any?) {
@@ -33,17 +32,9 @@ class RapidSocketAcknowledgement: RapidResponse {
     }
 }
 
-extension RapidSocketAcknowledgement: RapidSerializable, RapidRequest {
-    
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        
-    }
-    
-    func eventFailed(withError error: RapidErrorInstance) {
-        
-    }
+extension RapidSocketAcknowledgement: RapidSerializable, RapidClientEvent {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(acknowledgement: self, withIdentifiers: identifiers)
+        return try RapidSerialization.serialize(acknowledgement: self)
     }
 }

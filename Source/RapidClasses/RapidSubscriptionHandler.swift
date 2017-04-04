@@ -8,6 +8,31 @@
 
 import Foundation
 
+fileprivate func == (lhs: RapidDocumentSnapshotOperation, rhs: RapidDocumentSnapshotOperation) -> Bool {
+    return lhs.snapshot.id == rhs.snapshot.id
+}
+
+fileprivate class RapidDocumentSnapshotOperation: Hashable {
+    enum Operation {
+        case add
+        case update
+        case remove
+        case none
+    }
+    
+    let snapshot: RapidDocumentSnapshot
+    let operation: Operation
+    
+    var hashValue: Int {
+        return snapshot.id.hashValue
+    }
+    
+    init(snapshot: RapidDocumentSnapshot, operation: Operation) {
+        self.snapshot = snapshot
+        self.operation = operation
+    }
+}
+
 /// Class that handles all subscriptions which listen to the same dataset
 class RapidSubscriptionHandler: NSObject {
     
@@ -61,10 +86,8 @@ class RapidSubscriptionHandler: NSObject {
         
         super.init()
         
-        dispatchQueue.async { [weak self] in
-            self?.state = .registering
-            self?.appendSubscription(subscription)
-        }
+        state = .registering
+        appendSubscription(subscription)
     }
     
     /// Add another subscription object to the handler
@@ -133,8 +156,8 @@ fileprivate extension RapidSubscriptionHandler {
     /// Updated dataset received from the server
     ///
     /// - Parameter newValue: Updated dataset
-    func receivedNewValue(_ newValue: [RapidDocumentSnapshot]) {
-        let updates = incorporateChanges(newValue: newValue, oldValue: value)
+    func receivedNewValue(_ update: RapidSubscriptionBatch) {
+        let updates = incorporateChanges(update: update, oldValue: value)
         
         // Inform all subscription objects
         for subsription in subscriptions {
@@ -150,107 +173,124 @@ fileprivate extension RapidSubscriptionHandler {
     ///   - rawArray: Updated documents
     ///   - oldValue: Last known dataset
     /// - Returns: Tuple with a new dataset and arrays of new, updated and removed documents
-    func incorporateChanges(newValue rawArray: [RapidDocumentSnapshot], oldValue: [RapidDocumentSnapshot]?) -> (dataSet: [RapidDocumentSnapshot], insert: [RapidDocumentSnapshot], update: [RapidDocumentSnapshot], delete: [RapidDocumentSnapshot]) {
+    func incorporateChanges(update: RapidSubscriptionBatch, oldValue: [RapidDocumentSnapshot]?) -> (dataSet: [RapidDocumentSnapshot], insert: [RapidDocumentSnapshot], update: [RapidDocumentSnapshot], delete: [RapidDocumentSnapshot]) {
         
-        // Firstly, duplicates need to be removed
-        var newValue = rawArray
-        var removeIndexes = [Int]()
-        var swapIndexes = [(Int, Int)]()
-        var indexForDocument = [String: Int]()
+        var updates = Set<RapidDocumentSnapshotOperation>()
         
-        // Loop through updated documents
-        for (index, document) in rawArray.enumerated() {
-            // `existingIndex` if not nil is always lower than `index`
-            let existingIndex = indexForDocument[document.id]
+        // Store previously known dataset to `documents`
+        // If there is no previous dataset work with a collection from the update
+        var documents: [RapidDocumentSnapshot]
+        if let oldValue = oldValue {
+            documents = oldValue
             
-            // If this is the first occurance of the document just register its array index
-            if existingIndex == nil {
-                indexForDocument[document.id] = index
-            }
-            // If the document has occured, but this is the first time the handler received any data from the server
-            else if oldValue == nil, let existingIndex = existingIndex {
-                // Replace a document with a lower index by a document with a higher index and remove a document which used to have a lower index and now has a higher index
-                // Exlanation: A document with a higher index is newer and since these are the first data from the server we want to preserve the ordering
-                swapIndexes.append((existingIndex, index))
-                removeIndexes.append(index)
-            }
-            // If the document has occured and the handler has already received any data from the server
-            else if let existingIndex = existingIndex {
-                // Remove an outdated document with a lower index and keep just an updated document with a higher index
-                indexForDocument[document.id] = index
-                removeIndexes.append(existingIndex)
-            }
-        }
-        
-        // Process swaps and removings
-        for swap in swapIndexes {
-            let tmp = newValue[swap.0]
-            newValue[swap.0] = newValue[swap.1]
-            newValue[swap.1] = tmp
-        }
-        for index in removeIndexes.reversed() {
-            newValue.remove(at: index)
-        }
-        
-        // If this is the first time the handler received any data from the server
-        guard var documents = oldValue else {
-            // Remove documents with no values (those documents have been removed)
-            let dataSet = newValue.flatMap({ $0.value == nil ? nil : $0 })
-            return (dataSet, dataSet, [], [])
-        }
-        
-        var inserted = [RapidDocumentSnapshot]()
-        var updated = [RapidDocumentSnapshot]()
-        var deleted = [RapidDocumentSnapshot]()
-        
-        // Loop through updated documents
-        for document in newValue {
-            // Index of the document in the last known dataset
-            let index = documents.index(where: { $0.id == document.id })
-            
-            // If the document was removed
-            if let index = index, document.value == nil {
-                let document = documents.remove(at: index)
-                deleted.append(document)
-            }
-            // If the document has a predecessor and the predecessor is in the last known dataset
-            else if let predID = document.predecessorID, let predIndex = documents.index(where: { $0.id == predID }) {
-                // If the document is in the last known dataset update it and move it to the correct index
-                // Otherwise, just insert it to the correct index
-                if let index = index {
-                    let newIndex = predIndex < index ? predIndex + 1 : predIndex
-                    
-                    if newIndex == index {
-                        documents[newIndex] = document
-                    }
-                    else {
-                        documents.remove(at: index)
-                        documents.insert(document, at: newIndex)
-                    }
-                    
-                    updated.append(document)
-                }
-                else {
-                    documents.insert(document, at: predIndex + 1)
-                    inserted.append(document)
+            // Incorporate new dataset from the udpate
+            if let collection = update.collection?.flatMap({ $0.value == nil ? nil : $0 }) {
+                // Firstly, consider all original documents as being removed
+                // Their status will be changed to updated if they are present in the new dataset from update
+                updates.formUnion(documents.map { RapidDocumentSnapshotOperation(snapshot: $0, operation: .remove) })
+                
+                for document in collection {
+                    let operation = incorporate(document: document, inCollection: &documents)
+                    updates.update(with: operation)
                 }
             }
-            // If the document doesn't have a predecessor, but it is in the last known dataset update it and move it to the index 0
-            else if let index = index {
-                documents.remove(at: index)
-                documents.insert(document, at: 0)
-                updated.append(document)
-            }
-            // If the document doesn't have a predecessor and it isn't in the last known dataset insert it to the index 0
-            else {
-                documents.insert(document, at: 0)
-                inserted.append(document)
-            }
+        }
+        else {
+            documents = update.collection?.flatMap({ $0.value == nil ? nil : $0 }) ?? []
+            updates.formUnion(documents.map { RapidDocumentSnapshotOperation(snapshot: $0, operation: .add) })
         }
         
-        return (documents, inserted, updated, deleted)
+        // Loop through updated documents
+        for document in update.updates {
+            let operation = incorporate(document: document, inCollection: &documents)
+            updates.update(with: operation)
+        }
+        
+        // If there was no previous dataset consider all values as new
+        // Otherwise, deal with different types of updates
+        if oldValue == nil {
+            return (documents, documents, [], [])
+        }
+        else {
+            var inserted = [RapidDocumentSnapshot]()
+            var updated = [RapidDocumentSnapshot]()
+            var deleted = [RapidDocumentSnapshot]()
+            
+            // Sort updates according to type
+            for document in updates {
+                switch document.operation {
+                case .add:
+                    inserted.append(document.snapshot)
+                    
+                case .update:
+                    updated.append(document.snapshot)
+                    
+                case .remove:
+                    deleted.append(document.snapshot)
+                    
+                case .none:
+                    break
+                }
+            }
+            
+            return (documents, inserted, updated, deleted)
+        }
     }
 
+    /// Sort the document in the collection
+    ///
+    /// - Parameters:
+    ///   - document: Document to process
+    ///   - documents: Original collection
+    /// - Returns: Resulting `RapidDocumentSnapshotOperation`
+    func incorporate(document: RapidDocumentSnapshot, inCollection documents: inout [RapidDocumentSnapshot]) -> RapidDocumentSnapshotOperation {
+        // Index of the document in the last known dataset
+        let index = documents.index(where: { $0.id == document.id })
+        
+        // If etag of the document hasn't changed the document itself hasn't changed
+        if let index = index, documents[index].etag == document.etag {
+            return RapidDocumentSnapshotOperation(snapshot: document, operation: .none)
+        }
+        // If the document was removed
+        else if let index = index, document.value == nil {
+            let document = documents.remove(at: index)
+            return RapidDocumentSnapshotOperation(snapshot: document, operation: .remove)
+        }
+        // If the document has a predecessor and the predecessor is in the last known dataset
+        else if let predID = document.predecessorID, let predIndex = documents.index(where: { $0.id == predID }) {
+            // If the document is in the last known dataset update it and move it to the correct index
+            // Otherwise, just insert it to the correct index
+            if let index = index {
+                let newIndex = predIndex < index ? predIndex + 1 : predIndex
+                
+                if newIndex == index {
+                    documents[newIndex] = document
+                }
+                else {
+                    documents.remove(at: index)
+                    documents.insert(document, at: newIndex)
+                }
+                
+                return RapidDocumentSnapshotOperation(snapshot: document, operation: .update)
+            }
+            else {
+                documents.insert(document, at: predIndex + 1)
+                return RapidDocumentSnapshotOperation(snapshot: document, operation: .add)
+            }
+        }
+        // If the document doesn't have a predecessor, but it is in the last known dataset update it and move it to the index 0
+        else if let index = index {
+            documents.remove(at: index)
+            documents.insert(document, at: 0)
+            return RapidDocumentSnapshotOperation(snapshot: document, operation: .update)
+        }
+        // If the document doesn't have a predecessor and it isn't in the last known dataset insert it to the index 0
+        else {
+            documents.insert(document, at: 0)
+            return RapidDocumentSnapshotOperation(snapshot: document, operation: .add)
+        }
+    }
+    
     /// Unregister subscription object from listening to the dataset changes
     ///
     /// - Parameter instance: Subscription object
@@ -285,9 +325,9 @@ extension RapidSubscriptionHandler: RapidRequest {
         }
     }
     
-    func receivedSubscriptionEvent(_ update: RapidSubscriptionEvent) {
+    func receivedSubscriptionEvent(_ update: RapidSubscriptionBatch) {
         dispatchQueue.async { [weak self] in
-            self?.receivedNewValue(update.documents)
+            self?.receivedNewValue(update)
         }
     }
 }

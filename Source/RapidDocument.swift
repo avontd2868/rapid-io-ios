@@ -21,7 +21,7 @@ public typealias RapidDeletionCallback = (_ error: Error?) -> Void
 public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
 
 /// Class representing Rapid.io document that is returned from a subscription callback
-public class RapidDocumentSnapshot {
+public class RapidDocumentSnapshot: NSObject {
     
     /// Document ID
     public let id: String
@@ -31,6 +31,9 @@ public class RapidDocumentSnapshot {
     
     /// Document ID of a predecessor
     let predecessorID: String?
+    
+    /// Etag identifier
+    let etag: String?
     
     init?(json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {
@@ -43,16 +46,19 @@ public class RapidDocumentSnapshot {
         
         let body = dict[RapidSerialization.Document.Body.name] as? [AnyHashable: Any]
         let predecessor = dict[RapidSerialization.Document.Predecessor.name] as? String
+        let etag = dict[RapidSerialization.Document.Etag.name] as? String
         
         self.id = id
         self.value = body
         self.predecessorID = predecessor
+        self.etag = etag
     }
     
-    init(id: String, value: [AnyHashable: Any]?) {
+    init(id: String, value: [AnyHashable: Any]?, predecessor: String? = nil, etag: String? = nil) {
         self.id = id
         self.value = value
-        self.predecessorID = nil
+        self.predecessorID = predecessor
+        self.etag = etag
     }
     
 }

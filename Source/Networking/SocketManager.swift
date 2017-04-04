@@ -132,6 +132,8 @@ class SocketManager {
     /// Reconnect previously configured websocket
     func goOnline() {
         websocketQueue.async { [weak self] in
+            self?.socketTerminated = false
+            
             if let state = self?.state, state == .disconnected {
                 self?.createConnection()
             }
@@ -142,10 +144,7 @@ class SocketManager {
     func goOffline() {
         websocketQueue.async { [weak self] in
             if let state = self?.state, state != .disconnected {
-                self?.socketTerminated = true
-                self?.state = .disconnected
-                
-                self?.disconnectSocket()
+                self?.destroySocket()
             }
         }
     }
@@ -281,9 +280,9 @@ fileprivate extension SocketManager {
     
     // Destroy existing socket connection
     func destroySocket() {
-        sendDisconnectionRequest()
-        
         socketTerminated = true
+        
+        sendDisconnectionRequest()
         
         disconnectSocket()
     }
@@ -386,6 +385,8 @@ fileprivate extension SocketManager {
         do {
             let jsonString = try serializableRequest.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
             
+            print("Write request \(jsonString)")
+            
             socket.write(string: jsonString)
         }
         catch {
@@ -467,7 +468,7 @@ fileprivate extension SocketManager {
             pendingRequests[response.eventID] = nil
         
         // Subscription event
-        case let response as RapidSubscriptionEvent:
+        case let response as RapidSubscriptionBatch:
             let subscription = activeSubscriptions[response.subscriptionID]
             subscription?.receivedSubscriptionEvent(response)
             acknowledge(eventWithID: response.eventID)
@@ -486,7 +487,6 @@ extension SocketManager {
         websocketQueue.async { [weak self] in
             let request = RapidEmptyRequest()
             
-            print("Empty request")
             self?.postEvent(serializableRequest: request)
         }
     }

@@ -57,7 +57,7 @@ class ViewController: UIViewController {
                 }
             }
             else {
-                print("\(insert) - \(update) - \(delete)")
+                print("\(insert.map({ $0.id })) - \(update.map({ $0.id })) - \(delete.map({ $0.id }))")
                 self.apps = documents.flatMap({ AppObject(document: $0) })
                 self.tableView.reloadData()
             }

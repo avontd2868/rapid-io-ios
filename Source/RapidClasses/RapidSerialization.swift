@@ -22,22 +22,21 @@ class RapidSerialization {
         // If websocket received a batch of events
         if let batch = json[Batch.name] as? [[AnyHashable: Any]] {
             var events = [RapidResponse]()
-            var updates = [String: RapidSubscriptionEvent]()
+            var updates = [String: RapidSubscriptionBatch]()
             
             for json in batch {
                 let event = parseEvent(json: json)
                 
                 // If the event is a subscription update treat it specially, otherwise just append it to the response array
-                if let update = event as? RapidSubscriptionEvent {
+                if let event = event as? RapidSubscriptionBatch {
                     
                     // If there was any update for the subscription combine it to one update
-                    if var existingUpdate = updates[update.subscriptionID] {
-                        existingUpdate.merge(withUpdate: update)
-                        updates[existingUpdate.subscriptionID] = existingUpdate
+                    if let batch = updates[event.subscriptionID] {
+                        batch.merge(event: event)
                     }
                     else {
-                        updates[update.subscriptionID] = update
-                        events.append(update)
+                        updates[event.subscriptionID] = event
+                        events.append(event)
                     }
                     
                 }
@@ -223,11 +222,10 @@ class RapidSerialization {
     ///
     /// - Parameters:
     ///   - acknowledgement: Acknowledgement object
-    ///   - identifiers: Identifiers that are associated with the acknowledgement event
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` errors
-    class func serialize(acknowledgement: RapidSocketAcknowledgement, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
-        let resultDict = [Acknowledgement.name: identifiers]
+    class func serialize(acknowledgement: RapidSocketAcknowledgement) throws -> String {
+        let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
         return try resultDict.jsonString()
     }
     
@@ -267,11 +265,10 @@ class RapidSerialization {
     ///
     /// - Parameters:
     ///   - disconnection: Disconnection request object
-    ///   - identifiers: Identifiers that are associated with the disconnection request event
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` errors
-    class func serialize(disconnection: RapidDisconnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
-        let resultDict = [Disconnect.name: identifiers]
+    class func serialize(disconnection: RapidDisconnectionRequest) throws -> String {
+        let resultDict = [Disconnect.name: NSNull()]
         return try resultDict.jsonString()
     }
     
@@ -279,11 +276,10 @@ class RapidSerialization {
     ///
     /// - Parameters:
     ///   - emptyRequest: Request object
-    ///   - identifiers: Identifiers that are associated with the heartbeat event
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` errors
-    class func serialize(emptyRequest: RapidEmptyRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
-        let resultDict = [NoOperation.name: identifiers]
+    class func serialize(emptyRequest: RapidEmptyRequest) throws -> String {
+        let resultDict = [NoOperation.name: NSNull()]
         return try resultDict.jsonString()
     }
 }
@@ -303,10 +299,10 @@ fileprivate extension RapidSerialization {
             return RapidErrorInstance(json: err)
         }
         else if let val = json[SubscriptionValue.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionInitialValue(json: val)
+            return RapidSubscriptionBatch(withCollectionJSON: val)
         }
         else if let upd = json[SubscriptionUpdate.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionUpdate(json: upd)
+            return RapidSubscriptionBatch(withUpdateJSON: upd)
         }
         else {
             return nil
@@ -468,6 +464,10 @@ extension RapidSerialization {
         
         struct Body {
             static let name = "body"
+        }
+        
+        struct Etag {
+            static let name = "etag"
         }
         
         //TODO: Sibling

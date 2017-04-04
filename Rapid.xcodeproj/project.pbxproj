@@ -263,7 +263,7 @@
 				TargetAttributes = {
 					C1D6E81E1E7856AD007589FC = {
 						CreatedOnToolsVersion = 8.2.1;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Manual;
 					};
 					C1D6E8271E7856AD007589FC = {
@@ -526,6 +526,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.Rapid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -556,6 +557,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.Rapid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -661,6 +663,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.Rapid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Framework;

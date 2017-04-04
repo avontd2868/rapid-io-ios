@@ -79,7 +79,7 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     
     /// Assign a block of code that should be called on unsubscribing to `unsubscribeCallback`
     ///
-    /// - Parameter callback: <#callback description#>
+    /// - Parameter callback: Block of code that should be called on unsubscribing
     func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void) {
         unsubscribeCallback = callback
     }

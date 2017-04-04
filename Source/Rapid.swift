@@ -92,12 +92,12 @@ public class Rapid: NSObject {
     }
     
     /// Disconnect existing websocket
-    func goOffline() {
+    public func goOffline() {
         handler.socketManager.goOffline()
     }
     
     /// Reconnect previously configured websocket
-    func goOnline() {
+    public func goOnline() {
         handler.socketManager.goOnline()
     }
 }

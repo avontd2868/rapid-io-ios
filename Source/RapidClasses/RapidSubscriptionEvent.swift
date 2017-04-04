@@ -8,34 +8,16 @@
 
 import Foundation
 
-/// Protocol for a server event informing about a subscription
-protocol RapidSubscriptionEvent: RapidResponse {
-    var eventID: String { get }
-    var subscriptionID: String { get }
-    var documents: [RapidDocumentSnapshot] { get set }
-}
-
-extension RapidSubscriptionEvent {
-    
-    /// In case of a batch update, append relevant snapshots to the previous ones
-    ///
-    /// - Parameter update: Updated document snapshot
-    mutating func merge(withUpdate update: RapidSubscriptionEvent) {
-        documents.append(contentsOf: update.documents)
-    }
-    
-}
-
-/// Response from server after subscription was succesfully registered
-///
-/// Class contains all documents that meet the subscription specification
-class RapidSubscriptionInitialValue: RapidSubscriptionEvent {
+/// Wrapper for subscription events that came in one batch
+class RapidSubscriptionBatch: RapidResponse {
     
     let eventID: String
     let subscriptionID: String
-    internal(set) var documents: [RapidDocumentSnapshot]
     
-    init?(json: Any?) {
+    internal(set) var collection: [RapidDocumentSnapshot]?
+    internal(set) var updates: [RapidDocumentSnapshot]
+    
+    init?(withCollectionJSON json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {
             return nil
         }
@@ -54,22 +36,11 @@ class RapidSubscriptionInitialValue: RapidSubscriptionEvent {
         
         self.eventID = eventID
         self.subscriptionID = subscriptionID
-        self.documents = documents.flatMap({ RapidDocumentSnapshot(json: $0) })
+        self.collection = documents.flatMap({ RapidDocumentSnapshot(json: $0) })
+        self.updates = []
     }
-}
-
-/// Event sent by server when set of documents thet meet the subscription specification changes
-///
-/// Class contains just those documents that have been added, updated or removed
-/// When server sends a single update `documents` array contains just one snapshot.
-/// When server sends a batch update `documents` array contains all snapshots that are relevant to the subscription
-class RapidSubscriptionUpdate: RapidSubscriptionEvent {
     
-    let eventID: String
-    let subscriptionID: String
-    internal(set) var documents: [RapidDocumentSnapshot]
-    
-    init?(json: Any?) {
+    init?(withUpdateJSON json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {
             return nil
         }
@@ -92,6 +63,22 @@ class RapidSubscriptionUpdate: RapidSubscriptionEvent {
         
         self.eventID = eventID
         self.subscriptionID = subscriptionID
-        self.documents = [snapshot]
+        self.collection = nil
+        self.updates = [snapshot]
     }
+
+    /// Add subscription event to the batch
+    ///
+    /// - Parameter initialValue: Subscription dataset object
+    func merge(event: RapidSubscriptionBatch) {
+        // Since initial value contains whole dataset it overrides all previous single updates
+        if let collection = event.collection {
+            self.collection = collection
+            self.updates = event.updates
+        }
+        else {
+            self.updates.append(contentsOf: event.updates)
+        }
+    }
+    
 }
