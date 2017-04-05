@@ -29,9 +29,6 @@ public class RapidDocumentSnapshot: NSObject {
     /// Document body
     public let value: [AnyHashable: Any]?
     
-    /// Document ID of a predecessor
-    let predecessorID: String?
-    
     /// Etag identifier
     let etag: String?
     
@@ -45,19 +42,16 @@ public class RapidDocumentSnapshot: NSObject {
         }
         
         let body = dict[RapidSerialization.Document.Body.name] as? [AnyHashable: Any]
-        let predecessor = dict[RapidSerialization.Document.Predecessor.name] as? String
         let etag = dict[RapidSerialization.Document.Etag.name] as? String
         
         self.id = id
         self.value = body
-        self.predecessorID = predecessor
         self.etag = etag
     }
     
-    init(id: String, value: [AnyHashable: Any]?, predecessor: String? = nil, etag: String? = nil) {
+    init(id: String, value: [AnyHashable: Any]?, etag: String? = nil) {
         self.id = id
         self.value = value
-        self.predecessorID = predecessor
         self.etag = etag
     }
     

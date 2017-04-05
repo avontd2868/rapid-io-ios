@@ -459,6 +459,10 @@ extension RapidSerialization {
             static let name = "col-id"
         }
         
+        struct Predecessor {
+            static let name = "psib-id"
+        }
+        
         struct Document {
             static let name = "doc"
         }
@@ -480,11 +484,6 @@ extension RapidSerialization {
         
         struct Etag {
             static let name = "etag"
-        }
-        
-        //TODO: Sibling
-        struct Predecessor {
-            static let name = "pred-id"
         }
     }
     
