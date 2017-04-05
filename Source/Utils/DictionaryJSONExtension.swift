@@ -15,8 +15,13 @@ extension Dictionary {
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` errors
     func jsonString() throws -> String {
-        let data = try JSONSerialization.data(withJSONObject: self, options: [])
-        return String(data: data, encoding: .utf8) ?? ""
+        if JSONSerialization.isValidJSONObject(self) {
+            let data = try JSONSerialization.data(withJSONObject: self, options: [])
+            return String(data: data, encoding: .utf8) ?? ""
+        }
+        else {
+            throw RapidError.invalidData(reason: .serializationFailure)
+        }
     }
 }
 
