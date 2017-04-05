@@ -8,18 +8,63 @@
 
 import Foundation
 
-/// Subscription filter protocol
-public protocol RapidFilter {
-    var filterHash: String { get }
-}
-
-/// Structure that describes simple subscription filter
-///
-/// Simple filter can contain only a name of a filtering parameter, its reference value and a relation to the value.
-public struct RapidFilterSimple: RapidFilter {
+/// Subscription filter
+public class RapidFilter {
     
     /// Special key which stands for a document ID
     public static let documentIdKey = "$id"
+
+    var filterHash: String { return "" }
+}
+
+public extension RapidFilter {
+    
+    // MARK: Compound filters
+    
+    class func not(_ filter: RapidFilter) -> RapidFilter {
+        return RapidFilterCompound(compoundOperator: .not, operands: [filter])
+    }
+    
+    class func and(_ operands: [RapidFilter]) -> RapidFilter {
+        return RapidFilterCompound(compoundOperator: .and, operands: operands)
+    }
+    
+    class func or(_ operands: [RapidFilter]) -> RapidFilter {
+        return RapidFilterCompound(compoundOperator: .or, operands: operands)
+    }
+    
+    // MARK: Simple filters
+    
+    class func equal<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(key: key, relation: .equal, value: value)
+    }
+    
+    class func isNull(key: String) -> RapidFilter {
+        return RapidFilterSimple(key: key, relation: .equal)
+    }
+    
+    class func greaterThan<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(key: key, relation: .greaterThan, value: value)
+    }
+    
+    class func greaterThanOrEqual<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(key: key, relation: .greaterThanOrEqual, value: value)
+    }
+    
+    class func lessThan<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(key: key, relation: .lessThan, value: value)
+    }
+    
+    class func lessThanOrEqual<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(key: key, relation: .lessThanOrEqual, value: value)
+    }
+    
+}
+
+/// Class that describes simple subscription filter
+///
+/// Simple filter can contain only a name of a filtering parameter, its reference value and a relation to the value.
+public class RapidFilterSimple: RapidFilter {
     
     /// Type of relation to a specified value
     public enum Relation {
@@ -62,22 +107,33 @@ public struct RapidFilterSimple: RapidFilter {
     ///   - key: Name of a document parameter
     ///   - relation: Ralation to the `value`
     ///   - value: Reference value
-    public init<Numeric: Comparable>(key: String, relation: Relation, value: Numeric?) {
+    init<Numeric: Comparable>(key: String, relation: Relation, value: Numeric) {
         self.key = key
         self.relation = relation
         self.value = value
     }
     
-    public var filterHash: String {
+    /// Simple filter initializer
+    ///
+    /// - Parameters:
+    ///   - key: Name of a document parameter
+    ///   - relation: Ralation to the `value`
+    init(key: String, relation: Relation) {
+        self.key = key
+        self.relation = relation
+        self.value = nil
+    }
+    
+    public override var filterHash: String {
         return "\(key)-\(relation.hash)-\(value ?? "null")"
     }
 }
 
-/// Structure that describes compound subscription filter
+/// Class that describes compound subscription filter
 ///
 /// Compound filter consists of one or more filters that are combined together with one of logical operators.
 /// Compound filter with the logical NOT operator must contain only one operand.
-public struct RapidFilterCompound: RapidFilter {
+public class RapidFilterCompound: RapidFilter {
     
     /// Type of logical operator
     public enum Operator {
@@ -109,20 +165,12 @@ public struct RapidFilterCompound: RapidFilter {
     /// - Parameters:
     ///   - compoundOperator: Logical operator
     ///   - operands: Array of filters that are combined together with the `compoundOperator`
-    public init?(compoundOperator: Operator, operands: [RapidFilter]) {
-        guard operands.count > 0 else {
-            return nil
-        }
-        
-        if compoundOperator == .not && operands.count > 1 {
-            return nil
-        }
-        
+    init(compoundOperator: Operator, operands: [RapidFilter]) {
         self.compoundOperator = compoundOperator
         self.operands = operands
     }
     
-    public var filterHash: String {
+    public override var filterHash: String {
         let hash = operands.map({ $0.filterHash }).joined(separator: "|")
         return "\(compoundOperator.hash)(\(hash))"
     }

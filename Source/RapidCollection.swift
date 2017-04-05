@@ -26,13 +26,13 @@ public class RapidCollection: NSObject {
     public let collectionID: String
     
     /// Filters assigned to the collection instance
-    public fileprivate(set) var filter: RapidFilter?
+    public fileprivate(set) var subscriptionFilter: RapidFilter?
     
     /// Order descriptors assigned to the collection instance
-    public fileprivate(set) var ordering: [RapidOrdering]?
+    public fileprivate(set) var subscriptionOrdering: [RapidOrdering]?
     
     /// Pagination information assigned to the collection instance
-    public fileprivate(set) var paging: RapidPaging?
+    public fileprivate(set) var subscriptionPaging: RapidPaging?
 
     init(id: String, handler: RapidHandler) {
         self.collectionID = id
@@ -61,12 +61,12 @@ public class RapidCollection: NSObject {
     /// - Parameter filter: Filter object
     /// - Returns: The collection with the filter assigned
     public func filter(by filter: RapidFilter) -> RapidCollection {
-        if let previousFilter = self.filter {
+        if let previousFilter = self.subscriptionFilter {
             let compoundFilter = RapidFilterCompound(compoundOperator: .and, operands: [previousFilter, filter])
-            self.filter = compoundFilter
+            self.subscriptionFilter = compoundFilter
         }
         else {
-            self.filter = filter
+            self.subscriptionFilter = filter
         }
         return self
     }
@@ -79,10 +79,10 @@ public class RapidCollection: NSObject {
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
     public func order(by ordering: [RapidOrdering]) -> RapidCollection {
-        if self.ordering == nil {
-            self.ordering = []
+        if self.subscriptionOrdering == nil {
+            self.subscriptionOrdering = []
         }
-        self.ordering?.append(contentsOf: ordering)
+        self.subscriptionOrdering?.append(contentsOf: ordering)
         return self
     }
     
@@ -96,7 +96,7 @@ public class RapidCollection: NSObject {
     /// - Returns: The collection with the limit assigned
     public func limit(to take: Int, skip: Int? = nil) -> RapidCollection {
         
-        self.paging = RapidPaging(skip: skip, take: take)
+        self.subscriptionPaging = RapidPaging(skip: skip, take: take)
         return self
     }
     
@@ -108,7 +108,7 @@ public class RapidCollection: NSObject {
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     public func subscribe(completion: @escaping RapidColSubCallback) -> RapidSubscription {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callback: completion, callbackWithChanges: nil)
+        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, callback: completion, callbackWithChanges: nil)
         
         socketManager.subscribe(subscription)
         
@@ -123,7 +123,7 @@ public class RapidCollection: NSObject {
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     public func subscribe(completionWithChanges completion: @escaping RapidColSubCallbackWithChanges) -> RapidSubscription {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callback: nil, callbackWithChanges: completion)
+        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, callback: nil, callbackWithChanges: completion)
         
         socketManager.subscribe(subscription)
         

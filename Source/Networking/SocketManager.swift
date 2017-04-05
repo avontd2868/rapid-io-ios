@@ -28,7 +28,7 @@ class SocketManager {
     fileprivate var state: Rapid.ConnectionState = .disconnected {
         didSet {
             let state = self.state
-            DispatchQueue.main.async { [weak self] in
+            mainQueue.async { [weak self] in
                 self?.connectionStateDelegate?.connectionStateChanged(currentState: state)
             }
         }
@@ -39,6 +39,7 @@ class SocketManager {
     /// Dedicated threads
     fileprivate let websocketQueue: DispatchQueue
     fileprivate let parseQueue: DispatchQueue
+    fileprivate let mainQueue = DispatchQueue.main
     
     /// Websocket object
     fileprivate let socket: WebSocket
@@ -254,7 +255,7 @@ fileprivate extension SocketManager {
         state = .connecting
         
         // Start the timer that limits maximum time span when websocket connection is trying to be established
-        DispatchQueue.main.async { [weak self] in
+        mainQueue.async { [weak self] in
             if let strongSelf = self {
                 self?.socketConnectTimer?.invalidate()
                 self?.socketConnectTimer = Timer.scheduledTimer(timeInterval: Rapid.defaultTimeout, target: strongSelf, selector: #selector(strongSelf.connectSocketTimout), userInfo: nil, repeats: false)
@@ -281,6 +282,7 @@ fileprivate extension SocketManager {
     // Destroy existing socket connection
     func destroySocket() {
         socketTerminated = true
+        state = .disconnected
         
         sendDisconnectionRequest()
         
@@ -389,8 +391,11 @@ fileprivate extension SocketManager {
             
             socket.write(string: jsonString)
         }
+        catch let rapidError as RapidError {
+            completeRequest(withResponse: RapidErrorInstance(eventID: eventID, error: rapidError))
+        }
         catch {
-            completeRequest(withResponse: RapidErrorInstance(eventID: eventID, error: .invalidData))
+            completeRequest(withResponse: RapidErrorInstance(eventID: eventID, error: .invalidData(reason: .serializationFailure)))
         }
     }
     
@@ -493,7 +498,7 @@ extension SocketManager {
     
     /// Invalidate previous heartbeat timer and start a new one
     func rescheduleHeartbeatTimer() {
-        DispatchQueue.main.async { [weak self] in
+        mainQueue.async { [weak self] in
             self?.heartbeatTimer?.invalidate()
             
             if let strongSelf = self {
@@ -576,7 +581,7 @@ extension SocketManager: RapidTimeoutRequestDelegate {
 extension SocketManager: WebSocketDelegate {
     
     func connectSocket() {
-        DispatchQueue.main.async { [weak self] in
+        mainQueue.async { [weak self] in
             self?.socket.connect()
         }
     }
@@ -584,7 +589,7 @@ extension SocketManager: WebSocketDelegate {
     func disconnectSocket(withError error: RapidError? = nil) {
         reconnectionError = error
 
-        DispatchQueue.main.async { [weak self] in
+        mainQueue.async { [weak self] in
             self?.socket.disconnect(forceTimeout: 0.5)
         }
     }
@@ -593,7 +598,7 @@ extension SocketManager: WebSocketDelegate {
         print("Socket did connect")
         
         // Invalidate connection timer
-        DispatchQueue.main.async { [weak self] in
+        mainQueue.async { [weak self] in
             self?.socketConnectTimer?.invalidate()
             self?.socketConnectTimer = nil
         }
@@ -608,7 +613,7 @@ extension SocketManager: WebSocketDelegate {
         print("Socket did disconnect")
         
         // Invalidate connection timer
-        DispatchQueue.main.async { [weak self] in
+        mainQueue.async { [weak self] in
             self?.socketConnectTimer?.invalidate()
             self?.socketConnectTimer = nil
         }

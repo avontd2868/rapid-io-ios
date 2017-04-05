@@ -134,7 +134,7 @@ extension RapidSubscriptionHandler: RapidSerializable {
             return try subscription.serialize(withIdentifiers: idef)
         }
         else {
-            throw RapidError.invalidData
+            throw RapidError.invalidData(reason: .serializationFailure)
         }
     }
 }

@@ -76,8 +76,12 @@ public enum RapidError: Error {
     case permissionDenied(message: String?)
     case server(message: String?)
     case connectionTerminated(message: String?)
-    case invalidData
+    case invalidData(reason: InvalidDataReason)
     case timeout
     case `default`
     
+    public enum InvalidDataReason {
+        case serializationFailure
+        case invalidFilter(filter: RapidFilter)
+    }
 }

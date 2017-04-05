@@ -108,7 +108,7 @@ class RapidSerialization {
         var json = identifiers
         
         json[Subscription.CollectionID.name] = subscription.collectionID
-        json[Subscription.Filter.name] = serialize(filter: subscription.filter)
+        json[Subscription.Filter.name] = try serialize(filter: subscription.filter)
         json[Subscription.Ordering.name] = serialize(ordering: subscription.ordering)
         json[Subscription.Limit.name] = subscription.paging?.take
         json[Subscription.Skip.name] = subscription.paging?.skip
@@ -121,12 +121,18 @@ class RapidSerialization {
     ///
     /// - Parameter filter: Filter object
     /// - Returns: JSON dictionary
-    class func serialize(filter: RapidFilter?) -> [AnyHashable: Any]? {
-        if let filter = filter as? RapidFilterSimple {
-            return serialize(simpleFilter: filter)
-        }
-        else if let filter = filter as? RapidFilterCompound {
-            return serialize(compoundFilter: filter)
+    class func serialize(filter: RapidFilter?) throws -> [AnyHashable: Any]? {
+        if let filter = filter {
+            switch filter {
+            case let filter as RapidFilterSimple:
+                return try serialize(simpleFilter: filter)
+                
+            case let filter as RapidFilterCompound:
+                return try serialize(compoundFilter: filter)
+                
+            default:
+                throw RapidError.invalidData(reason: .invalidFilter(filter: filter))
+            }
         }
         else {
             return nil
@@ -137,22 +143,25 @@ class RapidSerialization {
     ///
     /// - Parameter simpleFilter: Simple filter object
     /// - Returns: JSON dictionary
-    class func serialize(simpleFilter: RapidFilterSimple) -> [AnyHashable: Any] {
+    class func serialize(simpleFilter: RapidFilterSimple) throws -> [AnyHashable: Any] {
         switch simpleFilter.relation {
         case .equal:
             return [simpleFilter.key: simpleFilter.value ?? NSNull()]
             
-        case .greaterThanOrEqual:
+        case .greaterThanOrEqual where simpleFilter.value != nil:
             return [simpleFilter.key: ["gte": simpleFilter.value]]
             
-        case .lessThanOrEqual:
+        case .lessThanOrEqual where simpleFilter.value != nil:
             return [simpleFilter.key: ["lte": simpleFilter.value]]
             
-        case .greaterThan:
+        case .greaterThan where simpleFilter.value != nil:
             return [simpleFilter.key: ["gt": simpleFilter.value]]
             
-        case .lessThan:
+        case .lessThan where simpleFilter.value != nil:
             return [simpleFilter.key: ["lt": simpleFilter.value]]
+            
+        default:
+            throw RapidError.invalidData(reason: .invalidFilter(filter: simpleFilter))
         }
     }
     
@@ -160,21 +169,24 @@ class RapidSerialization {
     ///
     /// - Parameter compoundFilter: Compound filter object
     /// - Returns: JSON dictionary
-    class func serialize(compoundFilter: RapidFilterCompound) -> [AnyHashable: Any] {
+    class func serialize(compoundFilter: RapidFilterCompound) throws -> [AnyHashable: Any] {
         switch compoundFilter.compoundOperator {
-        case .and:
-            return ["and": compoundFilter.operands.map({serialize(filter: $0)})]
+        case .and where compoundFilter.operands.count > 0:
+            return ["and": try compoundFilter.operands.map({ try serialize(filter: $0) })]
             
-        case .or:
-            return ["or": compoundFilter.operands.map({serialize(filter: $0)})]
+        case .or where compoundFilter.operands.count > 0:
+            return ["or": try compoundFilter.operands.map({ try serialize(filter: $0) })]
             
-        case .not:
-            if let filter = compoundFilter.operands.first, let serializedFilter = serialize(filter: filter) {
+        case .not where compoundFilter.operands.count == 1:
+            if let filter = compoundFilter.operands.first, let serializedFilter = try serialize(filter: filter) {
                 return ["not": serializedFilter]
             }
             else {
-                return [:]
+                throw RapidError.invalidData(reason: .invalidFilter(filter: compoundFilter))
             }
+            
+        default:
+            throw RapidError.invalidData(reason: .invalidFilter(filter: compoundFilter))
         }
     }
     
