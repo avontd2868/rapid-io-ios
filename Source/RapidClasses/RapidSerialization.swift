@@ -360,7 +360,7 @@ extension RapidSerialization {
         }
         
         struct ErrorMessage {
-            static let name = "err-message"
+            static let name = "err-msg"
         }
     }
     

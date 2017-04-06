@@ -62,6 +62,144 @@ extension RapidTests {
         
     }
     
+    func testEventBatch() {
+        let subID = Rapid.uniqueID
+        
+        let batch: [AnyHashable: Any] = [
+            "batch": [
+                [
+                    "ack": [
+                        "evt-id": Rapid.uniqueID
+                    ]
+                ],
+                [
+                    "err": [
+                        "evt-id": Rapid.uniqueID,
+                        "err-type": "permission-denied",
+                        "err-msg": "Test message"
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "doc":
+                            [
+                                "id": "1",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "testy"
+                                ]
+                        ]
+                    ]
+                ],
+                [
+                    "val": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "docs": [
+                            [
+                                "id": "1",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "test"
+                                ]
+                            ],
+                            [
+                                "id": "2",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "test"
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "doc":
+                            [
+                                "id": "1",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "testy"
+                                ]
+                        ]
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "psib-id": "1",
+                        "doc":
+                            [
+                                "id": "2",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "testy"
+                                ]
+                        ]
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": Rapid.uniqueID,
+                        "psib-id": "1",
+                        "doc":
+                            [
+                                "id": "2",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "testy"
+                                ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        
+        let responses = RapidSerialization.parse(json: batch) ?? []
+        
+        XCTAssertEqual(responses.count, 4, "Number of responses")
+        
+        if !(responses[0] is RapidSocketAcknowledgement) {
+            XCTFail("Not an acknowledgement")
+        }
+        
+        if let error = responses[1] as? RapidErrorInstance, case RapidError.permissionDenied(let message) = error.error {
+            XCTAssertEqual(message, "Test message", "Error message")
+        }
+        else {
+            XCTFail("Wrong error")
+        }
+        
+        if let batch = responses[2] as? RapidSubscriptionBatch {
+            XCTAssertEqual(batch.subscriptionID, subID, "Subscription batch")
+            XCTAssertNotNil(batch.collection, "Subscription batch")
+            XCTAssertEqual(batch.updates.count, 2, "Subscription batch")
+        }
+        else {
+            XCTFail("Wrong response")
+        }
+        
+        if let batch = responses[3] as? RapidSubscriptionBatch {
+            XCTAssertNil(batch.collection, "Subscription batch")
+            XCTAssertEqual(batch.updates.count, 1, "Subscription batch")
+        }
+        else {
+            XCTFail("Wrong response")
+        }
+    }
+    
     func testCollectionSubscription() {
         let subscription = RapidCollectionSub(collectionID: "users", filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         
