@@ -61,7 +61,7 @@ class RapidSerialization {
     ///   - mutation: Mutation object
     ///   - identifiers: Identifiers that are associated with the mutation event
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(mutation: RapidDocumentMutation, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -82,7 +82,7 @@ class RapidSerialization {
     ///   - merge: Merge object
     ///   - identifiers: Identifiers that are associated with the merge event
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(merge: RapidDocumentMerge, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -103,7 +103,7 @@ class RapidSerialization {
     ///   - subscription: Subscription object
     ///   - identifiers: Identifiers that are associated with the subscription event
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(subscription: RapidCollectionSub, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -220,7 +220,7 @@ class RapidSerialization {
     ///   - unsubscription: Unsubscription object
     ///   - identifiers: Identifiers that are associated with the unsubscription event
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(unsubscription: RapidUnsubscriptionHandler, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -235,7 +235,7 @@ class RapidSerialization {
     /// - Parameters:
     ///   - acknowledgement: Acknowledgement object
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(acknowledgement: RapidSocketAcknowledgement) throws -> String {
         let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
         return try resultDict.jsonString()
@@ -247,7 +247,7 @@ class RapidSerialization {
     ///   - connection: Connection request object
     ///   - identifiers: Identifiers that are associated with the connection request event
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(connection: RapidConnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -263,7 +263,7 @@ class RapidSerialization {
     ///   - reconnection: Reconnection request object
     ///   - identifiers: Identifiers that are associated with the connection request event
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(reconnection: RapidReconnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -278,7 +278,7 @@ class RapidSerialization {
     /// - Parameters:
     ///   - disconnection: Disconnection request object
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(disconnection: RapidDisconnectionRequest) throws -> String {
         let resultDict = [Disconnect.name: NSNull()]
         return try resultDict.jsonString()
@@ -289,7 +289,7 @@ class RapidSerialization {
     /// - Parameters:
     ///   - emptyRequest: Request object
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(emptyRequest: RapidEmptyRequest) throws -> String {
         let resultDict = [NoOperation.name: NSNull()]
         return try resultDict.jsonString()

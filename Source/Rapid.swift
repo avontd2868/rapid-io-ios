@@ -91,14 +91,19 @@ public class Rapid: NSObject {
         return RapidCollection(id: named, handler: handler)
     }
     
-    /// Disconnect existing websocket
+    /// Disconnect from server
     public func goOffline() {
         handler.socketManager.goOffline()
     }
     
-    /// Reconnect previously configured websocket
+    /// Restore previously configured connection
     public func goOnline() {
         handler.socketManager.goOnline()
+    }
+    
+    /// Remove all subscriptions
+    public func unsubscribeAll() {
+        handler.socketManager.unsubscribeAll()
     }
 }
 
@@ -134,6 +139,21 @@ public extension Rapid {
     /// Current state of shared Rapid instance
     class var connectionState: ConnectionState {
         return try! shared().connectionState
+    }
+    
+    /// Disconnect from server
+    class func goOffline() {
+        try! shared().goOffline()
+    }
+    
+    /// Restore previously configured connection
+    class func goOnline() {
+        try! shared().goOnline()
+    }
+    
+    /// Remove all subscriptions
+    class func unsubscribeAll() {
+        try! shared().unsubscribeAll()
     }
     
     /// Configures shared Rapid instance

@@ -13,9 +13,9 @@ extension Dictionary {
     /// Create JSON string from `Self`
     ///
     /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` errors
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     func jsonString() throws -> String {
-        if JSONSerialization.isValidJSONObject(self) {
+        if try Validator.validate(jsonDictionary: self) {
             let data = try JSONSerialization.data(withJSONObject: self, options: [])
             return String(data: data, encoding: .utf8) ?? ""
         }

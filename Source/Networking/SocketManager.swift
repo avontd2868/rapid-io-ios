@@ -130,6 +130,16 @@ class SocketManager {
         }
     }
     
+    /// Remove all subscriptions
+    func unsubscribeAll() {
+        websocketQueue.async { [weak self] in
+            for (_, subscripiton) in self?.activeSubscriptions ?? [:] {
+                let handler = RapidUnsubscriptionHandler(subscription: subscripiton)
+                self?.unsubscribe(handler)
+            }
+        }
+    }
+    
     /// Reconnect previously configured websocket
     func goOnline() {
         websocketQueue.async { [weak self] in

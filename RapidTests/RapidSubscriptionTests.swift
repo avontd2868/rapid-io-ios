@@ -11,173 +11,27 @@ import XCTest
 
 extension RapidTests {
     
-    func testCollectionSubscription() {
-        Rapid.configure(withAPIKey: apiKey)
-        
-        let subscription = Rapid.collection(named: "users").subscribe { (_, _) in
-        }
-        
-        if let sub = subscription as? RapidCollectionSub {
-            let json: [AnyHashable: Any] = [
-                "sub": [
-                    "col-id": sub.collectionID
-                ]
-            ]
-            
-            do {
-                let comparison = try sub.serialize(withIdentifiers: [:]).json() ?? [:]
-                
-                if !(comparison == json) {
-                    XCTFail("Subscription wrongly serialized")
-                }
-            }
-            catch {
-            }
-        }
-        else {
-            XCTFail("Subscription of wrong type")
-        }
-    }
-    
-    func testMultiArgumentNotFilter() {
-        let filter = RapidFilterCompound(compoundOperator: .not, operands: [
-            RapidFilterSimple(key: "id", relation: .equal, value: "1"),
-            RapidFilterSimple(key: "text", relation: .equal, value: "text")
-            ])
-        
-        XCTAssertNil(filter, "Filter not nil")
-    }
-    
-    func testEmptyFilter() {
-        let filter = RapidFilterCompound(compoundOperator: .and, operands: [])
-        
-        XCTAssertNil(filter, "Filter not nil")
-    }
-    
-    func testSubscriptionFilter() {
-        Rapid.configure(withAPIKey: apiKey)
-        
-        let subscription = Rapid.collection(named: "users")
-            .filter(by: RapidFilterSimple(key: "text", relation: .equal, value: "texty text"))
-            .subscribe { (_, _) in
-        }
-        
-        if let sub = subscription as? RapidCollectionSub {
-            let json: [AnyHashable: Any] = [
-                "sub": [
-                    "col-id": sub.collectionID,
-                    "filter": ["text": "texty text"]
-                ]
-            ]
-            
-            do {
-                let comparison = try sub.serialize(withIdentifiers: [:]).json() ?? [:]
-                
-                if !(comparison == json) {
-                    XCTFail("Subscription wrongly serialized")
-                }
-            }
-            catch {
-            }
-        }
-        else {
-            XCTFail("Subscription of wrong type")
-        }
-    }
-    
-    func testSubscriptionComplexFilter() {
-        Rapid.configure(withAPIKey: apiKey)
-        
-        let subscription = Rapid.collection(named: "users")
-            .filter(by:
-                RapidFilterCompound(compoundOperator: .and, operands: [
-                    RapidFilterCompound(compoundOperator: .or, operands: [
-                        RapidFilterSimple(key: "sender", relation: .equal, value: "john123"),
-                        RapidFilterSimple(key: "urgency", relation: .greaterThanOrEqual, value: 1),
-                        RapidFilterSimple(key: "priority", relation: .lessThanOrEqual, value: 2)
-                        ])!,
-                    RapidFilterCompound(compoundOperator: .not, operands: [RapidFilterSimple(key: "receiver", relation: .equal, value: nil)])!
-                    ])!)
-            .order(by: [
-                RapidOrdering(key: "sentDate", ordering: .descending),
-                RapidOrdering(key: "urgency", ordering: .ascending)
-                ])
-            .limit(to: 50, skip: 10)
-            .subscribe { (_, _) in
-        }
-        
-        if let sub = subscription as? RapidCollectionSub {
-            let json: [AnyHashable: Any] = [
-                "sub": [
-                    "col-id": sub.collectionID,
-                    "filter": [
-                        "and": [
-                            [
-                                "or": [
-                                    ["sender": "john123"],
-                                    ["urgency": ["gte": 1]],
-                                    ["priority": ["lte": 2]]
-                                ]
-                            ],
-                            [
-                                "not": ["receiver": NSNull()]
-                            ]
-                        ]
-                    ],
-                    "order": [
-                        ["sentDate": "desc"],
-                        ["urgency": "asc"]
-                    ],
-                    "limit": 50,
-                    "skip": 10
-                ]
-            ]
-            
-            do {
-                let comparison = try sub.serialize(withIdentifiers: [:]).json() ?? [:]
-
-                if !(comparison == json) {
-                    XCTFail("Subscription wrongly serialized")
-                }
-            }
-            catch {
-            }
-        }
-        else {
-            XCTFail("Subscription of wrong type")
-        }
-    }
-    
     func testDuplicateSubscriptions() {
-        Rapid.configure(withAPIKey: apiKey)
-        
-        guard let sub1 = Rapid.collection(named: "users").document(withID: "1").subscribe(completion: { (_, _) in }) as? RapidDocumentSub else {
+        guard let sub1 = self.rapid.collection(named: "users").document(withID: "1").subscribe(completion: { (_, _) in }) as? RapidDocumentSub else {
             XCTFail("Subscription of wrong type")
             return
         }
         
-        guard let sub2 = Rapid.collection(named: "users").filter(by: RapidFilterSimple(key: RapidFilterSimple.documentIdKey, relation: .equal, value: "1")).subscribe(completion: { (_, _) in }) as? RapidCollectionSub else {
+        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(key: RapidFilterSimple.documentIdKey, relation: .equal, value: "1")).subscribe(completion: { (_, _) in }) as? RapidCollectionSub else {
             XCTFail("Subscription of wrong type")
             return
         }
         
-        do {
-            let handler1 = try Rapid.shared().handler.socketManager.activeSubscription(withHash: sub1.subscriptionHash)
-            let handler2 = try Rapid.shared().handler.socketManager.activeSubscription(withHash: sub2.subscriptionHash)
-            
-            XCTAssertEqual(handler1, handler2, "Different handlers for same subscription")
-        }
-        catch {
-            XCTFail("Rapid instance not initialized")
-        }
+        let handler1 = self.rapid.handler.socketManager.activeSubscription(withHash: sub1.subscriptionHash)
+        let handler2 = self.rapid.handler.socketManager.activeSubscription(withHash: sub2.subscriptionHash)
+        
+        XCTAssertEqual(handler1, handler2, "Different handlers for same subscription")
     }
 
     func testSubscriptionInitialResponse() {
-        Rapid.configure(withAPIKey: apiKey)
-        
         let promise = expectation(description: "Subscription initial value")
         
-        Rapid.collection(named: testCollectionName).subscribe { (_, _) in
+        self.rapid.collection(named: testCollectionName).subscribe { (_, _) in
             promise.fulfill()
         }
         
@@ -185,12 +39,10 @@ extension RapidTests {
     }
     
     func testUnsubscription() {
-        Rapid.configure(withAPIKey: apiKey)
-        
-        let promise = expectation(description: "Subscription initial value")
+        let promise = expectation(description: "Unsubscribe")
         
         var initialValue = true
-        let subscription = Rapid.collection(named: testCollectionName).subscribe { (_, _) in
+        let subscription = self.rapid.collection(named: testCollectionName).subscribe { (_, _) in
             if initialValue {
                 initialValue = false
             }
@@ -211,6 +63,117 @@ extension RapidTests {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
+    func testUnsubscribeAll() {
+        let promise = expectation(description: "Unsubscribe all")
+        
+        var initial1 = true
+        var initial2 = true
+        
+        self.rapid.collection(named: testCollectionName).subscribe { (_, _) in
+            if initial1 {
+                initial1 = false
+            }
+            else {
+                XCTFail("Subscription not uregistered")
+            }
+        }
+        
+        self.rapid.collection(named: testCollectionName).order(by: [RapidOrdering(key: "name", ordering: .ascending)]).subscribe { (_, _) in
+            if initial2 {
+                initial2 = false
+            }
+            else {
+                XCTFail("Subscription not uregistered")
+            }
+        }
+        
+        runAfter(2) {
+            self.rapid.unsubscribeAll()
+            self.mutate(documentID: "1", value: ["name": "testUnsubscriptiion"])
+        }
+        
+        runAfter(4) {
+            promise.fulfill()
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testInsert() {
+        let promise = expectation(description: "Subscription insert")
+        
+        mutate(documentID: "1", value: nil)
+        
+        runAfter(1) { 
+            var initialValue = true
+            self.rapid.collection(named: self.testCollectionName).subscribe { (_, _, inserts, updates, deletes) in
+                if initialValue {
+                    initialValue = false
+                }
+                else if inserts.count == 1 && updates.count == 0 && deletes.count == 0 && inserts.first?.id == "1" {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Document not inserted")
+                }
+            }
+            
+            self.mutate(documentID: "1", value: ["name": "testInsert"])
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+    
+    func testUpdate() {
+        let promise = expectation(description: "Subscription update")
+        
+        mutate(documentID: "1", value: ["name": "testUpdate"])
+        
+        runAfter(1) { 
+            var initialValue = true
+            self.rapid.collection(named: self.testCollectionName).subscribe { (_, documents, inserts, updates, deletes) in
+                if initialValue {
+                    initialValue = false
+                }
+                else if inserts.count == 0 && updates.count == 1 && deletes.count == 0 && updates.first?.id == "1" {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Document not updated")
+                }
+            }
+            
+            self.mutate(documentID: "1", value: ["name": "testUpdatedUpdate"])
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+    
+    func testDelete() {
+        let promise = expectation(description: "Subscription delete")
+        
+        mutate(documentID: "1", value: ["name": "testDelete"])
+        
+        runAfter(1) { 
+            var initialValue = true
+            self.rapid.collection(named: self.testCollectionName).subscribe { (_, _, inserts, updates, deletes) in
+                if initialValue {
+                    initialValue = false
+                }
+                else if inserts.count == 0 && updates.count == 0 && deletes.count == 1 && deletes.first?.id == "1" {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Document not deleted")
+                }
+            }
+            
+            self.mutate(documentID: "1", value: nil)
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+    
 }
 
 // MARK: Helper methods
@@ -218,10 +181,10 @@ fileprivate extension RapidTests {
     
     func mutate(documentID: String?, value: [AnyHashable: Any]?) {
         if let id = documentID {
-            Rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value)
+            self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value)
         }
         else {
-            Rapid.collection(named: testCollectionName).newDocument().mutate(value: value)
+            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value)
         }
     }
     

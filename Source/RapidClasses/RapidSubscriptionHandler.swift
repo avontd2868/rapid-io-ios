@@ -94,11 +94,11 @@ class RapidSubscriptionHandler: NSObject {
     ///
     /// - Parameter subscription: New subscription object
     func registerSubscription(subscription: RapidSubscriptionInstance) {
-        dispatchQueue.async { [weak self] in
-            self?.appendSubscription(subscription)
+        dispatchQueue.async {
+            self.appendSubscription(subscription)
             
             // If the handler is subscribed pass the last known value immediatelly
-            if self?.state == .subscribed, let value = self?.value {
+            if self.state == .subscribed, let value = self.value {
                 subscription.receivedUpdate(value, value, [], [])
             }
         }
@@ -343,24 +343,24 @@ fileprivate extension RapidSubscriptionHandler {
 extension RapidSubscriptionHandler: RapidRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        dispatchQueue.async { [weak self] in
-            self?.state = .subscribed
+        dispatchQueue.async {
+            self.state = .subscribed
         }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        dispatchQueue.async { [weak self] in
-            self?.state = .unsubscribed
+        dispatchQueue.async {
+            self.state = .unsubscribed
             
-            for subscription in self?.subscriptions ?? [] {
+            for subscription in self.subscriptions {
                 subscription.subscriptionFailed(withError: error.error)
             }
         }
     }
     
     func receivedSubscriptionEvent(_ update: RapidSubscriptionBatch) {
-        dispatchQueue.async { [weak self] in
-            self?.receivedNewValue(update)
+        dispatchQueue.async {
+            self.receivedNewValue(update)
         }
     }
 }

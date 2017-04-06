@@ -96,3 +96,52 @@ class Decoder {
         }
     }
 }
+
+class Validator {
+    
+    /// Validate JSON dictionary
+    ///
+    /// - Parameter dict: JSON dictionary
+    /// - Returns: `true` if a JSON is valid
+    /// - Throws: `RapidError.invalidData`
+    class func validate(jsonDictionary dict: [AnyHashable: Any]) throws -> Bool {
+        guard JSONSerialization.isValidJSONObject(dict) else {
+            throw RapidError.invalidData(reason: .serializationFailure)
+        }
+        
+        for (key, value) in dict {
+            if let key = key as? String, isValid(parameterName: key) {
+                if let dictionary = value as? [AnyHashable: Any] {
+                    return try validate(jsonDictionary: dictionary)
+                }
+                else if let array = value as? [[AnyHashable: Any]] {
+                    for dictionary in array {
+                        if !(try validate(jsonDictionary: dictionary)) {
+                            return false
+                        }
+                    }
+                }
+                else {
+                    continue
+                }
+            }
+            else {
+                throw RapidError.invalidData(reason: .invalidParameterName(name: key))
+            }
+        }
+        
+        return true
+    }
+    
+    /// Check a parameter name if it is valid
+    ///
+    /// - Parameter name: String with a parameter name
+    /// - Returns: `true` if a parameter name is valid
+    class func isValid(parameterName name: String) -> Bool {
+        let regex = "^[$]?[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)?$"
+        
+        let test = NSPredicate(format:"SELF MATCHES %@", regex)
+        return test.evaluate(with: name)
+    }
+    
+}

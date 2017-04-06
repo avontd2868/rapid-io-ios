@@ -15,6 +15,8 @@ func ==(lhs: [AnyHashable: Any], rhs: [AnyHashable: Any] ) -> Bool {
 
 class RapidTests: XCTestCase {
     
+    var rapid: Rapid!
+    
     let apiKey = "ws://13.64.77.202:8080"
     let fakeAPIKey = "ws://13.64.77.202:80805/fake"
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
@@ -22,11 +24,14 @@ class RapidTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
+        
+        rapid = Rapid(apiKey: "ws://13.64.77.202:8080")!
     }
     
     override func tearDown() {
-        Rapid.deinitialize()
-
+        Rapid.timeout = nil
+        rapid = nil
+        
         super.tearDown()
     }
     
@@ -46,8 +51,7 @@ class RapidTests: XCTestCase {
     }
     
     func testConfiguredSingleton() {
-        Rapid.configure(withAPIKey: apiKey)
-        let subscription = try? Rapid.shared().collection(named: "users").subscribe { (_, _) in
+        let subscription = rapid.collection(named: "users").subscribe { (_, _) in
         }
         
         XCTAssertNotNil(subscription, "Subscription not returned")
@@ -61,7 +65,7 @@ class RapidTests: XCTestCase {
     }
     
     func testInstanceWeakReferencing() {
-        var rapid = Rapid.getInstance(withAPIKey: apiKey)
+        var rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)
         
         let instanceDescription = rapid?.description
         rapid = nil
@@ -72,12 +76,12 @@ class RapidTests: XCTestCase {
     }
     
     func testRequestTimeout() {
+        let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
         Rapid.timeout = 2
-        Rapid.configure(withAPIKey: apiKey+"5/fake")
         
         let promise = expectation(description: "Mutation timeout")
 
-        Rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { (error, _) in
+        rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { (error, _) in
             if let error = error as? RapidError, case .timeout = error {
                 promise.fulfill()
             }
@@ -90,32 +94,22 @@ class RapidTests: XCTestCase {
     }
     
     func testConnectionStates() {
-        Rapid.configure(withAPIKey: apiKey+"5/fake")
-
+        let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
+        
         let promise = expectation(description: "Rapid forced disconnect")
         
         runAfter(1) {
-            XCTAssertEqual(Rapid.connectionState, Rapid.ConnectionState.connecting, "Rapid is not connecting")
+            XCTAssertEqual(rapid.connectionState, Rapid.ConnectionState.connecting, "Rapid is not connecting")
             
-            do {
-                try Rapid.shared().goOffline()
-            }
-            catch {
-                XCTFail("Shared Instance not configured")
-            }
+            rapid.goOffline()
             
             runAfter(1) {
-                if Rapid.connectionState == .disconnected {
+                if rapid.connectionState == .disconnected {
                     
-                    do {
-                        try Rapid.shared().goOnline()
-                    }
-                    catch {
-                        XCTFail("Shared Instance not configured")
-                    }
+                    rapid.goOnline()
                     
                     runAfter(1, closure: {
-                        if Rapid.connectionState == .connecting {
+                        if rapid.connectionState == .connecting {
                             promise.fulfill()
                         }
                         else {
@@ -130,31 +124,23 @@ class RapidTests: XCTestCase {
         }
         
         waitForExpectations(timeout: 4, handler: nil)
-        
     }
     
     func testReconnect() {
-        Rapid.configure(withAPIKey: apiKey)
-        
         let promise = expectation(description: "Reconnect")
         
         runAfter(1) { 
-            do {
-                try Rapid.shared().handler.socketManager.disconnectSocket()
+            self.rapid.handler.socketManager.disconnectSocket()
+            
+            runAfter(2, closure: {
                 
-                runAfter(2, closure: {
-
-                    if Rapid.connectionState == .connected {
-                        promise.fulfill()
-                    }
-                    else {
-                        XCTFail("Rapid didn't reconnect")
-                    }
-                })
-            }
-            catch {
-                XCTFail("Shared Instance not configured")
-            }
+                if self.rapid.connectionState == .connected {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Rapid didn't reconnect")
+                }
+            })
         }
         
         waitForExpectations(timeout: 4, handler: nil)

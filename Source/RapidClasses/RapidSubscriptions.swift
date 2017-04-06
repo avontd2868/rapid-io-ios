@@ -71,9 +71,9 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     
     func subscriptionFailed(withError error: RapidError) {
         // Pass error to callbacks
-        DispatchQueue.main.async { [weak self] in
-            self?.callback?(error, [])
-            self?.callbackWithChanges?(error, [], [], [], [])
+        DispatchQueue.main.async {
+            self.callback?(error, [])
+            self.callbackWithChanges?(error, [], [], [], [])
         }
     }
     
@@ -86,9 +86,9 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     
     func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) {
         // Pass changes to callbacks
-        DispatchQueue.main.async { [weak self] in
-            self?.callback?(nil, documents)
-            self?.callbackWithChanges?(nil, documents, added, updated, removed)
+        DispatchQueue.main.async {
+            self.callback?(nil, documents)
+            self.callbackWithChanges?(nil, documents, added, updated, removed)
         }
     }
     

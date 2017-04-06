@@ -71,9 +71,23 @@ public class RapidCollection: NSObject {
         return self
     }
     
-    /// Assign an ordering options to the collection which are applied for subscription
+    /// Assign ordering options to the collection which are applied for subscription
     ///
-    /// An ordering with the array index 0 has the highest priority. 
+    /// An ordering with the array index 0 has the highest priority.
+    /// When the collection already contains an ordering the new ordering is appended to the original one
+    ///
+    /// - Parameter ordering: Ordering object
+    /// - Returns: The collection with the ordering array assigned
+    public func order(by ordering: RapidOrdering) -> RapidCollection {
+        if self.subscriptionOrdering == nil {
+            self.subscriptionOrdering = []
+        }
+        self.subscriptionOrdering?.append(ordering)
+        return self
+    }
+    
+    /// Assign an ordering option to the collection which is applied for subscription
+    ///
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
