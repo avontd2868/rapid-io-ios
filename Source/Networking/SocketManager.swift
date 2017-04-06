@@ -77,6 +77,7 @@ class SocketManager {
     }
     
     deinit {
+        sendDisconnectionRequest()
         destroySocket()
     }
     
@@ -292,11 +293,10 @@ fileprivate extension SocketManager {
     // Destroy existing socket connection
     func destroySocket() {
         socketTerminated = true
-        state = .disconnected
-        
-        sendDisconnectionRequest()
         
         disconnectSocket()
+        
+        state = .disconnected
     }
     
     /// Create abstract connection
