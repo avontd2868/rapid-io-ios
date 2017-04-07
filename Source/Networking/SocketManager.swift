@@ -349,7 +349,14 @@ fileprivate extension SocketManager {
     func unsubscribe(_ handler: RapidUnsubscriptionHandler) {
         activeSubscriptions[handler.subscription.subscriptionID] = nil
         
-        post(event: handler)
+        // If the subscription is still in queue just remove it
+        // Otherwise, send usubscription request
+        if let subscriptionIndex = eventQueue.flatMap({ $0 as? RapidSubscriptionHandler }).index(where: { $0.subscriptionID == handler.subscription.subscriptionID }) {
+            eventQueue.remove(at: subscriptionIndex)
+        }
+        else {
+            post(event: handler)
+        }
     }
     
     /// Enque a event to the queue

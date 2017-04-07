@@ -19,6 +19,7 @@ class RapidTests: XCTestCase {
     
     let apiKey = "ws://13.64.77.202:8080"
     let fakeAPIKey = "ws://13.64.77.202:80805/fake"
+    let socketURL = URL(string: "ws://13.64.77.202:8080")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
     
@@ -182,7 +183,7 @@ class RapidTests: XCTestCase {
             })
         }
         
-        waitForExpectations(timeout: 9, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
     }
     
     func testReconnectWithFullQueue() {

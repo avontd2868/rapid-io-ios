@@ -370,15 +370,12 @@ fileprivate extension RapidSubscriptionHandler {
             
             return RapidDocSnapOperation(snapshot: document, operation: .update)
         }
+        
         // If the document doesn't have a predecessor and it isn't in the last known dataset insert it to the index 0
-        else {
-            
-            if mutateCollection {
-                documents.insert(document, at: 0)
-            }
-            
-            return RapidDocSnapOperation(snapshot: document, operation: .add)
+        if mutateCollection {
+            documents.insert(document, at: 0)
         }
+        return RapidDocSnapOperation(snapshot: document, operation: .add)
     }
     
     /// Unregister subscription object from listening to the dataset changes

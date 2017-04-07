@@ -63,6 +63,70 @@ extension RapidTests {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
+    func testUnsubsciptionRetry() {
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        }
+        
+        var activeSubscriptions = [RapidSubscriptionHandler]()
+        
+        let promise = expectation(description: "Unsubscription retry")
+        
+        var firstTry = true
+        let handler = RapidSubscriptionHandler(withSubscriptionID: Rapid.uniqueID, subscription: subscription, dispatchQueue: DispatchQueue.main, unsubscribeHandler: { unsubscribeHandler in
+            if firstTry {
+                firstTry = false
+                unsubscribeHandler.eventFailed(withError: RapidErrorInstance(eventID: Rapid.uniqueID, error: RapidError.default))
+            }
+            else {
+                promise.fulfill()
+            }
+        })
+        activeSubscriptions.append(handler)
+        
+        subscription.unsubscribe()
+        
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+    
+    func testDoubleUnsubscriptionOnOneHandler() {
+        let promise = expectation(description: "Double unsubscription")
+        
+        let sub1 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(key: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let sub2 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
+        
+        let sub3 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(key: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let sub4 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
+        
+        let socketManager = SocketManager(socketURL: self.socketURL)
+        let fakeSocketManager = SocketManager(socketURL: self.fakeSocketURL)
+        
+        socketManager.subscribe(sub1)
+        socketManager.subscribe(sub2)
+        
+        fakeSocketManager.subscribe(sub3)
+        fakeSocketManager.subscribe(sub4)
+        print(sub1, sub2, sub3, sub4)
+        runAfter(1) {
+            sub1.unsubscribe()
+            sub4.unsubscribe()
+            
+            XCTAssertNotNil(socketManager.activeSubscription(withHash: sub1.subscriptionHash), "Subscription handler released")
+            XCTAssertNotNil(fakeSocketManager.activeSubscription(withHash: sub4.subscriptionHash), "Subscription handler released")
+            
+            sub2.unsubscribe()
+            sub3.unsubscribe()
+            
+            runAfter(1, closure: {
+                XCTAssertNil(socketManager.activeSubscription(withHash: sub2.subscriptionHash), "Subscription handler not released")
+                XCTAssertNil(fakeSocketManager.activeSubscription(withHash: sub3.subscriptionHash), "Subscription handler not released")
+                
+                promise.fulfill()
+            })
+        }
+        
+        waitForExpectations(timeout: 3, handler: nil)
+    }
+    
     func testUnsubscribeAll() {
         let promise = expectation(description: "Unsubscribe all")
         
