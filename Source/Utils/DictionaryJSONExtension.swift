@@ -19,9 +19,8 @@ extension Dictionary {
             let data = try JSONSerialization.data(withJSONObject: self, options: [])
             return String(data: data, encoding: .utf8) ?? ""
         }
-        else {
-            throw RapidError.invalidData(reason: .serializationFailure)
-        }
+
+        throw RapidError.invalidData(reason: .serializationFailure)
     }
 }
 
@@ -32,12 +31,7 @@ extension String {
     /// - Returns: JSON dictionary
     /// - Throws: `JSONSerialization` errors
     func json() throws -> [AnyHashable: Any]? {
-        if let data = self.data(using: .utf8) {
-            return try data.json()
-        }
-        else {
-            return nil
-        }
+        return try self.data(using: .utf8)?.json()
     }
 }
 

@@ -28,7 +28,6 @@ func == <T>(lhs: WRO<T>, rhs: WRO<T>) -> Bool {
     if lhs.object == rhs.object {
         return true
     }
-    else {
-        return false
-    }
+    
+    return false
 }

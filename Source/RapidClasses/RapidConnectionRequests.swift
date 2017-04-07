@@ -22,9 +22,6 @@ class RapidConnectionRequest: RapidSerializable {
     /// Request should timeout even if `Rapid.timeout` is `nil`
     let alwaysTimeout = true
     
-    /// Requst waits for acknowledgement
-    let needsAcknowledgement = true
-    
     /// ID associated with an abstract connection
     let connectionID: String
     

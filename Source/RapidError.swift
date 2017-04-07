@@ -39,14 +39,14 @@ struct RapidErrorInstance: RapidResponse {
         let message = dict[RapidSerialization.Error.ErrorMessage.name] as? String
         
         let error: RapidError
-        switch key ?? "" {
-        case RapidSerialization.Error.ErrorType.PermissionDenied.name:
+        switch key {
+        case .some(let type) where type == RapidSerialization.Error.ErrorType.PermissionDenied.name:
             error = .permissionDenied(message: message)
             
-        case RapidSerialization.Error.ErrorType.Internal.name:
+        case .some(let type) where type == RapidSerialization.Error.ErrorType.Internal.name:
             error = .server(message: message)
             
-        case RapidSerialization.Error.ErrorType.ConnectionTerminated.name:
+        case .some(let type) where type == RapidSerialization.Error.ErrorType.ConnectionTerminated.name:
             error = .connectionTerminated(message: message)
             
         default:

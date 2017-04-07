@@ -91,9 +91,8 @@ class Decoder {
         if let url = URL(string: apiKey) {
             return (url, "")
         }
-        else {
-            return nil
-        }
+
+        return nil
     }
 }
 
@@ -104,6 +103,7 @@ class Validator {
     /// - Parameter dict: JSON dictionary
     /// - Returns: `true` if a JSON is valid
     /// - Throws: `RapidError.invalidData`
+    @discardableResult
     class func validate(jsonDictionary dict: [AnyHashable: Any]) throws -> Bool {
         guard JSONSerialization.isValidJSONObject(dict) else {
             throw RapidError.invalidData(reason: .serializationFailure)
@@ -116,9 +116,7 @@ class Validator {
                 }
                 else if let array = value as? [[AnyHashable: Any]] {
                     for dictionary in array {
-                        if !(try validate(jsonDictionary: dictionary)) {
-                            return false
-                        }
+                        try validate(jsonDictionary: dictionary)
                     }
                 }
                 else {

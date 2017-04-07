@@ -60,8 +60,8 @@ public class RapidDocumentSnapshot: NSObject {
 /// Class representing Rapid.io document
 public class RapidDocument: NSObject {
     
-    weak var handler: RapidHandler?
-    var socketManager: SocketManager {
+    fileprivate weak var handler: RapidHandler?
+    fileprivate var socketManager: SocketManager {
         return try! getSocketManager()
     }
     
@@ -70,7 +70,7 @@ public class RapidDocument: NSObject {
     /// Document ID
     public let documentID: String
     
-    init(id: String, inCollection collectionID: String, handler: RapidHandler) {
+    init(id: String, inCollection collectionID: String, handler: RapidHandler!) {
         self.documentID = id
         self.collectionID = collectionID
         self.handler = handler
@@ -132,9 +132,8 @@ extension RapidDocument {
         if let manager = handler?.socketManager {
             return manager
         }
-        else {
-            print(RapidInternalError.rapidInstanceNotInitialized.message)
-            throw RapidInternalError.rapidInstanceNotInitialized
-        }
+
+        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        throw RapidInternalError.rapidInstanceNotInitialized
     }
 }

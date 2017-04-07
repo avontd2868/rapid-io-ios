@@ -66,7 +66,7 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     
     /// Subscription identifier
     var subscriptionHash: String {
-        return "\(collectionID)#\(filter?.filterHash ?? "")#\(ordering?.map({ $0.orderingHash }).joined(separator: "|") ?? "")#\(paging?.pagingHash ?? "")"
+        return "\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
     }
     
     func subscriptionFailed(withError error: RapidError) {

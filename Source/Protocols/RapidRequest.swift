@@ -14,34 +14,16 @@ protocol RapidSerializable {
 }
 
 /// Protocol describing events that can be sent to the server
-protocol RapidRequest: class {
-    /// Request waits to be acknowledged by the server
-    var needsAcknowledgement: Bool { get }
-    
+protocol RapidSocketEvent {}
+
+/// Protocol describing socket events that wait for a server response
+protocol RapidRequest: class, RapidSocketEvent {
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement)
     func eventFailed(withError error: RapidErrorInstance)
 }
 
-/// Protocol inheriting from `RapidRequest`.
-///
-/// `RapidClientEvent` informs the server about an event and doesn't wait for an acknowledgement.
-protocol RapidClientEvent: RapidRequest {}
-
-extension RapidClientEvent {
-    
-    var needsAcknowledgement: Bool { return false }
-    
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {}
-    
-    func eventFailed(withError error: RapidErrorInstance) {}
-}
-
-extension RapidClientEvent where Self: RapidSerializable {
-    
-    func serialize() throws -> String {
-        return try self.serialize(withIdentifiers: [:])
-    }
-}
+/// Protocol describing socket events that inform server and do not wait for a server response
+protocol RapidClientEvent: RapidSocketEvent {}
 
 /// `RapidRequest` that implements timeout
 protocol RapidTimeoutRequest: RapidRequest {

@@ -17,8 +17,9 @@ public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [Ra
 /// Class representing Rapid.io collection
 public class RapidCollection: NSObject {
     
-    weak var handler: RapidHandler?
-    var socketManager: SocketManager {
+    fileprivate weak var handler: RapidHandler?
+    
+    fileprivate var socketManager: SocketManager {
         return try! getSocketManager()
     }
     
@@ -34,7 +35,7 @@ public class RapidCollection: NSObject {
     /// Pagination information assigned to the collection instance
     public fileprivate(set) var subscriptionPaging: RapidPaging?
 
-    init(id: String, handler: RapidHandler) {
+    init(id: String, handler: RapidHandler!) {
         self.collectionID = id
         self.handler = handler
     }
@@ -145,26 +146,24 @@ public class RapidCollection: NSObject {
     }
 }
 
-fileprivate extension RapidCollection {
+extension RapidCollection {
     
     func document(id: String) throws -> RapidDocument {
         if let handler = handler {
             return RapidDocument(id: id, inCollection: collectionID, handler: handler)
         }
-        else {
-            print(RapidInternalError.rapidInstanceNotInitialized.message)
-            throw RapidInternalError.rapidInstanceNotInitialized
-        }
+
+        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        throw RapidInternalError.rapidInstanceNotInitialized
     }
     
     func getSocketManager() throws -> SocketManager {
         if let manager = handler?.socketManager {
             return manager
         }
-        else {
-            print(RapidInternalError.rapidInstanceNotInitialized.message)
-            throw RapidInternalError.rapidInstanceNotInitialized
-        }
+
+        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        throw RapidInternalError.rapidInstanceNotInitialized
     }
 
 }

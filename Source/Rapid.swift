@@ -62,9 +62,8 @@ public class Rapid: NSObject {
         if let rapid = existingInstance {
             return rapid
         }
-        else {
-            return Rapid(apiKey: apiKey)
-        }
+        
+        return Rapid(apiKey: apiKey)
     }
     
     init?(apiKey: String) {
@@ -119,9 +118,8 @@ public extension Rapid {
         if let shared = sharedInstance {
             return shared
         }
-        else {
-            throw RapidInternalError.rapidInstanceNotInitialized
-        }
+
+        throw RapidInternalError.rapidInstanceNotInitialized
     }
     
     /// Possible connection states

@@ -246,6 +246,35 @@ extension RapidTests {
         }
     }
     
+    func testSubscriptionOrdering() {
+        let collection = self.rapid.collection(named: testCollectionName)
+            .order(by: RapidOrdering(key: "name", ordering: .ascending))
+            .order(by: [RapidOrdering(key: "second_nem", ordering: .descending)])
+        
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        
+        let json: [AnyHashable: Any] = [
+            "sub": [
+                "col-id": sub.collectionID,
+                "order": [
+                    ["name": "asc"],
+                    ["second_nem": "desc"]
+                ]
+            ]
+        ]
+        
+        do {
+            let comparison = try sub.serialize(withIdentifiers: [:]).json() ?? [:]
+            
+            if !(comparison == json) {
+                XCTFail("Subscription wrongly serialized")
+            }
+        }
+        catch {
+            XCTFail("Serialization failed")
+        }
+    }
+    
     func testSubscriptionComplexFilter() {
         let collection = self.rapid.collection(named: "users")
             .filter(by:
@@ -348,5 +377,77 @@ extension RapidTests {
         }
         
         waitForExpectations(timeout: 2, handler: nil)
+    }
+    
+    func testSubscriptionHashes() {
+        let collection = self.rapid.collection(named: testCollectionName)
+            .filter(by:
+                RapidFilterCompound.and([
+                    RapidFilterCompound.or([
+                        RapidFilter.equal(key: "sender", value: "john123"),
+                        RapidFilter.greaterThanOrEqual(key: "urgency", value: 1),
+                        RapidFilter.lessThanOrEqual(key: "priority", value: 2)
+                        ]),
+                    RapidFilter.not(RapidFilter.isNull(key: "receiver"))
+                    ]))
+            .filter(by:
+                RapidFilter.and([
+                    RapidFilter.greaterThan(key: "urgency", value: 2),
+                    RapidFilter.lessThan(key: "urgency", value: 4)
+                    ]))
+            .order(by: [
+                RapidOrdering(key: "sentDate", ordering: .descending)
+                ])
+            .order(by:
+                RapidOrdering(key: "urgency", ordering: .ascending)
+            )
+            .limit(to: 50, skip: 10)
+
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        
+        let hash = "\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-sentDate-d|o-urgency-a#t50s10"
+        
+        XCTAssertEqual(sub.subscriptionHash, hash)
+    }
+    
+    func testSubscriptionHashComparison() {
+        let collection1 = self.rapid.collection(named: testCollectionName)
+            .filter(by:
+                RapidFilterCompound.and([
+                    RapidFilterCompound.or([
+                        RapidFilter.equal(key: "sender", value: "john123"),
+                        RapidFilter.greaterThanOrEqual(key: "urgency", value: 1),
+                        RapidFilter.lessThanOrEqual(key: "priority", value: 2)
+                        ]),
+                    RapidFilter.not(RapidFilter.isNull(key: "receiver"))
+                    ]))
+            .filter(by:
+                RapidFilter.and([
+                    RapidFilter.greaterThan(key: "urgency", value: 2),
+                    RapidFilter.lessThan(key: "urgency", value: 4)
+                    ]))
+        
+        let collection2 = self.rapid.collection(named: testCollectionName)
+            .filter(by:
+                RapidFilter.and([
+                    RapidFilter.lessThan(key: "urgency", value: 4),
+                    RapidFilter.greaterThan(key: "urgency", value: 2)
+                    ]))
+            .filter(by:
+                RapidFilterCompound.and([
+                    RapidFilter.not(RapidFilter.isNull(key: "receiver")),
+                    RapidFilterCompound.or([
+                        RapidFilter.greaterThanOrEqual(key: "urgency", value: 1),
+                        RapidFilter.equal(key: "sender", value: "john123"),
+                        RapidFilter.lessThanOrEqual(key: "priority", value: 2)
+                        ])
+                    ]))
+        
+        let sub1 = RapidCollectionSub(collectionID: collection1.collectionID, filter: collection1.subscriptionFilter, ordering: collection1.subscriptionOrdering, paging: collection1.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        
+        let sub2 = RapidCollectionSub(collectionID: collection2.collectionID, filter: collection2.subscriptionFilter, ordering: collection2.subscriptionOrdering, paging: collection2.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        
+        XCTAssertEqual(sub1.subscriptionHash, sub2.subscriptionHash)
+
     }
 }

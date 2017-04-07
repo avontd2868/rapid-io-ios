@@ -16,9 +16,6 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
     
-    /// Requst waits for acknowledgement
-    let needsAcknowledgement = true
-    
     /// Document JSON
     let value: [AnyHashable: Any]?
     
@@ -127,9 +124,6 @@ class RapidDocumentMerge: NSObject, RapidMergeRequest {
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
 
-    /// Requst waits for acknowledgement
-    let needsAcknowledgement = true
-    
     /// JSON with values to be merged
     let value: [AnyHashable: Any]?
     

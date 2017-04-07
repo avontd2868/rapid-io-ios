@@ -16,7 +16,8 @@ protocol RapidConnectionStateChangeDelegate: class {
 /// Class for websocket communication management
 class SocketManager {
     
-    typealias Request = RapidRequest & RapidSerializable
+    typealias Event = RapidSocketEvent & RapidSerializable
+    typealias Request = RapidRequest & Event
     
     /// Time interval between heartbeats
     fileprivate let heartbeatInterval: TimeInterval = 30
@@ -45,7 +46,7 @@ class SocketManager {
     fileprivate let socket: WebSocket
     
     /// Queue of events that are about to be sent to the server
-    fileprivate var requestQueue: [Request] = []
+    fileprivate var eventQueue: [Event] = []
     
     /// Dictionary of events that have been already sent to the server and a response is awaited. Events are identified by an event ID.
     fileprivate var pendingRequests: [String: Request] = [:]
@@ -77,6 +78,10 @@ class SocketManager {
     }
     
     deinit {
+        deinitialize()
+    }
+    
+    func deinitialize() {
         sendDisconnectionRequest()
         destroySocket()
     }
@@ -86,7 +91,7 @@ class SocketManager {
     /// - Parameter mutationRequest: Mutation object
     func mutate<T: RapidMutationRequest>(mutationRequest: T) {
         websocketQueue.async { [weak self] in
-            self?.postEvent(serializableRequest: mutationRequest)
+            self?.post(event: mutationRequest)
         }
     }
     
@@ -95,7 +100,7 @@ class SocketManager {
     /// - Parameter mergeRequest: Merge object
     func merge<T: RapidMergeRequest>(mergeRequest: T) {
         websocketQueue.async { [weak self] in
-            self?.postEvent(serializableRequest: mergeRequest)
+            self?.post(event: mergeRequest)
         }
     }
     
@@ -126,7 +131,7 @@ class SocketManager {
                 // Add handler to the dictionary of registered subscriptions
                 self?.activeSubscriptions[subscriptionID] = subscriptionHandler
                 
-                self?.postEvent(serializableRequest: subscriptionHandler)
+                self?.post(event: subscriptionHandler)
             }
         }
     }
@@ -194,7 +199,7 @@ fileprivate extension SocketManager {
         print("Did disconnect with error \(String(describing: error))")
         
         // Get all relevant events that were about to be sent
-        let currentQueue = requestQueue.filter({
+        let currentQueue = eventQueue.filter({
             // Do not include connection requests and heartbeats that are relevant to one physical websocket connection
             switch $0 {
             case is RapidConnectionRequest, is RapidEmptyRequest, is RapidReconnectionRequest:
@@ -209,7 +214,7 @@ fileprivate extension SocketManager {
             }
         })
         
-        requestQueue.removeAll(keepingCapacity: true)
+        eventQueue.removeAll(keepingCapacity: true)
         
         // If abstract connection to the server was terminated
         if let error = error, case RapidError.connectionTerminated = error {
@@ -217,7 +222,7 @@ fileprivate extension SocketManager {
             connectionID = nil
 
             // Add to the request queue those subscriptions that were already acknowledged by the server
-            requestQueue = activeSubscriptions
+            eventQueue = activeSubscriptions
                 .map({ $0.value })
                 .filter({ subscription in
                     guard let subscription = subscription as? RapidSubscriptionHandler else {
@@ -247,9 +252,10 @@ fileprivate extension SocketManager {
         }
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
-        requestQueue.append(contentsOf: Array(pendingRequests.values))
+        let eventArray = Array(pendingRequests.values) as [Event]
+        eventQueue.append(contentsOf: eventArray)
         // Finally append relevant requests that were waiting to be sent
-        requestQueue.append(contentsOf: currentQueue)
+        eventQueue.append(contentsOf: currentQueue)
         
         // Create new connection
         createConnection()
@@ -318,14 +324,14 @@ fileprivate extension SocketManager {
         // Inform the connection request that it should start a timeout count down
         connection.requestSent(withTimeout: Rapid.defaultTimeout, delegate: self)
 
-        writeEvent(serializableRequest: connection)
+        write(event: connection)
     }
     
     /// Destroy abstract connection
     ///
     /// Inform the server that it no longer needs to keep an abstract connection with the client
     func sendDisconnectionRequest() {
-        postEvent(serializableRequest: RapidDisconnectionRequest())
+        post(event: RapidDisconnectionRequest())
     }
     
     /// Acknowledge a server event
@@ -334,7 +340,7 @@ fileprivate extension SocketManager {
     func acknowledge(eventWithID eventID: String) {
         let acknowledgement = RapidSocketAcknowledgement(eventID: eventID)
         
-        postEvent(serializableRequest: acknowledgement)
+        post(event: acknowledgement)
     }
     
     /// Unregister subscription
@@ -343,25 +349,25 @@ fileprivate extension SocketManager {
     func unsubscribe(_ handler: RapidUnsubscriptionHandler) {
         activeSubscriptions[handler.subscription.subscriptionID] = nil
         
-        postEvent(serializableRequest: handler)
+        post(event: handler)
     }
     
-    /// Enque a request to the queue
+    /// Enque a event to the queue
     ///
     /// - Parameter serializableRequest: Request to be queued
-    func postEvent(serializableRequest: Request) {
+    func post(event: Event) {
         
         // Inform a timoutable request that it should start a timeout count down
         // User events can be timeouted only if user sets `Rapid.timeout`
         // System events work always with timeout and they use either a custom `Rapid.timeout` if set or a default `Rapid.defaultTimeout`
-        if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, let timeout = Rapid.timeout {
+        if let timeoutRequest = event as? RapidTimeoutRequest, let timeout = Rapid.timeout {
             timeoutRequest.requestSent(withTimeout: timeout, delegate: self)
         }
-        else if let timeoutRequest = serializableRequest as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
+        else if let timeoutRequest = event as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
             timeoutRequest.requestSent(withTimeout: Rapid.defaultTimeout, delegate: self)
         }
         
-        requestQueue.append(serializableRequest)
+        eventQueue.append(event)
         flushQueue()
     }
     
@@ -372,13 +378,13 @@ fileprivate extension SocketManager {
             return
         }
         
-        let queueCopy = requestQueue
+        let queueCopy = eventQueue
         
         // Empty the queue
-        requestQueue.removeAll()
+        eventQueue.removeAll()
 
-        for request in queueCopy {
-            writeEvent(serializableRequest: request)
+        for event in queueCopy {
+            write(event: event)
         }
         
         // Restart heartbeat timer
@@ -388,14 +394,16 @@ fileprivate extension SocketManager {
     /// Post event to websocket
     ///
     /// - Parameter serializableRequest: Request which is going to be sent
-    func writeEvent(serializableRequest: Request) {
+    func write(event: Event) {
         // Generate unique event ID
         let eventID = Generator.uniqueID
         
-        registerPendingRequest(serializableRequest, withID: eventID)
+        if let request = event as? RapidRequest {
+            registerPendingRequest(request, withID: eventID)
+        }
         
         do {
-            let jsonString = try serializableRequest.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
+            let jsonString = try event.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
             
             print("Write request \(jsonString)")
             
@@ -414,9 +422,8 @@ fileprivate extension SocketManager {
     /// - Parameters:
     ///   - request: Sent request
     ///   - eventID: Event ID associated with the request
-    func registerPendingRequest(_ request: Request, withID eventID: String) {
-        // Do not include requests that do not need to be acknowledged
-        if request.needsAcknowledgement {
+    func registerPendingRequest(_ request: RapidRequest, withID eventID: String) {
+        if let request = request as? Request {
             pendingRequests[eventID] = request
         }
     }
@@ -502,7 +509,7 @@ extension SocketManager {
         websocketQueue.async { [weak self] in
             let request = RapidEmptyRequest()
             
-            self?.postEvent(serializableRequest: request)
+            self?.post(event: request)
         }
     }
     
@@ -565,8 +572,8 @@ extension SocketManager: RapidTimeoutRequestDelegate {
                 let error = RapidErrorInstance(eventID: eventID, error: .timeout)
                 self?.completeRequest(withResponse: error)
             }
-            else if let index = self?.requestQueue.index(where: { request === $0 }), let request = request as? Request {
-                self?.requestQueue.remove(at: index)
+            else if let index = self?.eventQueue.flatMap({ $0 as? Request }).index(where: { request === $0 }), let request = request as? Request {
+                self?.eventQueue.remove(at: index)
                 
                 let eventID = Generator.uniqueID
                 self?.registerPendingRequest(request, withID: eventID)

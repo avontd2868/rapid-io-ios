@@ -51,10 +51,18 @@ class RapidTests: XCTestCase {
     }
     
     func testConfiguredSingleton() {
-        let subscription = rapid.collection(named: "users").subscribe { (_, _) in
-        }
+        Rapid.configure(withAPIKey: fakeAPIKey)
         
-        XCTAssertNotNil(subscription, "Subscription not returned")
+        XCTAssertNotNil(Rapid.connectionState, "Wrong connection state")
+        
+        Rapid.goOffline()
+        Rapid.goOnline()
+        
+        Rapid.unsubscribeAll()
+        
+        XCTAssertNotNil(Rapid.collection(named: testCollectionName), "Collection not returned")
+        
+        Rapid.deinitialize()
     }
     
     func testInstanceHandling() {
@@ -73,6 +81,13 @@ class RapidTests: XCTestCase {
         rapid = Rapid.getInstance(withAPIKey: apiKey)
         
         XCTAssertNotEqual(instanceDescription, rapid?.description, "Instance wasn't released")
+    }
+    
+    func testMultipleInstances() {
+        let rapid = Rapid.getInstance(withAPIKey: apiKey)
+        let newInstance = Rapid.getInstance(withAPIKey: fakeAPIKey)
+        
+        XCTAssertNotEqual(rapid?.description, newInstance?.description, "Same instances for different databases")
     }
     
     func testRequestTimeout() {
@@ -132,7 +147,7 @@ class RapidTests: XCTestCase {
         runAfter(1) { 
             self.rapid.handler.socketManager.disconnectSocket()
             
-            runAfter(2, closure: {
+            runAfter(3, closure: {
                 
                 if self.rapid.connectionState == .connected {
                     promise.fulfill()
@@ -143,7 +158,31 @@ class RapidTests: XCTestCase {
             })
         }
         
-        waitForExpectations(timeout: 4, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testReconnectionAfterTerminated() {
+        let promise = expectation(description: "Reconnect")
+        
+        runAfter(1) {
+            self.rapid.handler.socketManager.deinitialize()
+            
+            runAfter(2, closure: {
+                self.rapid.goOnline()
+                
+                runAfter(5, closure: {
+                    
+                    if self.rapid.connectionState == .connected {
+                        promise.fulfill()
+                    }
+                    else {
+                        XCTFail("Rapid didn't reconnect")
+                    }
+                })
+            })
+        }
+        
+        waitForExpectations(timeout: 9, handler: nil)
     }
     
     func testReconnectWithFullQueue() {
@@ -172,5 +211,84 @@ class RapidTests: XCTestCase {
         }
         
         waitForExpectations(timeout: 4, handler: nil)
+    }
+
+    func testCollectionWithoutHandler() {
+        let collection = RapidCollection(id: testCollectionName, handler: nil)
+        
+        XCTAssertThrowsError(try collection.getSocketManager(), "Collection didn't throw")
+        XCTAssertThrowsError(try collection.document(id: "1"), "Collection didn't throw")
+    }
+    
+    func testDocumentWithoutHandler() {
+        let document = RapidDocument(id: "1", inCollection: testCollectionName, handler: nil)
+        
+        XCTAssertThrowsError(try document.getSocketManager(), "Document didn't throw")
+    }
+    
+    func testSnapshotInitialization() {
+        XCTAssertNil(RapidDocumentSnapshot(json: [1,2,3]), "Snapshot initialized")
+        XCTAssertNil(RapidDocumentSnapshot(json: ["id": 6]), "Snapshot initialized")
+        
+        let snapshot = RapidDocumentSnapshot(id: "1", value: ["name": "testSnapshotInitialization"], etag: "1234")
+        
+        XCTAssertEqual(snapshot.id, "1", "Wrong snapshot")
+        XCTAssertEqual(snapshot.etag, "1234", "Wrong snapshot")
+        XCTAssertEqual(snapshot.value?["name"] as? String, "testSnapshotInitialization", "Wrong snapshot")
+    }
+    
+    func testErrorInstanceInitialization() {
+        XCTAssertNil(RapidErrorInstance(json: [1234]), "Error initialized")
+        XCTAssertNil(RapidErrorInstance(json: ["err-type": "test"]), "Error initialized")
+        
+        let eventID = Rapid.uniqueID
+        let errorInstance = RapidErrorInstance(json: ["evt-id": eventID])
+        
+        guard let error = errorInstance else {
+            XCTFail("Error not initialized")
+            return
+        }
+        
+        XCTAssertEqual(error.eventID, eventID, "Wrong event ID")
+        
+        switch error.error {
+        case .default:
+            break
+        default:
+            XCTFail("Wrong error")
+        }
+        
+        let errorInstance2 = RapidErrorInstance(json: ["evt-id": eventID, "err-type": "internal-error", "err-msg": "test"])
+        
+        switch errorInstance2?.error {
+        case .some(RapidError.server(let message)):
+            XCTAssertEqual(message, "test", "Error messages not equal")
+            
+        default:
+            XCTFail("Wrong error")
+        }
+    }
+    
+    func testWeakReferencedObjects() {
+        var set = Set<WRO<NSDictionary>>()
+        
+        var dictionary = NSDictionary(dictionary: ["name": "test1"])
+        set.insert(WRO(object: dictionary))
+        set.insert(WRO(object: dictionary))
+        set = Set(set.filter({ $0.object != nil }))
+        
+        XCTAssertEqual(set.count, 1)
+        
+        let secondDictionary = NSDictionary(dictionary: ["name": "test2"])
+        set.insert(WRO(object: secondDictionary))
+        set = Set(set.filter({ $0.object != nil }))
+        
+        XCTAssertEqual(set.count, 2)
+        
+        dictionary = NSDictionary()
+        set.insert(WRO(object: NSDictionary(dictionary: ["name": "test3"])))
+        set = Set(set.filter({ $0.object != nil }))
+        
+        XCTAssertEqual(set.count, 1)
     }
 }

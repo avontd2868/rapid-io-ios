@@ -174,6 +174,74 @@ extension RapidTests {
         waitForExpectations(timeout: 10, handler: nil)
     }
     
+    func testEmptySubscriptionUpdate() {
+        let subID = Rapid.uniqueID
+        let doc1Etag = Rapid.uniqueID
+        let doc2Etag = Rapid.uniqueID
+        let doc3Etag = Rapid.uniqueID
+        
+        let subValue: [AnyHashable: Any] = [
+            "val": [
+                "evt-id": Rapid.uniqueID,
+                "col-id": testCollectionName,
+                "sub-id": subID,
+                "docs": [
+                    [
+                        "id": "1",
+                        "etag": doc1Etag,
+                        "body": [
+                            "name": "test1"
+                        ]
+                    ],
+                    [
+                        "id": "2",
+                        "etag": doc2Etag,
+                        "body": [
+                            "name": "test2"
+                        ]
+                    ],
+                    [
+                        "id": "3",
+                        "etag": doc3Etag,
+                        "body": [
+                            "name": "test3"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        
+        let promise = expectation(description: "Subscription empty update")
+        
+        var initial = true
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+            if initial {
+                initial = false
+            }
+            else {
+                XCTFail("Subscription was informed about no change")
+            }
+        }
+        
+        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, dispatchQueue: DispatchQueue.main, unsubscribeHandler: { _ in })
+        
+        if let valResponse = RapidSerialization.parse(json: subValue)?.first as? RapidSubscriptionBatch,
+            let updateResponse = RapidSerialization.parse(json: subValue)?.first as? RapidSubscriptionBatch {
+            
+            handler.receivedSubscriptionEvent(valResponse)
+            handler.receivedSubscriptionEvent(updateResponse)
+            
+            runAfter(1, closure: {
+                promise.fulfill()
+            })
+            
+            waitForExpectations(timeout: 2, handler: nil)
+        }
+        else {
+            XCTFail("Wrong response")
+        }
+    }
+    
     func testSubscriptionUpdates() {
         let subID = Rapid.uniqueID
         let docEtag = Rapid.uniqueID

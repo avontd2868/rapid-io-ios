@@ -105,9 +105,6 @@ class RapidSubscriptionHandler: NSObject {
         return subscriptions.first?.subscriptionHash ?? ""
     }
     
-    /// Requst waits for acknowledgement
-    let needsAcknowledgement = true
-    
     /// ID of subscription
     let subscriptionID: String
     
@@ -212,6 +209,12 @@ fileprivate extension RapidSubscriptionHandler {
     /// - Parameter newValue: Updated dataset
     func receivedNewValue(_ update: RapidSubscriptionBatch) {
         let updates = incorporate(batch: update, oldValue: value)
+        
+        // Inform subscriptions only if any change occured
+        guard updates.insert.count > 0 || updates.update.count > 0 || updates.delete.count > 0 || value == nil else {
+            value = updates.dataSet
+            return
+        }
         
         // Inform all subscription objects
         for subsription in subscriptions {
@@ -425,9 +428,6 @@ extension RapidSubscriptionHandler: RapidRequest {
 class RapidUnsubscriptionHandler: NSObject {
     
     let subscription: RapidSubscriptionHandler
-    
-    /// Requst waits for acknowledgement
-    let needsAcknowledgement = true
     
     init(subscription: RapidSubscriptionHandler) {
         self.subscription = subscription

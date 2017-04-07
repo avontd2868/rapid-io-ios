@@ -8,8 +8,12 @@
 
 import Foundation
 
+protocol RapidSubscriptionHashable {
+    var subscriptionHash: String { get }
+}
+
 /// Protocol describing subscription objects
-protocol RapidSubscriptionInstance: class, RapidSerializable {
+protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionHashable {
     /// Hash identifying the subscription
     var subscriptionHash: String { get }
     

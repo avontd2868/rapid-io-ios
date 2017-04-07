@@ -9,12 +9,12 @@
 import Foundation
 
 /// Subscription filter
-public class RapidFilter {
+public class RapidFilter: RapidSubscriptionHashable {
     
     /// Special key which stands for a document ID
     public static let documentIdKey = "$id"
-
-    var filterHash: String { return "" }
+    
+    internal var subscriptionHash: String { return "" }
 }
 
 public extension RapidFilter {
@@ -124,7 +124,7 @@ public class RapidFilterSimple: RapidFilter {
         self.value = nil
     }
     
-    public override var filterHash: String {
+    override var subscriptionHash: String {
         return "\(key)-\(relation.hash)-\(value ?? "null")"
     }
 }
@@ -159,6 +159,8 @@ public class RapidFilterCompound: RapidFilter {
     public let compoundOperator: Operator
     /// Array of filters
     public let operands: [RapidFilter]
+    /// Subscription Hash
+    fileprivate let storedHash: String
     
     /// Compound filter initializer
     ///
@@ -168,16 +170,18 @@ public class RapidFilterCompound: RapidFilter {
     init(compoundOperator: Operator, operands: [RapidFilter]) {
         self.compoundOperator = compoundOperator
         self.operands = operands
+        
+        let hash = operands.sorted(by: { $0.subscriptionHash > $1.subscriptionHash }).flatMap({ $0.subscriptionHash }).joined(separator: "|")
+        self.storedHash = "\(compoundOperator.hash)(\(hash))"
     }
-    
-    public override var filterHash: String {
-        let hash = operands.map({ $0.filterHash }).joined(separator: "|")
-        return "\(compoundOperator.hash)(\(hash))"
+
+    override var subscriptionHash: String {
+        return storedHash
     }
 }
 
 /// Structure that describes subscription ordering
-public struct RapidOrdering {
+public struct RapidOrdering: RapidSubscriptionHashable {
     
     /// Type of ordering
     public enum Ordering {
@@ -210,20 +214,21 @@ public struct RapidOrdering {
         self.ordering = ordering
     }
     
-    var orderingHash: String {
+    var subscriptionHash: String {
         return "o-\(key)-\(ordering.hash)"
     }
+
 }
 
 /// Structure that contains subscription paging values
-public struct RapidPaging {
+public struct RapidPaging: RapidSubscriptionHashable {
     
     /// Number of documents to be skipped
     public let skip: Int?
     /// Maximum number of documents to be returned
     public let take: Int
     
-    var pagingHash: String {
+    var subscriptionHash: String {
         var hash = "t\(take)"
         
         if let skip = skip {
