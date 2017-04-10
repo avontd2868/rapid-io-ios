@@ -11,55 +11,47 @@ import XCTest
 
 extension RapidTests {
     
-    func testParameterValidation() {
-        XCTAssertTrue(Validator.isValid(parameterName: "name"), "Parameter name")
-        XCTAssertTrue(Validator.isValid(parameterName: "$name"), "Parameter name")
-        XCTAssertTrue(Validator.isValid(parameterName: "name.name"), "Parameter name")
-        XCTAssertTrue(Validator.isValid(parameterName: "_n-a_m-e_1"), "Parameter name")
-        XCTAssertFalse(Validator.isValid(parameterName: "name."), "Parameter name")
-        XCTAssertFalse(Validator.isValid(parameterName: "name$"), "Parameter name")
-        XCTAssertFalse(Validator.isValid(parameterName: "name.name.name"), "Parameter name")
-    }
-    
     func testJSONValidation() {
         let sub1 = RapidCollectionSub(
             collectionID: testCollectionName,
             filter: RapidFilter.and([
                 RapidFilter.or([
-                    RapidFilter.equal(key: "$sender", value: "john123"),
-                    RapidFilter.greaterThanOrEqual(key: "max_urgency", value: 1),
-                    RapidFilter.lessThanOrEqual(key: "min-priority", value: 2)
+                    RapidFilter.equal(keyPath: "$sender", value: "john123"),
+                    RapidFilter.greaterThanOrEqual(keyPath: "max_urgency", value: 1),
+                    RapidFilter.lessThanOrEqual(keyPath: "min-priority", value: 2)
                     ]),
-                RapidFilter.not(RapidFilter.isNull(key: "receiver"))
+                RapidFilter.not(RapidFilter.isNull(keyPath: "receiver"))
                 ]),
-            ordering: [RapidOrdering(key: "sentDate", ordering: .descending)],
+            ordering: [RapidOrdering(keyPath: "sentDate", ordering: .descending)],
             paging: RapidPaging(skip: 10, take: 50),
             callback: nil,
             callbackWithChanges: nil)
         
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], callback: nil)
-        
         let sub2 = RapidCollectionSub(
             collectionID: testCollectionName,
-            filter: RapidFilter.equal(key: "$sender.blender.hu", value: "john123"),
+            filter: RapidFilter.equal(keyPath: "sender.hu", value: "john123"),
             ordering: nil,
             paging: nil,
             callback: nil,
             callbackWithChanges: nil)
         
+        let mut1 = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], callback: nil)
+        
+        let mut2 = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], callback: nil)
+        
         let sub3 = RapidCollectionSub(
             collectionID: testCollectionName,
-            filter: nil,
-            ordering: [RapidOrdering(key: "&sentDate", ordering: .descending)],
+            filter: RapidFilter.equal(keyPath: "sender.hu.", value: "john123"),
+            ordering: nil,
             paging: nil,
             callback: nil,
             callbackWithChanges: nil)
         
         XCTAssertNoThrow(try sub1.serialize(withIdentifiers: [:]), "JSON validation")
-        XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
-        XCTAssertThrowsError(try sub2.serialize(withIdentifiers: [:]), "JSON validation")
+        XCTAssertNoThrow(try sub2.serialize(withIdentifiers: [:]), "JSON validation")
+        XCTAssertThrowsError(try mut1.serialize(withIdentifiers: [:]), "JSON validation")
+        XCTAssertThrowsError(try mut2.serialize(withIdentifiers: [:]), "JSON validation")
         XCTAssertThrowsError(try sub3.serialize(withIdentifiers: [:]), "JSON validation")
-        
     }
     
     func testEventBatch() {
@@ -223,7 +215,7 @@ extension RapidTests {
     
     func testSubscriptionFilter() {
         let collection = self.rapid.collection(named: "users")
-            .filter(by: RapidFilterSimple(key: "text", relation: .equal, value: "texty text"))
+            .filter(by: RapidFilterSimple(keyPath: "text", relation: .equal, value: "texty text"))
         
         let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
         
@@ -248,8 +240,8 @@ extension RapidTests {
     
     func testSubscriptionOrdering() {
         let collection = self.rapid.collection(named: testCollectionName)
-            .order(by: RapidOrdering(key: "name", ordering: .ascending))
-            .order(by: [RapidOrdering(key: "second_nem", ordering: .descending)])
+            .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
+            .order(by: [RapidOrdering(keyPath: "second_nem", ordering: .descending)])
         
         let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
         
@@ -280,22 +272,22 @@ extension RapidTests {
             .filter(by:
                 RapidFilterCompound.and([
                     RapidFilterCompound.or([
-                        RapidFilter.equal(key: "sender", value: "john123"),
-                        RapidFilterSimple.greaterThanOrEqual(key: "urgency", value: 1),
-                        RapidFilterSimple.lessThanOrEqual(key: "priority", value: 2)
+                        RapidFilter.equal(keyPath: "sender", value: "john123"),
+                        RapidFilterSimple.greaterThanOrEqual(keyPath: "urgency", value: 1),
+                        RapidFilterSimple.lessThanOrEqual(keyPath: "priority", value: 2)
                         ]),
-                    RapidFilter.not(RapidFilter.isNull(key: "receiver"))
+                    RapidFilter.not(RapidFilter.isNull(keyPath: "receiver"))
                     ]))
             .filter(by:
                 RapidFilter.and([
-                    RapidFilter.greaterThan(key: "urgency", value: 2),
-                    RapidFilter.lessThan(key: "urgency", value: 4)
+                    RapidFilter.greaterThan(keyPath: "urgency", value: 2),
+                    RapidFilter.lessThan(keyPath: "urgency", value: 4)
                 ]))
             .order(by: [
-                RapidOrdering(key: "sentDate", ordering: .descending)
+                RapidOrdering(keyPath: "sentDate", ordering: .descending)
                 ])
             .order(by:
-                RapidOrdering(key: "urgency", ordering: .ascending)
+                RapidOrdering(keyPath: "urgency", ordering: .ascending)
                 )
             .limit(to: 50, skip: 10)
         
@@ -349,6 +341,40 @@ extension RapidTests {
         }
     }
     
+    func testWrongDocumentIDSubscription() {
+        let promise = expectation(description: "Wrong document id")
+        
+        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").subscribe { (error, _) in
+            if let error = error as? RapidError,
+                case .invalidData(let reason) = error,
+                case .invalidIdentifierFormat(let idef) = reason, idef as? String == "t e s t" {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Subsription passed")
+            }
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testWrongDocumentIDMutation() {
+        let promise = expectation(description: "Wrong document id")
+        
+        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").mutate(value: ["name": "test"]) { error, _ in
+            if let error = error as? RapidError,
+                case .invalidData(let reason) = error,
+                case .invalidIdentifierFormat(let idef) = reason, idef as? String == "t e s t" {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Subsription passed")
+            }
+        }
+            
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
     func testEmptyAndFilter() {
         let promise = expectation(description: "Empty compound filter")
         
@@ -384,22 +410,22 @@ extension RapidTests {
             .filter(by:
                 RapidFilterCompound.and([
                     RapidFilterCompound.or([
-                        RapidFilter.equal(key: "sender", value: "john123"),
-                        RapidFilter.greaterThanOrEqual(key: "urgency", value: 1),
-                        RapidFilter.lessThanOrEqual(key: "priority", value: 2)
+                        RapidFilter.equal(keyPath: "sender", value: "john123"),
+                        RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
+                        RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
                         ]),
-                    RapidFilter.not(RapidFilter.isNull(key: "receiver"))
+                    RapidFilter.not(RapidFilter.isNull(keyPath: "receiver"))
                     ]))
             .filter(by:
                 RapidFilter.and([
-                    RapidFilter.greaterThan(key: "urgency", value: 2),
-                    RapidFilter.lessThan(key: "urgency", value: 4)
+                    RapidFilter.greaterThan(keyPath: "urgency", value: 2),
+                    RapidFilter.lessThan(keyPath: "urgency", value: 4)
                     ]))
             .order(by: [
-                RapidOrdering(key: "sentDate", ordering: .descending)
+                RapidOrdering(keyPath: "sentDate", ordering: .descending)
                 ])
             .order(by:
-                RapidOrdering(key: "urgency", ordering: .ascending)
+                RapidOrdering(keyPath: "urgency", ordering: .ascending)
             )
             .limit(to: 50, skip: 10)
 
@@ -415,31 +441,31 @@ extension RapidTests {
             .filter(by:
                 RapidFilterCompound.and([
                     RapidFilterCompound.or([
-                        RapidFilter.equal(key: "sender", value: "john123"),
-                        RapidFilter.greaterThanOrEqual(key: "urgency", value: 1),
-                        RapidFilter.lessThanOrEqual(key: "priority", value: 2)
+                        RapidFilter.equal(keyPath: "sender", value: "john123"),
+                        RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
+                        RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
                         ]),
-                    RapidFilter.not(RapidFilter.isNull(key: "receiver"))
+                    RapidFilter.not(RapidFilter.isNull(keyPath: "receiver"))
                     ]))
             .filter(by:
                 RapidFilter.and([
-                    RapidFilter.greaterThan(key: "urgency", value: 2),
-                    RapidFilter.lessThan(key: "urgency", value: 4)
+                    RapidFilter.greaterThan(keyPath: "urgency", value: 2),
+                    RapidFilter.lessThan(keyPath: "urgency", value: 4)
                     ]))
         
         let collection2 = self.rapid.collection(named: testCollectionName)
             .filter(by:
                 RapidFilter.and([
-                    RapidFilter.lessThan(key: "urgency", value: 4),
-                    RapidFilter.greaterThan(key: "urgency", value: 2)
+                    RapidFilter.lessThan(keyPath: "urgency", value: 4),
+                    RapidFilter.greaterThan(keyPath: "urgency", value: 2)
                     ]))
             .filter(by:
                 RapidFilterCompound.and([
-                    RapidFilter.not(RapidFilter.isNull(key: "receiver")),
+                    RapidFilter.not(RapidFilter.isNull(keyPath: "receiver")),
                     RapidFilterCompound.or([
-                        RapidFilter.greaterThanOrEqual(key: "urgency", value: 1),
-                        RapidFilter.equal(key: "sender", value: "john123"),
-                        RapidFilter.lessThanOrEqual(key: "priority", value: 2)
+                        RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
+                        RapidFilter.equal(keyPath: "sender", value: "john123"),
+                        RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
                         ])
                     ]))
         

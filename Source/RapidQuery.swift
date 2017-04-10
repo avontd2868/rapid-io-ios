@@ -8,12 +8,17 @@
 
 import Foundation
 
-/// Subscription filter
-public class RapidFilter: RapidSubscriptionHashable {
+public protocol RapidQuery {}
+extension RapidQuery {
     
     /// Special key which stands for a document ID
-    public static let documentIdKey = "$id"
-    
+    static var documentIdKey: String {
+        return "$id"
+    }
+}
+
+/// Subscription filter
+public class RapidFilter: RapidSubscriptionHashable, RapidQuery {
     internal var subscriptionHash: String { return "" }
 }
 
@@ -35,28 +40,28 @@ public extension RapidFilter {
     
     // MARK: Simple filters
     
-    class func equal<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
-        return RapidFilterSimple(key: key, relation: .equal, value: value)
+    class func equal<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .equal, value: value)
     }
     
-    class func isNull(key: String) -> RapidFilter {
-        return RapidFilterSimple(key: key, relation: .equal)
+    class func isNull(keyPath: String) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .equal)
     }
     
-    class func greaterThan<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
-        return RapidFilterSimple(key: key, relation: .greaterThan, value: value)
+    class func greaterThan<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .greaterThan, value: value)
     }
     
-    class func greaterThanOrEqual<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
-        return RapidFilterSimple(key: key, relation: .greaterThanOrEqual, value: value)
+    class func greaterThanOrEqual<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .greaterThanOrEqual, value: value)
     }
     
-    class func lessThan<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
-        return RapidFilterSimple(key: key, relation: .lessThan, value: value)
+    class func lessThan<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .lessThan, value: value)
     }
     
-    class func lessThanOrEqual<Numeric: Comparable>(key: String, value: Numeric) -> RapidFilter {
-        return RapidFilterSimple(key: key, relation: .lessThanOrEqual, value: value)
+    class func lessThanOrEqual<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .lessThanOrEqual, value: value)
     }
     
 }
@@ -95,7 +100,7 @@ public class RapidFilterSimple: RapidFilter {
     }
     
     /// Name of a document parameter
-    public let key: String
+    public let keyPath: String
     /// Ralation to a specified value
     public let relation: Relation
     /// Reference value
@@ -104,11 +109,11 @@ public class RapidFilterSimple: RapidFilter {
     /// Simple filter initializer
     ///
     /// - Parameters:
-    ///   - key: Name of a document parameter
+    ///   - keyPath: Name of a document parameter
     ///   - relation: Ralation to the `value`
     ///   - value: Reference value
-    init<Numeric: Comparable>(key: String, relation: Relation, value: Numeric) {
-        self.key = key
+    init<Numeric: Comparable>(keyPath: String, relation: Relation, value: Numeric) {
+        self.keyPath = keyPath
         self.relation = relation
         self.value = value
     }
@@ -116,16 +121,16 @@ public class RapidFilterSimple: RapidFilter {
     /// Simple filter initializer
     ///
     /// - Parameters:
-    ///   - key: Name of a document parameter
+    ///   - keyPath: Name of a document parameter
     ///   - relation: Ralation to the `value`
-    init(key: String, relation: Relation) {
-        self.key = key
+    init(keyPath: String, relation: Relation) {
+        self.keyPath = keyPath
         self.relation = relation
         self.value = nil
     }
     
     override var subscriptionHash: String {
-        return "\(key)-\(relation.hash)-\(value ?? "null")"
+        return "\(keyPath)-\(relation.hash)-\(value ?? "null")"
     }
 }
 
@@ -181,7 +186,7 @@ public class RapidFilterCompound: RapidFilter {
 }
 
 /// Structure that describes subscription ordering
-public struct RapidOrdering: RapidSubscriptionHashable {
+public struct RapidOrdering: RapidSubscriptionHashable, RapidQuery {
     
     /// Type of ordering
     public enum Ordering {
@@ -200,22 +205,22 @@ public struct RapidOrdering: RapidSubscriptionHashable {
     }
     
     /// Name of a document parameter
-    public let key: String
+    public let keyPath: String
     /// Ordering type
     public let ordering: Ordering
     
     /// Ordering initializer
     ///
     /// - Parameters:
-    ///   - key: Name of a document parameter
+    ///   - keyPath: Name of a document parameter
     ///   - ordering: Ordering type
-    public init(key: String, ordering: Ordering) {
-        self.key = key
+    public init(keyPath: String, ordering: Ordering) {
+        self.keyPath = keyPath
         self.ordering = ordering
     }
     
     var subscriptionHash: String {
-        return "o-\(key)-\(ordering.hash)"
+        return "o-\(keyPath)-\(ordering.hash)"
     }
 
 }

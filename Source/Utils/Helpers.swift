@@ -98,25 +98,39 @@ class Decoder {
 
 class Validator {
     
-    /// Validate JSON dictionary
+    /// Check a document dictionary if it is valid
     ///
-    /// - Parameter dict: JSON dictionary
-    /// - Returns: `true` if a JSON is valid
+    /// - Parameter dict: Dictionary with a document value
+    /// - Returns: Validated error
     /// - Throws: `RapidError.invalidData`
-    @discardableResult
-    class func validate(jsonDictionary dict: [AnyHashable: Any]) throws -> Bool {
+    class func validate(document dict: [AnyHashable: Any]) throws -> [AnyHashable: Any] {
+        if isValid(document: dict) {
+            return dict
+        }
+        else {
+            throw RapidError.invalidData(reason: .invalidDocument(document: dict))
+        }
+    }
+    
+    /// Check a document dictionary if it is valid
+    ///
+    /// - Parameter dict: Dictionary with a document value
+    /// - Returns: `true` if a document is valid
+    class func isValid(document dict: [AnyHashable: Any]) -> Bool {
         guard JSONSerialization.isValidJSONObject(dict) else {
-            throw RapidError.invalidData(reason: .serializationFailure)
+            return false
         }
         
         for (key, value) in dict {
-            if let key = key as? String, isValid(parameterName: key) {
+            if let key = key as? String, isValid(key: key) {
                 if let dictionary = value as? [AnyHashable: Any] {
-                    return try validate(jsonDictionary: dictionary)
+                    return isValid(document: dictionary)
                 }
                 else if let array = value as? [[AnyHashable: Any]] {
                     for dictionary in array {
-                        try validate(jsonDictionary: dictionary)
+                        if !isValid(document: dictionary) {
+                            return false
+                        }
                     }
                 }
                 else {
@@ -124,22 +138,62 @@ class Validator {
                 }
             }
             else {
-                throw RapidError.invalidData(reason: .invalidParameterName(name: key))
+                return false
             }
         }
         
         return true
     }
     
-    /// Check a parameter name if it is valid
+    /// Check a key if it is valid
     ///
-    /// - Parameter name: String with a parameter name
-    /// - Returns: `true` if a parameter name is valid
-    class func isValid(parameterName name: String) -> Bool {
-        let regex = "^[$]?[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)?$"
+    /// - Parameter key: String with a key value
+    /// - Returns: `true` if a key is valid
+    class func isValid(key: String) -> Bool {
+        let test = NSPredicate(format:"NOT (SELF CONTAINS '.')")
+        return test.evaluate(with: key) && !key.isEmpty
+    }
+    
+    /// Check a key path if it is valid
+    ///
+    /// - Parameter keyPath: String with a key path value
+    /// - Returns: `true` if a key path is valid
+    class func isValid(keyPath: String) -> Bool {
+        let components = keyPath.components(separatedBy: ".")
+        
+        for key in components {
+            if !isValid(key: key) {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    /// Check an identifier if it is valid
+    ///
+    /// - Parameter identifier: String with an identifier value
+    /// - Returns: Validated identifier
+    /// - Throws: `RapidError.invalidData`
+    @discardableResult
+    class func validate(identifier: String) throws -> String {
+        if isValid(identifier: identifier) {
+            return identifier
+        }
+        else {
+            throw RapidError.invalidData(reason: .invalidIdentifierFormat(identifier: identifier))
+        }
+    }
+    
+    /// Check an identifier if it is valid
+    ///
+    /// - Parameter identifier: String with an identifier value
+    /// - Returns: `true` if an identifier is valid
+    class func isValid(identifier: String) -> Bool {
+        let regex = "^[a-zA-Z0-9_-]+$"
         
         let test = NSPredicate(format:"SELF MATCHES %@", regex)
-        return test.evaluate(with: name)
+        return test.evaluate(with: identifier)
     }
     
 }

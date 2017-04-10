@@ -100,12 +100,12 @@ extension RapidTests {
         let socketManager = SocketManager(socketURL: self.socketURL)
         let fakeSocketManager = SocketManager(socketURL: self.fakeSocketURL)
         
-        socketManager.subscribe(sub1)
         socketManager.subscribe(sub2)
+        socketManager.subscribe(sub1)
         
         fakeSocketManager.subscribe(sub3)
         fakeSocketManager.subscribe(sub4)
-        print(sub1, sub2, sub3, sub4)
+
         runAfter(1) {
             sub1.unsubscribe()
             sub4.unsubscribe()

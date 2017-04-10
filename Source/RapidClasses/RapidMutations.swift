@@ -125,7 +125,7 @@ class RapidDocumentMerge: NSObject, RapidMergeRequest {
     let alwaysTimeout = false
 
     /// JSON with values to be merged
-    let value: [AnyHashable: Any]?
+    let value: [AnyHashable: Any]
     
     /// Collection ID
     let collectionID: String
@@ -148,7 +148,7 @@ class RapidDocumentMerge: NSObject, RapidMergeRequest {
     ///   - documentID: Document ID
     ///   - value: JSON with values to be merged
     ///   - callback: Merge callback
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, callback: RapidMergeCallback?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], callback: RapidMergeCallback?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID

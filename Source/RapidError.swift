@@ -83,6 +83,8 @@ public enum RapidError: Error {
     public enum InvalidDataReason {
         case serializationFailure
         case invalidFilter(filter: RapidFilter)
-        case invalidParameterName(name: Any)
+        case invalidDocument(document: [AnyHashable: Any])
+        case invalidIdentifierFormat(identifier: Any?)
+        case invalidKeyPath(keyPath: String)
     }
 }

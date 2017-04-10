@@ -15,12 +15,12 @@ extension Dictionary {
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     func jsonString() throws -> String {
-        if try Validator.validate(jsonDictionary: self) {
-            let data = try JSONSerialization.data(withJSONObject: self, options: [])
-            return String(data: data, encoding: .utf8) ?? ""
+        guard JSONSerialization.isValidJSONObject(self) else {
+            throw RapidError.invalidData(reason: .serializationFailure)
         }
-
-        throw RapidError.invalidData(reason: .serializationFailure)
+        
+        let data = try JSONSerialization.data(withJSONObject: self, options: [])
+        return String(data: data, encoding: .utf8) ?? ""
     }
 }
 

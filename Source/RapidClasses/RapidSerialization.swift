@@ -66,10 +66,15 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-        doc[Mutation.Document.DocumentID.name] = mutation.documentID
-        doc[Mutation.Document.Body.name] = mutation.value
+
+        doc[Mutation.Document.DocumentID.name] = try Validator.validate(identifier: mutation.documentID)
         
-        json[Mutation.CollectionID.name] = mutation.collectionID
+        if let value = mutation.value {
+            doc[Mutation.Document.Body.name] = try Validator.validate(document: value)
+        }
+        
+        json[Mutation.CollectionID.name] = try Validator.validate(identifier: mutation.collectionID)
+        
         json[Mutation.Document.name] = doc
         
         let resultDict: [AnyHashable: Any] = [Mutation.name: json]
@@ -87,10 +92,12 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-        doc[Merge.Document.DocumentID.name] = merge.documentID
-        doc[Merge.Document.Body.name] = merge.value
         
-        json[Merge.CollectionID.name] = merge.collectionID
+        doc[Merge.Document.DocumentID.name] = try Validator.validate(identifier: merge.documentID)
+        
+        doc[Merge.Document.Body.name] = try Validator.validate(document: merge.value)
+        
+        json[Merge.CollectionID.name] = try Validator.validate(identifier: merge.collectionID)
         json[Merge.Document.name] = doc
         
         let resultDict: [AnyHashable: Any] = [Merge.name: json]
@@ -107,9 +114,9 @@ class RapidSerialization {
     class func serialize(subscription: RapidCollectionSub, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
-        json[Subscription.CollectionID.name] = subscription.collectionID
+        json[Subscription.CollectionID.name] = try Validator.validate(identifier: subscription.collectionID)
         json[Subscription.Filter.name] = try serialize(filter: subscription.filter)
-        json[Subscription.Ordering.name] = serialize(ordering: subscription.ordering)
+        json[Subscription.Ordering.name] = try serialize(ordering: subscription.ordering)
         json[Subscription.Limit.name] = subscription.paging?.take
         json[Subscription.Skip.name] = subscription.paging?.skip
         
@@ -144,21 +151,34 @@ class RapidSerialization {
     /// - Parameter simpleFilter: Simple filter object
     /// - Returns: JSON dictionary
     class func serialize(simpleFilter: RapidFilterSimple) throws -> [AnyHashable: Any] {
+        guard Validator.isValid(keyPath: simpleFilter.keyPath) else {
+            throw RapidError.invalidData(reason: .invalidKeyPath(keyPath: simpleFilter.keyPath))
+        }
+        
+        if simpleFilter.keyPath == RapidFilter.documentIdKey {
+            if let value = simpleFilter.value as? String {
+                try Validator.validate(identifier: value)
+            }
+            else {
+                throw RapidError.invalidData(reason: .invalidIdentifierFormat(identifier: simpleFilter.value))
+            }
+        }
+        
         switch simpleFilter.relation {
         case .equal:
-            return [simpleFilter.key: simpleFilter.value ?? NSNull()]
+            return [simpleFilter.keyPath: simpleFilter.value ?? NSNull()]
             
         case .greaterThanOrEqual where simpleFilter.value != nil:
-            return [simpleFilter.key: ["gte": simpleFilter.value]]
+            return [simpleFilter.keyPath: ["gte": simpleFilter.value]]
             
         case .lessThanOrEqual where simpleFilter.value != nil:
-            return [simpleFilter.key: ["lte": simpleFilter.value]]
+            return [simpleFilter.keyPath: ["lte": simpleFilter.value]]
             
         case .greaterThan where simpleFilter.value != nil:
-            return [simpleFilter.key: ["gt": simpleFilter.value]]
+            return [simpleFilter.keyPath: ["gt": simpleFilter.value]]
             
         case .lessThan where simpleFilter.value != nil:
-            return [simpleFilter.key: ["lt": simpleFilter.value]]
+            return [simpleFilter.keyPath: ["lt": simpleFilter.value]]
             
         default:
             throw RapidError.invalidData(reason: .invalidFilter(filter: simpleFilter))
@@ -194,15 +214,19 @@ class RapidSerialization {
     ///
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: JSON dictionary
-    class func serialize(ordering: [RapidOrdering]?) -> [[AnyHashable: Any]]? {
+    class func serialize(ordering: [RapidOrdering]?) throws -> [[AnyHashable: Any]]? {
         if let ordering = ordering {
-            let orderingArray = ordering.map({ order -> [AnyHashable: Any] in
+            let orderingArray = try ordering.map({ order -> [AnyHashable: Any] in
+                guard Validator.isValid(keyPath: order.keyPath) else {
+                    throw RapidError.invalidData(reason: .invalidKeyPath(keyPath: order.keyPath))
+                }
+                
                 switch order.ordering {
                 case .ascending:
-                    return [order.key: "asc"]
+                    return [order.keyPath: "asc"]
                     
                 case .descending:
-                    return [order.key: "desc"]
+                    return [order.keyPath: "desc"]
 
                 }
             })
