@@ -30,7 +30,7 @@ class RapidTests: XCTestCase {
     }
     
     override func tearDown() {
-        Rapid.timeout = nil
+        Rapid.timeout = 10
         rapid = nil
         
         super.tearDown()
@@ -291,5 +291,9 @@ class RapidTests: XCTestCase {
         set = Set(set.filter({ $0.object != nil }))
         
         XCTAssertEqual(set.count, 1)
+    }
+    
+    func testNopRequest() {
+        
     }
 }

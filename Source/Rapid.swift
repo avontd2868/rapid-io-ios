@@ -26,6 +26,9 @@ public class Rapid: NSObject {
     /// Internal timeout which is used for connection requests etc.
     static var defaultTimeout: TimeInterval = 300
     
+    /// Time interval between heartbeats
+    static var heartbeatInterval: TimeInterval = 30
+    
     /// Optional timeout for Rapid requests. If timeout is nil requests never end up with timout error
     public static var timeout: TimeInterval?
     

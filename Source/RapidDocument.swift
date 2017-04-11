@@ -20,8 +20,33 @@ public typealias RapidDeletionCallback = (_ error: Error?) -> Void
 /// Document merge callback which provides a client either with an error or with a successfully merged values
 public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
 
-/// Class representing Rapid.io document that is returned from a subscription callback
-public class RapidDocumentSnapshot: NSObject {
+/// Compare two docuement snapshots
+///
+/// Compera ids, etags and dictionaries
+///
+/// - Parameters:
+///   - lhs: Left operand
+///   - rhs: Right operand
+/// - Returns: `true` if operands are equal
+public func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
+    if lhs.id == rhs.id && lhs.etag == rhs.etag {
+        if let lValue = lhs.value, let rValue = rhs.value {
+            return NSDictionary(dictionary: lValue).isEqual(to: rValue)
+        }
+        else if lhs.value == nil && rhs.value == nil {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    else {
+        return false
+    }
+}
+
+/// Struct representing Rapid.io document that is returned from a subscription callback
+public struct RapidDocumentSnapshot: Equatable {
     
     /// Document ID
     public let id: String
@@ -30,7 +55,7 @@ public class RapidDocumentSnapshot: NSObject {
     public let value: [AnyHashable: Any]?
     
     /// Etag identifier
-    let etag: String?
+    public let etag: String?
     
     init?(json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {

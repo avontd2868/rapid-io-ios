@@ -19,9 +19,6 @@ class SocketManager {
     typealias Event = RapidSocketEvent & RapidSerializable
     typealias Request = RapidRequest & Event
     
-    /// Time interval between heartbeats
-    fileprivate let heartbeatInterval: TimeInterval = 30
-    
     /// ID that identifies a websocket connection to this client for reconnecting purposes
     fileprivate(set) var connectionID: String?
     
@@ -526,7 +523,7 @@ extension SocketManager {
             self?.heartbeatTimer?.invalidate()
             
             if let strongSelf = self {
-                self?.heartbeatTimer = Timer.scheduledTimer(timeInterval: strongSelf.heartbeatInterval, target: strongSelf, selector: #selector(strongSelf.sendEmptyRequest), userInfo: nil, repeats: false)
+                self?.heartbeatTimer = Timer.scheduledTimer(timeInterval: Rapid.heartbeatInterval, target: strongSelf, selector: #selector(strongSelf.sendEmptyRequest), userInfo: nil, repeats: false)
             }
         }
     }

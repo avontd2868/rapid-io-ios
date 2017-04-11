@@ -17,7 +17,7 @@ extension RapidTests {
             return
         }
         
-        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(key: RapidFilterSimple.documentIdKey, relation: .equal, value: "1")).subscribe(completion: { (_, _) in }) as? RapidCollectionSub else {
+        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(keyPath: RapidFilterSimple.documentIdKey, relation: .equal, value: "1")).subscribe(completion: { (_, _) in }) as? RapidCollectionSub else {
             XCTFail("Subscription of wrong type")
             return
         }
@@ -91,10 +91,10 @@ extension RapidTests {
     func testDoubleUnsubscriptionOnOneHandler() {
         let promise = expectation(description: "Double unsubscription")
         
-        let sub1 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(key: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let sub1 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         let sub2 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
         
-        let sub3 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(key: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let sub3 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         let sub4 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
         
         let socketManager = SocketManager(socketURL: self.socketURL)
@@ -142,7 +142,7 @@ extension RapidTests {
             }
         }
         
-        self.rapid.collection(named: testCollectionName).order(by: [RapidOrdering(key: "name", ordering: .ascending)]).subscribe { (_, _) in
+        self.rapid.collection(named: testCollectionName).order(by: [RapidOrdering(keyPath: "name", ordering: .ascending)]).subscribe { (_, _) in
             if initial2 {
                 initial2 = false
             }
@@ -369,6 +369,10 @@ extension RapidTests {
                                 "body": [
                                     "name": "test"
                                 ]
+                            ],
+                            [
+                                "id": "666",
+                                "etag": Rapid.uniqueID
                             ]
                         ]
                     ]
@@ -448,6 +452,452 @@ extension RapidTests {
         
         if let valResponse = RapidSerialization.parse(json: initialValue)?.first as? RapidSubscriptionBatch,
             let updateResponse = RapidSerialization.parse(json: batch)?.first as? RapidSubscriptionBatch {
+            
+            handler.receivedSubscriptionEvent(valResponse)
+            handler.receivedSubscriptionEvent(updateResponse)
+            
+            waitForExpectations(timeout: 2, handler: nil)
+        }
+        else {
+            XCTFail("Wrong response")
+        }
+    }
+    
+    func testSubscriptionOrderUpdates() {
+        let subID = Rapid.uniqueID
+        let doc2Etag = Rapid.uniqueID
+        let doc3Etag = Rapid.uniqueID
+        
+        let initialValue: [AnyHashable: Any] = [
+            "val": [
+                "evt-id": Rapid.uniqueID,
+                "col-id": testCollectionName,
+                "sub-id": subID,
+                "docs": [
+                    [
+                        "id": "1",
+                        "etag": Rapid.uniqueID,
+                        "body": [
+                            "name": "test1"
+                        ]
+                    ],
+                    [
+                        "id": "2",
+                        "etag": doc2Etag,
+                        "body": [
+                            "name": "test2"
+                        ]
+                    ],
+                    [
+                        "id": "3",
+                        "etag": doc3Etag,
+                        "body": [
+                            "name": "test3"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        
+        let batch: [AnyHashable: Any] = [
+            "batch": [
+                [
+                    "val": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "docs": [
+                            [
+                                "id": "1",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "test11"
+                                ]
+                            ],
+                            [
+                                "id": "2",
+                                "etag": doc2Etag,
+                                "body": [
+                                    "name": "test2"
+                                ]
+                            ],
+                            [
+                                "id": "3",
+                                "etag": doc3Etag,
+                                "body": [
+                                    "name": "test3"
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "psib-id": "3",
+                        "doc":
+                            [
+                                "id": "1",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "test111"
+                                ]
+                        ]
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "psib-id": "2",
+                        "doc":
+                            [
+                                "id": "3",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "test33"
+                                ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        
+        let promise = expectation(description: "Subscription updates")
+        
+        var val = true
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+            if val {
+                val = false
+                XCTAssertEqual(documents.count, 3, "Number of documents")
+                XCTAssertEqual(insert.count, 3, "Number of inserts")
+                XCTAssertEqual(update.count, 0, "Number of updates")
+                XCTAssertEqual(delete.count, 0, "Number of deletes")
+                XCTAssertEqual(documents[0].id, "1", "Number of inserts")
+                XCTAssertEqual(documents[1].id, "2", "Number of inserts")
+                XCTAssertEqual(documents[2].id, "3", "Number of inserts")
+                XCTAssertEqual(documents[0].value?["name"] as? String, "test1", "Number of inserts")
+                XCTAssertEqual(documents[1].value?["name"] as? String, "test2", "Number of inserts")
+                XCTAssertEqual(documents[2].value?["name"] as? String, "test3", "Number of inserts")
+            }
+            else {
+                XCTAssertEqual(documents.count, 3, "Number of documents")
+                XCTAssertEqual(insert.count, 0, "Number of inserts")
+                XCTAssertEqual(update.count, 2, "Number of updates")
+                XCTAssertEqual(delete.count, 0, "Number of deletes")
+                XCTAssertEqual(update[0].id, "1", "Number of inserts")
+                XCTAssertEqual(update[1].id, "3", "Number of inserts")
+                XCTAssertEqual(documents[0].id, "2", "Number of inserts")
+                XCTAssertEqual(documents[1].id, "3", "Number of inserts")
+                XCTAssertEqual(documents[2].id, "1", "Number of inserts")
+                XCTAssertEqual(documents[0].value?["name"] as? String, "test2", "Number of inserts")
+                XCTAssertEqual(documents[1].value?["name"] as? String, "test33", "Number of inserts")
+                XCTAssertEqual(documents[2].value?["name"] as? String, "test111", "Number of inserts")
+                
+                promise.fulfill()
+            }
+        }
+        
+        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, dispatchQueue: DispatchQueue.main, unsubscribeHandler: { _ in })
+        
+        if let valResponse = RapidSerialization.parse(json: initialValue)?.first as? RapidSubscriptionBatch,
+            let updateResponse = RapidSerialization.parse(json: batch)?.first as? RapidSubscriptionBatch {
+            
+            handler.receivedSubscriptionEvent(valResponse)
+            handler.receivedSubscriptionEvent(updateResponse)
+            
+            waitForExpectations(timeout: 2, handler: nil)
+        }
+        else {
+            XCTFail("Wrong response")
+        }
+    }
+    
+    func testSubscriptionComplementaryUpdates() {
+        let subID = Rapid.uniqueID
+        
+        let initialValue: [AnyHashable: Any] = [
+            "val": [
+                "evt-id": Rapid.uniqueID,
+                "col-id": testCollectionName,
+                "sub-id": subID,
+                "docs": [
+                    [
+                        "id": "1",
+                        "etag": Rapid.uniqueID,
+                        "body": [
+                            "name": "test1"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        
+        let batch: [AnyHashable: Any] = [
+            "batch": [
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "doc": [
+                                "id": "1",
+                                "etag": Rapid.uniqueID,
+                        ]
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "doc": [
+                                "id": "1",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "test11"
+                                ]
+                        ]
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "psib-id": "1",
+                        "doc": [
+                                "id": "2",
+                                "etag": Rapid.uniqueID,
+                                "body": [
+                                    "name": "test2"
+                                ]
+                        ]
+                    ]
+                ],
+                [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "psib-id": "1",
+                        "doc": [
+                                "id": "2",
+                                "etag": Rapid.uniqueID,
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        
+        let promise = expectation(description: "Subscription updates")
+        
+        var val = true
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+            if val {
+                val = false
+                XCTAssertEqual(documents.count, 1, "Number of documents")
+                XCTAssertEqual(insert.count, 1, "Number of inserts")
+                XCTAssertEqual(update.count, 0, "Number of updates")
+                XCTAssertEqual(delete.count, 0, "Number of deletes")
+                XCTAssertEqual(documents[0].id, "1", "Number of inserts")
+                XCTAssertEqual(documents[0].value?["name"] as? String, "test1", "Number of inserts")
+            }
+            else {
+                XCTAssertEqual(documents.count, 1, "Number of documents")
+                XCTAssertEqual(insert.count, 0, "Number of inserts")
+                XCTAssertEqual(update.count, 1, "Number of updates")
+                XCTAssertEqual(delete.count, 0, "Number of deletes")
+                XCTAssertEqual(update[0].id, "1", "Number of inserts")
+                XCTAssertEqual(documents[0].id, "1", "Number of inserts")
+                XCTAssertEqual(documents[0].value?["name"] as? String, "test11", "Number of inserts")
+                
+                promise.fulfill()
+            }
+        }
+        
+        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, dispatchQueue: DispatchQueue.main, unsubscribeHandler: { _ in })
+        
+        if let valResponse = RapidSerialization.parse(json: initialValue)?.first as? RapidSubscriptionBatch,
+            let updateResponse = RapidSerialization.parse(json: batch)?.first as? RapidSubscriptionBatch {
+            
+            handler.receivedSubscriptionEvent(valResponse)
+            handler.receivedSubscriptionEvent(updateResponse)
+            
+            waitForExpectations(timeout: 2, handler: nil)
+        }
+        else {
+            XCTFail("Wrong response")
+        }
+    }
+    
+    func testSubscriptionUpdateWithoutInitialValue() {
+        let subID = Rapid.uniqueID
+        
+        let subValue: [AnyHashable: Any] = [
+            "upd": [
+                "evt-id": Rapid.uniqueID,
+                "col-id": testCollectionName,
+                "sub-id": subID,
+                "doc":
+                    [
+                        "id": "5",
+                        "etag": Rapid.uniqueID,
+                        "body": [
+                            "name": "test5"
+                        ]
+                ]
+            ]
+        ]
+        
+        let promise = expectation(description: "Subscription no initial value")
+        
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+            if insert.count == 1 && update.count == 0 && delete.count == 0 && documents == insert && documents.first?.id == "5" {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Wrong update")
+            }
+        }
+        
+        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, dispatchQueue: DispatchQueue.main, unsubscribeHandler: { _ in })
+        
+        if let updateResponse = RapidSerialization.parse(json: subValue)?.first as? RapidSubscriptionBatch {
+            
+            handler.receivedSubscriptionEvent(updateResponse)
+            
+            waitForExpectations(timeout: 2, handler: nil)
+        }
+        else {
+            XCTFail("Wrong response")
+        }
+    }
+    
+    func testSubscriptionUpdateRemoveNonexistentDocument() {
+        let subID = Rapid.uniqueID
+        
+        let subValue: [AnyHashable: Any] = [
+            "upd": [
+                "evt-id": Rapid.uniqueID,
+                "col-id": testCollectionName,
+                "sub-id": subID,
+                "doc": [
+                        "id": "666",
+                        "etag": Rapid.uniqueID
+                ]
+            ]
+        ]
+        
+        let promise = expectation(description: "Subscription no initial value")
+        
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+            if insert.count == 0 && update.count == 0 && delete.count == 0 && documents.count == 0 {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Wrong update")
+            }
+        }
+        
+        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, dispatchQueue: DispatchQueue.main, unsubscribeHandler: { _ in })
+        
+        if let updateResponse = RapidSerialization.parse(json: subValue)?.first as? RapidSubscriptionBatch {
+            
+            handler.receivedSubscriptionEvent(updateResponse)
+            
+            waitForExpectations(timeout: 2, handler: nil)
+        }
+        else {
+            XCTFail("Wrong response")
+        }
+    }
+    
+    func testInitialValueOnDuplicateSubscription() {
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testInitialValueOnDuplicateSubscription"])
+        
+        let promise = expectation(description: "Duplicate initial value")
+        
+        var initial = true
+        self.rapid.collection(named: testCollectionName).subscribe { (_, docs, ins, _, _) in
+            
+            if initial {
+                initial = false
+                
+                let documents = docs
+                let inserts = ins
+                
+                self.rapid.collection(named: self.testCollectionName).subscribe(completionWithChanges: { (_, docs, ins, _, _) in
+                    if documents == docs && inserts == ins {
+                        promise.fulfill()
+                    }
+                    else {
+                        XCTFail("Initial value different")
+                    }
+                })
+            }
+        }
+        
+        waitForExpectations(timeout: 8, handler: nil)
+    }
+    
+    func testDocumentSubscriptionDelete() {
+        let subID = Rapid.uniqueID
+        
+        let initialValue: [AnyHashable: Any] = [
+            "val": [
+                "evt-id": Rapid.uniqueID,
+                "col-id": testCollectionName,
+                "sub-id": subID,
+                "docs": [
+                    [
+                        "id": "1",
+                        "etag": Rapid.uniqueID,
+                        "body": [
+                            "name": "test"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        
+        let update: [AnyHashable: Any] = [
+                    "upd": [
+                        "evt-id": Rapid.uniqueID,
+                        "col-id": testCollectionName,
+                        "sub-id": subID,
+                        "doc": [
+                            "id": "1",
+                            "etag": Rapid.uniqueID,
+                        ]
+                    ]
+                ]
+        
+        let promise = expectation(description: "Document subscription delete")
+        
+        var initial = true
+        let subscription = RapidDocumentSub(collectionID: testCollectionName, documentID: "1") { (_, document) in
+            if initial {
+                initial = false
+                XCTAssertEqual(document.id, "1", "Wrong document id")
+                XCTAssertEqual(document.value?["name"] as? String, "test", "Wrong document value")
+            }
+            else {
+                XCTAssertEqual(document.id, "1", "Wrong document id")
+                XCTAssertNil(document.value, "Wrong document value")
+                
+                promise.fulfill()
+            }
+        }
+
+        
+        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, dispatchQueue: DispatchQueue.main, unsubscribeHandler: { _ in })
+        
+        if let valResponse = RapidSerialization.parse(json: initialValue)?.first as? RapidSubscriptionBatch,
+            let updateResponse = RapidSerialization.parse(json: update)?.first as? RapidSubscriptionBatch {
             
             handler.receivedSubscriptionEvent(valResponse)
             handler.receivedSubscriptionEvent(updateResponse)

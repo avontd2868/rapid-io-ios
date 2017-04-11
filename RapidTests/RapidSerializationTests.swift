@@ -11,7 +11,31 @@ import XCTest
 
 extension RapidTests {
     
-    func testJSONValidation() {
+    func testJSONValidationInvalidValue() {
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], callback: nil)
+        
+        XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
+    }
+    
+    func testJSONalidationInvalidKey() {
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], callback: nil)
+        
+        XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
+    }
+    
+    func testJSONValidationInvalidKeyPath() {
+        let sub = RapidCollectionSub(
+            collectionID: testCollectionName,
+            filter: RapidFilter.equal(keyPath: "sender.hu.", value: "john123"),
+            ordering: nil,
+            paging: nil,
+            callback: nil,
+            callbackWithChanges: nil)
+        
+        XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
+    }
+    
+    func testJSONValidationValidParameters() {
         let sub1 = RapidCollectionSub(
             collectionID: testCollectionName,
             filter: RapidFilter.and([
@@ -35,23 +59,8 @@ extension RapidTests {
             callback: nil,
             callbackWithChanges: nil)
         
-        let mut1 = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], callback: nil)
-        
-        let mut2 = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], callback: nil)
-        
-        let sub3 = RapidCollectionSub(
-            collectionID: testCollectionName,
-            filter: RapidFilter.equal(keyPath: "sender.hu.", value: "john123"),
-            ordering: nil,
-            paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
-        
         XCTAssertNoThrow(try sub1.serialize(withIdentifiers: [:]), "JSON validation")
         XCTAssertNoThrow(try sub2.serialize(withIdentifiers: [:]), "JSON validation")
-        XCTAssertThrowsError(try mut1.serialize(withIdentifiers: [:]), "JSON validation")
-        XCTAssertThrowsError(try mut2.serialize(withIdentifiers: [:]), "JSON validation")
-        XCTAssertThrowsError(try sub3.serialize(withIdentifiers: [:]), "JSON validation")
     }
     
     func testEventBatch() {
@@ -475,5 +484,47 @@ extension RapidTests {
         
         XCTAssertEqual(sub1.subscriptionHash, sub2.subscriptionHash)
 
+    }
+    
+    func testSubscriptionUpdateObject() {
+        let update1 = RapidSubscriptionUpdate(withUpdateJSON: ["test"])
+        let update2 = RapidSubscriptionUpdate(withUpdateJSON: [:])
+        let update3 = RapidSubscriptionUpdate(withUpdateJSON: ["doc": [:]])
+        
+        XCTAssertNil(update1, "Object created")
+        XCTAssertNil(update2, "Object created")
+        XCTAssertNil(update3, "Object created")
+    }
+    
+    func testSubscriptionBatchObjectForValue() {
+        let update1 = RapidSubscriptionBatch(withCollectionJSON: ["test"])
+        let update2 = RapidSubscriptionBatch(withCollectionJSON: [:])
+        let update3 = RapidSubscriptionBatch(withCollectionJSON: ["evt-id": "kdsjghds"])
+        let update4 = RapidSubscriptionBatch(withCollectionJSON: ["evt-id": "kdsjghds", "sub-id": "fjdslkfj"])
+        
+        XCTAssertNil(update1, "Object created")
+        XCTAssertNil(update2, "Object created")
+        XCTAssertNil(update3, "Object created")
+        XCTAssertNil(update4, "Object created")
+    }
+    
+    func testSubscriptionBatchObjectForUpdate() {
+        let update1 = RapidSubscriptionBatch(withUpdateJSON: ["test"])
+        let update2 = RapidSubscriptionBatch(withUpdateJSON: [:])
+        let update3 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds"])
+        let update4 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds", "sub-id": "fjdslkfj"])
+        
+        XCTAssertNil(update1, "Object created")
+        XCTAssertNil(update2, "Object created")
+        XCTAssertNil(update3, "Object created")
+        XCTAssertNil(update4, "Object created")
+    }
+    
+    func testSocketAcknowledgement() {
+        let ack1 = RapidSocketAcknowledgement(json: ["test"])
+        let ack2 = RapidSocketAcknowledgement(json: [:])
+        
+        XCTAssertNil(ack1, "Object created")
+        XCTAssertNil(ack2, "Object created")
     }
 }
