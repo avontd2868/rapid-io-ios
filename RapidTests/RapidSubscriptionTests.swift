@@ -97,8 +97,10 @@ extension RapidTests {
         let sub3 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         let sub4 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
         
-        let socketManager = SocketManager(socketURL: self.socketURL)
-        let fakeSocketManager = SocketManager(socketURL: self.fakeSocketURL)
+        let networkHandler = RapidNetworkHandler(socketURL: self.socketURL)
+        let fakeNetworkHandler = RapidNetworkHandler(socketURL: self.fakeSocketURL)
+        let socketManager = RapidSocketManager(networkHandler: networkHandler)
+        let fakeSocketManager = RapidSocketManager(networkHandler: fakeNetworkHandler)
         
         socketManager.subscribe(sub2)
         socketManager.subscribe(sub1)

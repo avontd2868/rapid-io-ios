@@ -19,7 +19,7 @@ public class RapidCollection: NSObject {
     
     fileprivate weak var handler: RapidHandler?
     
-    fileprivate var socketManager: SocketManager {
+    fileprivate var socketManager: RapidSocketManager {
         return try! getSocketManager()
     }
     
@@ -157,7 +157,7 @@ extension RapidCollection {
         throw RapidInternalError.rapidInstanceNotInitialized
     }
     
-    func getSocketManager() throws -> SocketManager {
+    func getSocketManager() throws -> RapidSocketManager {
         if let manager = handler?.socketManager {
             return manager
         }

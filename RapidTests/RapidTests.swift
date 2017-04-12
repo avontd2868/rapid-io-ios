@@ -31,6 +31,7 @@ class RapidTests: XCTestCase {
     
     override func tearDown() {
         Rapid.timeout = 10
+        Rapid.heartbeatInterval = 30
         rapid = nil
         
         super.tearDown()
@@ -79,7 +80,7 @@ class RapidTests: XCTestCase {
         let instanceDescription = rapid?.description
         rapid = nil
         
-        rapid = Rapid.getInstance(withAPIKey: apiKey)
+        rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)
         
         XCTAssertNotEqual(instanceDescription, rapid?.description, "Instance wasn't released")
     }
@@ -146,7 +147,7 @@ class RapidTests: XCTestCase {
         let promise = expectation(description: "Reconnect")
         
         runAfter(1) { 
-            self.rapid.handler.socketManager.disconnectSocket()
+            self.rapid.handler.socketManager.networkHandler.restartSocket(afterError: nil)
             
             runAfter(3, closure: {
                 
@@ -166,7 +167,7 @@ class RapidTests: XCTestCase {
         let promise = expectation(description: "Reconnect")
         
         runAfter(1) {
-            self.rapid.handler.socketManager.deinitialize()
+            self.rapid.goOffline()
             
             runAfter(2, closure: {
                 self.rapid.goOnline()
@@ -186,34 +187,6 @@ class RapidTests: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
     
-    func testReconnectWithFullQueue() {
-        let socket = WebSocket(url: fakeSocketURL)
-        let handler = RapidHandler(apiKey: fakeAPIKey)!
-        
-        let promise = expectation(description: "Reconnect")
-        
-        runAfter(1) {
-            let mutation = RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: ["name": "testReconnectWithFullQueue"], callback: nil)
-            
-            handler.socketManager.mutate(mutationRequest: mutation)
-            
-            handler.socketManager.disconnectSocket(withError: .connectionTerminated(message: "Test"))
-            handler.socketManager.websocketDidDisconnect(socket: socket, error: nil)
-                
-            runAfter(2, closure: {
-                
-                if handler.state == .connecting {
-                    promise.fulfill()
-                }
-                else {
-                    XCTFail("Rapid didn't reconnect")
-                }
-            })
-        }
-        
-        waitForExpectations(timeout: 4, handler: nil)
-    }
-
     func testCollectionWithoutHandler() {
         let collection = RapidCollection(id: testCollectionName, handler: nil)
         
@@ -294,6 +267,40 @@ class RapidTests: XCTestCase {
     }
     
     func testNopRequest() {
+        Rapid.heartbeatInterval = 3
         
+        let promise = expectation(description: "Nop request")
+        
+        let mockHandler = MockNetworkHandler(socketURL: self.socketURL) { (event) in
+            if event is RapidEmptyRequest {
+                promise.fulfill()
+            }
+        }
+        
+        let socketManager = RapidSocketManager(networkHandler: mockHandler)
+        socketManager.goOnline()
+        
+        waitForExpectations(timeout: 6, handler: nil)
+    }
+}
+
+protocol MockNetworkHandlerDelegate: class {
+    func didWrite(event: RapidSocketManager.Event, withID eventID: String)
+}
+
+class MockNetworkHandler: RapidNetworkHandler {
+    
+    let writeCallback: ((_ event: RapidSocketManager.Event) -> Void)?
+    
+    init(socketURL: URL, writeCallback: @escaping (_ event: RapidSocketManager.Event) -> Void) {
+        self.writeCallback = writeCallback
+        
+        super.init(socketURL: socketURL)
+    }
+    
+    override func write(event: RapidSocketManager.Event, withID eventID: String) {
+        writeCallback?(event)
+        
+        super.write(event: event, withID: eventID)
     }
 }

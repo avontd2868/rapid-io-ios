@@ -8,39 +8,27 @@
 
 import Foundation
 
-/// Delegate for informing about connection state change
-protocol RapidConnectionStateChangeDelegate: class {
-    func connectionStateChanged(currentState: Rapid.ConnectionState)
-}
-
 /// Class for websocket communication management
-class SocketManager {
+class RapidSocketManager {
     
     typealias Event = RapidSocketEvent & RapidSerializable
     typealias Request = RapidRequest & Event
     
-    /// ID that identifies a websocket connection to this client for reconnecting purposes
-    fileprivate(set) var connectionID: String?
+    /// Network communication handler
+    let networkHandler: RapidNetworkHandler
     
     /// State of a websocket connection
-    fileprivate var state: Rapid.ConnectionState = .disconnected {
-        didSet {
-            let state = self.state
-            mainQueue.async { [weak self] in
-                self?.connectionStateDelegate?.connectionStateChanged(currentState: state)
-            }
-        }
+    var state: Rapid.ConnectionState {
+        return networkHandler.state
     }
-    /// Delegate for informing about connection state change
-    weak var connectionStateDelegate: RapidConnectionStateChangeDelegate?
+    
+    /// ID that identifies a websocket connection to this client for reconnecting purposes
+    fileprivate(set) var connectionID: String?
     
     /// Dedicated threads
     fileprivate let websocketQueue: DispatchQueue
     fileprivate let parseQueue: DispatchQueue
     fileprivate let mainQueue = DispatchQueue.main
-    
-    /// Websocket object
-    fileprivate let socket: WebSocket
     
     /// Queue of events that are about to be sent to the server
     fileprivate var eventQueue: [Event] = []
@@ -51,36 +39,34 @@ class SocketManager {
     /// Dictionary of registered subscriptions. Either active or those that are waiting for acknowledgement from the server. Subscriptions are identified by a subscriptioon ID
     fileprivate var activeSubscriptions: [String: RapidSubscriptionHandler] = [:]
     
-    /// Socket was intentionally terminated
-    fileprivate var socketTerminated = false
-    
-    /// Error that led to forced websocket reconnection
-    fileprivate var reconnectionError: RapidError?
-    
-    /// Timer that limits maximum time span when websocket connection is trying to be established
-    fileprivate var socketConnectTimer: Timer?
-    
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
-    fileprivate var heartbeatTimer: Timer?
+    fileprivate var nopTimer: Timer?
     
-    init(socketURL: URL) {
-        self.websocketQueue = DispatchQueue(label: "RapidWebsocketQueue-\(socketURL.lastPathComponent)", attributes: [])
-        self.parseQueue = DispatchQueue(label: "RapidParseQueue-\(socketURL.lastPathComponent)", attributes: [])
-        self.socket = WebSocket(url: socketURL)
-        self.socket.delegate = self
+    init(networkHandler: RapidNetworkHandler) {
+        self.websocketQueue = DispatchQueue(label: "RapidWebsocketQueue-\(networkHandler.socketURL.lastPathComponent)", attributes: [])
+        self.parseQueue = DispatchQueue(label: "RapidParseQueue-\(networkHandler.socketURL.lastPathComponent)", attributes: [])
+        self.networkHandler = networkHandler
         
-        websocketQueue.async { [weak self] in
-            self?.createConnection()
-        }
+        self.networkHandler.delegate = self        
+        self.networkHandler.goOnline()
     }
     
     deinit {
-        deinitialize()
+        sendDisconnectionRequest()
     }
     
-    func deinitialize() {
-        sendDisconnectionRequest()
-        destroySocket()
+    /// Reconnect previously configured websocket
+    func goOnline() {
+        websocketQueue.async { [weak self] in
+            self?.networkHandler.goOnline()
+        }
+    }
+    
+    /// Disconnect existing websocket
+    func goOffline() {
+        websocketQueue.async { [weak self] in
+            self?.networkHandler.goOffline()
+        }
     }
     
     /// Send mutation event
@@ -143,26 +129,6 @@ class SocketManager {
         }
     }
     
-    /// Reconnect previously configured websocket
-    func goOnline() {
-        websocketQueue.async { [weak self] in
-            self?.socketTerminated = false
-            
-            if let state = self?.state, state == .disconnected {
-                self?.createConnection()
-            }
-        }
-    }
-    
-    /// Disconnect existing websocket
-    func goOffline() {
-        websocketQueue.async { [weak self] in
-            if let state = self?.state, state != .disconnected {
-                self?.destroySocket()
-            }
-        }
-    }
-    
     /// Get a subscription handler if exists
     ///
     /// Every subscription is identified by a hash. Subscriptions that listens to the same set of data have equal hashes.
@@ -189,10 +155,10 @@ class SocketManager {
 }
 
 // MARK: Fileprivate methods
-fileprivate extension SocketManager {
+fileprivate extension RapidSocketManager {
     
     /// Handle a situation when socket was unintentionally disconnected
-    func socketDidDisconnect(withError error: RapidError?) {
+    func handleDidDisconnect(withError error: RapidError?) {
         print("Did disconnect with error \(String(describing: error))")
         
         // Get all relevant events that were about to be sent
@@ -255,52 +221,12 @@ fileprivate extension SocketManager {
         eventQueue.append(contentsOf: currentQueue)
         
         // Create new connection
-        createConnection()
+        networkHandler.goOnline()
     }
 }
 
 // MARK: Socket communication methods
-fileprivate extension SocketManager {
-    
-    /// Create a websocket connection
-    func createConnection() {
-        print("Create connection")
-        
-        state = .connecting
-        
-        // Start the timer that limits maximum time span when websocket connection is trying to be established
-        mainQueue.async { [weak self] in
-            if let strongSelf = self {
-                self?.socketConnectTimer?.invalidate()
-                self?.socketConnectTimer = Timer.scheduledTimer(timeInterval: Rapid.defaultTimeout, target: strongSelf, selector: #selector(strongSelf.connectSocketTimout), userInfo: nil, repeats: false)
-            }
-        }
-        
-        connectSocket()
-    }
-    
-    /// Force connection restart
-    func restartSocket(afterError error: RapidError?) {
-        print("Restart socket")
-        
-        // If socket is connected, disconnect it
-        // If socket is not connected and it wasn't intentionally closed, then call reconnection handler directly
-        if socket.isConnected {
-            disconnectSocket(withError: error)
-        }
-        else if !socketTerminated {
-            socketDidDisconnect(withError: error)
-        }
-    }
-    
-    // Destroy existing socket connection
-    func destroySocket() {
-        socketTerminated = true
-        
-        disconnectSocket()
-        
-        state = .disconnected
-    }
+fileprivate extension RapidSocketManager {
     
     /// Create abstract connection
     ///
@@ -318,17 +244,14 @@ fileprivate extension SocketManager {
             self.connectionID = connectionID
         }
 
-        // Inform the connection request that it should start a timeout count down
-        connection.requestSent(withTimeout: Rapid.defaultTimeout, delegate: self)
-
-        write(event: connection)
+        post(event: connection, prioritize: true)
     }
     
     /// Destroy abstract connection
     ///
     /// Inform the server that it no longer needs to keep an abstract connection with the client
     func sendDisconnectionRequest() {
-        post(event: RapidDisconnectionRequest())
+        networkHandler.write(event: RapidDisconnectionRequest(), withID: Rapid.uniqueID)
     }
     
     /// Acknowledge a server event
@@ -359,7 +282,7 @@ fileprivate extension SocketManager {
     /// Enque a event to the queue
     ///
     /// - Parameter serializableRequest: Request to be queued
-    func post(event: Event) {
+    func post(event: Event, prioritize: Bool = false) {
         
         // Inform a timoutable request that it should start a timeout count down
         // User events can be timeouted only if user sets `Rapid.timeout`
@@ -371,7 +294,13 @@ fileprivate extension SocketManager {
             timeoutRequest.requestSent(withTimeout: Rapid.defaultTimeout, delegate: self)
         }
         
-        eventQueue.append(event)
+        if prioritize {
+            eventQueue.insert(event, at: 0)
+        }
+        else {
+            eventQueue.append(event)
+        }
+        
         flushQueue()
     }
     
@@ -388,37 +317,18 @@ fileprivate extension SocketManager {
         eventQueue.removeAll()
 
         for event in queueCopy {
-            write(event: event)
+            // Generate unique event ID
+            let eventID = Generator.uniqueID
+            
+            if let request = event as? RapidRequest {
+                registerPendingRequest(request, withID: eventID)
+            }
+            
+            networkHandler.write(event: event, withID: eventID)
         }
         
         // Restart heartbeat timer
         rescheduleHeartbeatTimer()
-    }
-    
-    /// Post event to websocket
-    ///
-    /// - Parameter serializableRequest: Request which is going to be sent
-    func write(event: Event) {
-        // Generate unique event ID
-        let eventID = Generator.uniqueID
-        
-        if let request = event as? RapidRequest {
-            registerPendingRequest(request, withID: eventID)
-        }
-        
-        do {
-            let jsonString = try event.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
-            
-            print("Write request \(jsonString)")
-            
-            socket.write(string: jsonString)
-        }
-        catch let rapidError as RapidError {
-            completeRequest(withResponse: RapidErrorInstance(eventID: eventID, error: rapidError))
-        }
-        catch {
-            completeRequest(withResponse: RapidErrorInstance(eventID: eventID, error: .invalidData(reason: .serializationFailure)))
-        }
     }
     
     /// Add request among pending requests which wait for an acknowledgement from server
@@ -432,48 +342,10 @@ fileprivate extension SocketManager {
         }
     }
     
-    /// Parse message received from websocket
-    ///
-    /// - Parameter message: Message received from websocket
-    func parse(message: String) {
-        print("Received message \(message)")
-        
-        if let data = message.data(using: .utf8) {
-            parse(data: data)
-        }
-    }
-    
-    /// Parse data received from websocket
-    ///
-    /// - Parameter data: Data received from websocket
-    func parse(data: Data) {
-        let json: [AnyHashable: Any]?
-        
-        do {
-            json = try data.json()
-        }
-        catch {
-            json = nil
-        }
-        
-        // Restart heartbeat timer
-        rescheduleHeartbeatTimer()
-        
-        parseQueue.async { [weak self] in
-            if let responses = RapidSerialization.parse(json: json) {
-                self?.websocketQueue.async {
-                    for response in responses {
-                        self?.completeRequest(withResponse: response)
-                    }
-                }
-            }
-        }
-    }
-    
     /// Handle an event sent from the server
     ///
     /// - Parameter response: Event sent from the server
-    func completeRequest(withResponse response: RapidResponse) {
+    func handle(response: RapidResponse) {
         switch response {
         // Event failed
         case let response as RapidErrorInstance:
@@ -506,10 +378,10 @@ fileprivate extension SocketManager {
 }
 
 // MARK: Heartbeat
-extension SocketManager {
+extension RapidSocketManager {
     
     /// Send empty request to test the connection
-    @objc func sendEmptyRequest() {
+    func sendEmptyRequest() {
         websocketQueue.async { [weak self] in
             let request = RapidEmptyRequest()
             
@@ -520,29 +392,23 @@ extension SocketManager {
     /// Invalidate previous heartbeat timer and start a new one
     func rescheduleHeartbeatTimer() {
         mainQueue.async { [weak self] in
-            self?.heartbeatTimer?.invalidate()
+            self?.nopTimer?.invalidate()
             
-            if let strongSelf = self {
-                self?.heartbeatTimer = Timer.scheduledTimer(timeInterval: Rapid.heartbeatInterval, target: strongSelf, selector: #selector(strongSelf.sendEmptyRequest), userInfo: nil, repeats: false)
-            }
+            self?.nopTimer = Timer.scheduledTimer(timeInterval: Rapid.heartbeatInterval, userInfo: nil, repeats: false, block: { [weak self] _ in
+                self?.sendEmptyRequest()
+            })
         }
     }
 }
 
 // MARK: Connection request delegate
-extension SocketManager: RapidConnectionRequestDelegate {
+extension RapidSocketManager: RapidConnectionRequestDelegate {
     
     /// Connection request was acknowledged
     ///
     /// - Parameter request: Connection request that was acknowledged
     func connectionEstablished(_ request: RapidConnectionRequest) {
         print("Connection established")
-        
-        websocketQueue.async { [weak self] in
-            self?.state = .connected
-            
-            self?.flushQueue()
-        }
     }
     
     /// Connection request failed
@@ -554,14 +420,14 @@ extension SocketManager: RapidConnectionRequestDelegate {
         print("Connection failed")
         
         websocketQueue.async { [weak self] in
-            self?.restartSocket(afterError: error.error)
+            self?.networkHandler.restartSocket(afterError: error.error)
         }
     }
     
 }
 
 // MARK: Timout request delegate
-extension SocketManager: RapidTimeoutRequestDelegate {
+extension RapidSocketManager: RapidTimeoutRequestDelegate {
     
     /// Request timeout
     ///
@@ -574,7 +440,7 @@ extension SocketManager: RapidTimeoutRequestDelegate {
             // Otherwise, if the request is still in the queue move it to pending requests and complete it with timeout error
             if let eventID = self?.eventID(forPendingRequest: request) {
                 let error = RapidErrorInstance(eventID: eventID, error: .timeout)
-                self?.completeRequest(withResponse: error)
+                self?.handle(response: error)
             }
             else if let index = self?.eventQueue.flatMap({ $0 as? Request }).index(where: { request === $0 }), let request = request as? Request {
                 self?.eventQueue.remove(at: index)
@@ -583,87 +449,36 @@ extension SocketManager: RapidTimeoutRequestDelegate {
                 self?.registerPendingRequest(request, withID: eventID)
                 
                 let error = RapidErrorInstance(eventID: eventID, error: .timeout)
-                self?.completeRequest(withResponse: error)
+                self?.handle(response: error)
             }
-        }
-    }
-    
-    /// Websocket connection hasn't been established for too long
-    @objc func connectSocketTimout() {
-        socketConnectTimer = nil
-
-        websocketQueue.async {
-            self.restartSocket(afterError: nil)
         }
     }
 }
 
-// MARK: Websocket delegate
-extension SocketManager: WebSocketDelegate {
+// MARK: Network manager delegate
+extension RapidSocketManager: RapidNetworkHandlerDelegate {
     
-    func connectSocket() {
-        mainQueue.async { [weak self] in
-            self?.socket.connect()
-        }
-    }
-    
-    func disconnectSocket(withError error: RapidError? = nil) {
-        reconnectionError = error
-
-        mainQueue.async { [weak self] in
-            self?.socket.disconnect(forceTimeout: 0.5)
-        }
-    }
-    
-    func websocketDidConnect(socket: WebSocket) {
-        print("Socket did connect")
-        
-        // Invalidate connection timer
-        mainQueue.async { [weak self] in
-            self?.socketConnectTimer?.invalidate()
-            self?.socketConnectTimer = nil
-        }
-        
-        // Establish abstract connection
+    func socketDidConnect() {
         websocketQueue.async { [weak self] in
             self?.sendConnectionRequest()
-        }
-    }
-    
-    func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
-        print("Socket did disconnect")
-        
-        // Invalidate connection timer
-        mainQueue.async { [weak self] in
-            self?.socketConnectTimer?.invalidate()
-            self?.socketConnectTimer = nil
-        }
-        
-        websocketQueue.async { [weak self] in
-            self?.state = .disconnected
             
-            // If the connection wasn't terminated intentionally reconnect it
-            if !(self?.socketTerminated ?? true), let queue = self?.websocketQueue {
-                let error = self?.reconnectionError
-                // Wait for socket to be closed
-                runAfter(1, queue: queue, closure: {
-                    self?.socketDidDisconnect(withError: error)
-                })
-            }
+            self?.flushQueue()
+        }
+    }
+    
+    func socketDidDisconnect(withError error: RapidError?) {
+        websocketQueue.async { [weak self] in
+            self?.handleDidDisconnect(withError: error)
+        }
+    }
+    
+    func handlerDidReceive(response: RapidResponse) {
+        websocketQueue.async { [weak self] in
             
-            self?.reconnectionError = nil
-        }
-    }
-    
-    func websocketDidReceiveData(socket: WebSocket, data: Data) {
-        websocketQueue.async { [weak self] in
-            self?.parse(data: data)
-        }
-    }
-    
-    func websocketDidReceiveMessage(socket: WebSocket, text: String) {
-        websocketQueue.async { [weak self] in
-            self?.parse(message: text)
+            // Restart heartbeat timer
+            self?.rescheduleHeartbeatTimer()
+            
+            self?.handle(response: response)
         }
     }
 }

@@ -86,7 +86,7 @@ public struct RapidDocumentSnapshot: Equatable {
 public class RapidDocument: NSObject {
     
     fileprivate weak var handler: RapidHandler?
-    fileprivate var socketManager: SocketManager {
+    fileprivate var socketManager: RapidSocketManager {
         return try! getSocketManager()
     }
     
@@ -153,7 +153,7 @@ public class RapidDocument: NSObject {
 
 extension RapidDocument {
     
-    func getSocketManager() throws -> SocketManager {
+    func getSocketManager() throws -> RapidSocketManager {
         if let manager = handler?.socketManager {
             return manager
         }

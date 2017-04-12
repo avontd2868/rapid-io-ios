@@ -11,28 +11,21 @@ import Foundation
 /// General dependency object containing managers
 class RapidHandler: NSObject {
     
-    let socketManager: SocketManager
-    fileprivate(set) var state: Rapid.ConnectionState = .disconnected
+    let socketManager: RapidSocketManager
+    var state: Rapid.ConnectionState {
+        return socketManager.state
+    }
     
     init?(apiKey: String) {
         // Decode connection information from API key
         if let connectionValues = Decoder.decode(apiKey: apiKey) {
-            socketManager = SocketManager(socketURL: connectionValues.hostURL)
+            let networkHandler = RapidNetworkHandler(socketURL: connectionValues.hostURL)
+            
+            socketManager = RapidSocketManager(networkHandler: networkHandler)
         }
         else {
             return nil
         }
-        
-        super.init()
-        
-        socketManager.connectionStateDelegate = self
     }
 
-}
-
-extension RapidHandler: RapidConnectionStateChangeDelegate {
-    
-    func connectionStateChanged(currentState: Rapid.ConnectionState) {
-        state = currentState
-    }
 }
