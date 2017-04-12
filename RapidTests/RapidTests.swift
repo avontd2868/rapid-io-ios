@@ -31,6 +31,7 @@ class RapidTests: XCTestCase {
     
     override func tearDown() {
         Rapid.timeout = 10
+        Rapid.defaultTimeout = 300
         Rapid.heartbeatInterval = 30
         rapid = nil
         
@@ -163,6 +164,38 @@ class RapidTests: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
+    func testReconnectWhenNotConnected() {
+        Rapid.defaultTimeout = 2
+        
+        let promise = expectation(description: "Reconnect")
+        
+        let networkHandler = RapidNetworkHandler(socketURL: fakeSocketURL)
+
+        let delegateObject = MockNetworkHandlerDelegateObject(connectCallback: {
+            XCTFail("Socket connected")
+        }, disconnectCallback: { (error) in
+            if let error = error, case .timeout = error {
+                networkHandler.goOnline()
+                
+                runAfter(1, closure: {
+                    XCTAssertEqual(networkHandler.state, .connecting, "Wrong connection state")
+                    promise.fulfill()
+                })
+            }
+            else {
+                XCTFail("Disconnect without error")
+            }
+        }) { _ in
+            XCTFail("Received response")
+        }
+        
+        networkHandler.delegate = delegateObject
+        
+        networkHandler.goOnline()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
     func testReconnectionAfterTerminated() {
         let promise = expectation(description: "Reconnect")
         
@@ -271,7 +304,26 @@ class RapidTests: XCTestCase {
         
         let promise = expectation(description: "Nop request")
         
-        let mockHandler = MockNetworkHandler(socketURL: self.socketURL) { (event) in
+        let mockHandler = MockNetworkHandler(socketURL: self.socketURL) { (handler, event, eventID) in
+            if event is RapidEmptyRequest {
+                promise.fulfill()
+            }
+            
+            handler.write(event: event, withID: eventID)
+        }
+        
+        let socketManager = RapidSocketManager(networkHandler: mockHandler)
+        socketManager.goOnline()
+        
+        waitForExpectations(timeout: 6, handler: nil)
+    }
+    
+    func testConnectionRequestTimeout() {
+        Rapid.timeout = 3
+        
+        let promise = expectation(description: "Nop request")
+        
+        let mockHandler = MockNetworkHandler(socketURL: self.socketURL) { (handler, event, eventID) in
             if event is RapidEmptyRequest {
                 promise.fulfill()
             }
@@ -290,17 +342,45 @@ protocol MockNetworkHandlerDelegate: class {
 
 class MockNetworkHandler: RapidNetworkHandler {
     
-    let writeCallback: ((_ event: RapidSocketManager.Event) -> Void)?
+    let writeCallback: ((_ handler: RapidNetworkHandler, _ event: RapidSocketManager.Event, _ id: String) -> Void)?
     
-    init(socketURL: URL, writeCallback: @escaping (_ event: RapidSocketManager.Event) -> Void) {
+    init(socketURL: URL, writeCallback: @escaping (_ handler: RapidNetworkHandler, _ event: RapidSocketManager.Event, _ id: String) -> Void) {
         self.writeCallback = writeCallback
         
         super.init(socketURL: socketURL)
     }
     
     override func write(event: RapidSocketManager.Event, withID eventID: String) {
-        writeCallback?(event)
-        
-        super.write(event: event, withID: eventID)
+        if let callback = writeCallback {
+            callback(self, event, eventID)
+        }
+        else {
+            super.write(event: event, withID: eventID)
+        }
+    }
+}
+
+class MockNetworkHandlerDelegateObject: RapidNetworkHandlerDelegate {
+    
+    let connectCallback: (() -> Void)?
+    let disconnectCallback: ((_ error: RapidError?) -> Void)?
+    let responseCallback: ((_ response: RapidResponse) -> Void)?
+    
+    init(connectCallback: (() -> Void)? = nil, disconnectCallback: ((_ error: RapidError?) -> Void)? = nil, responseCallback: ((_ response: RapidResponse) -> Void)? = nil) {
+        self.connectCallback = connectCallback
+        self.disconnectCallback = disconnectCallback
+        self.responseCallback = responseCallback
+    }
+    
+    func socketDidConnect() {
+        connectCallback?()
+    }
+    
+    func socketDidDisconnect(withError error: RapidError?) {
+        disconnectCallback?(error)
+    }
+    
+    func handlerDidReceive(response: RapidResponse) {
+        responseCallback?(response)
     }
 }

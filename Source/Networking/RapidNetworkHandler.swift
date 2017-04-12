@@ -80,10 +80,10 @@ class RapidNetworkHandler {
             
             // If socket is connected, disconnect it
             // If socket is not connected and it wasn't intentionally closed, then call reconnection handler directly
-            if self?.socket.isConnected ?? false {
+            if let socket = self?.socket, socket.isConnected {
                 self?.disconnectSocket(withError: error)
             }
-            else if !(self?.socketTerminated ?? true) {
+            else if let terminated = self?.socketTerminated, !terminated {
                 self?.state = .disconnected
                 
                 self?.delegate?.socketDidDisconnect(withError: error)
@@ -156,8 +156,8 @@ fileprivate extension RapidNetworkHandler {
     /// Websocket connection hasn't been established for too long
     func connectSocketTimout() {
         socketConnectTimer = nil
-        
-        restartSocket(afterError: nil)
+
+        restartSocket(afterError: .timeout)
     }
     
     /// Parse message received from websocket
@@ -175,17 +175,10 @@ fileprivate extension RapidNetworkHandler {
     ///
     /// - Parameter data: Data received from websocket
     func parse(data: Data) {
-        let json: [AnyHashable: Any]?
-        
-        do {
-            json = try data.json()
-        }
-        catch {
-            json = nil
-        }
+        let json = try? data.json()
         
         parseQueue.async { [weak self] in
-            if let responses = RapidSerialization.parse(json: json) {
+            if let json = json, let responses = RapidSerialization.parse(json: json) {
                 self?.mainQueue.async {
                     for response in responses {
                         self?.delegate?.handlerDidReceive(response: response)

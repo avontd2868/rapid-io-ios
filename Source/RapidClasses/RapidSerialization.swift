@@ -50,9 +50,8 @@ class RapidSerialization {
         else if let event = parseEvent(json: json) {
             return [event]
         }
-        else {
-            return nil
-        }
+
+        return nil
     }
     
     /// Serialize a document mutation into JSON string
@@ -233,9 +232,8 @@ class RapidSerialization {
             
             return orderingArray
         }
-        else {
-            return nil
-        }
+
+        return nil
     }
     
     /// Serialize an unsubscription request into JSON string
@@ -340,9 +338,8 @@ fileprivate extension RapidSerialization {
         else if let upd = json[SubscriptionUpdate.name] as? [AnyHashable: Any] {
             return RapidSubscriptionBatch(withUpdateJSON: upd)
         }
-        else {
-            return nil
-        }
+
+        return nil
     }
     
 }

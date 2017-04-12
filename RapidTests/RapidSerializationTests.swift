@@ -11,6 +11,15 @@ import XCTest
 
 extension RapidTests {
     
+    func testParseNil() {
+        XCTAssertNil(RapidSerialization.parse(json: nil), "Nil parsed")
+    }
+    
+    func testParseUnknownEvents() {
+        XCTAssertNil(RapidSerialization.parse(json: [:]), "Parsed empty dictionary")
+        XCTAssertNil(RapidSerialization.parse(json: ["jkldsf": ["name": "test"]]), "Parsed unknown event")
+    }
+    
     func testJSONValidationInvalidValue() {
         let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], callback: nil)
         
@@ -61,6 +70,42 @@ extension RapidTests {
         
         XCTAssertNoThrow(try sub1.serialize(withIdentifiers: [:]), "JSON validation")
         XCTAssertNoThrow(try sub2.serialize(withIdentifiers: [:]), "JSON validation")
+    }
+    
+    func testJSONValidationInvalidIDParameter() {
+        let sub = RapidCollectionSub(
+            collectionID: testCollectionName,
+            filter: RapidFilter.equal(keyPath: RapidFilter.documentIdKey, value: 3),
+            ordering: nil,
+            paging: nil,
+            callback: nil,
+            callbackWithChanges: nil)
+        
+        XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
+    }
+    
+    func testInvalidSimpleFilter() {
+        let sub = RapidCollectionSub(
+            collectionID: testCollectionName,
+            filter: RapidFilterSimple(keyPath: "name", relation: .greaterThanOrEqual),
+            ordering: nil,
+            paging: nil,
+            callback: nil,
+            callbackWithChanges: nil)
+        
+        XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
+    }
+    
+    func testInvalidOrderingKeyPath() {
+        let sub = RapidCollectionSub(
+            collectionID: testCollectionName,
+            filter: nil,
+            ordering: [RapidOrdering(keyPath: "name.", ordering: .ascending)],
+            paging: nil,
+            callback: nil,
+            callbackWithChanges: nil)
+        
+        XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
     
     func testEventBatch() {
