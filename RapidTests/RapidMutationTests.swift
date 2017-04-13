@@ -11,6 +11,42 @@ import XCTest
 
 extension RapidTests {
     
+    func testMutationTimeout() {
+        let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
+        Rapid.timeout = 2
+        
+        let promise = expectation(description: "Mutation timeout")
+        
+        rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { (error, _) in
+            if let error = error as? RapidError, case .timeout = error {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Request did not timed out")
+            }
+        }
+        
+        waitForExpectations(timeout: 3, handler: nil)
+    }
+    
+    func testMergeTimeout() {
+        let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
+        Rapid.timeout = 2
+        
+        let promise = expectation(description: "Merge timeout")
+        
+        rapid.collection(named: "users").newDocument().merge(value: ["name": "Jan"]) { (error, _) in
+            if let error = error as? RapidError, case .timeout = error {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Request did not timed out")
+            }
+        }
+        
+        waitForExpectations(timeout: 3, handler: nil)
+    }
+    
     func testCreateAndDelete() {
         let promise = expectation(description: "Delete document")
         

@@ -34,7 +34,7 @@ class RapidSocketManager {
     fileprivate var eventQueue: [Event] = []
     
     /// Dictionary of events that have been already sent to the server and a response is awaited. Events are identified by an event ID.
-    fileprivate var pendingRequests: [String: Request] = [:]
+    fileprivate var pendingRequests: [String: (request: Request, timestamp: TimeInterval)] = [:]
     
     /// Dictionary of registered subscriptions. Either active or those that are waiting for acknowledgement from the server. Subscriptions are identified by a subscriptioon ID
     fileprivate var activeSubscriptions: [String: RapidSubscriptionHandler] = [:]
@@ -148,7 +148,7 @@ class RapidSocketManager {
     /// - Parameter request: Request that has been sent to the server
     /// - Returns: Event ID of the request
     func eventID(forPendingRequest request: RapidRequest) -> String? {
-        let pendingTuples = pendingRequests.filter({ $0.value === request })
+        let pendingTuples = pendingRequests.filter({ $0.value.request === request })
         return pendingTuples.first?.key
     }
     
@@ -179,44 +179,51 @@ fileprivate extension RapidSocketManager {
         
         eventQueue.removeAll(keepingCapacity: true)
         
+        let connectionTerminated: Bool
+        switch error {
+        case .some(.connectionTerminated), .some(.timeout):
+            connectionTerminated = true
+            
+        default:
+            connectionTerminated = false
+        }
+        
         // If abstract connection to the server was terminated
-        if let error = error, case RapidError.connectionTerminated = error {
+        if connectionTerminated {
             //Because an abstract connection expired a new connection with a new connection ID needs to be established
             connectionID = nil
 
             // Add to the request queue those subscriptions that were already acknowledged by the server
-            eventQueue = activeSubscriptions
+            let resubscribe = activeSubscriptions
                 .map({ $0.value })
-                .filter({ subscription in
-                    guard let subscription = subscription as? RapidSubscriptionHandler else {
-                        return true
+                .filter({ (subscription) -> Bool in
+                    
+                let toBeSent = currentQueue.contains(where: { (request) -> Bool in
+                    if let request = request as? RapidSubscriptionHandler {
+                        return request.subscriptionID == subscription.subscriptionID
                     }
-                    
-                    let toBeSent = currentQueue.contains(where: { (request) -> Bool in
-                        if let request = request as? RapidSubscriptionHandler {
-                            return request.subscriptionID == subscription.subscriptionID
-                        }
-                        else {
-                            return false
-                        }
-                    })
-                    
-                    let toBeAcknowledged = pendingRequests.values.contains(where: { (request) -> Bool in
-                        if let request = request as? RapidSubscriptionHandler {
-                            return request.subscriptionID == subscription.subscriptionID
-                        }
-                        else {
-                            return false
-                        }
-                    })
-                    
-                    return !toBeSent && !toBeAcknowledged
+
+                    return false
                 })
+                
+                let toBeAcknowledged = pendingRequests.values.contains(where: { (request, _) -> Bool in
+                    if let request = request as? RapidSubscriptionHandler {
+                        return request.subscriptionID == subscription.subscriptionID
+                    }
+
+                    return false
+                })
+                
+                return !toBeSent && !toBeAcknowledged
+            })
+            eventQueue = resubscribe
         }
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
-        let eventArray = Array(pendingRequests.values) as [Event]
+        let pendingArray = (Array(pendingRequests.values) as [(request: Request, timestamp: TimeInterval)])
+        let eventArray = pendingArray.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
         eventQueue.append(contentsOf: eventArray)
+
         // Finally append relevant requests that were waiting to be sent
         eventQueue.append(contentsOf: currentQueue)
         
@@ -300,7 +307,7 @@ fileprivate extension RapidSocketManager {
         else {
             eventQueue.append(event)
         }
-        
+
         flushQueue()
     }
     
@@ -310,7 +317,7 @@ fileprivate extension RapidSocketManager {
         guard state == .connected else {
             return
         }
-        
+
         let queueCopy = eventQueue
         
         // Empty the queue
@@ -338,7 +345,7 @@ fileprivate extension RapidSocketManager {
     ///   - eventID: Event ID associated with the request
     func registerPendingRequest(_ request: RapidRequest, withID eventID: String) {
         if let request = request as? Request {
-            pendingRequests[eventID] = request
+            pendingRequests[eventID] = (request, Date().timeIntervalSince1970)
         }
     }
     
@@ -349,11 +356,11 @@ fileprivate extension RapidSocketManager {
         switch response {
         // Event failed
         case let response as RapidErrorInstance:
-            let request = pendingRequests[response.eventID]
-            request?.eventFailed(withError: response)
+            let tuple = pendingRequests[response.eventID]
+            tuple?.request.eventFailed(withError: response)
             
             // If subscription registration failed remove if from the list of active subscriptions
-            if let subscription = request as? RapidSubscriptionHandler {
+            if let subscription = tuple?.request as? RapidSubscriptionHandler {
                 activeSubscriptions[subscription.subscriptionID] = nil
             }
             
@@ -361,8 +368,8 @@ fileprivate extension RapidSocketManager {
         
         // Event acknowledged
         case let response as RapidSocketAcknowledgement:
-            let request = pendingRequests[response.eventID]
-            request?.eventAcknowledged(response)
+            let tuple = pendingRequests[response.eventID]
+            tuple?.request.eventAcknowledged(response)
             pendingRequests[response.eventID] = nil
         
         // Subscription event

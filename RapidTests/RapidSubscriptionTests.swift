@@ -11,6 +11,40 @@ import XCTest
 
 extension RapidTests {
     
+    func testSnapshotEqualityEquals() {
+        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
+        let snap3 = RapidDocumentSnapshot(id: "1", value: ["name": "test"], etag: "123")
+        let snap4 = RapidDocumentSnapshot(id: "1", value: ["name": "test"], etag: "123")
+        
+        XCTAssertEqual(snap1, snap2, "Snapshots not equal")
+        XCTAssertEqual(snap3, snap4, "Snapshots not equal")
+   }
+    
+    func testSnapshotEqualityDifferentID() {
+        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "2", value: [:], etag: "123")
+        
+        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
+    }
+    
+    func testSnapshotEqualityDifferentEtag() {
+        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", value: [:], etag: "1234")
+        
+        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
+    }
+    
+    func testSnapshotEqualityDifferentValues() {
+        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", value: [:], etag: "123")
+        let snap3 = RapidDocumentSnapshot(id: "1", value: ["name": "test1"], etag: "123")
+        let snap4 = RapidDocumentSnapshot(id: "1", value: ["name": "test2"], etag: "123")
+        
+        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
+        XCTAssertNotEqual(snap3, snap4, "Snapshots not equal")
+    }
+    
     func testDuplicateSubscriptions() {
         guard let sub1 = self.rapid.collection(named: "users").document(withID: "1").subscribe(completion: { (_, _) in }) as? RapidDocumentSub else {
             XCTFail("Subscription of wrong type")

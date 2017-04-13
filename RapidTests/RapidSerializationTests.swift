@@ -412,6 +412,34 @@ extension RapidTests {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
+    func testMutationWithArray() {
+        let promise = expectation(description: "Wrong document id")
+        
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["test2": 2]], "json": ["testJSON": "blaaaa"] ] ) { error, _ in
+            XCTAssertNil(error, "Error not nil")
+            promise.fulfill()
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testInvalidNestedDictionaryMutation() {
+        let promise = expectation(description: "Wrong document id")
+        
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["tes.t": 2]] ] ) { error, _ in
+            if let error = error as? RapidError,
+                case .invalidData(let reason) = error,
+                case .invalidDocument = reason {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Subsription passed")
+            }
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
     func testWrongDocumentIDMutation() {
         let promise = expectation(description: "Wrong document id")
         
@@ -426,6 +454,23 @@ extension RapidTests {
             }
         }
             
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testInvalidKeyMutation() {
+        let promise = expectation(description: "Wrong key")
+        
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["na.me": "test"]) { error, _ in
+            if let error = error as? RapidError,
+                case .invalidData(let reason) = error,
+                case .invalidDocument = reason {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Subsription passed")
+            }
+        }
+        
         waitForExpectations(timeout: 5, handler: nil)
     }
     

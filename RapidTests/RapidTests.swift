@@ -93,24 +93,6 @@ class RapidTests: XCTestCase {
         XCTAssertNotEqual(rapid?.description, newInstance?.description, "Same instances for different databases")
     }
     
-    func testRequestTimeout() {
-        let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
-        Rapid.timeout = 2
-        
-        let promise = expectation(description: "Mutation timeout")
-
-        rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { (error, _) in
-            if let error = error as? RapidError, case .timeout = error {
-                promise.fulfill()
-            }
-            else {
-                XCTFail("Request did not timed out")
-            }
-        }
-        
-        waitForExpectations(timeout: 3, handler: nil)
-    }
-    
     func testConnectionStates() {
         let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
         
@@ -304,13 +286,14 @@ class RapidTests: XCTestCase {
         
         let promise = expectation(description: "Nop request")
         
-        let mockHandler = MockNetworkHandler(socketURL: self.socketURL) { (handler, event, eventID) in
+        let mockHandler = MockNetworkHandler(socketURL: self.socketURL, writeCallback: { (handler, event, eventID) in
             if event is RapidEmptyRequest {
                 promise.fulfill()
             }
-            
-            handler.write(event: event, withID: eventID)
-        }
+            else {
+                handler.writeToSocket(event: event, withID: eventID)
+            }
+        })
         
         let socketManager = RapidSocketManager(networkHandler: mockHandler)
         socketManager.goOnline()
@@ -319,18 +302,214 @@ class RapidTests: XCTestCase {
     }
     
     func testConnectionRequestTimeout() {
-        Rapid.timeout = 3
+        Rapid.timeout = nil
+        Rapid.defaultTimeout = 2
         
-        let promise = expectation(description: "Nop request")
+        let promise = expectation(description: "Events request")
         
-        let mockHandler = MockNetworkHandler(socketURL: self.socketURL) { (handler, event, eventID) in
-            if event is RapidEmptyRequest {
+        let socket = WebSocket(url: fakeSocketURL)
+        
+        var connectionID: String?
+        let mockHandler = MockNetworkHandler(socketURL: self.fakeSocketURL, writeCallback: { (handler, event, eventID) in
+            if let event = event as? RapidConnectionRequest, let conID = connectionID {
+                XCTAssertNotEqual(conID, event.connectionID, "Same connection ID")
                 promise.fulfill()
             }
+            else if let event = event as? RapidConnectionRequest {
+                connectionID = event.connectionID
+            }
+        }, goOnlineCallback: { handler in
+            handler.websocketDidConnect(socket: socket)
+        })
+        
+        let manager = RapidSocketManager(networkHandler: mockHandler)
+        
+        runAfter(1) {
+            XCTAssertEqual(manager.state, .connected)
         }
         
-        let socketManager = RapidSocketManager(networkHandler: mockHandler)
-        socketManager.goOnline()
+        waitForExpectations(timeout: 6, handler: nil)
+    }
+    
+    func testSendingEventsInQueueAfterReconnect() {
+        let promise = expectation(description: "Nop request")
+        
+        let socket = WebSocket(url: fakeSocketURL)
+        
+        var firstOnlineRequest = true
+        
+        var conReq = false
+        var subReq = false
+        var mutReq = false
+        var merReq = false
+        
+        let mockHandler = MockNetworkHandler(socketURL: self.fakeSocketURL, writeCallback: { (handler, event, eventID) in
+            if event is RapidConnectionRequest {
+                if conReq {
+                    XCTFail("Second connection request")
+                }
+                else {
+                    conReq = true
+                }
+            }
+            else if event is RapidSubscriptionHandler {
+                if conReq && !subReq {
+                    subReq = true
+                }
+                else {
+                    XCTFail("Wrong order")
+                }
+            }
+            else if event is RapidDocumentMutation {
+                if conReq && subReq && !mutReq {
+                    mutReq = true
+                }
+                else {
+                    XCTFail("Wrong order")
+                }
+            }
+            else if event is RapidDocumentMerge {
+                if conReq && subReq && mutReq && !merReq {
+                    merReq = true
+                    runAfter(1, closure: {
+                        conReq = false
+                        promise.fulfill()
+                    })
+                }
+                else {
+                    XCTFail("Wrong order")
+                }
+            }
+            else if conReq && subReq && mutReq && merReq {
+                XCTFail("More requests")
+            }
+        }, goOnlineCallback: { handler in
+            if firstOnlineRequest {
+                firstOnlineRequest = false
+                runAfter(2, closure: {
+                    handler.delegate?.socketDidDisconnect(withError: nil)
+                })
+            }
+            else {
+                handler.websocketDidConnect(socket: socket)
+            }
+        })
+        
+        let manager = RapidSocketManager(networkHandler: mockHandler)
+        
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        manager.subscribe(subscription)
+        manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil))
+        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], callback: nil))
+        manager.merge(mergeRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil))
+        manager.sendEmptyRequest()
+        runAfter(1) { 
+            subscription.unsubscribe()
+        }
+        
+        waitForExpectations(timeout: 6, handler: nil)
+    }
+
+    func testSubscriptionReregistration() {
+        let promise = expectation(description: "Register request")
+        
+        let socket = WebSocket(url: fakeSocketURL)
+        
+        var shouldConnect = true
+        
+        let subscription1 = RapidDocumentSub(collectionID: self.testCollectionName, documentID: "1", callback: nil)
+        let subscription2 = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let subscription3 = RapidDocumentSub(collectionID: self.testCollectionName, documentID: "2", callback: nil)
+        let subHash = subscription2.subscriptionHash
+        let mutatationDocumentID = "2"
+        var acknowledgeAll = false
+        
+        var lastSubscription: RapidSubscriptionHandler?
+        var lastMutation: RapidDocumentMutation?
+        
+        let mockHandler = MockNetworkHandler(socketURL: self.fakeSocketURL, writeCallback: { (handler, event, eventID) in
+            if acknowledgeAll {
+                if let subscription = event as? RapidSubscriptionHandler {
+                    switch subscription.subscriptionHash {
+                    case subscription1.subscriptionHash:
+                        XCTAssertNil(lastSubscription, "wrong order")
+                        XCTAssertNil(lastMutation, "wrong order")
+                        lastSubscription = subscription
+                        lastMutation = nil
+                        
+                    case subscription2.subscriptionHash:
+                        XCTAssertEqual(lastSubscription?.subscriptionHash, subscription1.subscriptionHash, "wrong order")
+                        lastSubscription = subscription
+                        lastMutation = nil
+                        
+                    case subscription3.subscriptionHash:
+                        XCTAssertEqual(lastMutation?.documentID, "3", "wrong order")
+                        lastSubscription = subscription
+                        lastMutation = nil
+                        promise.fulfill()
+                        
+                    default:
+                        XCTFail("Another subscription")
+                    }
+                }
+                else if let mutation = event as? RapidDocumentMutation {
+                    switch mutation.documentID {
+                    case "2":
+                        XCTAssertEqual(lastSubscription?.subscriptionHash, subHash, "wrong order")
+                        lastSubscription = nil
+                        lastMutation = mutation
+                        
+                    case "3":
+                        XCTAssertEqual(lastMutation?.documentID, "2", "wrong order")
+                        lastSubscription = nil
+                        lastMutation = mutation
+                        
+                    default:
+                        XCTFail("Another mutation")
+                    }
+                }
+            }
+            else {
+                if let subscription = event as? RapidSubscriptionHandler {
+                    if subscription.subscriptionHash != subHash {
+                        handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                    }
+                }
+                else if let mutation = event as? RapidDocumentMutation {
+                    if mutation.documentID != mutatationDocumentID {
+                        handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                    }
+                }
+                else {
+                    handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                }
+            }
+        }, goOnlineCallback: { handler in
+            if shouldConnect {
+                handler.websocketDidConnect(socket: socket)
+            }
+        })
+        
+        let manager = RapidSocketManager(networkHandler: mockHandler)
+        
+        runAfter(0.5) { 
+            manager.subscribe(subscription1)
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], callback: nil))
+            manager.subscribe(subscription2)
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], callback: nil))
+            manager.goOffline()
+            runAfter(0.5, closure: {
+                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], callback: nil))
+                manager.subscribe(subscription3)
+                shouldConnect = false
+                manager.goOnline()
+                runAfter(0.5, closure: {
+                    shouldConnect = true
+                    acknowledgeAll = true
+                    mockHandler.delegate?.socketDidDisconnect(withError: RapidError.connectionTerminated(message: "Termiantion"))
+                })
+            })
+        }
         
         waitForExpectations(timeout: 6, handler: nil)
     }
@@ -342,10 +521,18 @@ protocol MockNetworkHandlerDelegate: class {
 
 class MockNetworkHandler: RapidNetworkHandler {
     
-    let writeCallback: ((_ handler: RapidNetworkHandler, _ event: RapidSocketManager.Event, _ id: String) -> Void)?
+    let writeCallback: ((_ handler: MockNetworkHandler, _ event: RapidSocketManager.Event, _ id: String) -> Void)?
+    let goOnlineCallback: ((_ handler: MockNetworkHandler) -> Void)?
+    let goOfflineCallback: ((_ handler: MockNetworkHandler) -> Void)?
     
-    init(socketURL: URL, writeCallback: @escaping (_ handler: RapidNetworkHandler, _ event: RapidSocketManager.Event, _ id: String) -> Void) {
+    init(socketURL: URL,
+         writeCallback: ((_ handler: MockNetworkHandler, _ event: RapidSocketManager.Event, _ id: String) -> Void)? = nil,
+         goOnlineCallback: ((_ handler: MockNetworkHandler) -> Void)? = nil,
+         goOfflineCallback: ((_ handler: MockNetworkHandler) -> Void)? = nil) {
+        
         self.writeCallback = writeCallback
+        self.goOnlineCallback = goOnlineCallback
+        self.goOfflineCallback = goOfflineCallback
         
         super.init(socketURL: socketURL)
     }
@@ -356,6 +543,28 @@ class MockNetworkHandler: RapidNetworkHandler {
         }
         else {
             super.write(event: event, withID: eventID)
+        }
+    }
+    
+    func writeToSocket(event: RapidSocketManager.Event, withID eventID: String) {
+        super.write(event: event, withID: eventID)
+    }
+    
+    override func goOnline() {
+        if let callback = goOnlineCallback {
+            callback(self)
+        }
+        else {
+            super.goOnline()
+        }
+    }
+    
+    override func goOffline() {
+        if let callback = goOfflineCallback {
+            callback(self)
+        }
+        else {
+            super.goOffline()
         }
     }
 }

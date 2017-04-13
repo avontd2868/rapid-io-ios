@@ -19,6 +19,7 @@
 		C169DB491E978D1B007983EA /* RapidAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */; };
 		C1B9C2C21E9D37D7008F7A7B /* RapidNetworkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B9C2C11E9D37D7008F7A7B /* RapidNetworkHandler.swift */; };
 		C1D2A1EE1E9E2A94009444B3 /* TimerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2A1ED1E9E2A94009444B3 /* TimerExtension.swift */; };
+		C1D2A1F01E9FD899009444B3 /* RapidQuaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2A1EF1E9FD899009444B3 /* RapidQuaryTests.swift */; };
 		C1D6E8291E7856AD007589FC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1D6E81F1E7856AD007589FC /* Rapid.framework */; };
 		C1D6E82E1E7856AD007589FC /* RapidTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E82D1E7856AD007589FC /* RapidTests.swift */; };
 		C1D6E8A81E785D72007589FC /* Rapid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8A71E785D72007589FC /* Rapid.swift */; };
@@ -64,6 +65,7 @@
 		C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidAuthorizationTests.swift; sourceTree = "<group>"; };
 		C1B9C2C11E9D37D7008F7A7B /* RapidNetworkHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidNetworkHandler.swift; sourceTree = "<group>"; };
 		C1D2A1ED1E9E2A94009444B3 /* TimerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerExtension.swift; sourceTree = "<group>"; };
+		C1D2A1EF1E9FD899009444B3 /* RapidQuaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidQuaryTests.swift; sourceTree = "<group>"; };
 		C1D6E81F1E7856AD007589FC /* Rapid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rapid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E8281E7856AD007589FC /* RapidTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RapidTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E82D1E7856AD007589FC /* RapidTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RapidTests.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */,
 				C169DB401E952FA8007983EA /* RapidMutationTests.swift */,
 				C169DB431E95384D007983EA /* RapidSerializationTests.swift */,
+				C1D2A1EF1E9FD899009444B3 /* RapidQuaryTests.swift */,
 				C1D6E82D1E7856AD007589FC /* RapidTests.swift */,
 			);
 			path = RapidTests;
@@ -409,6 +412,7 @@
 				C140F9341E894871002AB9C5 /* RapidSubscriptionTests.swift in Sources */,
 				C169DB411E952FA8007983EA /* RapidMutationTests.swift in Sources */,
 				C169DB491E978D1B007983EA /* RapidAuthorizationTests.swift in Sources */,
+				C1D2A1F01E9FD899009444B3 /* RapidQuaryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

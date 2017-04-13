@@ -107,9 +107,8 @@ class Validator {
         if isValid(document: dict) {
             return dict
         }
-        else {
-            throw RapidError.invalidData(reason: .invalidDocument(document: dict))
-        }
+        
+        throw RapidError.invalidData(reason: .invalidDocument(document: dict))
     }
     
     /// Check a document dictionary if it is valid
@@ -133,13 +132,11 @@ class Validator {
                         }
                     }
                 }
-                else {
-                    continue
-                }
+
+                continue
             }
-            else {
-                return false
-            }
+
+            return false
         }
         
         return true
@@ -180,9 +177,8 @@ class Validator {
         if isValid(identifier: identifier) {
             return identifier
         }
-        else {
-            throw RapidError.invalidData(reason: .invalidIdentifierFormat(identifier: identifier))
-        }
+
+        throw RapidError.invalidData(reason: .invalidIdentifierFormat(identifier: identifier))
     }
     
     /// Check an identifier if it is valid

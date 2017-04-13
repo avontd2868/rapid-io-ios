@@ -36,13 +36,9 @@ public func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool 
         else if lhs.value == nil && rhs.value == nil {
             return true
         }
-        else {
-            return false
-        }
     }
-    else {
-        return false
-    }
+
+    return false
 }
 
 /// Struct representing Rapid.io document that is returned from a subscription callback
