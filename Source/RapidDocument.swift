@@ -42,7 +42,7 @@ public func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool 
 }
 
 /// Struct representing Rapid.io document that is returned from a subscription callback
-public struct RapidDocumentSnapshot: Equatable {
+public class RapidDocumentSnapshot: NSObject, NSCoding {
     
     /// Document ID
     public let id: String
@@ -74,6 +74,30 @@ public struct RapidDocumentSnapshot: Equatable {
         self.id = id
         self.value = value
         self.etag = etag
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        guard let id = aDecoder.decodeObject(forKey: "id") as? String else {
+            return nil
+        }
+        
+        self.id = id
+        self.etag = aDecoder.decodeObject(forKey: "etag") as? String
+        do {
+            self.value = try (aDecoder.decodeObject(forKey: "value") as? String)?.json()
+        }
+        catch {
+            self.value = nil
+        }
+    }
+    
+    public func encode(with aCoder: NSCoder) {
+        aCoder.encode(id, forKey: "id")
+        aCoder.encode(etag, forKey: "etag")
+        do {
+            aCoder.encode(try value?.jsonString(), forKey: "value")
+        }
+        catch {}
     }
     
 }

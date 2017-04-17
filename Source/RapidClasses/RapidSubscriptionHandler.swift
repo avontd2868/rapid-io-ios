@@ -84,6 +84,13 @@ fileprivate struct RapidDocSnapOperationSet: Sequence {
     }
 }
 
+protocol RapidSubscriptionHandlerDelegate: class {
+    var dispatchQueue: DispatchQueue { get }
+    var cacheHandler: RapidCacheHandler? { get }
+    
+    func unsubscribe(handler: RapidUnsubscriptionHandler)
+}
+
 /// Class that handles all subscriptions which listen to the same dataset
 class RapidSubscriptionHandler: NSObject {
     
@@ -105,17 +112,20 @@ class RapidSubscriptionHandler: NSObject {
     /// ID of subscription
     let subscriptionID: String
     
-    /// Dedicated thread inheritited from `SocketManager`
-    fileprivate let dispatchQueue: DispatchQueue
-    
-    /// Block of code which must be called to unregister the subscription
-    fileprivate let unsubscribeHandler: (RapidUnsubscriptionHandler) -> Void
+    /// Handler delegate
+    fileprivate weak var delegate: RapidSubscriptionHandlerDelegate?
     
     /// Array of subscription objects
     fileprivate var subscriptions: [RapidSubscriptionInstance] = []
     
     /// Last known value of the dataset
-    fileprivate var value: [RapidDocumentSnapshot]?
+    fileprivate var value: [RapidDocumentSnapshot]? {
+        didSet {
+            if let value = value {
+                delegate?.cacheHandler?.storeValue(NSArray(array: value), forSubscription: self)
+            }
+        }
+    }
     
     /// Subscription state
     fileprivate var state: State = .unsubscribed
@@ -127,26 +137,27 @@ class RapidSubscriptionHandler: NSObject {
     ///   - subscription: Subscription object
     ///   - dispatchQueue: `SocketManager` dedicated thread for parsing
     ///   - unsubscribeHandler: Block of code which must be called to unregister the subscription
-    init(withSubscriptionID subscriptionID: String, subscription: RapidSubscriptionInstance, dispatchQueue: DispatchQueue, unsubscribeHandler: @escaping (RapidUnsubscriptionHandler) -> Void) {
-        self.unsubscribeHandler = unsubscribeHandler
+    init(withSubscriptionID subscriptionID: String, subscription: RapidSubscriptionInstance, delegate: RapidSubscriptionHandlerDelegate?) {
         self.subscriptionID = subscriptionID
-        self.dispatchQueue = dispatchQueue
+        self.delegate = delegate
         
         super.init()
         
         state = .registering
         appendSubscription(subscription)
+        
+        loadCachedData()
     }
     
     /// Add another subscription object to the handler
     ///
     /// - Parameter subscription: New subscription object
     func registerSubscription(subscription: RapidSubscriptionInstance) {
-        dispatchQueue.async {
+        delegate?.dispatchQueue.async {
             self.appendSubscription(subscription)
             
-            // If the handler is subscribed pass the last known value immediatelly
-            if self.state == .subscribed, let value = self.value {
+            // Pass the last known value immediatelly if there is any
+            if let value = self.value {
                 subscription.receivedUpdate(value, value, [], [])
             }
         }
@@ -156,16 +167,16 @@ class RapidSubscriptionHandler: NSObject {
     ///
     /// - Parameter handler: Previously creaated unsubscription handler
     func retryUnsubscription(withHandler handler: RapidUnsubscriptionHandler) {
-        dispatchQueue.async { [weak self] in
+        delegate?.dispatchQueue.async { [weak self] in
             if self?.state == .unsubscribing {
-                self?.unsubscribeHandler(handler)
+                self?.delegate?.unsubscribe(handler: handler)
             }
         }
     }
     
     /// Inform handler about being unsubscribed
     func didUnsubscribe() {
-        dispatchQueue.async { [weak self] in
+        delegate?.dispatchQueue.async { [weak self] in
             self?.state = .unsubscribed
         }
     }
@@ -189,12 +200,23 @@ extension RapidSubscriptionHandler: RapidSerializable {
 
 fileprivate extension RapidSubscriptionHandler {
     
+    func loadCachedData() {
+        delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, completion: { [weak self] (cachedValue) in
+            self?.delegate?.dispatchQueue.async {
+                if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedValue = cachedValue as? [RapidDocumentSnapshot] {
+                    let batch = RapidSubscriptionBatch(withSubscriptionID: subscriptionID, collection: cachedValue)
+                    self?.receivedNewValue(batch)
+                }
+            }
+        })
+    }
+    
     /// Add a new subscription object
     ///
     /// - Parameter subscription: New subscription object
     func appendSubscription(_ subscription: RapidSubscriptionInstance) {
         subscription.registerUnsubscribeCallback { [weak self] instance in
-            self?.dispatchQueue.async {
+            self?.delegate?.dispatchQueue.async {
                 self?.unsubscribe(instance: instance)
             }
         }
@@ -385,7 +407,7 @@ fileprivate extension RapidSubscriptionHandler {
         // Otherwise just remove the subscription object from array of registered subscription objects
         if subscriptions.count == 1 {
             state = .unsubscribing
-            unsubscribeHandler(RapidUnsubscriptionHandler(subscription: self))
+            delegate?.unsubscribe(handler: RapidUnsubscriptionHandler(subscription: self))
         }
         else if let index = subscriptions.index(where: { $0 === instance }) {
             subscriptions.remove(at: index)
@@ -396,13 +418,13 @@ fileprivate extension RapidSubscriptionHandler {
 extension RapidSubscriptionHandler: RapidRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        dispatchQueue.async {
+        delegate?.dispatchQueue.async {
             self.state = .subscribed
         }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        dispatchQueue.async {
+        delegate?.dispatchQueue.async {
             self.state = .unsubscribed
             
             for subscription in self.subscriptions {
@@ -412,7 +434,7 @@ extension RapidSubscriptionHandler: RapidRequest {
     }
     
     func receivedSubscriptionEvent(_ update: RapidSubscriptionBatch) {
-        dispatchQueue.async {
+        delegate?.dispatchQueue.async {
             self.receivedNewValue(update)
         }
     }

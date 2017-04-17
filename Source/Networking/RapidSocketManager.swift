@@ -17,6 +17,8 @@ class RapidSocketManager {
     /// Network communication handler
     let networkHandler: RapidNetworkHandler
     
+    weak var cacheHandler: RapidCacheHandler?
+    
     /// State of a websocket connection
     var state: Rapid.ConnectionState {
         return networkHandler.state
@@ -92,10 +94,7 @@ class RapidSocketManager {
     /// - Parameter subscription: Subscription object
     func subscribe(_ subscription: RapidSubscriptionInstance) {
         websocketQueue.async { [weak self] in
-            guard let queue = self?.parseQueue else {
-                return
-            }
-            
+
             // If a subscription that listens to the same set of data has been already registered just register the new listener locally
             if let activeSubscription = self?.activeSubscription(withHash: subscription.subscriptionHash) {
                 activeSubscription.registerSubscription(subscription: subscription)
@@ -105,11 +104,7 @@ class RapidSocketManager {
                 let subscriptionID = Generator.uniqueID
                 
                 // Create a handler for the subscription
-                let subscriptionHandler = RapidSubscriptionHandler(withSubscriptionID: subscriptionID, subscription: subscription, dispatchQueue: queue, unsubscribeHandler: { [weak self] handler in
-                    self?.websocketQueue.async {
-                        self?.unsubscribe(handler)
-                    }
-                })
+                let subscriptionHandler = RapidSubscriptionHandler(withSubscriptionID: subscriptionID, subscription: subscription, delegate: self)
                 
                 // Add handler to the dictionary of registered subscriptions
                 self?.activeSubscriptions[subscriptionID] = subscriptionHandler
@@ -380,6 +375,20 @@ fileprivate extension RapidSocketManager {
         
         default:
             print("Unrecognized response")
+        }
+    }
+}
+
+// MARK: Subscription handler delegate
+extension RapidSocketManager: RapidSubscriptionHandlerDelegate {
+    
+    var dispatchQueue: DispatchQueue {
+        return parseQueue
+    }
+    
+    func unsubscribe(handler: RapidUnsubscriptionHandler) {
+        websocketQueue.async { [weak self] in
+            self?.unsubscribe(handler)
         }
     }
 }

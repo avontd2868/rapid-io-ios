@@ -17,6 +17,13 @@ class RapidSubscriptionBatch: RapidResponse {
     internal(set) var collection: [RapidDocumentSnapshot]?
     internal(set) var updates: [RapidSubscriptionUpdate]
     
+    init(withSubscriptionID id: String, collection: [RapidDocumentSnapshot]) {
+        self.eventID = Rapid.uniqueID
+        self.subscriptionID = id
+        self.collection = collection
+        self.updates = []
+    }
+    
     init?(withCollectionJSON json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {
             return nil

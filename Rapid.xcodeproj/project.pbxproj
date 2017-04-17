@@ -40,6 +40,7 @@
 		C1D6E9AD1E7BFED2007589FC /* WRO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9AC1E7BFED2007589FC /* WRO.swift */; };
 		C1D6E9AF1E7C0D59007589FC /* RapidSubscriptionProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9AE1E7C0D59007589FC /* RapidSubscriptionProtocols.swift */; };
 		C1D6E9B11E7C0FAE007589FC /* RapidQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9B01E7C0FAE007589FC /* RapidQuery.swift */; };
+		C1EDC19E1EA4B952006570FC /* RapidCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EDC19D1EA4B952006570FC /* RapidCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 		C1D6E9AC1E7BFED2007589FC /* WRO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WRO.swift; sourceTree = "<group>"; };
 		C1D6E9AE1E7C0D59007589FC /* RapidSubscriptionProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionProtocols.swift; sourceTree = "<group>"; };
 		C1D6E9B01E7C0FAE007589FC /* RapidQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidQuery.swift; sourceTree = "<group>"; };
+		C1EDC19D1EA4B952006570FC /* RapidCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +214,7 @@
 				C1D2A1ED1E9E2A94009444B3 /* TimerExtension.swift */,
 				C1D6E9A01E7AFE6E007589FC /* Helpers.swift */,
 				C1D6E9AC1E7BFED2007589FC /* WRO.swift */,
+				C1EDC19D1EA4B952006570FC /* RapidCache.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -388,6 +391,7 @@
 				C1D6E9A71E7BE942007589FC /* RapidSerialization.swift in Sources */,
 				C12692221E82D27A002577B2 /* RapidSubscriptionEvent.swift in Sources */,
 				C1281A461E8AA3A50054AF73 /* RapidConnectionRequests.swift in Sources */,
+				C1EDC19E1EA4B952006570FC /* RapidCache.swift in Sources */,
 				C1D6E9AF1E7C0D59007589FC /* RapidSubscriptionProtocols.swift in Sources */,
 				C1281A481E8AA8C20054AF73 /* RapidSubscriptions.swift in Sources */,
 				C1D6E9A11E7AFE6E007589FC /* Helpers.swift in Sources */,

@@ -35,6 +35,17 @@ public class Rapid: NSObject {
     /// API key that serves to connect to Rapid.io database
     public let apiKey: String
     
+    /// If `true` subscription values are stored locally to be available offline
+    public var isCacheEnabled: Bool {
+        get {
+            return handler.cacheEnabled
+        }
+        
+        set {
+            handler.cacheEnabled = newValue
+        }
+    }
+    
     /// Current state of Rapid instance
     public var connectionState: ConnectionState {
         return handler.state
@@ -135,6 +146,19 @@ public extension Rapid {
     /// Generates an unique ID which can be safely used as your document ID
     class var uniqueID: String {
         return Generator.uniqueID
+    }
+    
+    /// If `true` subscription values are stored locally to be available offline
+    class var isCacheEnabled: Bool {
+        get {
+            let instance = try! shared()
+            return instance.isCacheEnabled
+        }
+        
+        set {
+            let instance = try! shared()
+            instance.isCacheEnabled = newValue
+        }
     }
     
     /// Current state of shared Rapid instance
