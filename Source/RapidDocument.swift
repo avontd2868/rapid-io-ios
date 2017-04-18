@@ -100,6 +100,15 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
         catch {}
     }
     
+    override public func isEqual(_ object: Any?) -> Bool {
+        if let snapshot = object as? RapidDocumentSnapshot {
+            return self == snapshot
+        }
+        else {
+            return false
+        }
+    }
+    
 }
 
 /// Class representing Rapid.io document

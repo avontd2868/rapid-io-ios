@@ -61,7 +61,7 @@ class RapidCache: NSObject {
             cacheInfo = [:]
         }
         
-        diskQueue = DispatchQueue(label: "io.rapid.cache.disk", qos: .background)
+        diskQueue = DispatchQueue(label: "io.rapid.cache.disk", qos: .utility)
         
         super.init()
         
@@ -306,7 +306,7 @@ fileprivate extension RapidCache {
             })
             .sorted(by: { $0.1 < $1.1 })
         
-        while size(ofDirectory: cacheDir) > (maxSize * 1024 * 1024) {
+        while size(ofDirectory: cacheDir) > ((maxSize/2) * 1024 * 1024) {
             for (key, _) in sortedValues.prefix(5) {
                 removeCache(forKey: key)
             }
