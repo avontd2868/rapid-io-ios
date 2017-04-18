@@ -84,10 +84,17 @@ fileprivate struct RapidDocSnapOperationSet: Sequence {
     }
 }
 
+/// Subscription handler delegate
 protocol RapidSubscriptionHandlerDelegate: class {
+    /// Dedicated queue for parsing
     var dispatchQueue: DispatchQueue { get }
+    
+    /// Cache handler
     var cacheHandler: RapidCacheHandler? { get }
     
+    /// Method for unregistering a subscription
+    ///
+    /// - Parameter handler: Unsubscription handler
     func unsubscribe(handler: RapidUnsubscriptionHandler)
 }
 
@@ -122,6 +129,7 @@ class RapidSubscriptionHandler: NSObject {
     fileprivate var value: [RapidDocumentSnapshot]? {
         didSet {
             if let value = value {
+                // Store last known value to a cache
                 delegate?.cacheHandler?.storeValue(NSArray(array: value), forSubscription: self)
             }
         }
@@ -200,6 +208,7 @@ extension RapidSubscriptionHandler: RapidSerializable {
 
 fileprivate extension RapidSubscriptionHandler {
     
+    /// Load cached data if there are any
     func loadCachedData() {
         delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, completion: { [weak self] (cachedValue) in
             self?.delegate?.dispatchQueue.async {

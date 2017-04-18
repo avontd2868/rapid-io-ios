@@ -992,6 +992,6 @@ class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandle
     }
     
     func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler) {
-        cache?.save(cache: value, forKey: subscription.subscriptionHash)
+        cache?.save(data: value, forKey: subscription.subscriptionHash)
     }
 }

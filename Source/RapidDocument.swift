@@ -41,7 +41,7 @@ public func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool 
     return false
 }
 
-/// Struct representing Rapid.io document that is returned from a subscription callback
+/// Class representing Rapid.io document that is returned from a subscription callback
 public class RapidDocumentSnapshot: NSObject, NSCoding {
     
     /// Document ID
