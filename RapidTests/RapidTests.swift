@@ -403,9 +403,7 @@ class RapidTests: XCTestCase {
         manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], callback: nil))
         manager.merge(mergeRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil))
         manager.sendEmptyRequest()
-        runAfter(1) { 
-            subscription.unsubscribe()
-        }
+        subscription.unsubscribe()
         
         waitForExpectations(timeout: 6, handler: nil)
     }

@@ -85,7 +85,7 @@ extension RapidTests {
             }
         }
         
-        runAfter(1) {
+        runAfter(2) {
             subscription.unsubscribe()
             self.mutate(documentID: "1", value: ["name": "testUnsubscriptiion"])
         }
@@ -144,10 +144,10 @@ extension RapidTests {
         fakeSocketManager.subscribe(sub3)
         fakeSocketManager.subscribe(sub4)
 
+        sub1.unsubscribe()
+        sub4.unsubscribe()
+        
         runAfter(1) {
-            sub1.unsubscribe()
-            sub4.unsubscribe()
-            
             XCTAssertNotNil(socketManager.activeSubscription(withHash: sub1.subscriptionHash), "Subscription handler released")
             XCTAssertNotNil(fakeSocketManager.activeSubscription(withHash: sub4.subscriptionHash), "Subscription handler released")
             

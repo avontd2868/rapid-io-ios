@@ -209,7 +209,7 @@ extension RapidNetworkHandler: WebSocketDelegate {
     
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
         mainQueue.async {
-            print("Socket did disconnect")
+            print("Socket did disconnect \(String(describing: error))")
             
             // Invalidate connection timer
             self.socketConnectTimer?.invalidate()

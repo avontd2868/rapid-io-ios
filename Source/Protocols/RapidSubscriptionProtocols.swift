@@ -13,7 +13,7 @@ protocol RapidSubscriptionHashable {
 }
 
 /// Protocol describing subscription objects
-protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionHashable {
+protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionHashable, RapidSubscription {
     /// Hash identifying the subscription
     var subscriptionHash: String { get }
     

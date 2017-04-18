@@ -93,6 +93,12 @@ class RapidSocketManager {
     ///
     /// - Parameter subscription: Subscription object
     func subscribe(_ subscription: RapidSubscriptionInstance) {
+        subscription.registerUnsubscribeCallback { [weak self] (subscription) in
+            self?.websocketQueue.async {
+                self?.unsubscribe(subscription)
+            }
+        }
+        
         websocketQueue.async { [weak self] in
 
             // If a subscription that listens to the same set of data has been already registered just register the new listener locally
@@ -263,6 +269,17 @@ fileprivate extension RapidSocketManager {
         let acknowledgement = RapidSocketAcknowledgement(eventID: eventID)
         
         post(event: acknowledgement)
+    }
+    
+    /// Unregister subscription
+    ///
+    /// When a subscription has no handler assigned yet (because of async calls) the unsubscription process is handled by this method
+    ///
+    /// - Parameter subscription: Subscription instance
+    func unsubscribe(_ subscription: RapidSubscriptionInstance) {
+        if activeSubscription(withHash: subscription.subscriptionHash) != nil {
+            subscription.unsubscribe()
+        }
     }
     
     /// Unregister subscription
