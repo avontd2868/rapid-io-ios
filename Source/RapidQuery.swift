@@ -22,45 +22,97 @@ public class RapidFilter: RapidSubscriptionHashable, RapidQuery {
     internal var subscriptionHash: String { return "" }
 }
 
+public protocol RapidComparable {}
+extension String: RapidComparable {}
+extension Int: RapidComparable {}
+extension Double: RapidComparable {}
+extension Float: RapidComparable {}
+
 public extension RapidFilter {
     
     // MARK: Compound filters
     
+    /// Negate filter
+    ///
+    /// - Parameter filter: Filter to be negated
+    /// - Returns: Negated filter
     class func not(_ filter: RapidFilter) -> RapidFilter {
         return RapidFilterCompound(compoundOperator: .not, operands: [filter])
     }
     
+    /// Combine filters with logical and
+    ///
+    /// - Parameter operands: Filters to be combined
+    /// - Returns: Compound filter
     class func and(_ operands: [RapidFilter]) -> RapidFilter {
         return RapidFilterCompound(compoundOperator: .and, operands: operands)
     }
     
+    /// Combine filters with logical or
+    ///
+    /// - Parameter operands: Filters to be combined
+    /// - Returns: Compound filter
     class func or(_ operands: [RapidFilter]) -> RapidFilter {
         return RapidFilterCompound(compoundOperator: .or, operands: operands)
     }
     
     // MARK: Simple filters
     
-    class func equal<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+    /// Create equality filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - value: Filter value
+    /// - Returns: Filter for key path equal to value
+    class func equal(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .equal, value: value)
     }
     
+    /// Create equal to null filter
+    ///
+    /// - Parameter keyPath: Filter parameter key path
+    /// - Returns: Filter for key path equal to null
     class func isNull(keyPath: String) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .equal)
     }
     
-    class func greaterThan<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+    /// Create greater than filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - value: Filter value
+    /// - Returns: Filter for key path greater than value
+    class func greaterThan(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .greaterThan, value: value)
     }
     
-    class func greaterThanOrEqual<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+    /// Create greater than or equal filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - value: Filter value
+    /// - Returns: Filter for key path greater than or equal to value
+    class func greaterThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .greaterThanOrEqual, value: value)
     }
     
-    class func lessThan<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+    /// Create less than filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - value: Filter value
+    /// - Returns: Filter for key path less than value
+    class func lessThan(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .lessThan, value: value)
     }
     
-    class func lessThanOrEqual<Numeric: Comparable>(keyPath: String, value: Numeric) -> RapidFilter {
+    /// Create less than or equal filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - value: Filter value
+    /// - Returns: Filter for key path less than or equal value
+    class func lessThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .lessThanOrEqual, value: value)
     }
     
@@ -112,7 +164,7 @@ public class RapidFilterSimple: RapidFilter {
     ///   - keyPath: Name of a document parameter
     ///   - relation: Ralation to the `value`
     ///   - value: Reference value
-    init<Numeric: Comparable>(keyPath: String, relation: Relation, value: Numeric) {
+    init(keyPath: String, relation: Relation, value: RapidComparable) {
         self.keyPath = keyPath
         self.relation = relation
         self.value = value

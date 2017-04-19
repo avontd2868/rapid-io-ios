@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; };
 		C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C14F27441EA7A3D90079093E /* UpdateAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14F27431EA7A3D90079093E /* UpdateAppViewController.swift */; };
+		C1C753861EA74C7200772AFB /* QueryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C753851EA74C7200772AFB /* QueryViewController.swift */; };
 		C1D28AB41E8BB25F00EE5582 /* AppTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */; };
 		C1D28AB71E8BB4BB00EE5582 /* AppObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */; };
 		C1D6E8761E785CFA007589FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8751E785CFA007589FC /* AppDelegate.swift */; };
@@ -66,6 +68,8 @@
 
 /* Begin PBXFileReference section */
 		C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Rapid.xcodeproj; path = ../Rapid.xcodeproj; sourceTree = "<group>"; };
+		C14F27431EA7A3D90079093E /* UpdateAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateAppViewController.swift; sourceTree = "<group>"; };
+		C1C753851EA74C7200772AFB /* QueryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryViewController.swift; sourceTree = "<group>"; };
 		C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTableViewCell.swift; sourceTree = "<group>"; };
 		C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppObject.swift; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,6 +138,8 @@
 				C1D6E8771E785CFA007589FC /* ViewController.swift */,
 				C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */,
 				C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */,
+				C1C753851EA74C7200772AFB /* QueryViewController.swift */,
+				C14F27431EA7A3D90079093E /* UpdateAppViewController.swift */,
 				C1D6E8791E785CFA007589FC /* Main.storyboard */,
 				C1D6E87C1E785CFA007589FC /* Assets.xcassets */,
 				C1D6E87E1E785CFA007589FC /* LaunchScreen.storyboard */,
@@ -283,7 +289,9 @@
 				C1D6E8781E785CFA007589FC /* ViewController.swift in Sources */,
 				C1D28AB41E8BB25F00EE5582 /* AppTableViewCell.swift in Sources */,
 				C1D28AB71E8BB4BB00EE5582 /* AppObject.swift in Sources */,
+				C14F27441EA7A3D90079093E /* UpdateAppViewController.swift in Sources */,
 				C1D6E8761E785CFA007589FC /* AppDelegate.swift in Sources */,
+				C1C753861EA74C7200772AFB /* QueryViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

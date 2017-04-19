@@ -35,7 +35,7 @@ public class RapidCollection: NSObject {
     /// Pagination information assigned to the collection instance
     public fileprivate(set) var subscriptionPaging: RapidPaging?
 
-    init(id: String, handler: RapidHandler!) {
+    init(id: String, handler: RapidHandler!, filter: RapidFilter? = nil, ordering: [RapidOrdering]? = nil, paging: RapidPaging? = nil) {
         self.collectionID = id
         self.handler = handler
     }
@@ -55,13 +55,24 @@ public class RapidCollection: NSObject {
         return try! document(id: id)
     }
     
-    /// Assign an filtering option to the collection which is applied for subscription
+    /// Get a new collection object with a subscription filtering option assigned
     ///
     /// When the collection already contains a filter the new filter is combined with the original one with logical AND
     ///
     /// - Parameter filter: Filter object
     /// - Returns: The collection with the filter assigned
     public func filter(by filter: RapidFilter) -> RapidCollection {
+        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.filtered(by: filter)
+        return collection
+    }
+    
+    /// Assign a subscription filtering option to the collection
+    ///
+    /// When the collection already contains a filter the new filter is combined with the original one with logical AND
+    ///
+    /// - Parameter filter: Filter object
+    public func filtered(by filter: RapidFilter) {
         if let previousFilter = self.subscriptionFilter {
             let compoundFilter = RapidFilterCompound(compoundOperator: .and, operands: [previousFilter, filter])
             self.subscriptionFilter = compoundFilter
@@ -69,39 +80,59 @@ public class RapidCollection: NSObject {
         else {
             self.subscriptionFilter = filter
         }
-        return self
     }
     
-    /// Assign ordering options to the collection which are applied for subscription
+    /// Get a new collection object with a subscription ordering assigned
     ///
     /// An ordering with the array index 0 has the highest priority.
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Ordering object
-    /// - Returns: The collection with the ordering array assigned
+    /// - Returns: The collection with the ordering assigned
     public func order(by ordering: RapidOrdering) -> RapidCollection {
+        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.ordered(by: ordering)
+        return collection
+    }
+    
+    /// Assign subscription ordering to the collection
+    ///
+    /// An ordering with the array index 0 has the highest priority.
+    /// When the collection already contains an ordering the new ordering is appended to the original one
+    ///
+    /// - Parameter ordering: Ordering object
+    public func ordered(by ordering: RapidOrdering) {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
         self.subscriptionOrdering?.append(ordering)
-        return self
     }
-    
-    /// Assign an ordering option to the collection which is applied for subscription
+
+    /// Get a new collection object with a subscription ordering options assigned
     ///
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
     public func order(by ordering: [RapidOrdering]) -> RapidCollection {
+        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.ordered(by: ordering)
+        return collection
+    }
+    
+    /// Assign subscription ordering options to the collection
+    ///
+    /// When the collection already contains an ordering the new ordering is appended to the original one
+    ///
+    /// - Parameter ordering: Array of ordering objects
+    public func ordered(by ordering: [RapidOrdering]) {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
         self.subscriptionOrdering?.append(contentsOf: ordering)
-        return self
     }
     
-    /// Assing an limit options to the collection which are applied for subscription
+    /// Get a new collection object with a subscription limit options assigned
     ///
     /// When the collection already contains a limit the original limit is replaced by the new one
     ///
@@ -110,11 +141,22 @@ public class RapidCollection: NSObject {
     ///   - skip: Number of documents to be skipped
     /// - Returns: The collection with the limit assigned
     public func limit(to take: Int, skip: Int? = nil) -> RapidCollection {
-        
-        self.subscriptionPaging = RapidPaging(skip: skip, take: take)
-        return self
+        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.limited(to: take, skip: skip)
+        return collection
     }
-    
+
+    /// Assing a subscription limit options to the collection
+    ///
+    /// When the collection already contains a limit the original limit is replaced by the new one
+    ///
+    /// - Parameters:
+    ///   - take: Maximum number of documents to be returned
+    ///   - skip: Number of documents to be skipped
+    public func limited(to take: Int, skip: Int? = nil) {
+        self.subscriptionPaging = RapidPaging(skip: skip, take: take)
+    }
+
     /// Subscribe for listening to the collection changes
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied

@@ -13,44 +13,19 @@ class AppTableViewCell: UITableViewCell {
 
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descLabel: UILabel!
+    @IBOutlet weak var proceedsLabel: UILabel!
+    @IBOutlet weak var downloadsLabel: UILabel!
+    @IBOutlet weak var categoriesLabel: UILabel!
     
     var app: AppObject?
     
-    @IBAction func mutate(_ sender: Any) {
-        if let app = app {
-            let value = [
-                "name": app.name,
-                "desc": app.description + "$"
-            ]
-            
-            Rapid.collection(named: "iosapps").document(withID: app.appID).mutate(value: value, completion: { (error, value) in
-                if let error = error {
-                    print("Mutation error \(error)")
-                }
-                else {
-                    print("App mutated \(String(describing: value))")
-                }
-            })
-        }
-    }
-    
-    @IBAction func remove(_ sender: Any) {
-        if let app = app {
-            Rapid.collection(named: "iosapps").document(withID: app.appID).delete(completion: { error in
-                if let error = error {
-                    print("App wasn't deleted \(error)")
-                }
-                else {
-                    print("App deleted")
-                }
-            })
-        }
-    }
-
     func configure(withApp app: AppObject) {
         self.app = app
         
         nameLabel.text = app.name
         descLabel.text = app.description
+        downloadsLabel.text = "\(app.downloads)"
+        proceedsLabel.text = "\(app.proceeds)"
+        categoriesLabel.text = app.categories.joined(separator: ",")
     }
 }
