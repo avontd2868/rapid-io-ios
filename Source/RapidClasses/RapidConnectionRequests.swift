@@ -119,3 +119,73 @@ class RapidEmptyRequest: RapidSerializable, RapidClientEvent {
         return try RapidSerialization.serialize(emptyRequest: self)
     }
 }
+
+// MARK: Authorization
+
+class RapidAuthRequest: RapidTimeoutRequest {
+    
+    /// Request should timeout even if `Rapid.timeout` is `nil`
+    let alwaysTimeout = true
+    
+    let auth: RapidAuthorization
+    let callback: RapidAuthCallback?
+    
+    /// Timout delegate
+    internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
+    
+    internal var timer: Timer?
+    
+    init(accessToken: String, callback: RapidAuthCallback?) {
+        self.auth = RapidAuthorization(accessToken: accessToken)
+        self.callback = callback
+    }
+    
+    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
+        // Start timeout
+        self.timoutDelegate = delegate
+        
+        DispatchQueue.main.async { [weak self] in
+            if let strongSelf = self {
+                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
+            }
+        }
+    }
+    
+    @objc func requestTimeout() {
+        timer = nil
+        
+        timoutDelegate?.requestTimeout(self)
+    }
+    
+    func invalidateTimer() {
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+        }
+    }
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.callback?(true, nil)
+        }
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        DispatchQueue.main.async {
+            self.timer?.invalidate()
+            self.timer = nil
+            
+            self.callback?(false, error.error)
+        }
+    }
+}
+
+extension RapidAuthRequest: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(authRequest: self, withIdentifiers: identifiers)
+    }
+}

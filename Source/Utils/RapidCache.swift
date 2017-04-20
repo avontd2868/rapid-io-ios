@@ -143,9 +143,9 @@ class RapidCache: NSObject {
     /// - Parameters:
     ///   - key: Cache key
     ///   - completion: Completion handler. If there are any cached data for the key they are passed in the completion handler parameter.
-    func cache(forKey key: String, completion: @escaping (Any?) -> Void) {
+    func cache(forKey key: String, secret: String? = nil, completion: @escaping (Any?) -> Void) {
         diskQueue.async {
-            completion(self.cache(forKey: key))
+            completion(self.cache(forKey: key, secret: secret))
         }
     }
     
@@ -154,9 +154,9 @@ class RapidCache: NSObject {
     /// - Parameters:
     ///   - data: Data to be cached
     ///   - key: Cache key
-    func save(data: NSCoding, forKey key: String) {
+    func save(data: NSCoding, forKey key: String, secret: String? = nil) {
         diskQueue.async {
-            self.saveCache(data, forKey: key)
+            self.saveCache(data, forKey: key, secret: secret)
         }
     }
     
@@ -215,11 +215,28 @@ extension RapidCache {
 // MARK: Private methods
 fileprivate extension RapidCache {
     
+    func byteXor(data: Data, secret: String) -> Data {
+        guard let secretData = secret.data(using: .utf8) else {
+            return data
+        }
+        
+        let secretBytes = Array(secretData)
+        
+        var encrypted = [UInt8]()
+        for byte in data.enumerated() {
+            let index = byte.offset % secretBytes.count
+            let next = byte.element ^ secretBytes[index]
+            encrypted.append(next)
+        }
+        
+        return Data(bytes: encrypted)
+    }
+    
     /// Get cached data for a given key
     ///
     /// - Parameter key: Cache key
     /// - Returns: Cached data if there are any
-    func cache(forKey key: String) -> Any? {
+    func cache(forKey key: String, secret: String?) -> Any? {
         let hash = self.hash(forKey: key)
 
         if self.cacheInfo[hash]?[key] == nil {
@@ -227,19 +244,30 @@ fileprivate extension RapidCache {
         }
 
         let fileDict = self.fileDictionary(forHash: hash)
-        return fileDict[key]
+        
+        guard let encryptedCache = fileDict[key] else {
+            return nil
+        }
+        
+        if let secret = secret {
+            let cache = byteXor(data: encryptedCache, secret: secret)
+            return NSKeyedUnarchiver.unarchiveObject(with: cache)
+        }
+        else {
+            return NSKeyedUnarchiver.unarchiveObject(with: encryptedCache)
+        }
     }
     
     /// Get cached data for all keys with a same hash value
     ///
     /// - Parameter hash: Hash value of a cache key
     /// - Returns: Dictionary of cached pieces of data
-    func fileDictionary(forHash hash: UInt64) -> [String: NSCoding] {
+    func fileDictionary(forHash hash: UInt64) -> [String: Data] {
         let url = self.url(forHash: hash)
         
         do {
             let data = try Data(contentsOf: url)
-            return NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: NSCoding] ?? [:]
+            return NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Data] ?? [:]
         }
         catch {
             return [:]
@@ -251,12 +279,19 @@ fileprivate extension RapidCache {
     /// - Parameters:
     ///   - cache: Data to be stored
     ///   - key: Cache key
-    func saveCache(_ cache: NSCoding, forKey key: String) {
+    func saveCache(_ cache: NSCoding, forKey key: String, secret: String?) {
         let hash = self.hash(forKey: key)
         
         // Add data to the cache
         var fileDict = fileDictionary(forHash: hash)
-        fileDict[key] = cache
+        
+        if let secret = secret {
+            let data = NSKeyedArchiver.archivedData(withRootObject: cache)
+            fileDict[key] = byteXor(data: data, secret: secret)
+        }
+        else {
+            fileDict[key] = NSKeyedArchiver.archivedData(withRootObject: cache)
+        }
         
         // Put down a timestamp of data modification
         if var dict = cacheInfo[hash] {
@@ -276,7 +311,7 @@ fileprivate extension RapidCache {
     /// - Parameters:
     ///   - cache: Dictionary of cached pieces of data
     ///   - hash: Hash value of keys associated with data in this cache file
-    func saveCache(_ cache: [String: NSCoding], forHash hash: UInt64) {
+    func saveCache(_ cache: [String: Data], forHash hash: UInt64) {
         do {
             let data = NSKeyedArchiver.archivedData(withRootObject: cache)
             

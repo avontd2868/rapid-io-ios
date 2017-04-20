@@ -27,6 +27,8 @@ class RapidSocketManager {
     /// ID that identifies a websocket connection to this client for reconnecting purposes
     fileprivate(set) var connectionID: String?
     
+    fileprivate(set) var auth: RapidAuthorization?
+    
     /// Dedicated threads
     fileprivate let websocketQueue: DispatchQueue
     fileprivate let parseQueue: DispatchQueue
@@ -55,6 +57,13 @@ class RapidSocketManager {
     
     deinit {
         sendDisconnectionRequest()
+    }
+    
+    func authorize(authRequest: RapidAuthRequest) {
+        websocketQueue.async { [weak self] in
+            self?.auth = authRequest.auth
+            self?.post(event: authRequest)
+        }
     }
     
     /// Reconnect previously configured websocket
@@ -375,6 +384,9 @@ fileprivate extension RapidSocketManager {
             if let subscription = tuple?.request as? RapidSubscriptionHandler {
                 activeSubscriptions[subscription.subscriptionID] = nil
             }
+            else if let request = tuple?.request as? RapidAuthRequest, self.auth?.accessToken == request.auth.accessToken {
+                self.auth = nil
+            }
             
             pendingRequests[response.eventID] = nil
         
@@ -401,6 +413,10 @@ extension RapidSocketManager: RapidSubscriptionHandlerDelegate {
     
     var dispatchQueue: DispatchQueue {
         return parseQueue
+    }
+    
+    var authorization: RapidAuthorization? {
+        return auth
     }
     
     func unsubscribe(handler: RapidUnsubscriptionHandler) {

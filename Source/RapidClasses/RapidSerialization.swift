@@ -316,6 +316,15 @@ class RapidSerialization {
         let resultDict = [NoOperation.name: NSNull()]
         return try resultDict.jsonString()
     }
+    
+    class func serialize(authRequest: RapidAuthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Authorization.AccessToken.name] = authRequest.auth.accessToken
+        
+        let resultDict = [Authorization.name: json]
+        return try resultDict.jsonString()
+    }
 }
 
 // MARK: Fileprivate methods
@@ -538,5 +547,14 @@ extension RapidSerialization {
     
     struct NoOperation {
         static let name = "nop"
+    }
+    
+    //FIXME: correct names
+    struct Authorization {
+        static let name = "auth"
+        
+        struct AccessToken {
+            static let name = "at"
+        }
     }
 }

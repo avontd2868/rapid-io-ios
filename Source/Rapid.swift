@@ -14,6 +14,8 @@ public protocol RapidSubscription {
     func unsubscribe()
 }
 
+public typealias RapidAuthCallback = (_ success: Bool, _ error: RapidError?) -> Void
+
 /// Class representing a connection to Rapid.io database
 public class Rapid: NSObject {
     
@@ -49,6 +51,10 @@ public class Rapid: NSObject {
     /// Current state of Rapid instance
     public var connectionState: ConnectionState {
         return handler.state
+    }
+    
+    public var authorization: RapidAuthorization? {
+        return handler.authorization
     }
     
     let handler: RapidHandler
@@ -93,6 +99,11 @@ public class Rapid: NSObject {
         super.init()
 
         Rapid.instances.append(WRO(object: self))
+    }
+    
+    public func authorize(withAccessToken accessToken: String, completion: RapidAuthCallback? = nil) {
+        let request = RapidAuthRequest(accessToken: accessToken, callback: completion)
+        handler.socketManager.authorize(authRequest: request)
     }
     
     /// Creates a new object representing Rapid collection
@@ -179,6 +190,10 @@ public extension Rapid {
     /// Remove all subscriptions
     class func unsubscribeAll() {
         try! shared().unsubscribeAll()
+    }
+    
+    class func authorize(withAccessToken accessToken: String, completion: RapidAuthCallback? = nil) {
+        try! shared().authorize(withAccessToken: accessToken, completion: completion)
     }
     
     /// Configures shared Rapid instance

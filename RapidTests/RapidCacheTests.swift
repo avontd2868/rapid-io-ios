@@ -449,6 +449,45 @@ extension RapidTests {
         waitForExpectations(timeout: 2, handler: nil)
     }
     
+    func testSaveEncryptedCache() {
+        let promise = expectation(description: "Load cache")
+        
+        let cache = RapidCache(apiKey: apiKey)
+        let secret = Rapid.uniqueID
+        
+        cache?.save(data: "testString" as NSString, forKey: "testKey", secret: secret)
+        
+        cache?.cache(forKey: "testKey", secret: secret, completion: { (value) in
+            if let value = value as? NSString, value.isEqual(to: "testString") {
+                promise.fulfill()
+            }
+            else{
+                XCTFail("Cache not loaded")
+            }
+        })
+        
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+    
+    func testLoadEncryptedCacheError() {
+        let promise = expectation(description: "Load cache")
+        
+        let cache = RapidCache(apiKey: apiKey)
+        
+        cache?.save(data: "testString" as NSString, forKey: "testKey", secret: Rapid.uniqueID)
+        
+        cache?.cache(forKey: "testKey", secret: Rapid.uniqueID, completion: { (value) in
+            if value == nil {
+                promise.fulfill()
+            }
+            else{
+                XCTFail("Did access cache")
+            }
+        })
+        
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+    
     func testLoadingSubscriptionFromCache() {
         let promise = expectation(description: "Load cached data")
         

@@ -38,6 +38,9 @@ public class RapidCollection: NSObject {
     init(id: String, handler: RapidHandler!, filter: RapidFilter? = nil, ordering: [RapidOrdering]? = nil, paging: RapidPaging? = nil) {
         self.collectionID = id
         self.handler = handler
+        self.subscriptionFilter = filter
+        self.subscriptionOrdering = ordering
+        self.subscriptionPaging = paging
     }
     
     /// Create an instance of a Rapid document in the collection with a new unique ID

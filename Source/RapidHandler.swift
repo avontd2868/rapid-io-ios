@@ -15,14 +15,14 @@ protocol RapidCacheHandler: class {
     /// - Parameters:
     ///   - subscription: Subscription handler object
     ///   - completion: Completion handler. If there are any cached data for the subscription they are passed in the completion handler parameter
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (_ value: Any?) -> Void)
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?, completion: @escaping (_ value: Any?) -> Void)
     
     /// Store data associated with a given subscription
     ///
     /// - Parameters:
     ///   - value: Data to be stored
     ///   - subscription: Subscription handler object
-    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler)
+    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?)
 }
 
 /// General dependency object containing managers
@@ -33,6 +33,10 @@ class RapidHandler: NSObject {
     let socketManager: RapidSocketManager!
     var state: Rapid.ConnectionState {
         return socketManager.state
+    }
+    
+    var authorization: RapidAuthorization? {
+        return socketManager.auth
     }
     
     fileprivate(set) var cache: RapidCache?
@@ -72,12 +76,12 @@ class RapidHandler: NSObject {
 
 extension RapidHandler: RapidCacheHandler {
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (Any?) -> Void) {
-        cache?.cache(forKey: subscription.subscriptionHash, completion: completion)
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?, completion: @escaping (Any?) -> Void) {
+        cache?.cache(forKey: subscription.subscriptionHash, secret: secret, completion: completion)
     }
 
-    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler) {
-        cache?.save(data: value, forKey: subscription.subscriptionHash)
+    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?) {
+        cache?.save(data: value, forKey: subscription.subscriptionHash, secret: secret)
     }
     
 }

@@ -974,24 +974,26 @@ class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandle
     let dispatchQueue = DispatchQueue.main
     var cache: RapidCache?
     let unsubscriptionHandler: (_ handler: RapidUnsubscriptionHandler) -> Void
+    var authorization: RapidAuthorization?
     
     var cacheHandler: RapidCacheHandler? {
         return self
     }
     
-    init(unsubscriptionHandler: @escaping (_ handler: RapidUnsubscriptionHandler) -> Void) {
+    init(authorization: RapidAuthorization? = nil, unsubscriptionHandler: @escaping (_ handler: RapidUnsubscriptionHandler) -> Void) {
         self.unsubscriptionHandler = unsubscriptionHandler
+        self.authorization = authorization
     }
     
     func unsubscribe(handler: RapidUnsubscriptionHandler) {
         self.unsubscriptionHandler(handler)
     }
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (Any?) -> Void) {
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?, completion: @escaping (Any?) -> Void) {
         cache?.cache(forKey: subscription.subscriptionHash, completion: completion)
     }
     
-    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler) {
+    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?) {
         cache?.save(data: value, forKey: subscription.subscriptionHash)
     }
 }
