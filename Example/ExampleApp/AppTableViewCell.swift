@@ -24,8 +24,8 @@ class AppTableViewCell: UITableViewCell {
         
         nameLabel.text = app.name
         descLabel.text = app.description
-        downloadsLabel.text = "\(app.downloads)"
-        proceedsLabel.text = "\(app.proceeds)"
-        categoriesLabel.text = app.categories.joined(separator: ",")
+        downloadsLabel.text = app.downloads?.description
+        proceedsLabel.text = app.proceeds?.description
+        categoriesLabel.text = app.categories?.joined(separator: ",")
     }
 }

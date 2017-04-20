@@ -136,7 +136,7 @@ fileprivate extension ViewController {
             }
             
         }
-        else if let orArray = json["and"] as? [[AnyHashable: Any]] {
+        else if let orArray = json["or"] as? [[AnyHashable: Any]] {
             let filterArray = orArray.flatMap({ parseFilterJSON($0) })
             if filterArray.count > 0 {
                 return RapidFilter.or(filterArray)
@@ -287,13 +287,13 @@ extension ViewController: UpdateAppViewControllerDelegate {
     }
     
     func updateAppControllerDidFinish(_ controller: UpdateAppViewController, withApp app: AppObject) {
-        let value: [AnyHashable: Any] = [
+        var value: [AnyHashable: Any] = [
             "name": app.name,
-            "desc": app.description,
-            "downloads": app.downloads,
-            "proceeds": app.proceeds,
-            "categories": app.categories
-        ]
+            "desc": app.description]
+        
+        value["downloads"] = app.downloads
+        value["proceeds"] = app.proceeds
+        value["categories"] = app.categories
         
         Rapid.collection(named: "iosapps").document(withID: app.appID).mutate(value: value, completion: { (error, value) in
             if let error = error {

@@ -14,9 +14,9 @@ class AppObject {
     let appID: String
     let name: String
     let description: String
-    let downloads: Int
-    let proceeds: Float
-    let categories: [String]
+    let downloads: Int?
+    let proceeds: Float?
+    let categories: [String]?
     
     init?(document: RapidDocumentSnapshot) {
         guard let dict = document.value else {
@@ -26,12 +26,12 @@ class AppObject {
         appID = document.id
         name = dict["name"] as? String ?? ""
         description = dict["desc"] as? String ?? ""
-        downloads = dict["downloads"] as? Int ?? 0
-        proceeds = dict["proceeds"] as? Float ?? 0
-        categories = dict["categories"] as? [String] ?? []
+        downloads = dict["downloads"] as? Int
+        proceeds = dict["proceeds"] as? Float
+        categories = dict["categories"] as? [String]
     }
     
-    init(id: String, name: String, description: String, downloads: Int, proceeds: Float, categories: [String]) {
+    init(id: String, name: String, description: String, downloads: Int?, proceeds: Float?, categories: [String]?) {
         self.appID = id
         self.name = name
         self.description = description

@@ -29,19 +29,21 @@ class UpdateAppViewController: UIViewController {
 
         nameTextField.text = app.name
         descTextField.text = app.description
-        downloadsTextField.text = "\(app.downloads)"
-        proceedsTextField.text = "\(app.proceeds)"
-        categoriesTextField.text = app.categories.joined(separator: ",")
+        downloadsTextField.text = app.downloads?.description
+        proceedsTextField.text = app.proceeds?.description
+        categoriesTextField.text = app.categories?.joined(separator: ",")
     }
     
     @IBAction func done(_ sender: Any) {
+        let categories = categoriesTextField.text?.components(separatedBy: ",") ?? []
+        
         let app = AppObject(
             id: self.app.appID,
             name: nameTextField.text ?? "Name",
             description: descTextField.text ?? "Description",
-            downloads: Int(downloadsTextField.text ?? "") ?? 0,
-            proceeds: Float(proceedsTextField.text ?? "") ?? 0,
-            categories: categoriesTextField.text?.components(separatedBy: ",") ?? [])
+            downloads: Int(downloadsTextField.text ?? ""),
+            proceeds: Float(proceedsTextField.text ?? ""),
+            categories: (categories.count > 1 || !(categories.first?.isEmpty ?? true)) ? categories : nil)
         
         delegate?.updateAppControllerDidFinish(self, withApp: app)
     }
