@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name = 'Rapid'
-  s.version = '0.0.5'
+  s.version = '0.0.7'
   s.license = 'MIT'
   s.summary = 'Rapid.io iOS SDK'
   s.homepage = 'http://www.rapid.io'
