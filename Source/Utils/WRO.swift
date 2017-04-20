@@ -8,9 +8,7 @@
 
 import Foundation
 
-/**
- Wrapper for weak reference
- */
+/// Wrapper for weak reference
 class WRO<T: AnyObject>: Equatable where T: Hashable {
     weak fileprivate(set) var object: T?
     
@@ -30,7 +28,6 @@ func == <T>(lhs: WRO<T>, rhs: WRO<T>) -> Bool {
     if lhs.object == rhs.object {
         return true
     }
-    else {
-        return false
-    }
+    
+    return false
 }

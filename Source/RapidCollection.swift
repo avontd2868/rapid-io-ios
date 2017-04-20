@@ -2,77 +2,185 @@
 //  Collection.swift
 //  Rapid
 //
-//  Created by Jan on 16/03/2017.
+//  Created by Jan Schwarz on 16/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
 import Foundation
 
+/// Collection subscription callback which provides a client either with an error or with an array of documents
 public typealias RapidColSubCallback = (_ error: Error?, _ value: [RapidDocumentSnapshot]) -> Void
-public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ deleted: [RapidDocumentSnapshot]) -> Void
 
+/// Collection subscription callback which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
+public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) -> Void
+
+/// Class representing Rapid.io collection
 public class RapidCollection: NSObject {
     
-    weak var handler: RapidHandler?
-    var socketManager: SocketManager {
+    fileprivate weak var handler: RapidHandler?
+    
+    fileprivate var socketManager: RapidSocketManager {
         return try! getSocketManager()
     }
     
+    /// Collection identifier
     public let collectionID: String
-    public fileprivate(set) var filter: RapidFilter?
-    public fileprivate(set) var ordering: [RapidOrdering]?
-    public fileprivate(set) var paging: RapidPaging?
+    
+    /// Filters assigned to the collection instance
+    public fileprivate(set) var subscriptionFilter: RapidFilter?
+    
+    /// Order descriptors assigned to the collection instance
+    public fileprivate(set) var subscriptionOrdering: [RapidOrdering]?
+    
+    /// Pagination information assigned to the collection instance
+    public fileprivate(set) var subscriptionPaging: RapidPaging?
 
-    init(id: String, handler: RapidHandler) {
+    init(id: String, handler: RapidHandler!, filter: RapidFilter? = nil, ordering: [RapidOrdering]? = nil, paging: RapidPaging? = nil) {
         self.collectionID = id
         self.handler = handler
     }
     
+    /// Create an instance of a Rapid document in the collection with a new unique ID
+    ///
+    /// - Returns: Instance of `RapidDocument` in the collection with a new unique ID
     public func newDocument() -> RapidDocument {
         return document(withID: Rapid.uniqueID)
     }
     
+    /// Get an instance of a Rapid document in the collection with a specified ID
+    ///
+    /// - Parameter id: Document ID
+    /// - Returns: Instance of a `RapidDocument` in the collection with a specified ID
     public func document(withID id: String) -> RapidDocument {
         return try! document(id: id)
     }
     
+    /// Get a new collection object with a subscription filtering option assigned
+    ///
+    /// When the collection already contains a filter the new filter is combined with the original one with logical AND
+    ///
+    /// - Parameter filter: Filter object
+    /// - Returns: The collection with the filter assigned
     public func filter(by filter: RapidFilter) -> RapidCollection {
-        if let previousFilter = self.filter {
+        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.filtered(by: filter)
+        return collection
+    }
+    
+    /// Assign a subscription filtering option to the collection
+    ///
+    /// When the collection already contains a filter the new filter is combined with the original one with logical AND
+    ///
+    /// - Parameter filter: Filter object
+    public func filtered(by filter: RapidFilter) {
+        if let previousFilter = self.subscriptionFilter {
             let compoundFilter = RapidFilterCompound(compoundOperator: .and, operands: [previousFilter, filter])
-            self.filter = compoundFilter
+            self.subscriptionFilter = compoundFilter
         }
         else {
-            self.filter = filter
+            self.subscriptionFilter = filter
         }
-        return self
     }
     
+    /// Get a new collection object with a subscription ordering assigned
+    ///
+    /// An ordering with the array index 0 has the highest priority.
+    /// When the collection already contains an ordering the new ordering is appended to the original one
+    ///
+    /// - Parameter ordering: Ordering object
+    /// - Returns: The collection with the ordering assigned
+    public func order(by ordering: RapidOrdering) -> RapidCollection {
+        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.ordered(by: ordering)
+        return collection
+    }
+    
+    /// Assign subscription ordering to the collection
+    ///
+    /// An ordering with the array index 0 has the highest priority.
+    /// When the collection already contains an ordering the new ordering is appended to the original one
+    ///
+    /// - Parameter ordering: Ordering object
+    public func ordered(by ordering: RapidOrdering) {
+        if self.subscriptionOrdering == nil {
+            self.subscriptionOrdering = []
+        }
+        self.subscriptionOrdering?.append(ordering)
+    }
+
+    /// Get a new collection object with a subscription ordering options assigned
+    ///
+    /// When the collection already contains an ordering the new ordering is appended to the original one
+    ///
+    /// - Parameter ordering: Array of ordering objects
+    /// - Returns: The collection with the ordering array assigned
     public func order(by ordering: [RapidOrdering]) -> RapidCollection {
-        if self.ordering == nil {
-            self.ordering = []
+        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.ordered(by: ordering)
+        return collection
+    }
+    
+    /// Assign subscription ordering options to the collection
+    ///
+    /// When the collection already contains an ordering the new ordering is appended to the original one
+    ///
+    /// - Parameter ordering: Array of ordering objects
+    public func ordered(by ordering: [RapidOrdering]) {
+        if self.subscriptionOrdering == nil {
+            self.subscriptionOrdering = []
         }
-        self.ordering?.append(contentsOf: ordering)
-        return self
+        self.subscriptionOrdering?.append(contentsOf: ordering)
     }
     
+    /// Get a new collection object with a subscription limit options assigned
+    ///
+    /// When the collection already contains a limit the original limit is replaced by the new one
+    ///
+    /// - Parameters:
+    ///   - take: Maximum number of documents to be returned
+    ///   - skip: Number of documents to be skipped
+    /// - Returns: The collection with the limit assigned
     public func limit(to take: Int, skip: Int? = nil) -> RapidCollection {
-        
-        self.paging = RapidPaging(skip: skip, take: take)
-        return self
+        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.limited(to: take, skip: skip)
+        return collection
     }
-    
+
+    /// Assing a subscription limit options to the collection
+    ///
+    /// When the collection already contains a limit the original limit is replaced by the new one
+    ///
+    /// - Parameters:
+    ///   - take: Maximum number of documents to be returned
+    ///   - skip: Number of documents to be skipped
+    public func limited(to take: Int, skip: Int? = nil) {
+        self.subscriptionPaging = RapidPaging(skip: skip, take: take)
+    }
+
+    /// Subscribe for listening to the collection changes
+    ///
+    /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
+    ///
+    /// - Parameter completion: Subscription callback which provides a client either with an error or with an array of documents
+    /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     public func subscribe(completion: @escaping RapidColSubCallback) -> RapidSubscription {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callback: completion, callbackWithChanges: nil)
+        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, callback: completion, callbackWithChanges: nil)
         
         socketManager.subscribe(subscription)
         
         return subscription
     }
     
+    /// Subscribe for listening to the collection changes
+    ///
+    /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
+    ///
+    /// - Parameter completion: Subscription callback which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
+    /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     public func subscribe(completionWithChanges completion: @escaping RapidColSubCallbackWithChanges) -> RapidSubscription {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: filter, ordering: ordering, paging: paging, callback: nil, callbackWithChanges: completion)
+        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, callback: nil, callbackWithChanges: completion)
         
         socketManager.subscribe(subscription)
         
@@ -86,20 +194,18 @@ extension RapidCollection {
         if let handler = handler {
             return RapidDocument(id: id, inCollection: collectionID, handler: handler)
         }
-        else {
-            print(RapidInternalError.rapidInstanceNotInitialized.message)
-            throw RapidInternalError.rapidInstanceNotInitialized
-        }
+
+        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        throw RapidInternalError.rapidInstanceNotInitialized
     }
     
-    func getSocketManager() throws -> SocketManager {
+    func getSocketManager() throws -> RapidSocketManager {
         if let manager = handler?.socketManager {
             return manager
         }
-        else {
-            print(RapidInternalError.rapidInstanceNotInitialized.message)
-            throw RapidInternalError.rapidInstanceNotInitialized
-        }
+
+        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        throw RapidInternalError.rapidInstanceNotInitialized
     }
 
 }

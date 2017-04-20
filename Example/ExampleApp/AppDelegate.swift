@@ -16,8 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        Rapid.configure(withAPIKey: "ws://13.64.77.202:8080")
-        Rapid.timeout = 5
+        Rapid.timeout = 10
+        Rapid.configure(withAPIKey: "ws://rapid-dev.westus.cloudapp.azure.com:8080")
+        Rapid.isCacheEnabled = true
         return true
     }
 
@@ -27,8 +28,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        do {
+            try Rapid.shared().goOffline()
+        }
+        catch {
+            print("Not configured")
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -36,7 +41,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        do {
+            try Rapid.shared().goOnline()
+        }
+        catch {
+            print("Not configured")
+        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

@@ -2,12 +2,13 @@
 //  RapidError.swift
 //  Rapid
 //
-//  Created by Jan on 16/03/2017.
+//  Created by Jan Schwarz on 16/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
 import Foundation
 
+/// Internal errors
 enum RapidInternalError: Error {
     case rapidInstanceNotInitialized
     
@@ -19,6 +20,7 @@ enum RapidInternalError: Error {
     }
 }
 
+/// Wrapper structure for `RapidError`
 struct RapidErrorInstance: RapidResponse {
     
     let eventID: String
@@ -37,14 +39,14 @@ struct RapidErrorInstance: RapidResponse {
         let message = dict[RapidSerialization.Error.ErrorMessage.name] as? String
         
         let error: RapidError
-        switch key ?? "" {
-        case RapidSerialization.Error.ErrorType.PermissionDenied.name:
+        switch key {
+        case .some(let type) where type == RapidSerialization.Error.ErrorType.PermissionDenied.name:
             error = .permissionDenied(message: message)
             
-        case RapidSerialization.Error.ErrorType.Internal.name:
+        case .some(let type) where type == RapidSerialization.Error.ErrorType.Internal.name:
             error = .server(message: message)
             
-        case RapidSerialization.Error.ErrorType.ConnectionTerminated.name:
+        case .some(let type) where type == RapidSerialization.Error.ErrorType.ConnectionTerminated.name:
             error = .connectionTerminated(message: message)
             
         default:
@@ -61,13 +63,28 @@ struct RapidErrorInstance: RapidResponse {
     }
 }
 
+/// Errors which can be thrown by Rapid SDK
+///
+/// - permissionDenied: Client doesn't have permisson to read or write specified data
+/// - server: Internal Rapid server error
+/// - connectionTerminated: Websocket connection expired and needs to be reestablished
+/// - invalidData: Data are in an invalid format
+/// - timeout: Request timout
+/// - `default`: General error
 public enum RapidError: Error {
     
     case permissionDenied(message: String?)
     case server(message: String?)
     case connectionTerminated(message: String?)
-    case invalidData
+    case invalidData(reason: InvalidDataReason)
     case timeout
     case `default`
     
+    public enum InvalidDataReason {
+        case serializationFailure
+        case invalidFilter(filter: RapidFilter)
+        case invalidDocument(document: [AnyHashable: Any])
+        case invalidIdentifierFormat(identifier: Any?)
+        case invalidKeyPath(keyPath: String)
+    }
 }

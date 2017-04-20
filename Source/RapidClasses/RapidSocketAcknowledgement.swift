@@ -2,12 +2,15 @@
 //  RapidSocketError.swift
 //  Rapid
 //
-//  Created by Jan on 17/03/2017.
+//  Created by Jan Schwarz on 17/03/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
 import Foundation
 
+/// Acknowledgement event object
+///
+/// This object represents either an acknowledgement from the server or an acknowledgement which is about to be sent to the server
 class RapidSocketAcknowledgement: RapidResponse {
     
     let eventID: String
@@ -29,17 +32,9 @@ class RapidSocketAcknowledgement: RapidResponse {
     }
 }
 
-extension RapidSocketAcknowledgement: RapidSerializable, RapidRequest {
-    
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        
-    }
-    
-    func eventFailed(withError error: RapidErrorInstance) {
-        
-    }
+extension RapidSocketAcknowledgement: RapidSerializable, RapidClientEvent {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(acknowledgement: self, withIdentifiers: identifiers)
+        return try RapidSerialization.serialize(acknowledgement: self)
     }
 }
