@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Rapid.timeout = 10
-        Rapid.loggingEnabled = true
+        Rapid.debugLoggingEnabled = true
         Rapid.configure(withAPIKey: "ws://rapid-dev.westus.cloudapp.azure.com:8080")
         Rapid.isCacheEnabled = true
         return true
@@ -29,12 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        do {
-            try Rapid.shared().goOffline()
-        }
-        catch {
-            print("Not configured")
-        }
+        Rapid.goOffline()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -42,12 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        do {
-            try Rapid.shared().goOnline()
-        }
-        catch {
-            print("Not configured")
-        }
+        Rapid.goOnline()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
