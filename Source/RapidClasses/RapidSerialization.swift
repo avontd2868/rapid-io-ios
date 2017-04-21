@@ -16,6 +16,8 @@ class RapidSerialization {
     /// - Returns: Array of deserialized objects
     class func parse(json: [AnyHashable: Any]?) -> [RapidResponse]? {
         guard let json = json else {
+            RapidLogger.debugLog(message: "Server event parsing failed - no data")
+            
             return nil
         }
         
@@ -50,6 +52,8 @@ class RapidSerialization {
         else if let event = parseEvent(json: json) {
             return [event]
         }
+
+        RapidLogger.debugLog(message: "Server event parsing failed - \(json)")
 
         return nil
     }

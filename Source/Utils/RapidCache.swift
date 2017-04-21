@@ -46,10 +46,12 @@ class RapidCache: NSObject {
     ///   - maxSize: Maximum size of a cache directory in MB. Default value is 100 MB
     init?(apiKey: String, timeToLive: TimeInterval? = nil, maxSize: Float? = 100) {
         guard !apiKey.isEmpty, let cacheURL = RapidCache.cacheURL(forAPIKey: apiKey) else {
+            RapidLogger.debugLog(message: "Cache not initialized")
             return nil
         }
         
         guard (timeToLive ?? 1) > 0 && (maxSize ?? 1) > 0 else {
+            RapidLogger.debugLog(message: "Cache not initialized")
             return nil
         }
         
@@ -70,6 +72,7 @@ class RapidCache: NSObject {
                     try fileManager.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
                 }
                 catch {
+                    RapidLogger.debugLog(message: "Cache not initialized")
                     return nil
                 }
             }
@@ -79,6 +82,7 @@ class RapidCache: NSObject {
                 try fileManager.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
             }
             catch {
+                RapidLogger.debugLog(message: "Cache not initialized")
                 return nil
             }
         }
@@ -208,7 +212,9 @@ extension RapidCache {
             
             try manager.removeItem(at: cacheURL)
         }
-        catch { }
+        catch {
+            RapidLogger.debugLog(message: "Cache wasn't cleared")
+        }
     }
 }
 
@@ -249,13 +255,19 @@ fileprivate extension RapidCache {
             return nil
         }
         
+        let cachedObject: Any?
+        
         if let secret = secret {
             let cache = byteXor(data: encryptedCache, secret: secret)
-            return NSKeyedUnarchiver.unarchiveObject(with: cache)
+            cachedObject = NSKeyedUnarchiver.unarchiveObject(with: cache)
         }
         else {
-            return NSKeyedUnarchiver.unarchiveObject(with: encryptedCache)
+            cachedObject = NSKeyedUnarchiver.unarchiveObject(with: encryptedCache)
         }
+        
+        RapidLogger.debugLog(message: "Cache for key \(key): \(String(describing: cachedObject))")
+        
+        return cachedObject
     }
     
     /// Get cached data for all keys with a same hash value
@@ -317,7 +329,9 @@ fileprivate extension RapidCache {
             
             try data.write(to: self.url(forHash: hash))
         }
-        catch {}
+        catch {
+            RapidLogger.debugLog(message: "Cache wasn't saved")
+        }
     }
     
     /// Write info about cached data to a disk
@@ -327,7 +341,8 @@ fileprivate extension RapidCache {
             
             try data.write(to: cacheInfoURL)
         }
-        catch {}
+        catch {
+            RapidLogger.debugLog(message: "Cache info wasn't saved")}
     }
     
     /// Remove cache directore from a disk
@@ -338,7 +353,7 @@ fileprivate extension RapidCache {
             try self.fileManager.removeItem(at: self.cacheDir)
         }
         catch {
-            print("Cache wasn't cleared")
+            RapidLogger.debugLog(message: "Cache wasn't cleared")
         }
     }
     
@@ -373,7 +388,9 @@ fileprivate extension RapidCache {
         do {
             try fileManager.removeItem(at: url(forHash: hash))
         }
-        catch {}
+        catch {
+            RapidLogger.debugLog(message: "Cache file wasn't removed")
+        }
     }
     
     /// Get URL to a file containing data that are stored under a given hash value
@@ -400,6 +417,8 @@ fileprivate extension RapidCache {
         
         for (_, caches) in cacheInfo {
             for (key, timestamp) in caches where timestamp < referenceTimestamp {
+                RapidLogger.debugLog(message: "Outdated cache removed - key: \(key)")
+                
                 removeCache(forKey: key)
             }
         }
@@ -422,6 +441,8 @@ fileprivate extension RapidCache {
         
         while (cacheDir.memorySize ?? 0) > Int((maxSize/2) * 1024 * 1024) && sortedValues.count > 0 {
             for (key, _) in sortedValues.prefix(5) {
+                RapidLogger.debugLog(message: "Cache file deleted because of size pruning - key: \(key)")
+                
                 removeCache(forKey: key)
             }
             

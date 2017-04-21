@@ -112,7 +112,7 @@ extension RapidTests {
                         lastName = document.value?["name"] as? String ?? ""
                     }
                 }
-                print(documents.map({ $0.id }))
+
                 switch updateNumber {
                 case 0:
                     XCTAssertEqual(numberOfDocuments, 0, "Wrong number of documents")

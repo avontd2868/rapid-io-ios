@@ -42,6 +42,8 @@ class RapidHandler: NSObject {
     fileprivate(set) var cache: RapidCache?
     var cacheEnabled: Bool = false {
         didSet {
+            RapidLogger.log(message: "Rapid cache enabled \(cacheEnabled)")
+            
             // If caching was enbaled and there is no cache instance create it
             if cacheEnabled && cache == nil {
                 self.cache = RapidCache(apiKey: apiKey)

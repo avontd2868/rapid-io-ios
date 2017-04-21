@@ -28,7 +28,7 @@ public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
 ///   - lhs: Left operand
 ///   - rhs: Right operand
 /// - Returns: `true` if operands are equal
-public func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
+func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
     if lhs.id == rhs.id && lhs.etag == rhs.etag {
         if let lValue = lhs.value, let rValue = rhs.value {
             return NSDictionary(dictionary: lValue).isEqual(to: rValue)
@@ -187,7 +187,7 @@ extension RapidDocument {
             return manager
         }
 
-        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, priority: .high)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
 }

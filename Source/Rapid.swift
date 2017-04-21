@@ -117,11 +117,15 @@ public class Rapid: NSObject {
     
     /// Disconnect from server
     public func goOffline() {
+        RapidLogger.log(message: "Rapid went offline")
+        
         handler.socketManager.goOffline()
     }
     
     /// Restore previously configured connection
     public func goOnline() {
+        RapidLogger.log(message: "Rapid went online")
+        
         handler.socketManager.goOnline()
     }
     
@@ -144,6 +148,7 @@ public extension Rapid {
             return shared
         }
 
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, priority: .high)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
     
@@ -157,6 +162,26 @@ public extension Rapid {
     /// Generates an unique ID which can be safely used as your document ID
     class var uniqueID: String {
         return Generator.uniqueID
+    }
+    
+    class var debugLoggingEnabled: Bool {
+        get {
+            return RapidLogger.logDebugMessages
+        }
+        
+        set {
+            RapidLogger.logDebugMessages = newValue
+        }
+    }
+
+    class var loggingEnabled: Bool {
+        get {
+            return RapidLogger.logMessages
+        }
+        
+        set {
+            RapidLogger.logMessages = newValue
+        }
     }
     
     /// If `true` subscription values are stored locally to be available offline

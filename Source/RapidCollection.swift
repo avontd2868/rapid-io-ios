@@ -198,7 +198,7 @@ extension RapidCollection {
             return RapidDocument(id: id, inCollection: collectionID, handler: handler)
         }
 
-        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, priority: .high)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
     
@@ -207,7 +207,7 @@ extension RapidCollection {
             return manager
         }
 
-        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, priority: .high)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
 

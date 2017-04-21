@@ -169,6 +169,8 @@ class RapidAuthRequest: RapidTimeoutRequest {
             self.timer?.invalidate()
             self.timer = nil
             
+            RapidLogger.log(message: "Rapid authorized")
+            
             self.callback?(true, nil)
         }
     }
@@ -177,6 +179,8 @@ class RapidAuthRequest: RapidTimeoutRequest {
         DispatchQueue.main.async {
             self.timer?.invalidate()
             self.timer = nil
+            
+            RapidLogger.log(message: "Rapid authorization failed")
             
             self.callback?(false, error.error)
         }

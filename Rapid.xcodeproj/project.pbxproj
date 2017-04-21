@@ -15,6 +15,7 @@
 		C1281A4A1E8AA9020054AF73 /* RapidMutations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A491E8AA9020054AF73 /* RapidMutations.swift */; };
 		C140F9341E894871002AB9C5 /* RapidSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */; };
 		C14F274A1EA910260079093E /* RapidAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14F27491EA910260079093E /* RapidAuthorization.swift */; };
+		C14F274C1EAA02150079093E /* RapidLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14F274B1EAA02150079093E /* RapidLogger.swift */; };
 		C169DB411E952FA8007983EA /* RapidMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB401E952FA8007983EA /* RapidMutationTests.swift */; };
 		C169DB441E95384D007983EA /* RapidSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB431E95384D007983EA /* RapidSerializationTests.swift */; };
 		C169DB491E978D1B007983EA /* RapidAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */; };
@@ -64,6 +65,7 @@
 		C1281A491E8AA9020054AF73 /* RapidMutations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidMutations.swift; sourceTree = "<group>"; };
 		C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionTests.swift; sourceTree = "<group>"; };
 		C14F27491EA910260079093E /* RapidAuthorization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidAuthorization.swift; sourceTree = "<group>"; };
+		C14F274B1EAA02150079093E /* RapidLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidLogger.swift; sourceTree = "<group>"; };
 		C169DB401E952FA8007983EA /* RapidMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidMutationTests.swift; sourceTree = "<group>"; };
 		C169DB431E95384D007983EA /* RapidSerializationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSerializationTests.swift; sourceTree = "<group>"; };
 		C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidAuthorizationTests.swift; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 				C1EDC19D1EA4B952006570FC /* RapidCache.swift */,
 				C1D2A1ED1E9E2A94009444B3 /* Extensions.swift */,
 				C1D6E9AC1E7BFED2007589FC /* WRO.swift */,
+				C14F274B1EAA02150079093E /* RapidLogger.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -408,6 +411,7 @@
 				C1D6E9A51E7BE3C0007589FC /* RapidSocketAcknowledgement.swift in Sources */,
 				C1281A4A1E8AA9020054AF73 /* RapidMutations.swift in Sources */,
 				C1D6E99C1E7AE523007589FC /* RapidMutationProtocols.swift in Sources */,
+				C14F274C1EAA02150079093E /* RapidLogger.swift in Sources */,
 				C1D2A1EE1E9E2A94009444B3 /* Extensions.swift in Sources */,
 				C1D6E9A31E7BE356007589FC /* RapidRequest.swift in Sources */,
 				C1D6E9991E7ADF0C007589FC /* RapidDocument.swift in Sources */,
@@ -559,6 +563,7 @@
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "-D RAPIDDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.Rapid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

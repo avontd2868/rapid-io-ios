@@ -246,6 +246,8 @@ fileprivate extension RapidSubscriptionHandler {
             return
         }
         
+        RapidLogger.log(message: "New data for subscription \(subscriptionHash)")
+        
         // Inform all subscription objects
         for subsription in subscriptions {
             subsription.receivedUpdate(updates.dataSet, updates.insert, updates.update, updates.delete)
@@ -436,6 +438,8 @@ extension RapidSubscriptionHandler: RapidRequest {
     
     func eventFailed(withError error: RapidErrorInstance) {
         delegate?.dispatchQueue.async {
+            RapidLogger.log(message: "Subscription failed \(self.subscriptionHash) with error \(error.error)")
+            
             self.state = .unsubscribed
             
             for subscription in self.subscriptions {

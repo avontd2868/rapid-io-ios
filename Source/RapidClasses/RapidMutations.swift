@@ -102,6 +102,8 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
             self.timer?.invalidate()
             self.timer = nil
             
+            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated")
+            
             self.callback?(nil, self.value)
         }
     }
@@ -110,6 +112,8 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
         DispatchQueue.main.async {
             self.timer?.invalidate()
             self.timer = nil
+            
+            RapidLogger.log(message: "Rapid mutation failed - document \(self.documentID) in collection \(self.collectionID)")
             
             self.callback?(error.error, nil)
         }
@@ -196,6 +200,8 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
             self.timer?.invalidate()
             self.timer = nil
             
+            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) merged")
+            
             self.callback?(nil, self.value)
         }
     }
@@ -204,6 +210,8 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
         DispatchQueue.main.async {
             self.timer?.invalidate()
             self.timer = nil
+            
+            RapidLogger.log(message: "Rapid merge failed - document \(self.documentID) in collection \(self.collectionID)")
             
             self.callback?(error.error, nil)
         }
