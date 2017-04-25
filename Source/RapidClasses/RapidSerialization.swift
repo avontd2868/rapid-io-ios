@@ -329,6 +329,11 @@ class RapidSerialization {
         let resultDict = [Authorization.name: json]
         return try resultDict.jsonString()
     }
+    
+    class func serialize(authRequest: RapidUnauthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        let resultDict = [Unauthorization.name: identifiers]
+        return try resultDict.jsonString()
+    }
 }
 
 // MARK: Fileprivate methods
@@ -350,6 +355,9 @@ fileprivate extension RapidSerialization {
         }
         else if let upd = json[SubscriptionUpdate.name] as? [AnyHashable: Any] {
             return RapidSubscriptionBatch(withUpdateJSON: upd)
+        }
+        else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionCancel(json: ca)
         }
 
         return nil
@@ -390,6 +398,10 @@ extension RapidSerialization {
             
             struct ConnectionTerminated {
                 static let name = "connection-terminated"
+            }
+            
+            struct InvalidAuthToken {
+                static let name = "invalid-auth-token"
             }
         }
         
@@ -553,12 +565,23 @@ extension RapidSerialization {
         static let name = "nop"
     }
     
-    //FIXME: correct names
     struct Authorization {
         static let name = "auth"
         
         struct AccessToken {
-            static let name = "at"
+            static let name = "token"
+        }
+    }
+    
+    struct Unauthorization {
+        static let name = "unauth"
+    }
+    
+    struct Cancel {
+        static let name = "ca"
+        
+        struct SubscriptionID {
+            static let name = "sub-id"
         }
     }
 }

@@ -440,6 +440,7 @@ extension RapidSubscriptionHandler: RapidRequest {
         delegate?.dispatchQueue.async {
             RapidLogger.log(message: "Subscription failed \(self.subscriptionHash) with error \(error.error)")
             
+            self.value = nil
             self.state = .unsubscribed
             
             for subscription in self.subscriptions {

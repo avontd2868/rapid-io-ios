@@ -66,6 +66,13 @@ class RapidSocketManager {
         }
     }
     
+    func unauthorize(unauthRequest: RapidUnauthRequest) {
+        websocketQueue.async { [weak self] in
+            self?.auth = nil
+            self?.post(event: unauthRequest)
+        }
+    }
+    
     /// Reconnect previously configured websocket
     func goOnline() {
         websocketQueue.async { [weak self] in
@@ -251,17 +258,33 @@ fileprivate extension RapidSocketManager {
     /// This creates an abstract connection which is not dependent on a physical one
     func sendConnectionRequest() {
         let connection: RapidConnectionRequest
+        let authorization: RapidAuthRequest?
         
         if let connectionID = connectionID {
             connection = RapidReconnectionRequest(connectionID: connectionID, delegate: self)
+            
+            // No need to reauthorize when reconnecting
+            authorization = nil
         }
         else {
             let connectionID = Rapid.uniqueID
             connection = RapidConnectionRequest(connectionID: connectionID, delegate: self)
             self.connectionID = connectionID
+            
+            // Client needs to reauthorize when creating a new connection
+            if let token = self.auth?.accessToken {
+                authorization = RapidAuthRequest(accessToken: token)
+            }
+            else {
+                authorization = nil
+            }
         }
 
         post(event: connection, prioritize: true)
+        
+        if let authorization = authorization {
+            post(event: authorization, prioritize: true)
+        }
     }
     
     /// Destroy abstract connection
@@ -324,8 +347,15 @@ fileprivate extension RapidSocketManager {
             timeoutRequest.requestSent(withTimeout: Rapid.defaultTimeout, delegate: self)
         }
         
-        if prioritize {
-            eventQueue.insert(event, at: 0)
+        if prioritize && !eventQueue.isEmpty {
+            var index = 0
+            let requestPriority = (event as? RapidPriorityRequest)?.priority ?? .low
+            
+            while ((eventQueue[index] as? RapidPriorityRequest)?.priority.rawValue ?? Int.max) <= requestPriority.rawValue {
+                index += 1
+            }
+            
+            eventQueue.insert(event, at: index)
         }
         else {
             eventQueue.append(event)
@@ -402,6 +432,14 @@ fileprivate extension RapidSocketManager {
         case let response as RapidSubscriptionBatch:
             let subscription = activeSubscriptions[response.subscriptionID]
             subscription?.receivedSubscriptionEvent(response)
+            acknowledge(eventWithID: response.eventID)
+            
+        // Subscription cancel
+        case let response as RapidSubscriptionCancel:
+            let subscription = activeSubscriptions[response.subscriptionID]
+            let error = RapidErrorInstance(eventID: response.eventID, error: .permissionDenied(message: "No longer authorized to read data"))
+            subscription?.eventFailed(withError: error)
+            activeSubscriptions[response.subscriptionID] = nil
             acknowledge(eventWithID: response.eventID)
         
         default:

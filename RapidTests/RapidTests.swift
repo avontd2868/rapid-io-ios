@@ -23,6 +23,8 @@ class RapidTests: XCTestCase {
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
     
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6eyJ0ZXN0MSI6eyJyZWFkIjp0cnVlfSwidGVzdDIiOnsicmVhZCI6dHJ1ZX0sInRlc3QzIjp7InJlYWQiOnRydWV9LCJ0ZXN0NCI6eyJyZWFkIjp0cnVlfSwidGVzdDUiOnsicmVhZCI6dHJ1ZX0sInRlc3Q2Ijp7InJlYWQiOnRydWV9LCJ0ZXN0NyI6eyJyZWFkIjp0cnVlfSwidGVzdDgiOnsicmVhZCI6dHJ1ZX0sInRlc3Q5Ijp7InJlYWQiOnRydWV9LCJ0ZXN0MTAiOnsicmVhZCI6dHJ1ZX19LCJ0b2tlbi1pZCI6InRlc3QifQ.uME0L1wjwAskazXAupFP0AsRKft6xbPMRD9FcjZSI9k"
+    
     override func setUp() {
         super.setUp()
         

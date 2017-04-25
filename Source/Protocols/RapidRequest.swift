@@ -45,3 +45,13 @@ protocol RapidTimeoutRequest: RapidRequest {
 protocol RapidTimeoutRequestDelegate: class {
     func requestTimeout(_ request: RapidTimeoutRequest)
 }
+
+enum RapidRequestPriority: Int {
+    case high
+    case medium
+    case low
+}
+
+protocol RapidPriorityRequest {
+    var priority: RapidRequestPriority { get }
+}
