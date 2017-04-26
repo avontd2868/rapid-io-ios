@@ -71,4 +71,29 @@ extension RapidTests {
         
         waitForExpectations(timeout: 8, handler: nil)
     }
+    
+    func testMerge() {
+        let promise = expectation(description: "Merge document")
+
+        rapid.authorize(withAccessToken: testAuthToken)
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"])
+        
+        runAfter(1) { 
+            var initial = true
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { (_, value) in
+                if initial {
+                    initial = false
+                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "desc", "bla": 6])
+                }
+                else if let dict = value.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Values doesn't match")
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
 }

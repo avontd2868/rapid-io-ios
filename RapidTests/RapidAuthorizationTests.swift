@@ -29,9 +29,7 @@ extension RapidTests {
     func testAuthorizeAndSubscribe() {
         let promise = expectation(description: "Authorization")
         
-        rapid.authorize(withAccessToken: testAuthToken)
-        
-        rapid.collection(named: "test1").subscribe { (error, _) in
+        rapid.collection(named: testCollectionName).subscribe { (error, _) in
             if error == nil {
                 promise.fulfill()
             }
@@ -46,11 +44,9 @@ extension RapidTests {
     func testSubscriptionChangeAfterUnsubscription() {
         let promise = expectation(description: "Authorization")
         
-        rapid.authorize(withAccessToken: testAuthToken)
-        
         var initialValue = true
         
-        rapid.collection(named: "test1").subscribe { (error, _) in
+        rapid.collection(named: testCollectionName).subscribe { (error, _) in
             if initialValue {
                 initialValue = false
                 
@@ -76,7 +72,7 @@ extension RapidTests {
     
     func testInvalidAuthToken() {
         let promise = expectation(description: "Authorization")
-        
+
         rapid.authorize(withAccessToken: "fakeToken") { (_, error) in
             if let error = error as? RapidError, case RapidError.invalidAuthToken = error {
                 promise.fulfill()

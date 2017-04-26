@@ -490,7 +490,7 @@ extension RapidTests {
     
     func testLoadingSubscriptionFromCache() {
         let promise = expectation(description: "Load cached data")
-        
+        Rapid.debugLoggingEnabled = true
         rapid.isCacheEnabled = true
         
         var socketManager: RapidSocketManager!
@@ -505,6 +505,7 @@ extension RapidTests {
                     let documents = docs
                     let networkHanlder = RapidNetworkHandler(socketURL: self.fakeSocketURL)
                     socketManager = RapidSocketManager(networkHandler: networkHanlder)
+                    socketManager.authorize(authRequest: RapidAuthRequest(accessToken: self.testAuthToken))
                     socketManager.cacheHandler = self.rapid.handler
                     
                     let subscription = RapidCollectionSub(collectionID: self.testCollectionName, filter: nil, ordering: nil, paging: nil, callback: { (_, cachedDocuments) in

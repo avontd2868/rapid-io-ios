@@ -136,6 +136,7 @@ extension RapidTests {
         let networkHandler = RapidNetworkHandler(socketURL: self.socketURL)
         let fakeNetworkHandler = RapidNetworkHandler(socketURL: self.fakeSocketURL)
         let socketManager = RapidSocketManager(networkHandler: networkHandler)
+        socketManager.authorize(authRequest: RapidAuthRequest(accessToken: testAuthToken))
         let fakeSocketManager = RapidSocketManager(networkHandler: fakeNetworkHandler)
         
         socketManager.subscribe(sub2)

@@ -32,7 +32,7 @@ class RapidHandler: NSObject {
     
     let socketManager: RapidSocketManager!
     var state: Rapid.ConnectionState {
-        return socketManager.state
+        return socketManager.networkHandler.state
     }
     
     var authorization: RapidAuthorization? {

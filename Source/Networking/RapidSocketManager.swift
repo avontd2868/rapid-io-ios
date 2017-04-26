@@ -20,9 +20,7 @@ class RapidSocketManager {
     weak var cacheHandler: RapidCacheHandler?
     
     /// State of a websocket connection
-    var state: Rapid.ConnectionState {
-        return networkHandler.state
-    }
+    fileprivate var state: Rapid.ConnectionState = .disconnected
     
     /// ID that identifies a websocket connection to this client for reconnecting purposes
     fileprivate(set) var connectionID: String?
@@ -53,6 +51,7 @@ class RapidSocketManager {
         
         self.networkHandler.delegate = self        
         self.networkHandler.goOnline()
+        self.state = .connecting
     }
     
     deinit {
@@ -77,6 +76,7 @@ class RapidSocketManager {
     func goOnline() {
         websocketQueue.async { [weak self] in
             self?.networkHandler.goOnline()
+            self?.state = .connecting
         }
     }
     
@@ -84,6 +84,7 @@ class RapidSocketManager {
     func goOffline() {
         websocketQueue.async { [weak self] in
             self?.networkHandler.goOffline()
+            self?.state = .disconnected
         }
     }
     
@@ -246,6 +247,8 @@ fileprivate extension RapidSocketManager {
         
         // Create new connection
         networkHandler.goOnline()
+        
+        state = .connecting
     }
 }
 
@@ -282,7 +285,8 @@ fileprivate extension RapidSocketManager {
 
         post(event: connection, prioritize: true)
         
-        if let authorization = authorization {
+        if let authorization = authorization,
+            !eventQueue.contains(where: { authorization.auth.accessToken == ($0 as? RapidAuthRequest)?.auth.accessToken }) {
             post(event: authorization, prioritize: true)
         }
     }
@@ -351,7 +355,7 @@ fileprivate extension RapidSocketManager {
             var index = 0
             let requestPriority = (event as? RapidPriorityRequest)?.priority ?? .low
             
-            while ((eventQueue[index] as? RapidPriorityRequest)?.priority.rawValue ?? Int.max) <= requestPriority.rawValue {
+            while index < eventQueue.count && ((eventQueue[index] as? RapidPriorityRequest)?.priority.rawValue ?? Int.max) <= requestPriority.rawValue {
                 index += 1
             }
             
@@ -555,12 +559,16 @@ extension RapidSocketManager: RapidNetworkHandlerDelegate {
         websocketQueue.async { [weak self] in
             self?.sendConnectionRequest()
             
+            self?.state = .connected
+            
             self?.flushQueue()
         }
     }
     
     func socketDidDisconnect(withError error: RapidError?) {
         websocketQueue.async { [weak self] in
+            self?.state = .disconnected
+            
             self?.handleDidDisconnect(withError: error)
         }
     }

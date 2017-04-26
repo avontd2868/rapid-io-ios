@@ -23,12 +23,14 @@ class RapidTests: XCTestCase {
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6eyJ0ZXN0MSI6eyJyZWFkIjp0cnVlfSwidGVzdDIiOnsicmVhZCI6dHJ1ZX0sInRlc3QzIjp7InJlYWQiOnRydWV9LCJ0ZXN0NCI6eyJyZWFkIjp0cnVlfSwidGVzdDUiOnsicmVhZCI6dHJ1ZX0sInRlc3Q2Ijp7InJlYWQiOnRydWV9LCJ0ZXN0NyI6eyJyZWFkIjp0cnVlfSwidGVzdDgiOnsicmVhZCI6dHJ1ZX0sInRlc3Q5Ijp7InJlYWQiOnRydWV9LCJ0ZXN0MTAiOnsicmVhZCI6dHJ1ZX19LCJ0b2tlbi1pZCI6InRlc3QifQ.uME0L1wjwAskazXAupFP0AsRKft6xbPMRD9FcjZSI9k"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbklkIjoxLCJydWxlcyI6eyJpb3NVbml0VGVzdHMiOnsicmVhZCI6dHJ1ZSwid3JpdGUiOnRydWV9fX0.BSUrnpJiCQMB9YfUM0mvzB7kRr93CeCzBKe7BkJuMoY"
     
     override func setUp() {
         super.setUp()
         
         rapid = Rapid(apiKey: "ws://13.64.77.202:8080")!
+        
+        rapid.authorize(withAccessToken: testAuthToken)
     }
     
     override func tearDown() {
@@ -327,7 +329,7 @@ class RapidTests: XCTestCase {
         let manager = RapidSocketManager(networkHandler: mockHandler)
         
         runAfter(1) {
-            XCTAssertEqual(manager.state, .connected)
+            XCTAssertEqual(manager.networkHandler.state, .connected)
         }
         
         waitForExpectations(timeout: 6, handler: nil)
@@ -417,9 +419,9 @@ class RapidTests: XCTestCase {
         
         var shouldConnect = true
         
-        let subscription1 = RapidDocumentSub(collectionID: self.testCollectionName, documentID: "1", callback: nil)
+        let subscription1 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
         let subscription2 = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
-        let subscription3 = RapidDocumentSub(collectionID: self.testCollectionName, documentID: "2", callback: nil)
+        let subscription3 = RapidDocumentSub(collectionID: testCollectionName, documentID: "2", callback: nil)
         let subHash = subscription2.subscriptionHash
         let mutatationDocumentID = "2"
         var acknowledgeAll = false
