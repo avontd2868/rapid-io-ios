@@ -490,8 +490,10 @@ extension RapidTests {
     
     func testLoadingSubscriptionFromCache() {
         let promise = expectation(description: "Load cached data")
-        Rapid.debugLoggingEnabled = true
+
         rapid.isCacheEnabled = true
+        
+        XCTAssertEqual(rapid.isCacheEnabled, true)
         
         var socketManager: RapidSocketManager!
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testLoadingSubscriptionFromCache"]) { (_, _) in

@@ -104,9 +104,8 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
         if let snapshot = object as? RapidDocumentSnapshot {
             return self == snapshot
         }
-        else {
-            return false
-        }
+
+        return false
     }
     
 }

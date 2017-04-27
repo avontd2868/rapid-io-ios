@@ -31,7 +31,7 @@ class RapidConnectionRequest: RapidSerializable {
     /// Timout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
     
-    internal var timer: Timer?
+    internal var requestTimeoutTimer: Timer?
     
     init(connectionID: String, delegate: RapidConnectionRequestDelegate) {
         self.connectionID = connectionID
@@ -54,44 +54,18 @@ extension RapidConnectionRequest: RapidPriorityRequest {
 
 extension RapidConnectionRequest: RapidTimeoutRequest {
     
-    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
-        // Start timeout
-        self.timoutDelegate = delegate
-        
-        DispatchQueue.main.async { [weak self] in
-            if let strongSelf = self {
-                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
-            }
-        }
-    }
-    
-    @objc func requestTimeout() {
-        timer = nil
-        
-        timoutDelegate?.requestTimeout(self)
-    }
-    
-    func invalidateTimer() {
-        DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-        }
-    }
-    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        invalidateTimer()
+        
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             self.delegate?.connectionEstablished(self)
         }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
+        invalidateTimer()
+        
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             self.delegate?.connectingFailed(self, error: error)
         }
     }
@@ -129,53 +103,18 @@ class RapidEmptyRequest: RapidSerializable, RapidClientEvent {
 
 // MARK: Authorization
 
-class RapidAuthRequest: RapidTimeoutRequest {
-    
-    /// Request should timeout even if `Rapid.timeout` is `nil`
-    let alwaysTimeout = true
+class RapidAuthRequest: RapidRequest {
     
     let auth: RapidAuthorization
     let callback: RapidAuthCallback?
-    
-    /// Timout delegate
-    internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
-    
-    internal var timer: Timer?
     
     init(accessToken: String, callback: RapidAuthCallback? = nil) {
         self.auth = RapidAuthorization(accessToken: accessToken)
         self.callback = callback
     }
     
-    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
-        // Start timeout
-        self.timoutDelegate = delegate
-        
-        DispatchQueue.main.async { [weak self] in
-            if let strongSelf = self {
-                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
-            }
-        }
-    }
-    
-    @objc func requestTimeout() {
-        timer = nil
-        
-        timoutDelegate?.requestTimeout(self)
-    }
-    
-    func invalidateTimer() {
-        DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-        }
-    }
-    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             RapidLogger.log(message: "Rapid authorized")
             
             self.callback?(true, nil)
@@ -184,9 +123,6 @@ class RapidAuthRequest: RapidTimeoutRequest {
     
     func eventFailed(withError error: RapidErrorInstance) {
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             RapidLogger.log(message: "Rapid authorization failed")
             
             self.callback?(false, error.error)
@@ -208,51 +144,16 @@ extension RapidAuthRequest: RapidSerializable {
     }
 }
 
-class RapidUnauthRequest: RapidTimeoutRequest {
-    
-    /// Request should timeout even if `Rapid.timeout` is `nil`
-    let alwaysTimeout = true
+class RapidUnauthRequest: RapidRequest {
     
     let callback: RapidAuthCallback?
-    
-    /// Timout delegate
-    internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
-    
-    internal var timer: Timer?
     
     init(callback: RapidAuthCallback?) {
         self.callback = callback
     }
     
-    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
-        // Start timeout
-        self.timoutDelegate = delegate
-        
-        DispatchQueue.main.async { [weak self] in
-            if let strongSelf = self {
-                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
-            }
-        }
-    }
-    
-    @objc func requestTimeout() {
-        timer = nil
-        
-        timoutDelegate?.requestTimeout(self)
-    }
-    
-    func invalidateTimer() {
-        DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-        }
-    }
-    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             RapidLogger.log(message: "Rapid unauthorized")
             
             self.callback?(true, nil)
@@ -261,9 +162,6 @@ class RapidUnauthRequest: RapidTimeoutRequest {
     
     func eventFailed(withError error: RapidErrorInstance) {
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             RapidLogger.log(message: "Rapid unauthorization failed")
             
             self.callback?(false, error.error)

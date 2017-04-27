@@ -11,6 +11,12 @@ import XCTest
 
 extension RapidTests {
     
+    func testJSONString() {
+        let dict = ["object": self]
+        
+        XCTAssertThrowsError(try dict.jsonString())
+    }
+    
     func testParseNil() {
         XCTAssertNil(RapidSerialization.parse(json: nil), "Nil parsed")
     }
@@ -616,5 +622,15 @@ extension RapidTests {
         
         XCTAssertNil(ack1, "Object created")
         XCTAssertNil(ack2, "Object created")
+    }
+    
+    func testSubscriptionCancel() {
+        let ca1 = RapidSubscriptionCancel(json: "test")
+        let ca2 = RapidSubscriptionCancel(json: [:])
+        let ca3 = RapidSubscriptionCancel(json: ["evt-id": "kldjflk"])
+        
+        XCTAssertNil(ca1, "Not nil")
+        XCTAssertNil(ca2, "Not nil")
+        XCTAssertNil(ca3, "Not nil")
     }
 }

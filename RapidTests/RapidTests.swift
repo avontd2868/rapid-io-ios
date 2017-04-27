@@ -291,7 +291,7 @@ class RapidTests: XCTestCase {
         let promise = expectation(description: "Nop request")
         
         let mockHandler = MockNetworkHandler(socketURL: self.socketURL, writeCallback: { (handler, event, eventID) in
-            if event is RapidEmptyRequest {
+            if event is RapidEmptyRequest && (try? event.serialize(withIdentifiers: [:])) != nil {
                 promise.fulfill()
             }
             else {

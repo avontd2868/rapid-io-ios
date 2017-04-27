@@ -29,9 +29,9 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     let callback: RapidMutationCallback?
     
     /// Timout delegate
-    fileprivate weak var timoutDelegate: RapidTimeoutRequestDelegate?
+    internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
     
-    fileprivate var timer: Timer?
+    internal var requestTimeoutTimer: Timer?
     
     /// Initialize mutation request
     ///
@@ -72,36 +72,10 @@ extension RapidDocumentMutation: RapidSerializable {
 
 extension RapidDocumentMutation: RapidTimeoutRequest {
     
-    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
-        // Start timeout
-
-        self.timoutDelegate = delegate
-        
-        DispatchQueue.main.async { [weak self] in
-            if let strongSelf = self {
-                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
-            }
-        }
-    }
-    
-    @objc func requestTimeout() {
-        timer = nil
-        
-        timoutDelegate?.requestTimeout(self)
-    }
-    
-    func invalidateTimer() {
-        DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-        }
-    }
-    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        invalidateTimer()
+        
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated")
             
             self.callback?(nil, self.value)
@@ -109,10 +83,9 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
+        invalidateTimer()
+        
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             RapidLogger.log(message: "Rapid mutation failed - document \(self.documentID) in collection \(self.collectionID)")
             
             self.callback?(error.error, nil)
@@ -141,9 +114,9 @@ class RapidDocumentMerge: NSObject, RapidMergeRequest {
     let callback: RapidMutationCallback?
     
     /// Timeout delegate
-    fileprivate weak var timoutDelegate: RapidTimeoutRequestDelegate?
+    internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
     
-    fileprivate var timer: Timer?
+    internal var requestTimeoutTimer: Timer?
     
     /// Initialize merge request
     ///
@@ -170,36 +143,10 @@ extension RapidDocumentMerge: RapidSerializable {
 
 extension RapidDocumentMerge: RapidTimeoutRequest {
     
-    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
-        // Start timeout countdown
-        
-        self.timoutDelegate = delegate
-        
-        DispatchQueue.main.async { [weak self] in
-            if let strongSelf = self {
-                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
-            }
-        }
-    }
-    
-    @objc func requestTimeout() {
-        timer = nil
-        
-        timoutDelegate?.requestTimeout(self)
-    }
-    
-    func invalidateTimer() {
-        DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-        }
-    }
-    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        invalidateTimer()
+        
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) merged")
             
             self.callback?(nil, self.value)
@@ -207,10 +154,9 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
+        invalidateTimer()
+        
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             RapidLogger.log(message: "Rapid merge failed - document \(self.documentID) in collection \(self.collectionID)")
             
             self.callback?(error.error, nil)

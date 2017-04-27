@@ -181,13 +181,14 @@ fileprivate extension RapidSocketManager {
         
         // Get all relevant events that were about to be sent
         let currentQueue = eventQueue.filter({
+            // If the request is timeoutable then invalidate it
+            if let timeout = $0 as? RapidTimeoutRequest {
+                timeout.invalidateTimer()
+            }
+
             // Do not include connection requests and heartbeats that are relevant to one physical websocket connection
             switch $0 {
             case is RapidConnectionRequest, is RapidEmptyRequest, is RapidReconnectionRequest:
-                // If the request is timeoutable then invalidate it
-                if let timeout = $0 as? RapidTimeoutRequest {
-                    timeout.invalidateTimer()
-                }
                 return false
                 
             default:
