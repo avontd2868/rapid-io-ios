@@ -343,12 +343,12 @@ extension RapidTests {
                     RapidFilter.greaterThan(keyPath: "urgency", value: 2),
                     RapidFilter.lessThan(keyPath: "urgency", value: 4)
                 ]))
+            .order(by:
+                RapidOrdering(keyPath: "urgency", ordering: .ascending)
+            )
             .order(by: [
                 RapidOrdering(keyPath: "sentDate", ordering: .descending)
                 ])
-            .order(by:
-                RapidOrdering(keyPath: "urgency", ordering: .ascending)
-                )
             .limit(to: 50, skip: 10)
         
         let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
@@ -381,8 +381,8 @@ extension RapidTests {
                     ]
                 ],
                 "order": [
-                    ["sentDate": "desc"],
-                    ["urgency": "asc"]
+                    ["urgency": "asc"],
+                    ["sentDate": "desc"]
                 ],
                 "limit": 50,
                 "skip": 10
@@ -526,17 +526,17 @@ extension RapidTests {
                     RapidFilter.greaterThan(keyPath: "urgency", value: 2),
                     RapidFilter.lessThan(keyPath: "urgency", value: 4)
                     ]))
-            .order(by: [
-                RapidOrdering(keyPath: "sentDate", ordering: .descending)
-                ])
             .order(by:
                 RapidOrdering(keyPath: "urgency", ordering: .ascending)
             )
+            .order(by: [
+                RapidOrdering(keyPath: "sentDate", ordering: .descending)
+                ])
             .limit(to: 50, skip: 10)
 
         let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
         
-        let hash = "\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-sentDate-d|o-urgency-a#t50s10"
+        let hash = "\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a|o-sentDate-d#t50s10"
         
         XCTAssertEqual(sub.subscriptionHash, hash)
     }
@@ -580,16 +580,6 @@ extension RapidTests {
         
         XCTAssertEqual(sub1.subscriptionHash, sub2.subscriptionHash)
 
-    }
-    
-    func testSubscriptionUpdateObject() {
-        let update1 = RapidSubscriptionUpdate(withUpdateJSON: ["test"])
-        let update2 = RapidSubscriptionUpdate(withUpdateJSON: [:])
-        let update3 = RapidSubscriptionUpdate(withUpdateJSON: ["doc": [:]])
-        
-        XCTAssertNil(update1, "Object created")
-        XCTAssertNil(update2, "Object created")
-        XCTAssertNil(update3, "Object created")
     }
     
     func testSubscriptionBatchObjectForValue() {

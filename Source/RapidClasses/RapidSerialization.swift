@@ -183,6 +183,18 @@ class RapidSerialization {
         case .lessThan where simpleFilter.value != nil:
             return [simpleFilter.keyPath: ["lt": simpleFilter.value]]
             
+        case .contains where simpleFilter.value != nil && simpleFilter.value is String:
+            return [simpleFilter.keyPath: ["cnt": simpleFilter.value]]
+            
+        case .startsWith where simpleFilter.value != nil && simpleFilter.value is String:
+            return [simpleFilter.keyPath: ["pref": simpleFilter.value]]
+            
+        case .endsWith where simpleFilter.value != nil && simpleFilter.value is String:
+            return [simpleFilter.keyPath: ["suf": simpleFilter.value]]
+            
+        case .arrayContains where simpleFilter.value != nil:
+            return [simpleFilter.keyPath: ["arr-cnt": simpleFilter.value]]
+            
         default:
             throw RapidError.invalidData(reason: .invalidFilter(filter: simpleFilter))
         }
@@ -505,10 +517,6 @@ extension RapidSerialization {
             static let name = "col-id"
         }
         
-        struct Predecessor {
-            static let name = "psib-id"
-        }
-        
         struct Document {
             static let name = "doc"
         }
@@ -530,6 +538,10 @@ extension RapidSerialization {
         
         struct Etag {
             static let name = "etag"
+        }
+        
+        struct SortValue {
+            static let name = "skey"
         }
     }
     

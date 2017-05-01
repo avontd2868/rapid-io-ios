@@ -167,6 +167,18 @@ fileprivate extension ViewController {
                 else if let value = relationObject["lte"], let comparable = castToComparable(value: value) {
                     return RapidFilter.lessThanOrEqual(keyPath: key, value: comparable)
                 }
+                else if let value = relationObject["cnt"], let subStr = value as? String {
+                    return RapidFilter.contains(keyPath: key, subString: subStr)
+                }
+                else if let value = relationObject["pref"], let subStr = value as? String {
+                    return RapidFilter.startsWith(keyPath: key, subString: subStr)
+                }
+                else if let value = relationObject["suf"], let subStr = value as? String {
+                    return RapidFilter.endsWith(keyPath: key, subString: subStr)
+                }
+                else if let value = relationObject["arr-cnt"], let comparable = castToComparable(value: value) {
+                    return RapidFilter.arrayContains(keyPath: key, value: comparable)
+                }
                 else {
                     return nil
                 }
@@ -196,7 +208,7 @@ fileprivate extension ViewController {
         else if let value = value as? Double {
             return value
         }
-        else if let value = value as? Float {
+        else if let value = value as? Bool {
             return value
         }
         else {

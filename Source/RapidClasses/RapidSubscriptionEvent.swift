@@ -15,7 +15,7 @@ class RapidSubscriptionBatch: RapidResponse {
     let subscriptionID: String
     
     internal(set) var collection: [RapidDocumentSnapshot]?
-    internal(set) var updates: [RapidSubscriptionUpdate]
+    internal(set) var updates: [RapidDocumentSnapshot]
     
     init(withSubscriptionID id: String, collection: [RapidDocumentSnapshot]) {
         self.eventID = Rapid.uniqueID
@@ -60,14 +60,18 @@ class RapidSubscriptionBatch: RapidResponse {
             return nil
         }
         
-        guard let update = RapidSubscriptionUpdate(withUpdateJSON: json) else {
+        guard let document = dict[RapidSerialization.SubscriptionUpdate.Document.name] as? [AnyHashable: Any] else {
+            return nil
+        }
+        
+        guard let snapshot = RapidDocumentSnapshot(json: document) else {
             return nil
         }
         
         self.eventID = eventID
         self.subscriptionID = subscriptionID
         self.collection = nil
-        self.updates = [update]
+        self.updates = [snapshot]
     }
 
     /// Add subscription event to the batch
@@ -84,32 +88,4 @@ class RapidSubscriptionBatch: RapidResponse {
         }
     }
     
-}
-
-/// Single subscription update
-class RapidSubscriptionUpdate {
-    
-    /// Document snapshot
-    let snapshot: RapidDocumentSnapshot
-    
-    /// Document ID of a predecessor
-    let predecessorID: String?
-    
-    init?(withUpdateJSON json: Any?) {
-        guard let dict = json as? [AnyHashable: Any] else {
-            return nil
-        }
-        
-        guard let document = dict[RapidSerialization.SubscriptionUpdate.Document.name] as? [AnyHashable: Any] else {
-            return nil
-        }
-        
-        guard let snapshot = RapidDocumentSnapshot(json: document) else {
-            return nil
-        }
-        
-        self.predecessorID = dict[RapidSerialization.SubscriptionUpdate.Predecessor.name] as? String
-        self.snapshot = snapshot
-    }
-
 }

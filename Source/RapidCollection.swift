@@ -108,16 +108,19 @@ public class RapidCollection: NSObject {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
-        self.subscriptionOrdering?.append(ordering)
+        //FIXME: Append ordering when multiple descriptors are done
+        self.subscriptionOrdering = [ordering]
     }
 
+    //TODO: Ordering with multiple descriptors
+    
     /// Get a new collection object with a subscription ordering options assigned
     ///
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
-    public func order(by ordering: [RapidOrdering]) -> RapidCollection {
+    func order(by ordering: [RapidOrdering]) -> RapidCollection {
         let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
@@ -128,7 +131,7 @@ public class RapidCollection: NSObject {
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
-    public func ordered(by ordering: [RapidOrdering]) {
+    func ordered(by ordering: [RapidOrdering]) {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }

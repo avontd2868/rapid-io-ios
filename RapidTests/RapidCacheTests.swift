@@ -491,6 +491,7 @@ extension RapidTests {
     func testLoadingSubscriptionFromCache() {
         let promise = expectation(description: "Load cached data")
 
+        rapid.isCacheEnabled = false
         rapid.isCacheEnabled = true
         
         XCTAssertEqual(rapid.isCacheEnabled, true)

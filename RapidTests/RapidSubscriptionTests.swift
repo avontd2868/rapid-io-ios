@@ -181,7 +181,7 @@ extension RapidTests {
             }
         }
         
-        self.rapid.collection(named: testCollectionName).order(by: [RapidOrdering(keyPath: "name", ordering: .ascending)]).subscribe { (_, _) in
+        self.rapid.collection(named: testCollectionName).order(by: RapidOrdering(keyPath: "name", ordering: .ascending)).subscribe { (_, _) in
             if initial2 {
                 initial2 = false
             }
@@ -425,6 +425,7 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "4",
+                                "skey": "1",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test4"
@@ -437,7 +438,6 @@ extension RapidTests {
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": subID,
-                        "psib-id": "3",
                         "doc":
                             [
                                 "id": "5",
@@ -577,10 +577,10 @@ extension RapidTests {
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": subID,
-                        "psib-id": "3",
                         "doc":
                             [
                                 "id": "1",
+                                "skey": "5",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test111"
@@ -593,10 +593,10 @@ extension RapidTests {
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": subID,
-                        "psib-id": "2",
                         "doc":
                             [
                                 "id": "3",
+                                "skey": "4",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test33"

@@ -69,6 +69,14 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
         return "\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
     }
     
+    var subscriptionTake: Int? {
+        return paging?.take
+    }
+    
+    var subscriptionOrdering: RapidOrdering.Ordering? {
+        return ordering?.first?.ordering
+    }
+    
     func subscriptionFailed(withError error: RapidError) {
         // Pass error to callbacks
         DispatchQueue.main.async {
@@ -154,6 +162,14 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
     
     var subscriptionHash: String {
         return subscription.subscriptionHash
+    }
+    
+    var subscriptionTake: Int? {
+        return 1
+    }
+    
+    var subscriptionOrdering: RapidOrdering.Ordering? {
+        return nil
     }
     
     func subscriptionFailed(withError error: RapidError) {

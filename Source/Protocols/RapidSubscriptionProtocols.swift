@@ -17,6 +17,11 @@ protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionH
     /// Hash identifying the subscription
     var subscriptionHash: String { get }
     
+    /// Maximum number of documents in subscription
+    var subscriptionTake: Int? { get }
+    
+    var subscriptionOrdering: RapidOrdering.Ordering? { get }
+    
     /// Subscription dataset changed
     ///
     /// - Parameters:
