@@ -122,8 +122,8 @@ class RapidSubscriptionHandler: NSObject {
         return subscriptions.first?.subscriptionTake
     }
     
-    var subscriptionOrdering: RapidOrdering.Ordering {
-        return subscriptions.first?.subscriptionOrdering ?? .ascending
+    var subscriptionOrdering: [RapidOrdering.Ordering] {
+        return subscriptions.first?.subscriptionOrdering ?? []
     }
     
     /// ID of subscription
@@ -428,12 +428,32 @@ fileprivate extension RapidSubscriptionHandler {
         }
         
         let referenceIndex = collection.count/2 + sliceStartIndex
-        let referenceValue = collection[referenceIndex].sortValue
+        let referenceKeys = collection[referenceIndex].sortKeys
         
-        if document.sortValue == referenceValue {
+        for i in 0..<document.sortKeys.count {
+            let referenceValue = referenceKeys[i]
+            let ordering = subscriptionOrdering[i]
+            
+            if document.sortKeys[i] == referenceValue {
+                continue
+            }
+            else if (document.sortKeys[i] < referenceValue && ordering == .ascending) || (document.sortKeys[i] > referenceValue && ordering == .descending) {
+                return findInsertIndex(forDocument: document, toCollection: collection.prefix(upTo: referenceIndex), sliceStartIndex: sliceStartIndex)
+            }
+            else {
+                let index = findInsertIndex(forDocument: document, toCollection: collection.suffix(from: referenceIndex+1), sliceStartIndex: referenceIndex+1)
+                return (referenceIndex - sliceStartIndex) + index + 1
+            }
+        }
+        
+        let referenceDate = collection[referenceIndex].createdAt ?? Date()
+        let createdAt = document.createdAt ?? Date().addingTimeInterval(1)
+        let ordering = subscriptionOrdering.first ?? .ascending
+        
+        if createdAt == referenceDate {
             return referenceIndex - sliceStartIndex
         }
-        else if (document.sortValue < referenceValue && subscriptionOrdering == .ascending) || (document.sortValue > referenceValue && subscriptionOrdering == .descending) {
+        else if (createdAt < referenceDate && ordering == .ascending) || (createdAt > referenceDate && ordering == .descending) {
             return findInsertIndex(forDocument: document, toCollection: collection.prefix(upTo: referenceIndex), sliceStartIndex: sliceStartIndex)
         }
         else {

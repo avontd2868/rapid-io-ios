@@ -53,10 +53,13 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
     /// Etag identifier
     public let etag: String?
     
+    /// Document creation time
+    public let createdAt: Date?
+    
     /// Value that serves to order documents
     ///
     /// Value is computed by Rapid.io database based on sort descriptors in a subscription
-    let sortValue: String
+    let sortKeys: [String]
     
     init?(json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {
@@ -69,19 +72,28 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
         
         let body = dict[RapidSerialization.Document.Body.name] as? [AnyHashable: Any]
         let etag = dict[RapidSerialization.Document.Etag.name] as? String
-        let sortValue = dict[RapidSerialization.Document.SortValue.name] as? String
+        let sortValue = dict[RapidSerialization.Document.SortKeys.name] as? [String]
+        let createdAt = dict[RapidSerialization.Document.Created.name] as? TimeInterval
         
         self.id = id
         self.value = body
         self.etag = etag
-        self.sortValue = sortValue ?? id
+        self.sortKeys = sortValue ?? []
+        
+        if let createdAt = createdAt {
+            self.createdAt = Date(timeIntervalSince1970: createdAt/1000)
+        }
+        else {
+            self.createdAt = nil
+        }
     }
     
     init(id: String, value: [AnyHashable: Any]?, etag: String? = nil) {
         self.id = id
         self.value = value
         self.etag = etag
-        self.sortValue = id
+        self.sortKeys = []
+        self.createdAt = nil
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -89,13 +101,14 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
             return nil
         }
         
-        guard let sortValue = aDecoder.decodeObject(forKey: "sortValue") as? String else {
+        guard let sortKeys = aDecoder.decodeObject(forKey: "sortKeys") as? [String] else {
             return nil
         }
         
         self.id = id
         self.etag = aDecoder.decodeObject(forKey: "etag") as? String
-        self.sortValue = sortValue
+        self.sortKeys = sortKeys
+        self.createdAt = aDecoder.decodeObject(forKey: "createdAt") as? Date
         do {
             self.value = try (aDecoder.decodeObject(forKey: "value") as? String)?.json()
         }
@@ -107,7 +120,8 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
     public func encode(with aCoder: NSCoder) {
         aCoder.encode(id, forKey: "id")
         aCoder.encode(etag, forKey: "etag")
-        aCoder.encode(sortValue, forKey: "sortValue")
+        aCoder.encode(sortKeys, forKey: "sortKeys")
+        aCoder.encode(createdAt, forKey: "createdAt")
         do {
             aCoder.encode(try value?.jsonString(), forKey: "value")
         }

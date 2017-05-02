@@ -528,8 +528,12 @@ extension RapidSerialization {
             static let name = "id"
         }
         
-        struct TimeStamp {
+        struct Modified {
             static let name = "ts"
+        }
+        
+        struct Created {
+            static let name = "crt"
         }
         
         struct Body {
@@ -540,7 +544,7 @@ extension RapidSerialization {
             static let name = "etag"
         }
         
-        struct SortValue {
+        struct SortKeys {
             static let name = "skey"
         }
     }

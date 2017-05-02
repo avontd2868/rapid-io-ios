@@ -358,6 +358,7 @@ extension RapidTests {
                 "docs": [
                     [
                         "id": "1",
+                        "skey": ["1"],
                         "etag": Rapid.uniqueID,
                         "body": [
                             "name": "test1"
@@ -365,6 +366,7 @@ extension RapidTests {
                     ],
                     [
                         "id": "2",
+                        "skey": ["2"],
                         "etag": Rapid.uniqueID,
                         "body": [
                             "name": "test2"
@@ -372,6 +374,7 @@ extension RapidTests {
                     ],
                     [
                         "id": "3",
+                        "skey": ["3"],
                         "etag": docEtag,
                         "body": [
                             "name": "test3"
@@ -392,6 +395,7 @@ extension RapidTests {
                             [
                                 "id": "2",
                                 "etag": Rapid.uniqueID,
+                                "skey": ["2"],
                                 "body": [
                                     "name": "test22"
                                 ]
@@ -399,6 +403,7 @@ extension RapidTests {
                             [
                                 "id": "3",
                                 "etag": docEtag,
+                                "skey": ["3"],
                                 "body": [
                                     "name": "test3"
                                 ]
@@ -406,6 +411,7 @@ extension RapidTests {
                             [
                                 "id": "4",
                                 "etag": Rapid.uniqueID,
+                                "skey": ["4"],
                                 "body": [
                                     "name": "test"
                                 ]
@@ -425,7 +431,7 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "4",
-                                "skey": "1",
+                                "skey": ["1"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test4"
@@ -441,6 +447,7 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "5",
+                                "skey": ["5"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test5"
@@ -454,7 +461,7 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
         
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 3, "Number of documents")
@@ -518,6 +525,7 @@ extension RapidTests {
                     [
                         "id": "1",
                         "etag": Rapid.uniqueID,
+                        "skey": ["1"],
                         "body": [
                             "name": "test1"
                         ]
@@ -525,6 +533,7 @@ extension RapidTests {
                     [
                         "id": "2",
                         "etag": doc2Etag,
+                        "skey": ["2"],
                         "body": [
                             "name": "test2"
                         ]
@@ -532,6 +541,7 @@ extension RapidTests {
                     [
                         "id": "3",
                         "etag": doc3Etag,
+                        "skey": ["3"],
                         "body": [
                             "name": "test3"
                         ]
@@ -551,6 +561,7 @@ extension RapidTests {
                             [
                                 "id": "1",
                                 "etag": Rapid.uniqueID,
+                                "skey": ["1"],
                                 "body": [
                                     "name": "test11"
                                 ]
@@ -558,6 +569,7 @@ extension RapidTests {
                             [
                                 "id": "2",
                                 "etag": doc2Etag,
+                                "skey": ["2"],
                                 "body": [
                                     "name": "test2"
                                 ]
@@ -565,6 +577,7 @@ extension RapidTests {
                             [
                                 "id": "3",
                                 "etag": doc3Etag,
+                                "skey": ["3"],
                                 "body": [
                                     "name": "test3"
                                 ]
@@ -580,7 +593,7 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "1",
-                                "skey": "5",
+                                "skey": ["5"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test111"
@@ -596,7 +609,7 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "3",
-                                "skey": "4",
+                                "skey": ["4"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test33"
@@ -610,7 +623,7 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
         
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 3, "Number of documents")

@@ -73,8 +73,8 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
         return paging?.take
     }
     
-    var subscriptionOrdering: RapidOrdering.Ordering? {
-        return ordering?.first?.ordering
+    var subscriptionOrdering: [RapidOrdering.Ordering]? {
+        return ordering?.map({ $0.ordering })
     }
     
     func subscriptionFailed(withError error: RapidError) {
@@ -168,7 +168,7 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
         return 1
     }
     
-    var subscriptionOrdering: RapidOrdering.Ordering? {
+    var subscriptionOrdering: [RapidOrdering.Ordering]? {
         return nil
     }
     

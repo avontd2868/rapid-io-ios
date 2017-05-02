@@ -20,7 +20,7 @@ protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionH
     /// Maximum number of documents in subscription
     var subscriptionTake: Int? { get }
     
-    var subscriptionOrdering: RapidOrdering.Ordering? { get }
+    var subscriptionOrdering: [RapidOrdering.Ordering]? { get }
     
     /// Subscription dataset changed
     ///
