@@ -106,9 +106,9 @@ public class Rapid: NSObject {
         handler.socketManager.authorize(authRequest: request)
     }
     
-    public func unauthorize(completion: RapidAuthCallback? = nil) {
-        let request = RapidUnauthRequest(callback: completion)
-        handler.socketManager.unauthorize(unauthRequest: request)
+    public func deauthorize(completion: RapidAuthCallback? = nil) {
+        let request = RapidDeauthRequest(callback: completion)
+        handler.socketManager.deauthorize(deauthRequest: request)
     }
     
     /// Creates a new object representing Rapid collection
@@ -226,8 +226,8 @@ public extension Rapid {
         try! shared().authorize(withAccessToken: accessToken, completion: completion)
     }
     
-    class func unauthorize(completion: RapidAuthCallback? = nil) {
-        try! shared().unauthorize(completion: completion)
+    class func deauthorize(completion: RapidAuthCallback? = nil) {
+        try! shared().deauthorize(completion: completion)
     }
     
     /// Configures shared Rapid instance

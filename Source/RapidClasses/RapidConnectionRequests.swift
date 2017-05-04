@@ -144,7 +144,7 @@ extension RapidAuthRequest: RapidSerializable {
     }
 }
 
-class RapidUnauthRequest: RapidRequest {
+class RapidDeauthRequest: RapidRequest {
     
     let callback: RapidAuthCallback?
     
@@ -169,7 +169,7 @@ class RapidUnauthRequest: RapidRequest {
     }
 }
 
-extension RapidUnauthRequest: RapidSerializable {
+extension RapidDeauthRequest: RapidSerializable {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(authRequest: self, withIdentifiers: identifiers)

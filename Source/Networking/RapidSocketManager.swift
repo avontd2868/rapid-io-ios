@@ -65,10 +65,10 @@ class RapidSocketManager {
         }
     }
     
-    func unauthorize(unauthRequest: RapidUnauthRequest) {
+    func deauthorize(deauthRequest: RapidDeauthRequest) {
         websocketQueue.async { [weak self] in
             self?.auth = nil
-            self?.post(event: unauthRequest)
+            self?.post(event: deauthRequest)
         }
     }
     

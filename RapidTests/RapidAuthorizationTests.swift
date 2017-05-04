@@ -53,7 +53,7 @@ extension RapidTests {
                 initialValue = false
                 
                 if error == nil {
-                    self.rapid.unauthorize()
+                    self.rapid.deauthorize()
                 }
                 else {
                     XCTFail("Did not subscribe")
@@ -87,11 +87,11 @@ extension RapidTests {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testUnauthorizeFail() {
+    func testDeauthorizeFail() {
         let promise = expectation(description: "Fail unauth")
         
         let mockHandler = MockNetworkHandler(socketURL: self.socketURL, writeCallback: { (handler, event, eventID) in
-            if event is RapidUnauthRequest {
+            if event is RapidDeauthRequest {
                 handler.delegate?.handlerDidReceive(response: RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "test")))
             }
             else {
@@ -101,7 +101,7 @@ extension RapidTests {
         
         let socketManager = RapidSocketManager(networkHandler: mockHandler)
         
-        let unauth = RapidUnauthRequest { (success, error) in
+        let deauth = RapidDeauthRequest { (success, error) in
             if !success, let error = error as? RapidError, case .permissionDenied = error {
                 promise.fulfill()
             }
@@ -110,7 +110,7 @@ extension RapidTests {
             }
         }
         
-        socketManager.unauthorize(unauthRequest: unauth)
+        socketManager.deauthorize(deauthRequest: deauth)
         
         waitForExpectations(timeout: 2, handler: nil)
     }

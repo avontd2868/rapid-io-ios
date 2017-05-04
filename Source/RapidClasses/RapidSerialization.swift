@@ -342,8 +342,8 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
-    class func serialize(authRequest: RapidUnauthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
-        let resultDict = [Unauthorization.name: identifiers]
+    class func serialize(authRequest: RapidDeauthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        let resultDict = [Deauthorization.name: identifiers]
         return try resultDict.jsonString()
     }
 }
@@ -589,8 +589,8 @@ extension RapidSerialization {
         }
     }
     
-    struct Unauthorization {
-        static let name = "unauth"
+    struct Deauthorization {
+        static let name = "deauth"
     }
     
     struct Cancel {

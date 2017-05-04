@@ -90,13 +90,14 @@ extension RapidTests {
     
     func testOrderingUpdates() {
         let promise = expectation(description: "Ordering")
+        Rapid.debugLoggingEnabled = true
 
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
         rapid.collection(named: testCollectionName).document(withID: "4").delete()
         rapid.collection(named: testCollectionName).document(withID: "5").mutate(value: ["name": "test5"])
-        
+
         var updateNumber = 0
         var numberOfDocuments = 0
         runAfter(1) { 
