@@ -204,7 +204,7 @@ extension RapidTests {
     
     func testInsert() {
         let promise = expectation(description: "Subscription insert")
-        
+
         mutate(documentID: "1", value: nil)
         
         runAfter(1) { 
@@ -254,7 +254,7 @@ extension RapidTests {
     
     func testDelete() {
         let promise = expectation(description: "Subscription delete")
-        
+
         mutate(documentID: "1", value: ["name": "testDelete"])
         
         runAfter(1) { 
@@ -972,11 +972,14 @@ extension RapidTests {
 fileprivate extension RapidTests {
     
     func mutate(documentID: String?, value: [AnyHashable: Any]?) {
-        if let id = documentID {
+        if let id = documentID, let value = value {
             self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value)
         }
+        else if let id = documentID {
+            self.rapid.collection(named: testCollectionName).document(withID: id).delete()
+        }
         else {
-            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value)
+            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value ?? [:])
         }
     }
     

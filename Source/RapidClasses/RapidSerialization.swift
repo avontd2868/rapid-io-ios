@@ -72,9 +72,7 @@ class RapidSerialization {
 
         doc[Mutation.Document.DocumentID.name] = try Validator.validate(identifier: mutation.documentID)
         
-        if let value = mutation.value {
-            doc[Mutation.Document.Body.name] = try Validator.validate(document: value)
-        }
+        doc[Mutation.Document.Body.name] = try Validator.validate(document: mutation.value)
         
         json[Mutation.CollectionID.name] = try Validator.validate(identifier: mutation.collectionID)
         
@@ -104,6 +102,23 @@ class RapidSerialization {
         json[Merge.Document.name] = doc
         
         let resultDict: [AnyHashable: Any] = [Merge.name: json]
+        return try resultDict.jsonString()
+    }
+    
+    /// Serialize a document delete into JSON string
+    ///
+    /// - Parameters:
+    ///   - delete: Delete object
+    ///   - identifiers: Identifiers that are associated with the merge event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(delete: RapidDocumentDelete, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Delete.CollectionID.name] = try Validator.validate(identifier: delete.collectionID)
+        json[Delete.DocumentID.name] = try Validator.validate(identifier: delete.documentID)
+        
+        let resultDict: [AnyHashable: Any] = [Delete.name: json]
         return try resultDict.jsonString()
     }
     
@@ -368,6 +383,9 @@ fileprivate extension RapidSerialization {
         else if let upd = json[SubscriptionUpdate.name] as? [AnyHashable: Any] {
             return RapidSubscriptionBatch(withUpdateJSON: upd)
         }
+        else if let rm = json[SubscriptionDocRemoved.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionBatch(withUpdateJSON: rm)
+        }
         else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
             return RapidSubscriptionCancel(json: ca)
         }
@@ -462,6 +480,18 @@ extension RapidSerialization {
         }
     }
     
+    struct Delete {
+        static let name = "del"
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
+        
+        struct DocumentID {
+            static let name = "doc-id"
+        }
+    }
+    
     struct Subscription {
         static let name = "sub"
         
@@ -520,6 +550,10 @@ extension RapidSerialization {
         struct Document {
             static let name = "doc"
         }
+    }
+    
+    struct SubscriptionDocRemoved {
+        static let name = "rm"
     }
     
     struct Document {

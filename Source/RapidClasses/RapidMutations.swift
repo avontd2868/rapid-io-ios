@@ -17,7 +17,7 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     let alwaysTimeout = false
     
     /// Document JSON
-    let value: [AnyHashable: Any]?
+    let value: [AnyHashable: Any]
     
     /// Collection ID
     let collectionID: String
@@ -40,25 +40,11 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: Document JSON
     ///   - callback: Mutation callback
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, callback: RapidMutationCallback?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], callback: RapidMutationCallback?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
         self.callback = callback
-    }
-    
-    /// Initialize mutation request
-    ///
-    /// - Parameters:
-    ///   - collectionID: Collection ID
-    ///   - documentID: Document ID
-    ///   - value: Document JSON
-    ///   - callback: Mutation callback
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any]?, deletionCallback: RapidDeletionCallback?) {
-        self.value = value
-        self.collectionID = collectionID
-        self.documentID = documentID
-        self.callback = { error, _ in deletionCallback?(error) }
     }
     
 }
@@ -96,7 +82,7 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
 // MARK: Document merge
 
 /// Document merge request
-class RapidDocumentMerge: NSObject, RapidMergeRequest {
+class RapidDocumentMerge: NSObject, RapidMutationRequest {
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
@@ -160,6 +146,72 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
             RapidLogger.log(message: "Rapid merge failed - document \(self.documentID) in collection \(self.collectionID)")
             
             self.callback?(error.error, nil)
+        }
+    }
+}
+
+// MARK: Document delete
+
+/// Document merge request
+class RapidDocumentDelete: NSObject, RapidMutationRequest {
+    
+    /// Request should timeout only if `Rapid.timeout` is set
+    let alwaysTimeout = false
+    
+    /// Collection ID
+    let collectionID: String
+    
+    /// Document ID
+    let documentID: String
+    
+    /// Merge callback
+    let callback: RapidDeletionCallback?
+    
+    /// Timeout delegate
+    internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
+    
+    internal var requestTimeoutTimer: Timer?
+    
+    /// Initialize merge request
+    ///
+    /// - Parameters:
+    ///   - collectionID: Collection ID
+    ///   - documentID: Document ID
+    ///   - callback: Delete callback
+    init(collectionID: String, documentID: String, callback: RapidDeletionCallback?) {
+        self.collectionID = collectionID
+        self.documentID = documentID
+        self.callback = callback
+    }
+    
+}
+
+extension RapidDocumentDelete: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        return try RapidSerialization.serialize(delete: self, withIdentifiers: identifiers)
+    }
+}
+
+extension RapidDocumentDelete: RapidTimeoutRequest {
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        invalidateTimer()
+        
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) deleted")
+            
+            self.callback?(nil)
+        }
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        invalidateTimer()
+        
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid delete failed - document \(self.documentID) in collection \(self.collectionID)")
+            
+            self.callback?(error.error)
         }
     }
 }

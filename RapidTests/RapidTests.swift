@@ -405,7 +405,7 @@ class RapidTests: XCTestCase {
         manager.subscribe(subscription)
         manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil))
         manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], callback: nil))
-        manager.merge(mergeRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil))
+        manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil))
         manager.sendEmptyRequest()
         subscription.unsubscribe()
         

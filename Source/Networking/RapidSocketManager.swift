@@ -97,15 +97,6 @@ class RapidSocketManager {
         }
     }
     
-    /// Send merge event
-    ///
-    /// - Parameter mergeRequest: Merge object
-    func merge<T: RapidMergeRequest>(mergeRequest: T) {
-        websocketQueue.async { [weak self] in
-            self?.post(event: mergeRequest)
-        }
-    }
-    
     /// Send register subscription event
     ///
     /// - Parameter subscription: Subscription object

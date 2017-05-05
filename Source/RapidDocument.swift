@@ -164,7 +164,7 @@ public class RapidDocument: NSObject {
     /// - Parameters:
     ///   - value: Dictionary with new values that the document should contain
     ///   - completion: Mutation callback which provides a client either with an error or with a successfully mutated object
-    public func mutate(value: [AnyHashable: Any]?, completion: RapidMutationCallback? = nil) {
+    public func mutate(value: [AnyHashable: Any], completion: RapidMutationCallback? = nil) {
         let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, callback: completion)
         socketManager.mutate(mutationRequest: mutation)
     }
@@ -179,7 +179,7 @@ public class RapidDocument: NSObject {
     ///   - completion: merge callback which provides a client either with an error or with a successfully merged values
     public func merge(value: [AnyHashable: Any], completion: RapidMergeCallback? = nil) {
         let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, callback: completion)
-        socketManager.merge(mergeRequest: merge)
+        socketManager.mutate(mutationRequest: merge)
     }
     
     /// Delete the document
@@ -188,8 +188,8 @@ public class RapidDocument: NSObject {
     ///
     /// - Parameter completion: Delete callback which provides a client either with an error or with the document object how it looked before it was deleted
     public func delete(completion: RapidDeletionCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: nil, deletionCallback: completion)
-        socketManager.mutate(mutationRequest: mutation)
+        let deletion = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, callback: completion)
+        socketManager.mutate(mutationRequest: deletion)
     }
     
     /// Subscribe for listening to the document changes

@@ -90,7 +90,6 @@ extension RapidTests {
     
     func testOrderingUpdates() {
         let promise = expectation(description: "Ordering")
-        Rapid.debugLoggingEnabled = true
 
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
