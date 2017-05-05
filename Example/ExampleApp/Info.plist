@@ -36,5 +36,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>ClientIdentifier</key>
+	<string>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9</string>
 </dict>
 </plist>

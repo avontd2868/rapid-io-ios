@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        assert(Bundle.main.infoDictionary?["ClientIdentifier"] as? String != nil, "Client identifier not defined")
+        
         Rapid.timeout = 10
         Rapid.debugLoggingEnabled = true
         Rapid.configure(withAPIKey: "ws://rapid-dev.westus.cloudapp.azure.com:8080")

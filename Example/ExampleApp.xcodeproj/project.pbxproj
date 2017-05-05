@@ -9,12 +9,17 @@
 /* Begin PBXBuildFile section */
 		C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; };
 		C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C14F27441EA7A3D90079093E /* UpdateAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14F27431EA7A3D90079093E /* UpdateAppViewController.swift */; };
-		C1C753861EA74C7200772AFB /* QueryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C753851EA74C7200772AFB /* QueryViewController.swift */; };
-		C1D28AB41E8BB25F00EE5582 /* AppTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */; };
-		C1D28AB71E8BB4BB00EE5582 /* AppObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */; };
+		C1BE0C5A1EBC98E20062B0B7 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C591EBC98E20062B0B7 /* ListViewController.swift */; };
+		C1BE0C5E1EBC9CFA0062B0B7 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C5D1EBC9CFA0062B0B7 /* Task.swift */; };
+		C1BE0C621EBCA2AA0062B0B7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C611EBCA2AA0062B0B7 /* Constants.swift */; };
+		C1BE0C661EBCA5AA0062B0B7 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C651EBCA5AA0062B0B7 /* TaskCell.swift */; };
+		C1BE0C691EBCA6410062B0B7 /* OrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C681EBCA6410062B0B7 /* OrderViewController.swift */; };
+		C1BE0C6B1EBCA64C0062B0B7 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C6A1EBCA64C0062B0B7 /* FilterViewController.swift */; };
+		C1BE0C761EBCBDBB0062B0B7 /* BEMAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C6F1EBCBDBB0062B0B7 /* BEMAnimationManager.m */; };
+		C1BE0C771EBCBDBB0062B0B7 /* BEMCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C711EBCBDBB0062B0B7 /* BEMCheckBox.m */; };
+		C1BE0C781EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C731EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m */; };
+		C1BE0C791EBCBDBB0062B0B7 /* BEMPathManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C751EBCBDBB0062B0B7 /* BEMPathManager.m */; };
 		C1D6E8761E785CFA007589FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8751E785CFA007589FC /* AppDelegate.swift */; };
-		C1D6E8781E785CFA007589FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8771E785CFA007589FC /* ViewController.swift */; };
 		C1D6E87B1E785CFA007589FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E8791E785CFA007589FC /* Main.storyboard */; };
 		C1D6E87D1E785CFA007589FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E87C1E785CFA007589FC /* Assets.xcassets */; };
 		C1D6E8801E785CFA007589FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E87E1E785CFA007589FC /* LaunchScreen.storyboard */; };
@@ -68,13 +73,23 @@
 
 /* Begin PBXFileReference section */
 		C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Rapid.xcodeproj; path = ../Rapid.xcodeproj; sourceTree = "<group>"; };
-		C14F27431EA7A3D90079093E /* UpdateAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateAppViewController.swift; sourceTree = "<group>"; };
-		C1C753851EA74C7200772AFB /* QueryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryViewController.swift; sourceTree = "<group>"; };
-		C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTableViewCell.swift; sourceTree = "<group>"; };
-		C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppObject.swift; sourceTree = "<group>"; };
+		C1BE0C591EBC98E20062B0B7 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		C1BE0C5D1EBC9CFA0062B0B7 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		C1BE0C611EBCA2AA0062B0B7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		C1BE0C651EBCA5AA0062B0B7 /* TaskCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
+		C1BE0C681EBCA6410062B0B7 /* OrderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderViewController.swift; sourceTree = "<group>"; };
+		C1BE0C6A1EBCA64C0062B0B7 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		C1BE0C6D1EBCBDBA0062B0B7 /* ExampleApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ExampleApp-Bridging-Header.h"; sourceTree = "<group>"; };
+		C1BE0C6E1EBCBDBB0062B0B7 /* BEMAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMAnimationManager.h; sourceTree = "<group>"; };
+		C1BE0C6F1EBCBDBB0062B0B7 /* BEMAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMAnimationManager.m; sourceTree = "<group>"; };
+		C1BE0C701EBCBDBB0062B0B7 /* BEMCheckBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMCheckBox.h; sourceTree = "<group>"; };
+		C1BE0C711EBCBDBB0062B0B7 /* BEMCheckBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMCheckBox.m; sourceTree = "<group>"; };
+		C1BE0C721EBCBDBB0062B0B7 /* BEMCheckBoxGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMCheckBoxGroup.h; sourceTree = "<group>"; };
+		C1BE0C731EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMCheckBoxGroup.m; sourceTree = "<group>"; };
+		C1BE0C741EBCBDBB0062B0B7 /* BEMPathManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMPathManager.h; sourceTree = "<group>"; };
+		C1BE0C751EBCBDBB0062B0B7 /* BEMPathManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMPathManager.m; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E8751E785CFA007589FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C1D6E8771E785CFA007589FC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C1D6E87A1E785CFA007589FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C1D6E87C1E785CFA007589FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1D6E87F1E785CFA007589FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -112,6 +127,22 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C1BE0C6C1EBCBDA50062B0B7 /* Checbox */ = {
+			isa = PBXGroup;
+			children = (
+				C1BE0C6E1EBCBDBB0062B0B7 /* BEMAnimationManager.h */,
+				C1BE0C6F1EBCBDBB0062B0B7 /* BEMAnimationManager.m */,
+				C1BE0C701EBCBDBB0062B0B7 /* BEMCheckBox.h */,
+				C1BE0C711EBCBDBB0062B0B7 /* BEMCheckBox.m */,
+				C1BE0C721EBCBDBB0062B0B7 /* BEMCheckBoxGroup.h */,
+				C1BE0C731EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m */,
+				C1BE0C741EBCBDBB0062B0B7 /* BEMPathManager.h */,
+				C1BE0C751EBCBDBB0062B0B7 /* BEMPathManager.m */,
+				C1BE0C6D1EBCBDBA0062B0B7 /* ExampleApp-Bridging-Header.h */,
+			);
+			name = Checbox;
+			sourceTree = "<group>";
+		};
 		C1D6E8691E785CFA007589FC = {
 			isa = PBXGroup;
 			children = (
@@ -134,13 +165,15 @@
 		C1D6E8741E785CFA007589FC /* ExampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				C1BE0C6C1EBCBDA50062B0B7 /* Checbox */,
 				C1D6E8751E785CFA007589FC /* AppDelegate.swift */,
-				C1D6E8771E785CFA007589FC /* ViewController.swift */,
-				C1D28AB31E8BB25F00EE5582 /* AppTableViewCell.swift */,
-				C1D28AB61E8BB4BB00EE5582 /* AppObject.swift */,
-				C1C753851EA74C7200772AFB /* QueryViewController.swift */,
-				C14F27431EA7A3D90079093E /* UpdateAppViewController.swift */,
 				C1D6E8791E785CFA007589FC /* Main.storyboard */,
+				C1BE0C591EBC98E20062B0B7 /* ListViewController.swift */,
+				C1BE0C5D1EBC9CFA0062B0B7 /* Task.swift */,
+				C1BE0C651EBCA5AA0062B0B7 /* TaskCell.swift */,
+				C1BE0C611EBCA2AA0062B0B7 /* Constants.swift */,
+				C1BE0C681EBCA6410062B0B7 /* OrderViewController.swift */,
+				C1BE0C6A1EBCA64C0062B0B7 /* FilterViewController.swift */,
 				C1D6E87C1E785CFA007589FC /* Assets.xcassets */,
 				C1D6E87E1E785CFA007589FC /* LaunchScreen.storyboard */,
 				C1D6E8811E785CFA007589FC /* Info.plist */,
@@ -210,6 +243,7 @@
 					C1D6E8711E785CFA007589FC = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = B4866X7S79;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 					};
 					C1D6E8851E785CFB007589FC = {
@@ -286,12 +320,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1D6E8781E785CFA007589FC /* ViewController.swift in Sources */,
-				C1D28AB41E8BB25F00EE5582 /* AppTableViewCell.swift in Sources */,
-				C1D28AB71E8BB4BB00EE5582 /* AppObject.swift in Sources */,
-				C14F27441EA7A3D90079093E /* UpdateAppViewController.swift in Sources */,
+				C1BE0C5E1EBC9CFA0062B0B7 /* Task.swift in Sources */,
+				C1BE0C791EBCBDBB0062B0B7 /* BEMPathManager.m in Sources */,
+				C1BE0C661EBCA5AA0062B0B7 /* TaskCell.swift in Sources */,
+				C1BE0C6B1EBCA64C0062B0B7 /* FilterViewController.swift in Sources */,
+				C1BE0C781EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m in Sources */,
+				C1BE0C771EBCBDBB0062B0B7 /* BEMCheckBox.m in Sources */,
 				C1D6E8761E785CFA007589FC /* AppDelegate.swift in Sources */,
-				C1C753861EA74C7200772AFB /* QueryViewController.swift in Sources */,
+				C1BE0C5A1EBC98E20062B0B7 /* ListViewController.swift in Sources */,
+				C1BE0C691EBCA6410062B0B7 /* OrderViewController.swift in Sources */,
+				C1BE0C621EBCA2AA0062B0B7 /* Constants.swift in Sources */,
+				C1BE0C761EBCBDBB0062B0B7 /* BEMAnimationManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,12 +475,15 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.ExampleApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ExampleApp/ExampleApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -451,12 +493,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.ExampleApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ExampleApp/ExampleApp-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
