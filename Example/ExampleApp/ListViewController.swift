@@ -26,6 +26,7 @@ class ListViewController: UIViewController {
         super.viewDidLoad()
 
         setupUI()
+        subscribe()
     }
 
     // MARK: Actions
@@ -48,6 +49,7 @@ fileprivate extension ListViewController {
     func setupUI() {
         searchBar = UISearchBar()
         searchBar.delegate = self
+        searchBar.enablesReturnKeyAutomatically = false
         navigationItem.titleView = searchBar
         
         tableView.dataSource = self
@@ -66,16 +68,35 @@ fileprivate extension ListViewController {
         let collection = Rapid.collection(named: Constants.collectionName)
         
         if let filter = filter {
-            collection.filtered(by: filter)
+            if let text = searchBar.text, !text.isEmpty {
+                let combinedFilter = RapidFilter.or([
+                    RapidFilter.contains(keyPath: Task.titleAttributeName, subString: text),
+                    RapidFilter.contains(keyPath: Task.descriptionAttributeName, subString: text)
+                    ])
+                collection.filtered(by: RapidFilter.and([filter, combinedFilter]))
+            }
+            else {
+                collection.filtered(by: filter)
+            }
+        }
+        else if let text = searchBar.text, !text.isEmpty {
+            let combinedFilter = RapidFilter.or([
+                RapidFilter.contains(keyPath: Task.titleAttributeName, subString: text),
+                RapidFilter.contains(keyPath: Task.descriptionAttributeName, subString: text)
+                ])
+            collection.filtered(by: combinedFilter)
         }
         
         subscription = collection.order(by: ordering).subscribe(completion: { (error, documents) in
-            
+            self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
+            self.tableView.reloadData()
         })
     }
     
     func presentNewTaskController() {
+        let controller = self.storyboard!.instantiateViewController(withIdentifier: "UpsertTaskViewController")
         
+        present(controller, animated: true, completion: nil)
     }
     
     func presentOrderModal() {
@@ -101,7 +122,11 @@ fileprivate extension ListViewController {
     }
     
     func presentEditTask(_ task: Task) {
+        let controller = self.storyboard?.instantiateViewController(withIdentifier: "UpsertTaskViewController") as! UINavigationController
         
+        (controller.viewControllers.first as? UpsertTaskViewController)?.task = task
+        
+        present(controller, animated: true, completion: nil)
     }
 }
 
@@ -131,6 +156,18 @@ extension ListViewController: UITableViewDataSource, UITableViewDelegate {
         let task = tasks[indexPath.row]
         presentEditTask(task)
     }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let task = tasks[indexPath.row]
+            
+            Rapid.collection(named: Constants.collectionName).document(withID: task.taskID).delete()
+        }
+    }
 }
 
 extension ListViewController: TaskCellDelegate {
@@ -147,6 +184,10 @@ extension ListViewController: TaskCellDelegate {
 // MARK: Search bar delegate
 extension ListViewController: UISearchBarDelegate {
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        subscribe()
+    }
 }
 
 // MARK: Ordering delegate

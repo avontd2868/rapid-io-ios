@@ -19,8 +19,8 @@ class FilterViewController: UIViewController {
     weak var delegate: FilterViewControllerDelegate?
     var filter: RapidFilter?
     
-    var tagsTableViewControler: TagsTableViewController!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
+    @IBOutlet weak var tagsTableView: TagsTableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,12 +28,6 @@ class FilterViewController: UIViewController {
         setupUI()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "EmbedTagsSegue" {
-            tagsTableViewControler = segue.destination as! TagsTableViewController
-        }
-    }
-
     // MARK: Actions
     
     @IBAction func cancel(_ sender: Any) {
@@ -48,24 +42,12 @@ class FilterViewController: UIViewController {
             operands.append(RapidFilter.equal(keyPath: Task.completedAttributeName, value: completed))
         }
         
-        let selectedRows = tagsTableViewControler.selectedRows
-        if selectedRows.count < tagsTableViewControler.numberOfRows {
+        let selectedTags = tagsTableView.selectedTags
+        if selectedTags.count > 0 {
             var tagFilters = [RapidFilter]()
             
-            for row in selectedRows {
-                switch row {
-                case 0:
-                    tagFilters.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.home.rawValue))
-                    
-                case 1:
-                    tagFilters.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.work.rawValue))
-                    
-                case 2:
-                    tagFilters.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.other.rawValue))
-                    
-                default:
-                    break
-                }
+            for tag in selectedTags {
+                tagFilters.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: tag.rawValue))
             }
             
             operands.append(RapidFilter.or(tagFilters))
@@ -102,28 +84,28 @@ fileprivate extension FilterViewController {
                 else if let tagOrFilter = operand as? RapidFilterCompound {
                     tagsSet = true
                     
-                    var rows = [Int]()
+                    var tags = [Tag]()
                     for case let tagFilter as RapidFilterSimple in tagOrFilter.operands {
                         switch tagFilter.value as? String {
                         case .some(Tag.home.rawValue):
-                            rows.append(0)
+                            tags.append(.home)
                             
                         case .some(Tag.work.rawValue):
-                            rows.append(1)
+                            tags.append(.work)
 
                         case .some(Tag.other.rawValue):
-                            rows.append(2)
+                            tags.append(.other)
                             
                         default:
                             break
                         }
                     }
-                    tagsTableViewControler.selectRows(rows)
+                    tagsTableView.selectTags(tags)
                 }
             }
             
             if !tagsSet {
-                tagsTableViewControler.selectAll()
+                tagsTableView.selectAll()
             }
             if !completionSet {
                 segmentedControl.selectedSegmentIndex = 1
@@ -131,53 +113,7 @@ fileprivate extension FilterViewController {
         }
         else {
             segmentedControl.selectedSegmentIndex = 1
-            tagsTableViewControler.selectAll()
-        }
-    }
-}
-
-class TagsTableViewController: UITableViewController {
-    
-    let numberOfRows = 3
-    
-    var selectedRows: [Int] {
-        var rows = [Int]()
-        
-        for row in 0..<numberOfRows {
-            if let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0)),
-                cell.accessoryType == .checkmark {
-                
-                rows.append(row)
-            }
-        }
-        
-        return rows
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) else {
-            return
-        }
-        
-        if cell.accessoryType == .checkmark && selectedRows.count > 1 {
-            cell.accessoryType = .none
-        }
-        else {
-            cell.accessoryType = .checkmark
-        }
-    }
-    
-    func selectRows(_ rows: [Int]) {
-        for row in 0..<numberOfRows {
-            let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0))
-            cell?.accessoryType = rows.contains(row) ? .checkmark : .none
-        }
-    }
-    
-    func selectAll() {
-        for row in 0..<numberOfRows {
-            let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0))
-            cell?.accessoryType = .checkmark
+            tagsTableView.selectTags([])
         }
     }
 }

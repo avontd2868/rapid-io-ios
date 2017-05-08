@@ -28,6 +28,7 @@ class TaskCell: UITableViewCell {
         
         titleLabel.text = task.title
         descriptionLabel.text = task.description
+        checkBox.on = task.completed
         configurePriorityStackView(forPriority: task.priority)
         configureTagsStackView(withTags: task.tags)
     }
@@ -42,12 +43,13 @@ fileprivate extension TaskCell {
             view.removeFromSuperview()
         }
         
-        for _ in 0..<priority.rawValue {
+        for _ in 0...priority.rawValue {
             let dot = UIView()
             dot.backgroundColor = .black
             dot.translatesAutoresizingMaskIntoConstraints = false
-            let width = NSLayoutConstraint(item: dot, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 10)
-            let height = NSLayoutConstraint(item: dot, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 10)
+            dot.layer.cornerRadius = 3
+            let width = NSLayoutConstraint(item: dot, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 6)
+            let height = NSLayoutConstraint(item: dot, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 6)
             dot.addConstraints([width, height])
             
             priorityStackView.addArrangedSubview(dot)
@@ -64,8 +66,9 @@ fileprivate extension TaskCell {
             let dot = UIView()
             dot.backgroundColor = tag.color
             dot.translatesAutoresizingMaskIntoConstraints = false
-            let width = NSLayoutConstraint(item: dot, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 20)
-            let height = NSLayoutConstraint(item: dot, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 20)
+            dot.layer.cornerRadius = 7.5
+            let width = NSLayoutConstraint(item: dot, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 15)
+            let height = NSLayoutConstraint(item: dot, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 15)
             dot.addConstraints([width, height])
             
             tagsStackView.addArrangedSubview(dot)

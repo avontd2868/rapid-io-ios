@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Rapid.timeout = 10
         Rapid.debugLoggingEnabled = true
         Rapid.configure(withAPIKey: "ws://rapid-dev.westus.cloudapp.azure.com:8080")
-        Rapid.authorize(withAccessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6eyJpb3NhcHBzIjp7InJlYWQiOnRydWUsIndyaXRlIjpmYWxzZX19fQ.yRAqtvmB1BmUPLu2JOhnnarzV4DxGZYXt0c_sLOO6Dc")
+        Rapid.authorize(withAccessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6ImRlbW9hcHAtLioiLCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.9e1b1eT1cfoxz7QqydF0eiFRiFP6qvHRHsqHxJ_ymuo")
         Rapid.isCacheEnabled = true
         return true
     }

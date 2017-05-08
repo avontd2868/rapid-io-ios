@@ -13,6 +13,21 @@ enum Priority: Int {
     case low
     case medium
     case high
+    
+    static let allValues: [Priority] = [.low, .medium, .high]
+    
+    var title: String {
+        switch self {
+        case .low:
+            return "Low"
+            
+        case .medium:
+            return "Medium"
+            
+        case .high:
+            return "High"
+        }
+    }
 }
 
 enum Tag: String {
@@ -20,16 +35,31 @@ enum Tag: String {
     case work
     case other
     
+    static let allValues: [Tag] = [.home, .work, .other]
+    
     var color: UIColor {
         switch self {
         case .home:
-            return .blue
+            return UIColor(red: 116/255.0, green: 204/255.0, blue: 244/255.0, alpha: 1)
             
         case .work:
-            return .red
+        return UIColor(red: 237/255.0, green: 80/255.0, blue: 114/255.0, alpha: 1)
             
         case .other:
-            return .green
+            return UIColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .home:
+            return "Home"
+            
+        case .work:
+            return "Work"
+            
+        case .other:
+            return "Other"
         }
     }
 }
@@ -67,7 +97,7 @@ struct Task {
 extension Task {
     
     static let titleAttributeName = "title"
-    static let descriptionAttributeName = "title"
+    static let descriptionAttributeName = "desc"
     static let createdAttributeName = "created"
     static let priorityAttributeName = "priority"
     static let tagsAttributeName = "tags"

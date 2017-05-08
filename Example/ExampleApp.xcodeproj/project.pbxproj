@@ -19,6 +19,8 @@
 		C1BE0C771EBCBDBB0062B0B7 /* BEMCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C711EBCBDBB0062B0B7 /* BEMCheckBox.m */; };
 		C1BE0C781EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C731EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m */; };
 		C1BE0C791EBCBDBB0062B0B7 /* BEMPathManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C751EBCBDBB0062B0B7 /* BEMPathManager.m */; };
+		C1BE0C7B1EC05EAD0062B0B7 /* UpsertTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C7A1EC05EAD0062B0B7 /* UpsertTaskViewController.swift */; };
+		C1BE0C7D1EC066990062B0B7 /* TagsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C7C1EC066990062B0B7 /* TagsTableView.swift */; };
 		C1D6E8761E785CFA007589FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8751E785CFA007589FC /* AppDelegate.swift */; };
 		C1D6E87B1E785CFA007589FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E8791E785CFA007589FC /* Main.storyboard */; };
 		C1D6E87D1E785CFA007589FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1D6E87C1E785CFA007589FC /* Assets.xcassets */; };
@@ -88,6 +90,8 @@
 		C1BE0C731EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMCheckBoxGroup.m; sourceTree = "<group>"; };
 		C1BE0C741EBCBDBB0062B0B7 /* BEMPathManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMPathManager.h; sourceTree = "<group>"; };
 		C1BE0C751EBCBDBB0062B0B7 /* BEMPathManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMPathManager.m; sourceTree = "<group>"; };
+		C1BE0C7A1EC05EAD0062B0B7 /* UpsertTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpsertTaskViewController.swift; sourceTree = "<group>"; };
+		C1BE0C7C1EC066990062B0B7 /* TagsTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsTableView.swift; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E8751E785CFA007589FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1D6E87A1E785CFA007589FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -174,6 +178,8 @@
 				C1BE0C611EBCA2AA0062B0B7 /* Constants.swift */,
 				C1BE0C681EBCA6410062B0B7 /* OrderViewController.swift */,
 				C1BE0C6A1EBCA64C0062B0B7 /* FilterViewController.swift */,
+				C1BE0C7C1EC066990062B0B7 /* TagsTableView.swift */,
+				C1BE0C7A1EC05EAD0062B0B7 /* UpsertTaskViewController.swift */,
 				C1D6E87C1E785CFA007589FC /* Assets.xcassets */,
 				C1D6E87E1E785CFA007589FC /* LaunchScreen.storyboard */,
 				C1D6E8811E785CFA007589FC /* Info.plist */,
@@ -321,7 +327,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1BE0C5E1EBC9CFA0062B0B7 /* Task.swift in Sources */,
+				C1BE0C7B1EC05EAD0062B0B7 /* UpsertTaskViewController.swift in Sources */,
 				C1BE0C791EBCBDBB0062B0B7 /* BEMPathManager.m in Sources */,
+				C1BE0C7D1EC066990062B0B7 /* TagsTableView.swift in Sources */,
 				C1BE0C661EBCA5AA0062B0B7 /* TaskCell.swift in Sources */,
 				C1BE0C6B1EBCA64C0062B0B7 /* FilterViewController.swift in Sources */,
 				C1BE0C781EBCBDBB0062B0B7 /* BEMCheckBoxGroup.m in Sources */,
