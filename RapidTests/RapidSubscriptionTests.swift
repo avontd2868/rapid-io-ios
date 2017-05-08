@@ -749,7 +749,7 @@ extension RapidTests {
         ]
         
         let promise = expectation(description: "Subscription updates")
-        
+        Rapid.debugLoggingEnabled = true
         var val = true
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
@@ -988,7 +988,8 @@ fileprivate extension RapidTests {
 // MARK: Mock subscription handler delegate
 class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandler {
     
-    let dispatchQueue = DispatchQueue.main
+    let websocketQueue: OperationQueue
+    let parseQueue: OperationQueue
     var cache: RapidCache?
     let unsubscriptionHandler: (_ handler: RapidUnsubscriptionHandler) -> Void
     var authorization: RapidAuthorization?
@@ -998,6 +999,14 @@ class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandle
     }
     
     init(authorization: RapidAuthorization? = nil, unsubscriptionHandler: @escaping (_ handler: RapidUnsubscriptionHandler) -> Void) {
+        self.websocketQueue = OperationQueue()
+        websocketQueue.name = "Websocket queue"
+        websocketQueue.maxConcurrentOperationCount = 1
+
+        self.parseQueue = OperationQueue()
+        parseQueue.name = "Parse queue"
+        parseQueue.maxConcurrentOperationCount = 1
+        
         self.unsubscriptionHandler = unsubscriptionHandler
         self.authorization = authorization
     }

@@ -28,8 +28,8 @@ class RapidSocketManager {
     fileprivate(set) var auth: RapidAuthorization?
     
     /// Dedicated threads
-    fileprivate let websocketQueue: DispatchQueue
-    fileprivate let parseQueue: DispatchQueue
+    internal let websocketQueue: OperationQueue
+    internal let parseQueue: OperationQueue
     fileprivate let mainQueue = DispatchQueue.main
     
     /// Queue of events that are about to be sent to the server
@@ -45,8 +45,16 @@ class RapidSocketManager {
     fileprivate var nopTimer: Timer?
     
     init(networkHandler: RapidNetworkHandler) {
-        self.websocketQueue = DispatchQueue(label: "RapidWebsocketQueue-\(networkHandler.socketURL.lastPathComponent)", attributes: [])
-        self.parseQueue = DispatchQueue(label: "RapidParseQueue-\(networkHandler.socketURL.lastPathComponent)", attributes: [])
+        self.websocketQueue = OperationQueue()
+        self.websocketQueue.name = "RapidWebsocketQueue-\(networkHandler.socketURL.lastPathComponent)"
+        self.websocketQueue.maxConcurrentOperationCount = 1
+        self.websocketQueue.underlyingQueue = DispatchQueue(label: "RapidWebsocketQueue-\(networkHandler.socketURL.lastPathComponent)", attributes: [])
+        
+        self.parseQueue = OperationQueue()
+        self.parseQueue.name = "RapidParseQueue-\(networkHandler.socketURL.lastPathComponent)"
+        self.parseQueue.maxConcurrentOperationCount = 1
+        self.parseQueue.underlyingQueue = DispatchQueue(label: "RapidParseQueue-\(networkHandler.socketURL.lastPathComponent)", attributes: [])
+
         self.networkHandler = networkHandler
         
         self.networkHandler.delegate = self        
@@ -446,10 +454,6 @@ fileprivate extension RapidSocketManager {
 
 // MARK: Subscription handler delegate
 extension RapidSocketManager: RapidSubscriptionHandlerDelegate {
-    
-    var dispatchQueue: DispatchQueue {
-        return parseQueue
-    }
     
     var authorization: RapidAuthorization? {
         return auth

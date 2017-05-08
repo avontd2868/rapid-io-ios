@@ -86,8 +86,11 @@ fileprivate struct RapidDocSnapOperationSet: Sequence {
 
 /// Subscription handler delegate
 protocol RapidSubscriptionHandlerDelegate: class {
+    /// Dedicated queue for task management
+    var websocketQueue: OperationQueue { get }
+    
     /// Dedicated queue for parsing
-    var dispatchQueue: DispatchQueue { get }
+    var parseQueue: OperationQueue { get }
     
     /// Cache handler
     var cacheHandler: RapidCacheHandler? { get }
@@ -171,7 +174,7 @@ class RapidSubscriptionHandler: NSObject {
     ///
     /// - Parameter subscription: New subscription object
     func registerSubscription(subscription: RapidSubscriptionInstance) {
-        delegate?.dispatchQueue.async {
+        delegate?.websocketQueue.async {
             self.appendSubscription(subscription)
             
             // Pass the last known value immediatelly if there is any
@@ -185,7 +188,7 @@ class RapidSubscriptionHandler: NSObject {
     ///
     /// - Parameter handler: Previously creaated unsubscription handler
     func retryUnsubscription(withHandler handler: RapidUnsubscriptionHandler) {
-        delegate?.dispatchQueue.async { [weak self] in
+        delegate?.websocketQueue.async { [weak self] in
             if self?.state == .unsubscribing {
                 self?.delegate?.unsubscribe(handler: handler)
             }
@@ -194,7 +197,7 @@ class RapidSubscriptionHandler: NSObject {
     
     /// Inform handler about being unsubscribed
     func didUnsubscribe() {
-        delegate?.dispatchQueue.async { [weak self] in
+        delegate?.websocketQueue.async { [weak self] in
             self?.state = .unsubscribed
         }
     }
@@ -221,7 +224,7 @@ fileprivate extension RapidSubscriptionHandler {
     /// Load cached data if there are any
     func loadCachedData() {
         delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, withSecret: delegate?.authorization?.accessToken, completion: { [weak self] (cachedValue) in
-            self?.delegate?.dispatchQueue.async {
+            self?.delegate?.parseQueue.async {
                 if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedValue = cachedValue as? [RapidDocumentSnapshot] {
                     let batch = RapidSubscriptionBatch(withSubscriptionID: subscriptionID, collection: cachedValue)
                     self?.receivedNewValue(batch)
@@ -235,7 +238,7 @@ fileprivate extension RapidSubscriptionHandler {
     /// - Parameter subscription: New subscription object
     func appendSubscription(_ subscription: RapidSubscriptionInstance) {
         subscription.registerUnsubscribeCallback { [weak self] instance in
-            self?.delegate?.dispatchQueue.async {
+            self?.delegate?.websocketQueue.async {
                 self?.unsubscribe(instance: instance)
             }
         }
@@ -481,13 +484,13 @@ fileprivate extension RapidSubscriptionHandler {
 extension RapidSubscriptionHandler: RapidRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        delegate?.dispatchQueue.async {
+        delegate?.websocketQueue.async {
             self.state = .subscribed
         }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        delegate?.dispatchQueue.async {
+        delegate?.websocketQueue.async {
             RapidLogger.log(message: "Subscription failed \(self.subscriptionHash) with error \(error.error)")
             
             self.value = nil
@@ -500,7 +503,7 @@ extension RapidSubscriptionHandler: RapidRequest {
     }
     
     func receivedSubscriptionEvent(_ update: RapidSubscriptionBatch) {
-        delegate?.dispatchQueue.async {
+        delegate?.parseQueue.async {
             self.receivedNewValue(update)
         }
     }

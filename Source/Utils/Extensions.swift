@@ -102,3 +102,15 @@ extension URL {
         return totalSize
     }
 }
+
+extension OperationQueue {
+    
+    func async(execute work: @escaping @convention(block) () -> Void) {
+        if OperationQueue.current == self {
+            work()
+        }
+        else {
+            self.addOperation(work)
+        }
+    }
+}
