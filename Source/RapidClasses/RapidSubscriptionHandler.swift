@@ -143,7 +143,7 @@ class RapidSubscriptionHandler: NSObject {
         didSet {
             if let value = value {
                 // Store last known value to a cache
-                delegate?.cacheHandler?.storeValue(value, forSubscription: self)
+                delegate?.cacheHandler?.storeDataset(value, forSubscription: self)
             }
         }
     }

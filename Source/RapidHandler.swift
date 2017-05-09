@@ -14,20 +14,34 @@ protocol RapidCacheHandler: class {
     ///
     /// - Parameters:
     ///   - subscription: Subscription handler object
-    ///   - completion: Completion handler. If there are any cached data for the subscription they are passed in the completion handler parameter
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (_ value: Any?) -> Void)
+    ///   - completion: Completion handler. If there are any cached data for the subscription they are passed to the completion handler parameter
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (_ dataset: [RapidCachableObject]?) -> Void)
     
     /// Store data associated with a given subscription
     ///
     /// - Parameters:
     ///   - value: Data to be stored
     ///   - subscription: Subscription handler object
-    func storeValue(_ value: [CachableObject], forSubscription subscription: RapidSubscriptionHandler)
+    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHandler)
     
-    func storeObject(_ object: CachableObject)
+    /// Store single `RapidCachableObject`
+    ///
+    /// - Parameter object: Object that should be stored
+    func storeObject(_ object: RapidCachableObject)
     
-    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (_ value: Any?) -> Void)
+    /// Load single `RapidCachableObject` with given group ID and object ID
+    ///
+    /// - Parameters:
+    ///   - groupID: `RapidCachableObject` group ID
+    ///   - objectID: `RapidCachableObject` object ID
+    ///   - completion: Completion handler. If there is any cached object with given IDs it is passed to the completion handler parameter
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (_ object: RapidCachableObject?) -> Void)
     
+    /// Remove single `RapidCachableObject` from a cache
+    ///
+    /// - Parameters:
+    ///   - groupID: `RapidCachableObject` group ID
+    ///   - objectID: `RapidCachableObject` object ID
     func removeObject(withGroupID groupID: String, objectID: String)
 }
 
@@ -84,19 +98,19 @@ class RapidHandler: NSObject {
 
 extension RapidHandler: RapidCacheHandler {
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (Any?) -> Void) {
-        cache?.cache(forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken, completion: completion)
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping ([RapidCachableObject]?) -> Void) {
+        cache?.loadDataset(forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken, completion: completion)
     }
 
-    func storeValue(_ value: [CachableObject], forSubscription subscription: RapidSubscriptionHandler) {
-        cache?.save(data: value, forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken)
+    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHandler) {
+        cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken)
     }
     
-    func storeObject(_ object: CachableObject) {
+    func storeObject(_ object: RapidCachableObject) {
         cache?.save(object: object, withSecret: socketManager.auth?.accessToken)
     }
     
-    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (Any?) -> Void) {
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidCachableObject?) -> Void) {
         cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: socketManager.auth?.accessToken, completion: completion)
     }
     

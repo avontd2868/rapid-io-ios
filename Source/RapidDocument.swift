@@ -42,7 +42,7 @@ func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
 }
 
 /// Class representing Rapid.io document that is returned from a subscription callback
-public class RapidDocumentSnapshot: NSObject, NSCoding, CachableObject {
+public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
     
     /// Document ID
     public let id: String

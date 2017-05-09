@@ -1022,23 +1022,24 @@ class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandle
         self.unsubscriptionHandler(handler)
     }
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (Any?) -> Void) {
-        cache?.cache(forKey: subscription.subscriptionHash, secret: authorization?.accessToken, completion: completion)
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping ([RapidCachableObject]?) -> Void) {
+        cache?.loadDataset(forKey: subscription.subscriptionHash, secret: authorization?.accessToken, completion: completion)
     }
     
-    func storeValue(_ value: [CachableObject], forSubscription subscription: RapidSubscriptionHandler) {
-        cache?.save(data: value, forKey: subscription.subscriptionHash, secret: authorization?.accessToken)
+    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHandler) {
+        cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: authorization?.accessToken)
     }
     
-    func storeObject(_ object: CachableObject) {
+    func storeObject(_ object: RapidCachableObject) {
         cache?.save(object: object, withSecret: authorization?.accessToken)
     }
     
-    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (Any?) -> Void) {
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidCachableObject?) -> Void) {
         cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: authorization?.accessToken, completion: completion)
     }
     
     func removeObject(withGroupID groupID: String, objectID: String) {
         cache?.removeObject(withGroupID: groupID, objectID: objectID)
     }
+
 }
