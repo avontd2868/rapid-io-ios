@@ -49,6 +49,9 @@ struct RapidErrorInstance: RapidResponse {
         case .some(let type) where type == RapidSerialization.Error.ErrorType.ConnectionTerminated.name:
             error = .connectionTerminated(message: message)
             
+        case .some(let type) where type == RapidSerialization.Error.ErrorType.InvalidAuthToken.name:
+            error = .invalidAuthToken(message: message)
+            
         default:
             error = .default
         }
@@ -78,6 +81,7 @@ public enum RapidError: Error {
     case connectionTerminated(message: String?)
     case invalidData(reason: InvalidDataReason)
     case timeout
+    case invalidAuthToken(message: String?)
     case `default`
     
     public enum InvalidDataReason {

@@ -11,7 +11,3 @@ import Foundation
 /// Protocol describing mutation request
 protocol RapidMutationRequest: RapidTimeoutRequest, RapidSerializable {
 }
-
-/// Protocol describing merge request
-protocol RapidMergeRequest: RapidTimeoutRequest, RapidSerializable {
-}

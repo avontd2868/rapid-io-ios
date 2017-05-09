@@ -52,7 +52,7 @@ extension RapidTests {
         
         let document = self.rapid.collection(named: testCollectionName).newDocument()
         
-        document.mutate(value: ["name": "delete"], completion: { _, value in
+        document.mutate(value: ["name": "delete"], completion: { error, value in
             if let dict = value as? [AnyHashable: Any], dict["name"] as? String == "delete" {
                 self.rapid.collection(named: self.testCollectionName).document(withID: document.documentID).delete(completion: { (error) in
                     if error == nil {
@@ -70,5 +70,30 @@ extension RapidTests {
         
         
         waitForExpectations(timeout: 8, handler: nil)
+    }
+    
+    func testMerge() {
+        let promise = expectation(description: "Merge document")
+
+        rapid.authorize(withAccessToken: testAuthToken)
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"])
+        
+        runAfter(1) { 
+            var initial = true
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { (_, value) in
+                if initial {
+                    initial = false
+                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "desc", "bla": 6])
+                }
+                else if let dict = value.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Values doesn't match")
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
 }

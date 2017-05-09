@@ -23,16 +23,21 @@ class RapidTests: XCTestCase {
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
     
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6Imlvcy4qIiwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.c4txRLDwrgecxOIEfUqSYa_46DpVIKvymg4oG6TZRbU"
+    
     override func setUp() {
         super.setUp()
         
         rapid = Rapid(apiKey: "ws://13.64.77.202:8080")!
+        
+        rapid.authorize(withAccessToken: testAuthToken)
     }
     
     override func tearDown() {
         Rapid.timeout = 10
         Rapid.defaultTimeout = 300
         Rapid.heartbeatInterval = 30
+        rapid.isCacheEnabled = false
         rapid = nil
         
         super.tearDown()
@@ -216,12 +221,13 @@ class RapidTests: XCTestCase {
     }
     
     func testSnapshotInitialization() {
-        XCTAssertNil(RapidDocumentSnapshot(json: [1,2,3]), "Snapshot initialized")
-        XCTAssertNil(RapidDocumentSnapshot(json: ["id": 6]), "Snapshot initialized")
+        XCTAssertNil(RapidDocumentSnapshot(json: [1,2,3], collectionID: "1"), "Snapshot initialized")
+        XCTAssertNil(RapidDocumentSnapshot(json: ["id": 6], collectionID: "1"), "Snapshot initialized")
         
-        let snapshot = RapidDocumentSnapshot(id: "1", value: ["name": "testSnapshotInitialization"], etag: "1234")
+        let snapshot = RapidDocumentSnapshot(id: "1", collectionID: "1", value: ["name": "testSnapshotInitialization"], etag: "1234")
         
         XCTAssertEqual(snapshot.id, "1", "Wrong snapshot")
+        XCTAssertEqual(snapshot.collectionID, "1", "Wrong snapshot")
         XCTAssertEqual(snapshot.etag, "1234", "Wrong snapshot")
         XCTAssertEqual(snapshot.value?["name"] as? String, "testSnapshotInitialization", "Wrong snapshot")
     }
@@ -287,7 +293,7 @@ class RapidTests: XCTestCase {
         let promise = expectation(description: "Nop request")
         
         let mockHandler = MockNetworkHandler(socketURL: self.socketURL, writeCallback: { (handler, event, eventID) in
-            if event is RapidEmptyRequest {
+            if event is RapidEmptyRequest && (try? event.serialize(withIdentifiers: [:])) != nil {
                 promise.fulfill()
             }
             else {
@@ -325,7 +331,7 @@ class RapidTests: XCTestCase {
         let manager = RapidSocketManager(networkHandler: mockHandler)
         
         runAfter(1) {
-            XCTAssertEqual(manager.state, .connected)
+            XCTAssertEqual(manager.networkHandler.state, .connected)
         }
         
         waitForExpectations(timeout: 6, handler: nil)
@@ -400,8 +406,8 @@ class RapidTests: XCTestCase {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         manager.subscribe(subscription)
         manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil))
-        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], callback: nil))
-        manager.merge(mergeRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil))
+        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], callback: nil, cache: nil))
+        manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil, cache: nil))
         manager.sendEmptyRequest()
         subscription.unsubscribe()
         
@@ -415,9 +421,9 @@ class RapidTests: XCTestCase {
         
         var shouldConnect = true
         
-        let subscription1 = RapidDocumentSub(collectionID: self.testCollectionName, documentID: "1", callback: nil)
+        let subscription1 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
         let subscription2 = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
-        let subscription3 = RapidDocumentSub(collectionID: self.testCollectionName, documentID: "2", callback: nil)
+        let subscription3 = RapidDocumentSub(collectionID: testCollectionName, documentID: "2", callback: nil)
         let subHash = subscription2.subscriptionHash
         let mutatationDocumentID = "2"
         var acknowledgeAll = false
@@ -492,12 +498,12 @@ class RapidTests: XCTestCase {
         
         runAfter(0.5) { 
             manager.subscribe(subscription1)
-            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], callback: nil))
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], callback: nil, cache: nil))
             manager.subscribe(subscription2)
-            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], callback: nil))
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], callback: nil, cache: nil))
             manager.goOffline()
             runAfter(0.5, closure: {
-                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], callback: nil))
+                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], callback: nil, cache: nil))
                 manager.subscribe(subscription3)
                 shouldConnect = false
                 manager.goOnline()
@@ -510,6 +516,59 @@ class RapidTests: XCTestCase {
         }
         
         waitForExpectations(timeout: 6, handler: nil)
+    }
+    
+    func testDictionaryMerge() {
+        var dictionary: [AnyHashable: Any] = [
+            "att1": "val",
+            "att2": [1,2,3],
+            "att3": [
+                "att1": "val",
+                "att2": [432]
+            ]
+        ]
+        
+        dictionary.merge(with: [
+            "att2": [2,3,4],
+            "att4": true
+            ])
+        
+        XCTAssertTrue(dictionary == [
+            "att1": "val",
+            "att2": [2,3,4],
+            "att4": true,
+            "att3": [
+                "att1": "val",
+                "att2": [432]
+            ]
+            ], "Wrong merge")
+        
+        dictionary.merge(with: ["att1": NSNull()])
+        
+        XCTAssertTrue(dictionary == [
+            "att2": [2,3,4],
+            "att4": true,
+            "att3": [
+                "att1": "val",
+                "att2": [432]
+            ]
+            ], "Wrong merge")
+        
+        dictionary.merge(with: [
+            "att3": [
+                "att3": true
+            ]
+            ])
+        
+        XCTAssertTrue(dictionary == [
+            "att2": [2,3,4],
+            "att4": true,
+            "att3": [
+                "att1": "val",
+                "att2": [432],
+                "att3": true
+            ]
+            ], "Wrong merge")
     }
 }
 

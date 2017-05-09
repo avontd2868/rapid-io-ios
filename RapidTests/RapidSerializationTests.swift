@@ -11,6 +11,12 @@ import XCTest
 
 extension RapidTests {
     
+    func testJSONString() {
+        let dict = ["object": self]
+        
+        XCTAssertThrowsError(try dict.jsonString())
+    }
+    
     func testParseNil() {
         XCTAssertNil(RapidSerialization.parse(json: nil), "Nil parsed")
     }
@@ -21,13 +27,13 @@ extension RapidTests {
     }
     
     func testJSONValidationInvalidValue() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], callback: nil)
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], callback: nil, cache: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
     
     func testJSONalidationInvalidKey() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], callback: nil)
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], callback: nil, cache: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -337,12 +343,12 @@ extension RapidTests {
                     RapidFilter.greaterThan(keyPath: "urgency", value: 2),
                     RapidFilter.lessThan(keyPath: "urgency", value: 4)
                 ]))
+            .order(by:
+                RapidOrdering(keyPath: "urgency", ordering: .ascending)
+            )
             .order(by: [
                 RapidOrdering(keyPath: "sentDate", ordering: .descending)
                 ])
-            .order(by:
-                RapidOrdering(keyPath: "urgency", ordering: .ascending)
-                )
             .limit(to: 50, skip: 10)
         
         let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
@@ -375,8 +381,8 @@ extension RapidTests {
                     ]
                 ],
                 "order": [
-                    ["sentDate": "desc"],
-                    ["urgency": "asc"]
+                    ["urgency": "asc"],
+                    ["sentDate": "desc"]
                 ],
                 "limit": 50,
                 "skip": 10
@@ -520,17 +526,17 @@ extension RapidTests {
                     RapidFilter.greaterThan(keyPath: "urgency", value: 2),
                     RapidFilter.lessThan(keyPath: "urgency", value: 4)
                     ]))
-            .order(by: [
-                RapidOrdering(keyPath: "sentDate", ordering: .descending)
-                ])
             .order(by:
                 RapidOrdering(keyPath: "urgency", ordering: .ascending)
             )
+            .order(by: [
+                RapidOrdering(keyPath: "sentDate", ordering: .descending)
+                ])
             .limit(to: 50, skip: 10)
 
         let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
         
-        let hash = "\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-sentDate-d|o-urgency-a#t50s10"
+        let hash = "\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a|o-sentDate-d#t50s10"
         
         XCTAssertEqual(sub.subscriptionHash, hash)
     }
@@ -576,16 +582,6 @@ extension RapidTests {
 
     }
     
-    func testSubscriptionUpdateObject() {
-        let update1 = RapidSubscriptionUpdate(withUpdateJSON: ["test"])
-        let update2 = RapidSubscriptionUpdate(withUpdateJSON: [:])
-        let update3 = RapidSubscriptionUpdate(withUpdateJSON: ["doc": [:]])
-        
-        XCTAssertNil(update1, "Object created")
-        XCTAssertNil(update2, "Object created")
-        XCTAssertNil(update3, "Object created")
-    }
-    
     func testSubscriptionBatchObjectForValue() {
         let update1 = RapidSubscriptionBatch(withCollectionJSON: ["test"])
         let update2 = RapidSubscriptionBatch(withCollectionJSON: [:])
@@ -616,5 +612,15 @@ extension RapidTests {
         
         XCTAssertNil(ack1, "Object created")
         XCTAssertNil(ack2, "Object created")
+    }
+    
+    func testSubscriptionCancel() {
+        let ca1 = RapidSubscriptionCancel(json: "test")
+        let ca2 = RapidSubscriptionCancel(json: [:])
+        let ca3 = RapidSubscriptionCancel(json: ["evt-id": "kldjflk"])
+        
+        XCTAssertNil(ca1, "Not nil")
+        XCTAssertNil(ca2, "Not nil")
+        XCTAssertNil(ca3, "Not nil")
     }
 }

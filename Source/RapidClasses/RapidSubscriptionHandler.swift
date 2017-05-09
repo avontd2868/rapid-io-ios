@@ -86,11 +86,16 @@ fileprivate struct RapidDocSnapOperationSet: Sequence {
 
 /// Subscription handler delegate
 protocol RapidSubscriptionHandlerDelegate: class {
+    /// Dedicated queue for task management
+    var websocketQueue: OperationQueue { get }
+    
     /// Dedicated queue for parsing
-    var dispatchQueue: DispatchQueue { get }
+    var parseQueue: OperationQueue { get }
     
     /// Cache handler
     var cacheHandler: RapidCacheHandler? { get }
+    
+    var authorization: RapidAuthorization? { get }
     
     /// Method for unregistering a subscription
     ///
@@ -116,6 +121,14 @@ class RapidSubscriptionHandler: NSObject {
         return subscriptions.first?.subscriptionHash ?? ""
     }
     
+    var subscriptionTake: Int? {
+        return subscriptions.first?.subscriptionTake
+    }
+    
+    var subscriptionOrdering: [RapidOrdering.Ordering] {
+        return subscriptions.first?.subscriptionOrdering ?? []
+    }
+    
     /// ID of subscription
     let subscriptionID: String
     
@@ -130,7 +143,7 @@ class RapidSubscriptionHandler: NSObject {
         didSet {
             if let value = value {
                 // Store last known value to a cache
-                delegate?.cacheHandler?.storeValue(NSArray(array: value), forSubscription: self)
+                delegate?.cacheHandler?.storeDataset(value, forSubscription: self)
             }
         }
     }
@@ -161,7 +174,7 @@ class RapidSubscriptionHandler: NSObject {
     ///
     /// - Parameter subscription: New subscription object
     func registerSubscription(subscription: RapidSubscriptionInstance) {
-        delegate?.dispatchQueue.async {
+        delegate?.websocketQueue.async {
             self.appendSubscription(subscription)
             
             // Pass the last known value immediatelly if there is any
@@ -175,7 +188,7 @@ class RapidSubscriptionHandler: NSObject {
     ///
     /// - Parameter handler: Previously creaated unsubscription handler
     func retryUnsubscription(withHandler handler: RapidUnsubscriptionHandler) {
-        delegate?.dispatchQueue.async { [weak self] in
+        delegate?.websocketQueue.async { [weak self] in
             if self?.state == .unsubscribing {
                 self?.delegate?.unsubscribe(handler: handler)
             }
@@ -184,7 +197,7 @@ class RapidSubscriptionHandler: NSObject {
     
     /// Inform handler about being unsubscribed
     func didUnsubscribe() {
-        delegate?.dispatchQueue.async { [weak self] in
+        delegate?.websocketQueue.async { [weak self] in
             self?.state = .unsubscribed
         }
     }
@@ -211,7 +224,7 @@ fileprivate extension RapidSubscriptionHandler {
     /// Load cached data if there are any
     func loadCachedData() {
         delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, completion: { [weak self] (cachedValue) in
-            self?.delegate?.dispatchQueue.async {
+            self?.delegate?.parseQueue.async {
                 if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedValue = cachedValue as? [RapidDocumentSnapshot] {
                     let batch = RapidSubscriptionBatch(withSubscriptionID: subscriptionID, collection: cachedValue)
                     self?.receivedNewValue(batch)
@@ -225,7 +238,7 @@ fileprivate extension RapidSubscriptionHandler {
     /// - Parameter subscription: New subscription object
     func appendSubscription(_ subscription: RapidSubscriptionInstance) {
         subscription.registerUnsubscribeCallback { [weak self] instance in
-            self?.delegate?.dispatchQueue.async {
+            self?.delegate?.websocketQueue.async {
                 self?.unsubscribe(instance: instance)
             }
         }
@@ -242,6 +255,15 @@ fileprivate extension RapidSubscriptionHandler {
         guard updates.insert.count > 0 || updates.update.count > 0 || updates.delete.count > 0 || value == nil else {
             value = updates.dataSet
             return
+        }
+        
+        if let collection = update.collection {
+            RapidLogger.log(message: "Subscription initial value - collection \(subscriptionHash)", level: .debug)
+            RapidLogger.log(message: "\(collection.map({ "\($0.id): \($0.value ?? [:])" }))", level: .debug)
+        }
+        if update.updates.count > 0 {
+            RapidLogger.log(message: "Subscription update - collection \(subscriptionHash)", level: .debug)
+            RapidLogger.log(message: "\(update.updates.map({ "\($0.id): \($0.value ?? [:])" }))", level: .debug)
         }
         
         // Inform all subscription objects
@@ -289,8 +311,18 @@ fileprivate extension RapidSubscriptionHandler {
         
         // Loop through updated documents
         for update in batch.updates {
-            let operation = incorporate(update: update, inCollection: &documents)
+            let operation = incorporate(document: update, inCollection: &documents, mutateCollection: true)
             updates.insertOrUpdate(operation)
+        }
+        
+        // If there are more documents than a subscription callback expects remove them
+        if let take = subscriptionTake, documents.count > take {
+            for document in documents[take..<documents.count] {
+                let operation = RapidDocSnapOperation(snapshot: document, operation: .remove)
+                updates.insertOrUpdate(operation)
+            }
+            
+            documents.removeLast(documents.count - take)
         }
         
         // If there was no previous dataset consider all values as new
@@ -298,7 +330,7 @@ fileprivate extension RapidSubscriptionHandler {
         if oldValue == nil {
             return (documents, documents, [], [])
         }
-
+        
         var inserted = [RapidDocumentSnapshot]()
         var updated = [RapidDocumentSnapshot]()
         var deleted = [RapidDocumentSnapshot]()
@@ -323,25 +355,14 @@ fileprivate extension RapidSubscriptionHandler {
         return (documents, inserted, updated, deleted)
     }
 
-    /// Sort the update in the collection
-    ///
-    /// - Parameters:
-    ///   - update: Update to process
-    ///   - documents: Original collection
-    /// - Returns: Resulting `RapidDocumentSnapshotOperation`
-    func incorporate(update: RapidSubscriptionUpdate, inCollection documents: inout [RapidDocumentSnapshot]) -> RapidDocSnapOperation {
-        return incorporate(document: update.snapshot, withPredecessor: update.predecessorID, inCollection: &documents)
-    }
-    
     /// Sort the document in the collection
     ///
     /// - Parameters:
     ///   - document: Document to process
-    ///   - predID: Predecessor ID
     ///   - documents: Original collection
     ///   - mutateCollection: Set to `true` if `documents` array should be mutated
     /// - Returns: Resulting `RapidDocumentSnapshotOperation`
-    func incorporate(document: RapidDocumentSnapshot, withPredecessor predID: String? = nil, inCollection documents: inout [RapidDocumentSnapshot], mutateCollection: Bool = true) -> RapidDocSnapOperation {
+    func incorporate(document: RapidDocumentSnapshot, inCollection documents: inout [RapidDocumentSnapshot], mutateCollection: Bool = true) -> RapidDocSnapOperation {
         // Index of the document in the last known dataset
         let index = documents.index(where: { $0.id == document.id })
         
@@ -349,63 +370,106 @@ fileprivate extension RapidSubscriptionHandler {
         if let index = index, documents[index].etag == document.etag {
             return RapidDocSnapOperation(snapshot: document, operation: .none)
         }
-        // If the document was removed
-        else if document.value == nil {
-            let removedDoc: RapidDocumentSnapshot
+        
+        // If documents should not be mutated return an operation right away
+        if !mutateCollection {
+            let operation: RapidDocSnapOperation.Operation
+            let doc: RapidDocumentSnapshot
             
-            if mutateCollection, let index = index {
-                removedDoc = documents.remove(at: index)
-                
-                return RapidDocSnapOperation(snapshot: removedDoc, operation: .remove)
+            if document.value == nil, let index = index {
+                operation = .remove
+                doc = documents[index]
             }
-            else if !mutateCollection, let index = index {
-                removedDoc = documents[index]
+            else if document.value == nil {
+                operation = .none
+                doc = document
+            }
+            else {
+                operation = index == nil ? .add : .update
+                doc = document
+            }
+ 
+            return RapidDocSnapOperation(snapshot: doc, operation: operation)
+        }
+        
+        // If the document was removed
+        if document.value == nil {
+            if let index = index {
+                let removedDoc = documents.remove(at: index)
                 
                 return RapidDocSnapOperation(snapshot: removedDoc, operation: .remove)
             }
             
             return RapidDocSnapOperation(snapshot: document, operation: .none)
         }
-        // If the document has a predecessor and the predecessor is in the last known dataset
-        else if let predID = predID, let predIndex = documents.index(where: { $0.id == predID }) {
-            // If the document is in the last known dataset update it and move it to the correct index
-            // Otherwise, just insert it to the correct index
-            if !mutateCollection {
-                return RapidDocSnapOperation(snapshot: document, operation: index == nil ? .add : .update)
-            }
-            else if let index = index {
-                let newIndex = predIndex < index ? predIndex + 1 : predIndex
-                
-                if newIndex == index {
-                    documents[newIndex] = document
-                }
-                else {
-                    documents.remove(at: index)
-                    documents.insert(document, at: newIndex)
-                }
-                
-                return RapidDocSnapOperation(snapshot: document, operation: .update)
-            }
+        
+        // Get a new index of the new/updated document
+        let newIndex = findInsertIndex(forDocument: document, toCollection: documents[0..<documents.count])
 
-            documents.insert(document, at: predIndex + 1)
-            return RapidDocSnapOperation(snapshot: document, operation: .add)
-        }
-        // If the document doesn't have a predecessor, but it is in the last known dataset update it and move it to the index 0
-        else if let index = index {
-            
-            if mutateCollection {
+        if let index = index {
+            if newIndex == index {
+                documents[newIndex] = document
+            }
+            else if newIndex < index {
                 documents.remove(at: index)
-                documents.insert(document, at: 0)
+                documents.insert(document, at: newIndex)
+            }
+            else {
+                documents.insert(document, at: newIndex)
+                documents.remove(at: index)
             }
             
             return RapidDocSnapOperation(snapshot: document, operation: .update)
         }
         
-        // If the document doesn't have a predecessor and it isn't in the last known dataset insert it to the index 0
-        if mutateCollection {
-            documents.insert(document, at: 0)
-        }
+        documents.insert(document, at: newIndex)
         return RapidDocSnapOperation(snapshot: document, operation: .add)
+    }
+    
+    /// Find an index where should be a new/updated document inserted
+    ///
+    /// - Parameters:
+    ///   - document: Document to be inserted
+    ///   - collection: Original collection
+    /// - Returns: Index where should be a new/updated document inserted
+    func findInsertIndex(forDocument document: RapidDocumentSnapshot, toCollection collection: ArraySlice<RapidDocumentSnapshot>, sliceStartIndex: Int = 0) -> Int {
+        guard !collection.isEmpty else {
+            return 0
+        }
+        
+        let referenceIndex = collection.count/2 + sliceStartIndex
+        let referenceKeys = collection[referenceIndex].sortKeys
+        
+        for i in 0..<document.sortKeys.count {
+            let referenceValue = referenceKeys[i]
+            let ordering = subscriptionOrdering[i]
+            
+            if document.sortKeys[i] == referenceValue {
+                continue
+            }
+            else if (document.sortKeys[i] < referenceValue && ordering == .ascending) || (document.sortKeys[i] > referenceValue && ordering == .descending) {
+                return findInsertIndex(forDocument: document, toCollection: collection.prefix(upTo: referenceIndex), sliceStartIndex: sliceStartIndex)
+            }
+            else {
+                let index = findInsertIndex(forDocument: document, toCollection: collection.suffix(from: referenceIndex+1), sliceStartIndex: referenceIndex+1)
+                return (referenceIndex - sliceStartIndex) + index + 1
+            }
+        }
+        
+        let referenceDate = collection[referenceIndex].createdAt ?? Date()
+        let createdAt = document.createdAt ?? Date().addingTimeInterval(1)
+        let ordering = subscriptionOrdering.first ?? .ascending
+        
+        if createdAt == referenceDate {
+            return referenceIndex - sliceStartIndex
+        }
+        else if (createdAt < referenceDate && ordering == .ascending) || (createdAt > referenceDate && ordering == .descending) {
+            return findInsertIndex(forDocument: document, toCollection: collection.prefix(upTo: referenceIndex), sliceStartIndex: sliceStartIndex)
+        }
+        else {
+            let index = findInsertIndex(forDocument: document, toCollection: collection.suffix(from: referenceIndex+1), sliceStartIndex: referenceIndex+1)
+            return (referenceIndex - sliceStartIndex) + index + 1
+        }
     }
     
     /// Unregister subscription object from listening to the dataset changes
@@ -427,13 +491,16 @@ fileprivate extension RapidSubscriptionHandler {
 extension RapidSubscriptionHandler: RapidRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
-        delegate?.dispatchQueue.async {
+        delegate?.websocketQueue.async {
             self.state = .subscribed
         }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        delegate?.dispatchQueue.async {
+        delegate?.websocketQueue.async {
+            RapidLogger.log(message: "Subscription failed \(self.subscriptionHash) with error \(error.error)", level: .info)
+            
+            self.value = nil
             self.state = .unsubscribed
             
             for subscription in self.subscriptions {
@@ -443,7 +510,7 @@ extension RapidSubscriptionHandler: RapidRequest {
     }
     
     func receivedSubscriptionEvent(_ update: RapidSubscriptionBatch) {
-        delegate?.dispatchQueue.async {
+        delegate?.parseQueue.async {
             self.receivedNewValue(update)
         }
     }

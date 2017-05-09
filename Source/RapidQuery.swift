@@ -26,7 +26,7 @@ public protocol RapidComparable {}
 extension String: RapidComparable {}
 extension Int: RapidComparable {}
 extension Double: RapidComparable {}
-extension Float: RapidComparable {}
+extension Bool: RapidComparable {}
 
 public extension RapidFilter {
     
@@ -116,6 +116,21 @@ public extension RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .lessThanOrEqual, value: value)
     }
     
+    class func contains(keyPath: String, subString: String) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .contains, value: subString)
+    }
+    
+    class func startsWith(keyPath: String, subString: String) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .startsWith, value: subString)
+    }
+    
+    class func endsWith(keyPath: String, subString: String) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .endsWith, value: subString)
+    }
+    
+    class func arrayContains(keyPath: String, value: RapidComparable) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .arrayContains, value: value)
+    }
 }
 
 /// Class that describes simple subscription filter
@@ -130,6 +145,10 @@ public class RapidFilterSimple: RapidFilter {
         case lessThanOrEqual
         case greaterThan
         case lessThan
+        case contains
+        case startsWith
+        case endsWith
+        case arrayContains
         
         var hash: String {
             switch self {
@@ -147,6 +166,18 @@ public class RapidFilterSimple: RapidFilter {
                 
             case .lessThan:
                 return "lt"
+                
+            case .contains:
+                return "cnt"
+                
+            case .startsWith:
+                return "pref"
+                
+            case .endsWith:
+                return "suf"
+                
+            case .arrayContains:
+                return "arr-cnt"
             }
         }
     }

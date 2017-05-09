@@ -16,6 +16,8 @@ class RapidSerialization {
     /// - Returns: Array of deserialized objects
     class func parse(json: [AnyHashable: Any]?) -> [RapidResponse]? {
         guard let json = json else {
+            RapidLogger.developerLog(message: "Server event parsing failed - no data")
+            
             return nil
         }
         
@@ -51,6 +53,8 @@ class RapidSerialization {
             return [event]
         }
 
+        RapidLogger.developerLog(message: "Server event parsing failed - \(json)")
+
         return nil
     }
     
@@ -68,9 +72,7 @@ class RapidSerialization {
 
         doc[Mutation.Document.DocumentID.name] = try Validator.validate(identifier: mutation.documentID)
         
-        if let value = mutation.value {
-            doc[Mutation.Document.Body.name] = try Validator.validate(document: value)
-        }
+        doc[Mutation.Document.Body.name] = try Validator.validate(document: mutation.value)
         
         json[Mutation.CollectionID.name] = try Validator.validate(identifier: mutation.collectionID)
         
@@ -100,6 +102,23 @@ class RapidSerialization {
         json[Merge.Document.name] = doc
         
         let resultDict: [AnyHashable: Any] = [Merge.name: json]
+        return try resultDict.jsonString()
+    }
+    
+    /// Serialize a document delete into JSON string
+    ///
+    /// - Parameters:
+    ///   - delete: Delete object
+    ///   - identifiers: Identifiers that are associated with the merge event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(delete: RapidDocumentDelete, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Delete.CollectionID.name] = try Validator.validate(identifier: delete.collectionID)
+        json[Delete.DocumentID.name] = try Validator.validate(identifier: delete.documentID)
+        
+        let resultDict: [AnyHashable: Any] = [Delete.name: json]
         return try resultDict.jsonString()
     }
     
@@ -178,6 +197,18 @@ class RapidSerialization {
             
         case .lessThan where simpleFilter.value != nil:
             return [simpleFilter.keyPath: ["lt": simpleFilter.value]]
+            
+        case .contains where simpleFilter.value != nil && simpleFilter.value is String:
+            return [simpleFilter.keyPath: ["cnt": simpleFilter.value]]
+            
+        case .startsWith where simpleFilter.value != nil && simpleFilter.value is String:
+            return [simpleFilter.keyPath: ["pref": simpleFilter.value]]
+            
+        case .endsWith where simpleFilter.value != nil && simpleFilter.value is String:
+            return [simpleFilter.keyPath: ["suf": simpleFilter.value]]
+            
+        case .arrayContains where simpleFilter.value != nil:
+            return [simpleFilter.keyPath: ["arr-cnt": simpleFilter.value]]
             
         default:
             throw RapidError.invalidData(reason: .invalidFilter(filter: simpleFilter))
@@ -316,6 +347,20 @@ class RapidSerialization {
         let resultDict = [NoOperation.name: NSNull()]
         return try resultDict.jsonString()
     }
+    
+    class func serialize(authRequest: RapidAuthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Authorization.AccessToken.name] = authRequest.auth.accessToken
+        
+        let resultDict = [Authorization.name: json]
+        return try resultDict.jsonString()
+    }
+    
+    class func serialize(authRequest: RapidDeauthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        let resultDict = [Deauthorization.name: identifiers]
+        return try resultDict.jsonString()
+    }
 }
 
 // MARK: Fileprivate methods
@@ -337,6 +382,12 @@ fileprivate extension RapidSerialization {
         }
         else if let upd = json[SubscriptionUpdate.name] as? [AnyHashable: Any] {
             return RapidSubscriptionBatch(withUpdateJSON: upd)
+        }
+        else if let rm = json[SubscriptionDocRemoved.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionBatch(withUpdateJSON: rm)
+        }
+        else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionCancel(json: ca)
         }
 
         return nil
@@ -377,6 +428,10 @@ extension RapidSerialization {
             
             struct ConnectionTerminated {
                 static let name = "connection-terminated"
+            }
+            
+            struct InvalidAuthToken {
+                static let name = "invalid-auth-token"
             }
         }
         
@@ -422,6 +477,18 @@ extension RapidSerialization {
             struct Body {
                 static let name = "body"
             }
+        }
+    }
+    
+    struct Delete {
+        static let name = "del"
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
+        
+        struct DocumentID {
+            static let name = "doc-id"
         }
     }
     
@@ -480,13 +547,13 @@ extension RapidSerialization {
             static let name = "col-id"
         }
         
-        struct Predecessor {
-            static let name = "psib-id"
-        }
-        
         struct Document {
             static let name = "doc"
         }
+    }
+    
+    struct SubscriptionDocRemoved {
+        static let name = "rm"
     }
     
     struct Document {
@@ -495,8 +562,12 @@ extension RapidSerialization {
             static let name = "id"
         }
         
-        struct TimeStamp {
+        struct Modified {
             static let name = "ts"
+        }
+        
+        struct Created {
+            static let name = "crt"
         }
         
         struct Body {
@@ -505,6 +576,10 @@ extension RapidSerialization {
         
         struct Etag {
             static let name = "etag"
+        }
+        
+        struct SortKeys {
+            static let name = "skey"
         }
     }
     
@@ -538,5 +613,29 @@ extension RapidSerialization {
     
     struct NoOperation {
         static let name = "nop"
+    }
+    
+    struct Authorization {
+        static let name = "auth"
+        
+        struct AccessToken {
+            static let name = "token"
+        }
+    }
+    
+    struct Deauthorization {
+        static let name = "deauth"
+    }
+    
+    struct Cancel {
+        static let name = "ca"
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
+        
+        struct SubscriptionID {
+            static let name = "sub-id"
+        }
     }
 }

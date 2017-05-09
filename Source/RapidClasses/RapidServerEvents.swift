@@ -38,3 +38,32 @@ extension RapidSocketAcknowledgement: RapidSerializable, RapidClientEvent {
         return try RapidSerialization.serialize(acknowledgement: self)
     }
 }
+
+class RapidSubscriptionCancel: RapidResponse {
+    
+    let eventID: String
+    let subscriptionID: String
+    let collectionID: String
+    
+    init?(json: Any?) {
+        guard let dict = json as? [AnyHashable: Any] else {
+            return nil
+        }
+        
+        guard let eventID = dict[RapidSerialization.EventID.name] as? String else {
+            return nil
+        }
+        
+        guard let subID = dict[RapidSerialization.Cancel.SubscriptionID.name] as? String else {
+            return nil
+        }
+        
+        guard let colID = dict[RapidSerialization.Cancel.CollectionID.name] as? String else {
+            return nil
+        }
+        
+        self.eventID = eventID
+        self.subscriptionID = subID
+        self.collectionID = colID
+    }
+}

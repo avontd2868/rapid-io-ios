@@ -30,18 +30,58 @@ protocol RapidTimeoutRequest: RapidRequest {
     /// Request should timeout even if `Rapid.timeout` is `nil`
     var alwaysTimeout: Bool { get }
     
+    /// Timout delegate
+    weak var timoutDelegate: RapidTimeoutRequestDelegate? { get set }
+    
+    /// Timer for triggering timeout
+    var requestTimeoutTimer: Timer? { get set }
+}
+
+extension RapidTimeoutRequest {
+    
     /// Request was enqued an timeout countdown should begin
     ///
     /// - Parameters:
     ///   - timeout: Number of seconds before timeout occurs
     ///   - delegate: Timeout delegate
-    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate)
+    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
+        // Start timeout
+        self.timoutDelegate = delegate
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.requestTimeoutTimer = Timer.scheduledTimer(timeInterval: timeout, userInfo: nil, repeats: false, block: { [weak self] (_) in
+                self?.requestTimeout()
+            })
+        }
+    }
+    
+    func requestTimeout() {
+        requestTimeoutTimer = nil
+        
+        timoutDelegate?.requestTimeout(self)
+    }
     
     /// Stop countdown because request is no more valid
-    func invalidateTimer()
+    func invalidateTimer() {
+        DispatchQueue.main.async {
+            self.requestTimeoutTimer?.invalidate()
+            self.requestTimeoutTimer = nil
+        }
+    }
+    
 }
 
 /// Delegate for informing about timout
 protocol RapidTimeoutRequestDelegate: class {
     func requestTimeout(_ request: RapidTimeoutRequest)
+}
+
+enum RapidRequestPriority: Int {
+    case high
+    case medium
+    case low
+}
+
+protocol RapidPriorityRequest {
+    var priority: RapidRequestPriority { get }
 }

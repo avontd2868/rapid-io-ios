@@ -12,34 +12,41 @@ import XCTest
 extension RapidTests {
     
     func testSnapshotEqualityEquals() {
-        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap3 = RapidDocumentSnapshot(id: "1", value: ["name": "test"], etag: "123")
-        let snap4 = RapidDocumentSnapshot(id: "1", value: ["name": "test"], etag: "123")
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap3 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test"], etag: "123")
+        let snap4 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test"], etag: "123")
         
         XCTAssertEqual(snap1, snap2, "Snapshots not equal")
         XCTAssertEqual(snap3, snap4, "Snapshots not equal")
    }
     
     func testSnapshotEqualityDifferentID() {
-        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "2", value: [:], etag: "123")
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "2", collectionID: testCollectionName, value: [:], etag: "123")
+        
+        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
+    }
+    
+    func testSnapshotEqualityDifferentCollectionID() {
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "2", collectionID: "1", value: [:], etag: "123")
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
     }
     
     func testSnapshotEqualityDifferentEtag() {
-        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", value: [:], etag: "1234")
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: [:], etag: "1234")
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
     }
     
     func testSnapshotEqualityDifferentValues() {
-        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", value: [:], etag: "123")
-        let snap3 = RapidDocumentSnapshot(id: "1", value: ["name": "test1"], etag: "123")
-        let snap4 = RapidDocumentSnapshot(id: "1", value: ["name": "test2"], etag: "123")
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: [:], etag: "123")
+        let snap3 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test1"], etag: "123")
+        let snap4 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test2"], etag: "123")
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
         XCTAssertNotEqual(snap3, snap4, "Snapshots not equal")
@@ -136,6 +143,7 @@ extension RapidTests {
         let networkHandler = RapidNetworkHandler(socketURL: self.socketURL)
         let fakeNetworkHandler = RapidNetworkHandler(socketURL: self.fakeSocketURL)
         let socketManager = RapidSocketManager(networkHandler: networkHandler)
+        socketManager.authorize(authRequest: RapidAuthRequest(accessToken: testAuthToken))
         let fakeSocketManager = RapidSocketManager(networkHandler: fakeNetworkHandler)
         
         socketManager.subscribe(sub2)
@@ -180,7 +188,7 @@ extension RapidTests {
             }
         }
         
-        self.rapid.collection(named: testCollectionName).order(by: [RapidOrdering(keyPath: "name", ordering: .ascending)]).subscribe { (_, _) in
+        self.rapid.collection(named: testCollectionName).order(by: RapidOrdering(keyPath: "name", ordering: .ascending)).subscribe { (_, _) in
             if initial2 {
                 initial2 = false
             }
@@ -203,7 +211,7 @@ extension RapidTests {
     
     func testInsert() {
         let promise = expectation(description: "Subscription insert")
-        
+
         mutate(documentID: "1", value: nil)
         
         runAfter(1) { 
@@ -253,7 +261,7 @@ extension RapidTests {
     
     func testDelete() {
         let promise = expectation(description: "Subscription delete")
-        
+
         mutate(documentID: "1", value: ["name": "testDelete"])
         
         runAfter(1) { 
@@ -357,6 +365,7 @@ extension RapidTests {
                 "docs": [
                     [
                         "id": "1",
+                        "skey": ["1"],
                         "etag": Rapid.uniqueID,
                         "body": [
                             "name": "test1"
@@ -364,6 +373,7 @@ extension RapidTests {
                     ],
                     [
                         "id": "2",
+                        "skey": ["2"],
                         "etag": Rapid.uniqueID,
                         "body": [
                             "name": "test2"
@@ -371,6 +381,7 @@ extension RapidTests {
                     ],
                     [
                         "id": "3",
+                        "skey": ["3"],
                         "etag": docEtag,
                         "body": [
                             "name": "test3"
@@ -391,6 +402,7 @@ extension RapidTests {
                             [
                                 "id": "2",
                                 "etag": Rapid.uniqueID,
+                                "skey": ["2"],
                                 "body": [
                                     "name": "test22"
                                 ]
@@ -398,6 +410,7 @@ extension RapidTests {
                             [
                                 "id": "3",
                                 "etag": docEtag,
+                                "skey": ["3"],
                                 "body": [
                                     "name": "test3"
                                 ]
@@ -405,6 +418,7 @@ extension RapidTests {
                             [
                                 "id": "4",
                                 "etag": Rapid.uniqueID,
+                                "skey": ["4"],
                                 "body": [
                                     "name": "test"
                                 ]
@@ -424,6 +438,7 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "4",
+                                "skey": ["1"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test4"
@@ -436,10 +451,10 @@ extension RapidTests {
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": subID,
-                        "psib-id": "3",
                         "doc":
                             [
                                 "id": "5",
+                                "skey": ["5"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test5"
@@ -453,7 +468,7 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
         
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 3, "Number of documents")
@@ -517,6 +532,7 @@ extension RapidTests {
                     [
                         "id": "1",
                         "etag": Rapid.uniqueID,
+                        "skey": ["1"],
                         "body": [
                             "name": "test1"
                         ]
@@ -524,6 +540,7 @@ extension RapidTests {
                     [
                         "id": "2",
                         "etag": doc2Etag,
+                        "skey": ["2"],
                         "body": [
                             "name": "test2"
                         ]
@@ -531,6 +548,7 @@ extension RapidTests {
                     [
                         "id": "3",
                         "etag": doc3Etag,
+                        "skey": ["3"],
                         "body": [
                             "name": "test3"
                         ]
@@ -550,6 +568,7 @@ extension RapidTests {
                             [
                                 "id": "1",
                                 "etag": Rapid.uniqueID,
+                                "skey": ["1"],
                                 "body": [
                                     "name": "test11"
                                 ]
@@ -557,6 +576,7 @@ extension RapidTests {
                             [
                                 "id": "2",
                                 "etag": doc2Etag,
+                                "skey": ["2"],
                                 "body": [
                                     "name": "test2"
                                 ]
@@ -564,6 +584,7 @@ extension RapidTests {
                             [
                                 "id": "3",
                                 "etag": doc3Etag,
+                                "skey": ["3"],
                                 "body": [
                                     "name": "test3"
                                 ]
@@ -576,10 +597,10 @@ extension RapidTests {
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": subID,
-                        "psib-id": "3",
                         "doc":
                             [
                                 "id": "1",
+                                "skey": ["5"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test111"
@@ -592,10 +613,10 @@ extension RapidTests {
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": subID,
-                        "psib-id": "2",
                         "doc":
                             [
                                 "id": "3",
+                                "skey": ["4"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test33"
@@ -609,7 +630,7 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
         
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 3, "Number of documents")
@@ -735,7 +756,7 @@ extension RapidTests {
         ]
         
         let promise = expectation(description: "Subscription updates")
-        
+
         var val = true
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
@@ -958,11 +979,14 @@ extension RapidTests {
 fileprivate extension RapidTests {
     
     func mutate(documentID: String?, value: [AnyHashable: Any]?) {
-        if let id = documentID {
+        if let id = documentID, let value = value {
             self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value)
         }
+        else if let id = documentID {
+            self.rapid.collection(named: testCollectionName).document(withID: id).delete()
+        }
         else {
-            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value)
+            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value ?? [:])
         }
     }
     
@@ -971,27 +995,51 @@ fileprivate extension RapidTests {
 // MARK: Mock subscription handler delegate
 class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandler {
     
-    let dispatchQueue = DispatchQueue.main
+    let websocketQueue: OperationQueue
+    let parseQueue: OperationQueue
     var cache: RapidCache?
     let unsubscriptionHandler: (_ handler: RapidUnsubscriptionHandler) -> Void
+    var authorization: RapidAuthorization?
     
     var cacheHandler: RapidCacheHandler? {
         return self
     }
     
-    init(unsubscriptionHandler: @escaping (_ handler: RapidUnsubscriptionHandler) -> Void) {
+    init(authorization: RapidAuthorization? = nil, unsubscriptionHandler: @escaping (_ handler: RapidUnsubscriptionHandler) -> Void) {
+        self.websocketQueue = OperationQueue()
+        websocketQueue.name = "Websocket queue"
+        websocketQueue.maxConcurrentOperationCount = 1
+
+        self.parseQueue = OperationQueue()
+        parseQueue.name = "Parse queue"
+        parseQueue.maxConcurrentOperationCount = 1
+        
         self.unsubscriptionHandler = unsubscriptionHandler
+        self.authorization = authorization
     }
     
     func unsubscribe(handler: RapidUnsubscriptionHandler) {
         self.unsubscriptionHandler(handler)
     }
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (Any?) -> Void) {
-        cache?.cache(forKey: subscription.subscriptionHash, completion: completion)
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping ([RapidCachableObject]?) -> Void) {
+        cache?.loadDataset(forKey: subscription.subscriptionHash, secret: authorization?.accessToken, completion: completion)
     }
     
-    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler) {
-        cache?.save(data: value, forKey: subscription.subscriptionHash)
+    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHandler) {
+        cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: authorization?.accessToken)
     }
+    
+    func storeObject(_ object: RapidCachableObject) {
+        cache?.save(object: object, withSecret: authorization?.accessToken)
+    }
+    
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidCachableObject?) -> Void) {
+        cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: authorization?.accessToken, completion: completion)
+    }
+    
+    func removeObject(withGroupID groupID: String, objectID: String) {
+        cache?.removeObject(withGroupID: groupID, objectID: objectID)
+    }
+
 }

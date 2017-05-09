@@ -14,6 +14,8 @@ public protocol RapidSubscription {
     func unsubscribe()
 }
 
+public typealias RapidAuthCallback = (_ success: Bool, _ error: Error?) -> Void
+
 /// Class representing a connection to Rapid.io database
 public class Rapid: NSObject {
     
@@ -49,6 +51,10 @@ public class Rapid: NSObject {
     /// Current state of Rapid instance
     public var connectionState: ConnectionState {
         return handler.state
+    }
+    
+    public var authorization: RapidAuthorization? {
+        return handler.authorization
     }
     
     let handler: RapidHandler
@@ -95,6 +101,16 @@ public class Rapid: NSObject {
         Rapid.instances.append(WRO(object: self))
     }
     
+    public func authorize(withAccessToken accessToken: String, completion: RapidAuthCallback? = nil) {
+        let request = RapidAuthRequest(accessToken: accessToken, callback: completion)
+        handler.socketManager.authorize(authRequest: request)
+    }
+    
+    public func deauthorize(completion: RapidAuthCallback? = nil) {
+        let request = RapidDeauthRequest(callback: completion)
+        handler.socketManager.deauthorize(deauthRequest: request)
+    }
+    
     /// Creates a new object representing Rapid collection
     ///
     /// - parameter named:     Collection identifier
@@ -106,11 +122,15 @@ public class Rapid: NSObject {
     
     /// Disconnect from server
     public func goOffline() {
+        RapidLogger.log(message: "Rapid went offline", level: .info)
+        
         handler.socketManager.goOffline()
     }
     
     /// Restore previously configured connection
     public func goOnline() {
+        RapidLogger.log(message: "Rapid went online", level: .info)
+        
         handler.socketManager.goOnline()
     }
     
@@ -133,6 +153,7 @@ public extension Rapid {
             return shared
         }
 
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
     
@@ -146,6 +167,17 @@ public extension Rapid {
     /// Generates an unique ID which can be safely used as your document ID
     class var uniqueID: String {
         return Generator.uniqueID
+    }
+    
+    class var logLevel: RapidLogger.Level {
+        get {
+            return RapidLogger.level
+        }
+        
+        set {
+            RapidLogger.level = newValue
+        }
+        
     }
     
     /// If `true` subscription values are stored locally to be available offline
@@ -179,6 +211,14 @@ public extension Rapid {
     /// Remove all subscriptions
     class func unsubscribeAll() {
         try! shared().unsubscribeAll()
+    }
+    
+    class func authorize(withAccessToken accessToken: String, completion: RapidAuthCallback? = nil) {
+        try! shared().authorize(withAccessToken: accessToken, completion: completion)
+    }
+    
+    class func deauthorize(completion: RapidAuthCallback? = nil) {
+        try! shared().deauthorize(completion: completion)
     }
     
     /// Configures shared Rapid instance

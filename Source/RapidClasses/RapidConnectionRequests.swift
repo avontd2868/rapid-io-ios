@@ -31,7 +31,7 @@ class RapidConnectionRequest: RapidSerializable {
     /// Timout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
     
-    internal var timer: Timer?
+    internal var requestTimeoutTimer: Timer?
     
     init(connectionID: String, delegate: RapidConnectionRequestDelegate) {
         self.connectionID = connectionID
@@ -45,46 +45,27 @@ class RapidConnectionRequest: RapidSerializable {
     
 }
 
+extension RapidConnectionRequest: RapidPriorityRequest {
+    
+    var priority: RapidRequestPriority {
+        return .high
+    }
+}
+
 extension RapidConnectionRequest: RapidTimeoutRequest {
     
-    func requestSent(withTimeout timeout: TimeInterval, delegate: RapidTimeoutRequestDelegate) {
-        // Start timeout
-        self.timoutDelegate = delegate
-        
-        DispatchQueue.main.async { [weak self] in
-            if let strongSelf = self {
-                self?.timer = Timer.scheduledTimer(timeInterval: timeout, target: strongSelf, selector: #selector(strongSelf.requestTimeout), userInfo: nil, repeats: false)
-            }
-        }
-    }
-    
-    @objc func requestTimeout() {
-        timer = nil
-        
-        timoutDelegate?.requestTimeout(self)
-    }
-    
-    func invalidateTimer() {
-        DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-        }
-    }
-    
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        invalidateTimer()
+        
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             self.delegate?.connectionEstablished(self)
         }
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
+        invalidateTimer()
+        
         DispatchQueue.main.async {
-            self.timer?.invalidate()
-            self.timer = nil
-            
             self.delegate?.connectingFailed(self, error: error)
         }
     }
@@ -117,5 +98,80 @@ class RapidEmptyRequest: RapidSerializable, RapidClientEvent {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(emptyRequest: self)
+    }
+}
+
+// MARK: Authorization
+
+class RapidAuthRequest: RapidRequest {
+    
+    let auth: RapidAuthorization
+    let callback: RapidAuthCallback?
+    
+    init(accessToken: String, callback: RapidAuthCallback? = nil) {
+        self.auth = RapidAuthorization(accessToken: accessToken)
+        self.callback = callback
+    }
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid authorized", level: .info)
+            
+            self.callback?(true, nil)
+        }
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid authorization failed", level: .info)
+            
+            self.callback?(false, error.error)
+        }
+    }
+}
+
+extension RapidAuthRequest: RapidPriorityRequest {
+    
+    var priority: RapidRequestPriority {
+        return .medium
+    }
+}
+
+extension RapidAuthRequest: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(authRequest: self, withIdentifiers: identifiers)
+    }
+}
+
+class RapidDeauthRequest: RapidRequest {
+    
+    let callback: RapidAuthCallback?
+    
+    init(callback: RapidAuthCallback?) {
+        self.callback = callback
+    }
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid unauthorized", level: .info)
+            
+            self.callback?(true, nil)
+        }
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid unauthorization failed", level: .info)
+            
+            self.callback?(false, error.error)
+        }
+    }
+}
+
+extension RapidDeauthRequest: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(authRequest: self, withIdentifiers: identifiers)
     }
 }

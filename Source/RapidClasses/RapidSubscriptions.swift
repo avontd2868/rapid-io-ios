@@ -69,6 +69,14 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
         return "\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
     }
     
+    var subscriptionTake: Int? {
+        return paging?.take
+    }
+    
+    var subscriptionOrdering: [RapidOrdering.Ordering]? {
+        return ordering?.map({ $0.ordering })
+    }
+    
     func subscriptionFailed(withError error: RapidError) {
         // Pass error to callbacks
         DispatchQueue.main.async {
@@ -156,10 +164,18 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
         return subscription.subscriptionHash
     }
     
+    var subscriptionTake: Int? {
+        return 1
+    }
+    
+    var subscriptionOrdering: [RapidOrdering.Ordering]? {
+        return nil
+    }
+    
     func subscriptionFailed(withError error: RapidError) {
         // Pass error to callback
         DispatchQueue.main.async {
-            self.callback?(error, RapidDocumentSnapshot(id: self.documentID, value: nil))
+            self.callback?(error, RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: nil))
         }
     }
     
@@ -170,7 +186,7 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
     func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) {
         // Pass changes to callback
         DispatchQueue.main.async {
-            self.callback?(nil, documents.last ?? RapidDocumentSnapshot(id: self.documentID, value: nil))
+            self.callback?(nil, documents.last ?? RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: nil))
         }
     }
     

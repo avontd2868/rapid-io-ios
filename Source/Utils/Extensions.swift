@@ -102,3 +102,34 @@ extension URL {
         return totalSize
     }
 }
+
+extension OperationQueue {
+    
+    func async(execute work: @escaping @convention(block) () -> Void) {
+        if OperationQueue.current == self {
+            work()
+        }
+        else {
+            self.addOperation(work)
+        }
+    }
+}
+
+extension Dictionary {
+    
+    mutating func merge(with dictionary: [Key: Value]) {
+        for (key, value) in dictionary {
+            let current = self[key]
+            
+            if value is NSNull {
+                self[key] = nil
+            }
+            else if var currentDict = current as? [Key: Value], let valueDict = value as? [Key: Value] {
+                currentDict.merge(with: valueDict)
+                self[key] = currentDict as? Value            }
+            else {
+                self[key] = value
+            }
+        }
+    }
+}

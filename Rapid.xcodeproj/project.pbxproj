@@ -14,6 +14,8 @@
 		C1281A481E8AA8C20054AF73 /* RapidSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A471E8AA8C20054AF73 /* RapidSubscriptions.swift */; };
 		C1281A4A1E8AA9020054AF73 /* RapidMutations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A491E8AA9020054AF73 /* RapidMutations.swift */; };
 		C140F9341E894871002AB9C5 /* RapidSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */; };
+		C14F274A1EA910260079093E /* RapidAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14F27491EA910260079093E /* RapidAuthorization.swift */; };
+		C14F274C1EAA02150079093E /* RapidLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14F274B1EAA02150079093E /* RapidLogger.swift */; };
 		C169DB411E952FA8007983EA /* RapidMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB401E952FA8007983EA /* RapidMutationTests.swift */; };
 		C169DB441E95384D007983EA /* RapidSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB431E95384D007983EA /* RapidSerializationTests.swift */; };
 		C169DB491E978D1B007983EA /* RapidAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */; };
@@ -33,7 +35,7 @@
 		C1D6E99C1E7AE523007589FC /* RapidMutationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E99B1E7AE523007589FC /* RapidMutationProtocols.swift */; };
 		C1D6E9A11E7AFE6E007589FC /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A01E7AFE6E007589FC /* Helpers.swift */; };
 		C1D6E9A31E7BE356007589FC /* RapidRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A21E7BE356007589FC /* RapidRequest.swift */; };
-		C1D6E9A51E7BE3C0007589FC /* RapidSocketAcknowledgement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A41E7BE3C0007589FC /* RapidSocketAcknowledgement.swift */; };
+		C1D6E9A51E7BE3C0007589FC /* RapidServerEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A41E7BE3C0007589FC /* RapidServerEvents.swift */; };
 		C1D6E9A71E7BE942007589FC /* RapidSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */; };
 		C1D6E9A91E7BECA4007589FC /* RapidResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A81E7BECA4007589FC /* RapidResponse.swift */; };
 		C1D6E9AB1E7BF7F4007589FC /* RapidHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9AA1E7BF7F4007589FC /* RapidHandler.swift */; };
@@ -62,6 +64,8 @@
 		C1281A471E8AA8C20054AF73 /* RapidSubscriptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptions.swift; sourceTree = "<group>"; };
 		C1281A491E8AA9020054AF73 /* RapidMutations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidMutations.swift; sourceTree = "<group>"; };
 		C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionTests.swift; sourceTree = "<group>"; };
+		C14F27491EA910260079093E /* RapidAuthorization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidAuthorization.swift; sourceTree = "<group>"; };
+		C14F274B1EAA02150079093E /* RapidLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidLogger.swift; sourceTree = "<group>"; };
 		C169DB401E952FA8007983EA /* RapidMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidMutationTests.swift; sourceTree = "<group>"; };
 		C169DB431E95384D007983EA /* RapidSerializationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSerializationTests.swift; sourceTree = "<group>"; };
 		C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidAuthorizationTests.swift; sourceTree = "<group>"; };
@@ -84,7 +88,7 @@
 		C1D6E99B1E7AE523007589FC /* RapidMutationProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidMutationProtocols.swift; sourceTree = "<group>"; };
 		C1D6E9A01E7AFE6E007589FC /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		C1D6E9A21E7BE356007589FC /* RapidRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidRequest.swift; sourceTree = "<group>"; };
-		C1D6E9A41E7BE3C0007589FC /* RapidSocketAcknowledgement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSocketAcknowledgement.swift; sourceTree = "<group>"; };
+		C1D6E9A41E7BE3C0007589FC /* RapidServerEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidServerEvents.swift; sourceTree = "<group>"; };
 		C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSerialization.swift; sourceTree = "<group>"; };
 		C1D6E9A81E7BECA4007589FC /* RapidResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidResponse.swift; sourceTree = "<group>"; };
 		C1D6E9AA1E7BF7F4007589FC /* RapidHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidHandler.swift; sourceTree = "<group>"; };
@@ -120,7 +124,7 @@
 				C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */,
 				C1281A491E8AA9020054AF73 /* RapidMutations.swift */,
 				C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */,
-				C1D6E9A41E7BE3C0007589FC /* RapidSocketAcknowledgement.swift */,
+				C1D6E9A41E7BE3C0007589FC /* RapidServerEvents.swift */,
 				C12692211E82D27A002577B2 /* RapidSubscriptionEvent.swift */,
 				C126921F1E82BC37002577B2 /* RapidSubscriptionHandler.swift */,
 				C1281A471E8AA8C20054AF73 /* RapidSubscriptions.swift */,
@@ -160,6 +164,7 @@
 				C1D6E9961E7ADE35007589FC /* RapidError.swift */,
 				C1D6E9AA1E7BF7F4007589FC /* RapidHandler.swift */,
 				C1D6E9B01E7C0FAE007589FC /* RapidQuery.swift */,
+				C14F27491EA910260079093E /* RapidAuthorization.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -218,6 +223,7 @@
 				C1EDC19D1EA4B952006570FC /* RapidCache.swift */,
 				C1D2A1ED1E9E2A94009444B3 /* Extensions.swift */,
 				C1D6E9AC1E7BFED2007589FC /* WRO.swift */,
+				C14F274B1EAA02150079093E /* RapidLogger.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -390,6 +396,7 @@
 				C1D6E9951E7ADC78007589FC /* RapidCollection.swift in Sources */,
 				C1D6E9AD1E7BFED2007589FC /* WRO.swift in Sources */,
 				C1D6E9901E7AD7E3007589FC /* WebSocket.swift in Sources */,
+				C14F274A1EA910260079093E /* RapidAuthorization.swift in Sources */,
 				C1D6E9971E7ADE35007589FC /* RapidError.swift in Sources */,
 				C1D6E9A71E7BE942007589FC /* RapidSerialization.swift in Sources */,
 				C12692221E82D27A002577B2 /* RapidSubscriptionEvent.swift in Sources */,
@@ -401,9 +408,10 @@
 				C1D6E9921E7AD822007589FC /* SSLSecurity.swift in Sources */,
 				C1D6E8A81E785D72007589FC /* Rapid.swift in Sources */,
 				C1D6E9AB1E7BF7F4007589FC /* RapidHandler.swift in Sources */,
-				C1D6E9A51E7BE3C0007589FC /* RapidSocketAcknowledgement.swift in Sources */,
+				C1D6E9A51E7BE3C0007589FC /* RapidServerEvents.swift in Sources */,
 				C1281A4A1E8AA9020054AF73 /* RapidMutations.swift in Sources */,
 				C1D6E99C1E7AE523007589FC /* RapidMutationProtocols.swift in Sources */,
+				C14F274C1EAA02150079093E /* RapidLogger.swift in Sources */,
 				C1D2A1EE1E9E2A94009444B3 /* Extensions.swift in Sources */,
 				C1D6E9A31E7BE356007589FC /* RapidRequest.swift in Sources */,
 				C1D6E9991E7ADF0C007589FC /* RapidDocument.swift in Sources */,
@@ -555,6 +563,7 @@
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "-D RAPIDDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.Rapid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

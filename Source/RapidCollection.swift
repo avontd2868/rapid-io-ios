@@ -38,6 +38,9 @@ public class RapidCollection: NSObject {
     init(id: String, handler: RapidHandler!, filter: RapidFilter? = nil, ordering: [RapidOrdering]? = nil, paging: RapidPaging? = nil) {
         self.collectionID = id
         self.handler = handler
+        self.subscriptionFilter = filter
+        self.subscriptionOrdering = ordering
+        self.subscriptionPaging = paging
     }
     
     /// Create an instance of a Rapid document in the collection with a new unique ID
@@ -105,16 +108,19 @@ public class RapidCollection: NSObject {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
-        self.subscriptionOrdering?.append(ordering)
+        //FIXME: Append ordering when multiple descriptors are done
+        self.subscriptionOrdering = [ordering]
     }
 
+    //TODO: Ordering with multiple descriptors
+    
     /// Get a new collection object with a subscription ordering options assigned
     ///
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
-    public func order(by ordering: [RapidOrdering]) -> RapidCollection {
+    func order(by ordering: [RapidOrdering]) -> RapidCollection {
         let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
@@ -125,7 +131,7 @@ public class RapidCollection: NSObject {
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
-    public func ordered(by ordering: [RapidOrdering]) {
+    func ordered(by ordering: [RapidOrdering]) {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
@@ -195,7 +201,7 @@ extension RapidCollection {
             return RapidDocument(id: id, inCollection: collectionID, handler: handler)
         }
 
-        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
     
@@ -204,7 +210,7 @@ extension RapidCollection {
             return manager
         }
 
-        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
 

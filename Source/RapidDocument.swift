@@ -28,8 +28,8 @@ public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
 ///   - lhs: Left operand
 ///   - rhs: Right operand
 /// - Returns: `true` if operands are equal
-public func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
-    if lhs.id == rhs.id && lhs.etag == rhs.etag {
+func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
+    if lhs.id == rhs.id && lhs.collectionID == rhs.collectionID && lhs.etag == rhs.etag {
         if let lValue = lhs.value, let rValue = rhs.value {
             return NSDictionary(dictionary: lValue).isEqual(to: rValue)
         }
@@ -42,10 +42,20 @@ public func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool 
 }
 
 /// Class representing Rapid.io document that is returned from a subscription callback
-public class RapidDocumentSnapshot: NSObject, NSCoding {
+public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
     
     /// Document ID
     public let id: String
+    
+    public let collectionID: String
+    
+    var objectID: String {
+        return id
+    }
+    
+    var groupID: String {
+        return collectionID
+    }
     
     /// Document body
     public let value: [AnyHashable: Any]?
@@ -53,7 +63,15 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
     /// Etag identifier
     public let etag: String?
     
-    init?(json: Any?) {
+    /// Document creation time
+    public let createdAt: Date?
+    
+    /// Value that serves to order documents
+    ///
+    /// Value is computed by Rapid.io database based on sort descriptors in a subscription
+    let sortKeys: [String]
+    
+    init?(json: Any?, collectionID: String) {
         guard let dict = json as? [AnyHashable: Any] else {
             return nil
         }
@@ -64,16 +82,30 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
         
         let body = dict[RapidSerialization.Document.Body.name] as? [AnyHashable: Any]
         let etag = dict[RapidSerialization.Document.Etag.name] as? String
+        let sortValue = dict[RapidSerialization.Document.SortKeys.name] as? [String]
+        let createdAt = dict[RapidSerialization.Document.Created.name] as? TimeInterval
         
         self.id = id
+        self.collectionID = collectionID
         self.value = body
         self.etag = etag
+        self.sortKeys = sortValue ?? []
+        
+        if let createdAt = createdAt {
+            self.createdAt = Date(timeIntervalSince1970: createdAt/1000)
+        }
+        else {
+            self.createdAt = nil
+        }
     }
     
-    init(id: String, value: [AnyHashable: Any]?, etag: String? = nil) {
+    init(id: String, collectionID: String, value: [AnyHashable: Any]?, etag: String? = nil) {
         self.id = id
+        self.collectionID = collectionID
         self.value = value
         self.etag = etag
+        self.sortKeys = []
+        self.createdAt = nil
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -81,8 +113,19 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
             return nil
         }
         
+        guard let collectionID = aDecoder.decodeObject(forKey: "collectionID") as? String else {
+            return nil
+        }
+        
+        guard let sortKeys = aDecoder.decodeObject(forKey: "sortKeys") as? [String] else {
+            return nil
+        }
+        
         self.id = id
+        self.collectionID = collectionID
         self.etag = aDecoder.decodeObject(forKey: "etag") as? String
+        self.sortKeys = sortKeys
+        self.createdAt = aDecoder.decodeObject(forKey: "createdAt") as? Date
         do {
             self.value = try (aDecoder.decodeObject(forKey: "value") as? String)?.json()
         }
@@ -93,7 +136,10 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
     
     public func encode(with aCoder: NSCoder) {
         aCoder.encode(id, forKey: "id")
+        aCoder.encode(collectionID, forKey: "collectionID")
         aCoder.encode(etag, forKey: "etag")
+        aCoder.encode(sortKeys, forKey: "sortKeys")
+        aCoder.encode(createdAt, forKey: "createdAt")
         do {
             aCoder.encode(try value?.jsonString(), forKey: "value")
         }
@@ -104,9 +150,8 @@ public class RapidDocumentSnapshot: NSObject, NSCoding {
         if let snapshot = object as? RapidDocumentSnapshot {
             return self == snapshot
         }
-        else {
-            return false
-        }
+
+        return false
     }
     
 }
@@ -137,8 +182,8 @@ public class RapidDocument: NSObject {
     /// - Parameters:
     ///   - value: Dictionary with new values that the document should contain
     ///   - completion: Mutation callback which provides a client either with an error or with a successfully mutated object
-    public func mutate(value: [AnyHashable: Any]?, completion: RapidMutationCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, callback: completion)
+    public func mutate(value: [AnyHashable: Any], completion: RapidMutationCallback? = nil) {
+        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, callback: completion, cache: handler)
         socketManager.mutate(mutationRequest: mutation)
     }
     
@@ -151,8 +196,8 @@ public class RapidDocument: NSObject {
     ///   - value: Dictionary with new values that should be merged into the document
     ///   - completion: merge callback which provides a client either with an error or with a successfully merged values
     public func merge(value: [AnyHashable: Any], completion: RapidMergeCallback? = nil) {
-        let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, callback: completion)
-        socketManager.merge(mergeRequest: merge)
+        let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, callback: completion, cache: handler)
+        socketManager.mutate(mutationRequest: merge)
     }
     
     /// Delete the document
@@ -161,8 +206,8 @@ public class RapidDocument: NSObject {
     ///
     /// - Parameter completion: Delete callback which provides a client either with an error or with the document object how it looked before it was deleted
     public func delete(completion: RapidDeletionCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: nil, deletionCallback: completion)
-        socketManager.mutate(mutationRequest: mutation)
+        let deletion = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, callback: completion, cache: handler)
+        socketManager.mutate(mutationRequest: deletion)
     }
     
     /// Subscribe for listening to the document changes
@@ -187,7 +232,7 @@ extension RapidDocument {
             return manager
         }
 
-        print(RapidInternalError.rapidInstanceNotInitialized.message)
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
 }
