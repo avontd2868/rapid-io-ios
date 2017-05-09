@@ -37,6 +37,7 @@ class RapidTests: XCTestCase {
         Rapid.timeout = 10
         Rapid.defaultTimeout = 300
         Rapid.heartbeatInterval = 30
+        rapid.isCacheEnabled = false
         rapid = nil
         
         super.tearDown()
@@ -220,12 +221,13 @@ class RapidTests: XCTestCase {
     }
     
     func testSnapshotInitialization() {
-        XCTAssertNil(RapidDocumentSnapshot(json: [1,2,3]), "Snapshot initialized")
-        XCTAssertNil(RapidDocumentSnapshot(json: ["id": 6]), "Snapshot initialized")
+        XCTAssertNil(RapidDocumentSnapshot(json: [1,2,3], collectionID: "1"), "Snapshot initialized")
+        XCTAssertNil(RapidDocumentSnapshot(json: ["id": 6], collectionID: "1"), "Snapshot initialized")
         
-        let snapshot = RapidDocumentSnapshot(id: "1", value: ["name": "testSnapshotInitialization"], etag: "1234")
+        let snapshot = RapidDocumentSnapshot(id: "1", collectionID: "1", value: ["name": "testSnapshotInitialization"], etag: "1234")
         
         XCTAssertEqual(snapshot.id, "1", "Wrong snapshot")
+        XCTAssertEqual(snapshot.collectionID, "1", "Wrong snapshot")
         XCTAssertEqual(snapshot.etag, "1234", "Wrong snapshot")
         XCTAssertEqual(snapshot.value?["name"] as? String, "testSnapshotInitialization", "Wrong snapshot")
     }
@@ -404,8 +406,8 @@ class RapidTests: XCTestCase {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         manager.subscribe(subscription)
         manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil))
-        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], callback: nil))
-        manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil))
+        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], callback: nil, cache: nil))
+        manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil, cache: nil))
         manager.sendEmptyRequest()
         subscription.unsubscribe()
         
@@ -496,12 +498,12 @@ class RapidTests: XCTestCase {
         
         runAfter(0.5) { 
             manager.subscribe(subscription1)
-            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], callback: nil))
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], callback: nil, cache: nil))
             manager.subscribe(subscription2)
-            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], callback: nil))
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], callback: nil, cache: nil))
             manager.goOffline()
             runAfter(0.5, closure: {
-                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], callback: nil))
+                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], callback: nil, cache: nil))
                 manager.subscribe(subscription3)
                 shouldConnect = false
                 manager.goOnline()

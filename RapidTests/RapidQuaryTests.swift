@@ -102,7 +102,7 @@ extension RapidTests {
         runAfter(1) { 
             self.rapid.collection(named: self.testCollectionName).order(by: RapidOrdering(keyPath: "name", ordering: .descending)).subscribe { (_, documents) in
                 XCTAssertGreaterThan(documents.count, 1, "No documents")
-                print(documents.map({($0.id, $0.value?["name"] as? String)}))
+
                 var lastName: String?
                 for document in documents {
                     if let lastName = lastName {

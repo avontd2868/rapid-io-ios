@@ -33,6 +33,9 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     
     internal var requestTimeoutTimer: Timer?
     
+    /// Cache handler
+    internal weak var cacheHandler: RapidCacheHandler?
+    
     /// Initialize mutation request
     ///
     /// - Parameters:
@@ -40,11 +43,12 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: Document JSON
     ///   - callback: Mutation callback
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], callback: RapidMutationCallback?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], callback: RapidMutationCallback?, cache: RapidCacheHandler?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
         self.callback = callback
+        self.cacheHandler = cache
     }
     
 }
@@ -63,6 +67,9 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
         
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated")
+            
+            let snapshot = RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: self.value)
+            self.cacheHandler?.storeObject(snapshot)
             
             self.callback?(nil, self.value)
         }
@@ -104,6 +111,9 @@ class RapidDocumentMerge: NSObject, RapidMutationRequest {
     
     internal var requestTimeoutTimer: Timer?
     
+    /// Cache handler
+    internal weak var cacheHandler: RapidCacheHandler?
+    
     /// Initialize merge request
     ///
     /// - Parameters:
@@ -111,11 +121,12 @@ class RapidDocumentMerge: NSObject, RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: JSON with values to be merged
     ///   - callback: Merge callback
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], callback: RapidMergeCallback?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], callback: RapidMergeCallback?, cache: RapidCacheHandler?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
         self.callback = callback
+        self.cacheHandler = cache
     }
     
 }
@@ -135,6 +146,13 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) merged")
             
+            self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
+                if let snapshot = object as? RapidDocumentSnapshot, var value = snapshot.value {
+                    value.merge(with: self.value)
+                    let snapshot = RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: value)
+                    self.cacheHandler?.storeObject(snapshot)
+                }
+            })
             self.callback?(nil, self.value)
         }
     }
@@ -172,16 +190,20 @@ class RapidDocumentDelete: NSObject, RapidMutationRequest {
     
     internal var requestTimeoutTimer: Timer?
     
+    /// Cache handler
+    internal weak var cacheHandler: RapidCacheHandler?
+    
     /// Initialize merge request
     ///
     /// - Parameters:
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
     ///   - callback: Delete callback
-    init(collectionID: String, documentID: String, callback: RapidDeletionCallback?) {
+    init(collectionID: String, documentID: String, callback: RapidDeletionCallback?, cache: RapidCacheHandler?) {
         self.collectionID = collectionID
         self.documentID = documentID
         self.callback = callback
+        self.cacheHandler = cache
     }
     
 }
@@ -200,6 +222,8 @@ extension RapidDocumentDelete: RapidTimeoutRequest {
         
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) deleted")
+            
+            self.cacheHandler?.removeObject(withGroupID: self.collectionID, objectID: self.documentID)
             
             self.callback?(nil)
         }

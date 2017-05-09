@@ -15,14 +15,20 @@ protocol RapidCacheHandler: class {
     /// - Parameters:
     ///   - subscription: Subscription handler object
     ///   - completion: Completion handler. If there are any cached data for the subscription they are passed in the completion handler parameter
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?, completion: @escaping (_ value: Any?) -> Void)
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (_ value: Any?) -> Void)
     
     /// Store data associated with a given subscription
     ///
     /// - Parameters:
     ///   - value: Data to be stored
     ///   - subscription: Subscription handler object
-    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?)
+    func storeValue(_ value: [CachableObject], forSubscription subscription: RapidSubscriptionHandler)
+    
+    func storeObject(_ object: CachableObject)
+    
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (_ value: Any?) -> Void)
+    
+    func removeObject(withGroupID groupID: String, objectID: String)
 }
 
 /// General dependency object containing managers
@@ -78,12 +84,23 @@ class RapidHandler: NSObject {
 
 extension RapidHandler: RapidCacheHandler {
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?, completion: @escaping (Any?) -> Void) {
-        cache?.cache(forKey: subscription.subscriptionHash, secret: secret, completion: completion)
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (Any?) -> Void) {
+        cache?.cache(forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken, completion: completion)
     }
 
-    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?) {
-        cache?.save(data: value, forKey: subscription.subscriptionHash, secret: secret)
+    func storeValue(_ value: [CachableObject], forSubscription subscription: RapidSubscriptionHandler) {
+        cache?.save(data: value, forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken)
     }
     
+    func storeObject(_ object: CachableObject) {
+        cache?.save(object: object, withSecret: socketManager.auth?.accessToken)
+    }
+    
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (Any?) -> Void) {
+        cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: socketManager.auth?.accessToken, completion: completion)
+    }
+    
+    func removeObject(withGroupID groupID: String, objectID: String) {
+        cache?.removeObject(withGroupID: groupID, objectID: objectID)
+    }
 }

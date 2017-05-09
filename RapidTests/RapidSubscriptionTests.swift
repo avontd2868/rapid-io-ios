@@ -12,34 +12,41 @@ import XCTest
 extension RapidTests {
     
     func testSnapshotEqualityEquals() {
-        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap3 = RapidDocumentSnapshot(id: "1", value: ["name": "test"], etag: "123")
-        let snap4 = RapidDocumentSnapshot(id: "1", value: ["name": "test"], etag: "123")
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap3 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test"], etag: "123")
+        let snap4 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test"], etag: "123")
         
         XCTAssertEqual(snap1, snap2, "Snapshots not equal")
         XCTAssertEqual(snap3, snap4, "Snapshots not equal")
    }
     
     func testSnapshotEqualityDifferentID() {
-        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "2", value: [:], etag: "123")
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "2", collectionID: testCollectionName, value: [:], etag: "123")
+        
+        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
+    }
+    
+    func testSnapshotEqualityDifferentCollectionID() {
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "2", collectionID: "1", value: [:], etag: "123")
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
     }
     
     func testSnapshotEqualityDifferentEtag() {
-        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", value: [:], etag: "1234")
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: [:], etag: "1234")
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
     }
     
     func testSnapshotEqualityDifferentValues() {
-        let snap1 = RapidDocumentSnapshot(id: "1", value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", value: [:], etag: "123")
-        let snap3 = RapidDocumentSnapshot(id: "1", value: ["name": "test1"], etag: "123")
-        let snap4 = RapidDocumentSnapshot(id: "1", value: ["name": "test2"], etag: "123")
+        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
+        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: [:], etag: "123")
+        let snap3 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test1"], etag: "123")
+        let snap4 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test2"], etag: "123")
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
         XCTAssertNotEqual(snap3, snap4, "Snapshots not equal")
@@ -749,7 +756,7 @@ extension RapidTests {
         ]
         
         let promise = expectation(description: "Subscription updates")
-        Rapid.debugLoggingEnabled = true
+
         var val = true
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
@@ -1015,11 +1022,23 @@ class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandle
         self.unsubscriptionHandler(handler)
     }
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?, completion: @escaping (Any?) -> Void) {
-        cache?.cache(forKey: subscription.subscriptionHash, completion: completion)
+    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (Any?) -> Void) {
+        cache?.cache(forKey: subscription.subscriptionHash, secret: authorization?.accessToken, completion: completion)
     }
     
-    func storeValue(_ value: NSCoding, forSubscription subscription: RapidSubscriptionHandler, withSecret secret: String?) {
-        cache?.save(data: value, forKey: subscription.subscriptionHash)
+    func storeValue(_ value: [CachableObject], forSubscription subscription: RapidSubscriptionHandler) {
+        cache?.save(data: value, forKey: subscription.subscriptionHash, secret: authorization?.accessToken)
+    }
+    
+    func storeObject(_ object: CachableObject) {
+        cache?.save(object: object, withSecret: authorization?.accessToken)
+    }
+    
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (Any?) -> Void) {
+        cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: authorization?.accessToken, completion: completion)
+    }
+    
+    func removeObject(withGroupID groupID: String, objectID: String) {
+        cache?.removeObject(withGroupID: groupID, objectID: objectID)
     }
 }

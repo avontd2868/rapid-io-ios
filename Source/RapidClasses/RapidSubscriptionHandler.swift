@@ -143,7 +143,7 @@ class RapidSubscriptionHandler: NSObject {
         didSet {
             if let value = value {
                 // Store last known value to a cache
-                delegate?.cacheHandler?.storeValue(NSArray(array: value), forSubscription: self, withSecret: delegate?.authorization?.accessToken)
+                delegate?.cacheHandler?.storeValue(value, forSubscription: self)
             }
         }
     }
@@ -223,7 +223,7 @@ fileprivate extension RapidSubscriptionHandler {
     
     /// Load cached data if there are any
     func loadCachedData() {
-        delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, withSecret: delegate?.authorization?.accessToken, completion: { [weak self] (cachedValue) in
+        delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, completion: { [weak self] (cachedValue) in
             self?.delegate?.parseQueue.async {
                 if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedValue = cachedValue as? [RapidDocumentSnapshot] {
                     let batch = RapidSubscriptionBatch(withSubscriptionID: subscriptionID, collection: cachedValue)

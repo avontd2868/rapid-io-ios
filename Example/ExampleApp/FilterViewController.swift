@@ -105,7 +105,7 @@ fileprivate extension FilterViewController {
             }
             
             if !tagsSet {
-                tagsTableView.selectAll()
+                tagsTableView.selectTags([])
             }
             if !completionSet {
                 segmentedControl.selectedSegmentIndex = 1

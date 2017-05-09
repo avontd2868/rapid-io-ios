@@ -33,7 +33,11 @@ class RapidSubscriptionBatch: RapidResponse {
             return nil
         }
         
-        guard let subscriptionID = dict[RapidSerialization.SubscriptionUpdate.SubscriptionID.name] as? String else {
+        guard let subscriptionID = dict[RapidSerialization.SubscriptionValue.SubscriptionID.name] as? String else {
+            return nil
+        }
+        
+        guard let collectionID = dict[RapidSerialization.SubscriptionValue.CollectionID.name] as? String else {
             return nil
         }
         
@@ -43,7 +47,7 @@ class RapidSubscriptionBatch: RapidResponse {
         
         self.eventID = eventID
         self.subscriptionID = subscriptionID
-        self.collection = documents.flatMap({ RapidDocumentSnapshot(json: $0) })
+        self.collection = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })
         self.updates = []
     }
     
@@ -60,11 +64,15 @@ class RapidSubscriptionBatch: RapidResponse {
             return nil
         }
         
+        guard let collectionID = dict[RapidSerialization.SubscriptionUpdate.CollectionID.name] as? String else {
+            return nil
+        }
+        
         guard let document = dict[RapidSerialization.SubscriptionUpdate.Document.name] as? [AnyHashable: Any] else {
             return nil
         }
         
-        guard let snapshot = RapidDocumentSnapshot(json: document) else {
+        guard let snapshot = RapidDocumentSnapshot(json: document, collectionID: collectionID) else {
             return nil
         }
         

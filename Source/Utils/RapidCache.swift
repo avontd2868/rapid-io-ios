@@ -6,14 +6,23 @@
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
 
+protocol CachableObject: NSCoding {
+    var objectID: String { get }
+    var groupID: String { get }
+}
+
 /// Class for handling data cache
 class RapidCache: NSObject {
     
     /// URL of a file with info about cached data
     fileprivate var cacheInfoURL: URL {
-        return cacheDir.appendingPathComponent("0.dat")
+        return cacheDir.appendingPathComponent("00.dat")
     }
-    
+
+    fileprivate var referenceCountInfoURL: URL {
+        return cacheDir.appendingPathComponent("01.dat")
+    }
+
     /// Shared file manager
     fileprivate let fileManager: FileManager
     
@@ -36,7 +45,9 @@ class RapidCache: NSObject {
     /// Dictionary with info about cached data
     ///
     /// It stores modification time for every piece of data
-    fileprivate var cacheInfo: [UInt64: [String: TimeInterval]]
+    fileprivate var cacheInfo: [String: [String: TimeInterval]]
+    
+    fileprivate var referenceCountInfo: [String: [String: Int]]
     
     /// Initialize `RapidCache`
     ///
@@ -88,11 +99,19 @@ class RapidCache: NSObject {
         }
         
         // Load info about cached data
-        if let data = try? Data(contentsOf: cacheDir.appendingPathComponent("0.dat")), let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [UInt64: [String: TimeInterval]] {
+        if let data = try? Data(contentsOf: cacheDir.appendingPathComponent("00.dat")), let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: [String: TimeInterval]] {
             cacheInfo = info
         }
         else {
             cacheInfo = [:]
+        }
+        
+        // Load info about cached data
+        if let data = try? Data(contentsOf: cacheDir.appendingPathComponent("01.dat")), let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: [String: Int]] {
+            referenceCountInfo = info
+        }
+        else {
+            referenceCountInfo = [:]
         }
         
         diskQueue = DispatchQueue(label: "io.rapid.cache.disk", qos: .utility)
@@ -109,9 +128,13 @@ class RapidCache: NSObject {
     ///
     /// - Parameter key: Cache key
     /// - Returns: Hash for the key
-    func hash(forKey key: String) -> UInt64 {
+    func hash(forKey key: String, unique: Bool = false) -> String {
         if key.isEmpty {
-            return 1
+            return "1"
+        }
+        
+        if unique {
+            return key.characters.flatMap({ $0.asciiValue }).reduce("") { "\($0)\($1)" }
         }
         
         // Get list of characters, compute their frequencies and sort characters according to their frequencies
@@ -127,7 +150,7 @@ class RapidCache: NSObject {
             }
         }
         
-        return max(hash, 1)
+        return "\(max(hash, 1))"
     }
     
     /// Find out if there are cached data for a given key
@@ -153,14 +176,32 @@ class RapidCache: NSObject {
         }
     }
     
+    func loadObject(withGroupID groupID: String, objectID: String, secret: String? = nil, completion: @escaping (Any?) -> Void) {
+        diskQueue.async {
+            completion(self.cache(forGroupID: groupID, objectIDs: [objectID], secret: secret).first)
+        }
+    }
+    
     /// Store data with a given key to the cache
     ///
     /// - Parameters:
     ///   - data: Data to be cached
     ///   - key: Cache key
-    func save(data: NSCoding, forKey key: String, secret: String? = nil) {
+    func save(data: [CachableObject], forKey key: String, secret: String? = nil) {
         diskQueue.async {
             self.saveCache(data, forKey: key, secret: secret)
+        }
+    }
+    
+    func save(object: CachableObject, withSecret secret: String? = nil) {
+        diskQueue.async {
+            self.saveObjects(objects: [object], withSecret: secret)
+        }
+    }
+    
+    func removeObject(withGroupID groupID: String, objectID: String) {
+        diskQueue.async {
+            self.removeCache(withGroupID: groupID, objectIDs: [objectID])
         }
     }
     
@@ -238,6 +279,40 @@ fileprivate extension RapidCache {
         return Data(bytes: encrypted)
     }
     
+    func cache(forGroupID groupID: String, objectIDs: [String], secret: String?) -> [Any] {
+        guard let fileDict = cache(forGroupID: groupID) else {
+            return []
+        }
+        
+        var cachedObjects = [Any]()
+        
+        for objectID in objectIDs {
+            if let data = fileDict[objectID] {
+                let cachedObject: Any?
+                
+                if let secret = secret {
+                    let cache = byteXor(data: data, secret: secret)
+                    cachedObject = NSKeyedUnarchiver.unarchiveObject(with: cache)
+                }
+                else {
+                    cachedObject = NSKeyedUnarchiver.unarchiveObject(with: data)
+                }
+                
+                if let cachedObject = cachedObject {
+                    cachedObjects.append(cachedObject)
+                }
+            }
+        }
+        
+        return cachedObjects
+    }
+    
+    func cache(forGroupID groupID: String) -> [String: Data]? {
+        let groupHash = self.hash(forKey: groupID, unique: true)
+        
+        return fileDictionary(forHash: groupHash)
+    }
+    
     /// Get cached data for a given key
     ///
     /// - Parameter key: Cache key
@@ -249,33 +324,38 @@ fileprivate extension RapidCache {
             return nil
         }
 
-        let fileDict = self.fileDictionary(forHash: hash)
+        let linkDict = self.linkDictionary(forHash: hash)
         
-        guard let encryptedCache = fileDict[key] else {
+        guard let linkArray = linkDict[key] else {
             return nil
         }
         
-        let cachedObject: Any?
-        
-        if let secret = secret {
-            let cache = byteXor(data: encryptedCache, secret: secret)
-            cachedObject = NSKeyedUnarchiver.unarchiveObject(with: cache)
-        }
-        else {
-            cachedObject = NSKeyedUnarchiver.unarchiveObject(with: encryptedCache)
+        guard let groupID = linkArray.first?[0] else {
+            return []
         }
         
-        RapidLogger.debugLog(message: "Cache for key \(key): \(String(describing: cachedObject))")
+        let ids = linkArray.map({ $0[1] })
+        return cache(forGroupID: groupID, objectIDs: ids, secret: secret)
+    }
+    
+    func linkDictionary(forHash hash: String) -> [String: [[String]]] {
+        let url = self.url(forHash: hash)
         
-        return cachedObject
+        do {
+            let data = try Data(contentsOf: url)
+            return NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: [[String]]] ?? [:]
+        }
+        catch {
+            return [:]
+        }
     }
     
     /// Get cached data for all keys with a same hash value
     ///
     /// - Parameter hash: Hash value of a cache key
     /// - Returns: Dictionary of cached pieces of data
-    func fileDictionary(forHash hash: UInt64) -> [String: Data] {
-        let url = self.url(forHash: hash)
+    func fileDictionary(forHash hash: String) -> [String: Data] {
+        let url = self.url(forHash: hash, linkFile: false)
         
         do {
             let data = try Data(contentsOf: url)
@@ -286,25 +366,88 @@ fileprivate extension RapidCache {
         }
     }
     
+    func saveObjects(objects: [CachableObject], pointers: [[String]]? = nil, withSecret secret: String? = nil) {
+        var mutPointers = pointers ?? []
+        
+        let key: String?
+        if let object = objects.first {
+            key = object.groupID
+        }
+        else {
+            key = pointers?.first?.first
+        }
+        
+        let hash: String?
+        var fileDict: [String: Data]
+        var referenceCounts: [String: Int]
+        if let key = key {
+            let groupHash = self.hash(forKey: key, unique: true)
+            fileDict = fileDictionary(forHash: groupHash)
+            referenceCounts = referenceCountInfo[groupHash] ?? [:]
+            hash = groupHash
+        }
+        else {
+            fileDict = [:]
+            referenceCounts = [:]
+            hash = nil
+        }
+        
+        for object in objects {
+            if let index = mutPointers.index(where: { $0[0] == object.groupID && $0[1] == object.objectID }) {
+                mutPointers.remove(at: index)
+            }
+            else {
+                let count = referenceCounts["\(object.groupID)/\(object.objectID)"] ?? 0
+                referenceCounts["\(object.groupID)/\(object.objectID)"] = count + 1
+            }
+        }
+        
+        var removeIDs = [String]()
+        for link in mutPointers {
+            let count = referenceCounts["\(link[0])/\(link[1])"] ?? 0
+            referenceCounts["\(link[0])/\(link[1])"] = max(0, count - 1)
+            
+            if count < 2 {
+                removeIDs.append(link[1])
+            }
+        }
+        
+        for object in objects {
+            let data = NSKeyedArchiver.archivedData(withRootObject: object)
+            if let secret = secret {
+                fileDict[object.objectID] = byteXor(data: data, secret: secret)
+            }
+            else {
+                fileDict[object.objectID] = data
+            }
+        }
+        
+        for id in removeIDs {
+            fileDict[id] = nil
+        }
+        
+        if let hash = hash {
+            referenceCountInfo[hash] = referenceCounts
+            saveReferenceCountInfo()
+            saveCache(fileDict, forHash: hash, linkFile: false)
+        }
+    }
+    
     /// Store data with a given key to the cache
     ///
     /// - Parameters:
     ///   - cache: Data to be stored
     ///   - key: Cache key
-    func saveCache(_ cache: NSCoding, forKey key: String, secret: String?) {
+    func saveCache(_ cache: [CachableObject], forKey key: String, secret: String?) {
         let hash = self.hash(forKey: key)
         
         // Add data to the cache
-        var fileDict = fileDictionary(forHash: hash)
+        var linkDict = linkDictionary(forHash: hash)
         
-        if let secret = secret {
-            let data = NSKeyedArchiver.archivedData(withRootObject: cache)
-            fileDict[key] = byteXor(data: data, secret: secret)
-        }
-        else {
-            fileDict[key] = NSKeyedArchiver.archivedData(withRootObject: cache)
-        }
+        saveObjects(objects: cache, pointers: linkDict[key], withSecret: secret)
         
+        linkDict[key] = cache.map({ [$0.groupID, $0.objectID] })
+
         // Put down a timestamp of data modification
         if var dict = cacheInfo[hash] {
             dict[key] = Date().timeIntervalSince1970
@@ -315,7 +458,7 @@ fileprivate extension RapidCache {
         }
         
         saveCacheInfo()
-        saveCache(fileDict, forHash: hash)
+        saveCache(linkDict, forHash: hash)
     }
     
     /// Write cache file to a disk
@@ -323,11 +466,11 @@ fileprivate extension RapidCache {
     /// - Parameters:
     ///   - cache: Dictionary of cached pieces of data
     ///   - hash: Hash value of keys associated with data in this cache file
-    func saveCache(_ cache: [String: Data], forHash hash: UInt64) {
+    func saveCache(_ cache: [AnyHashable: Any], forHash hash: String, linkFile: Bool = true) {
         do {
             let data = NSKeyedArchiver.archivedData(withRootObject: cache)
             
-            try data.write(to: self.url(forHash: hash))
+            try data.write(to: self.url(forHash: hash, linkFile: linkFile))
         }
         catch {
             RapidLogger.debugLog(message: "Cache wasn't saved")
@@ -342,13 +485,26 @@ fileprivate extension RapidCache {
             try data.write(to: cacheInfoURL)
         }
         catch {
-            RapidLogger.debugLog(message: "Cache info wasn't saved")}
+            RapidLogger.debugLog(message: "Cache info wasn't saved")
+        }
+    }
+    
+    func saveReferenceCountInfo() {
+        do {
+            let data = NSKeyedArchiver.archivedData(withRootObject: referenceCountInfo)
+            
+            try data.write(to: referenceCountInfoURL)
+        }
+        catch {
+            RapidLogger.debugLog(message: "Reference count info wasn't saved")
+        }
     }
     
     /// Remove cache directore from a disk
     func removeCache() {
         do {
             self.cacheInfo.removeAll()
+            self.referenceCountInfo.removeAll()
             
             try self.fileManager.removeItem(at: self.cacheDir)
         }
@@ -365,28 +521,75 @@ fileprivate extension RapidCache {
         
         self.cacheInfo[hash]?[key] = nil
         
+        var linkDict = self.linkDictionary(forHash: hash)
+        
+        let links = linkDict[key] ?? []
+        
+        if let groupID = links.first?.first {
+            let groupHash = self.hash(forKey: groupID, unique: true)
+            
+            var removeIDs = [String]()
+            var referenceCounts = referenceCountInfo[groupHash] ?? [:]
+            
+            for link in links {
+                let count = referenceCounts["\(link[0])/\(link[1])"] ?? 0
+                referenceCounts["\(link[0])/\(link[1])"] = max(0, count - 1)
+                
+                if count < 2 {
+                    removeIDs.append(link[1])
+                }
+            }
+            
+            referenceCountInfo[groupHash] = referenceCounts
+            
+            removeCache(withGroupID: groupID, objectIDs: removeIDs)
+        }
+        
         // If there are still any data stored under the same hash value save the updated file
         // Otherwise remove the cache file
         if (self.cacheInfo[hash]?.keys.count ?? 0) > 0 {
-            var fileDict = self.fileDictionary(forHash: hash)
+            linkDict[key] = nil
             
-            fileDict[key] = nil
-            
-            self.saveCache(fileDict, forHash: hash)
+            self.saveCache(linkDict, forHash: hash)
         }
         else {
             self.removeCacheFile(forHash: hash)
         }
         
         self.saveCacheInfo()
+        self.saveReferenceCountInfo()
+    }
+    
+    func removeCache(withGroupID groupID: String, objectIDs: [String]) {
+        guard var fileDict = cache(forGroupID: groupID) else {
+            return
+        }
+        
+        let hash = self.hash(forKey: groupID, unique: true)
+        var references = referenceCountInfo[hash] ?? [:]
+        
+        for id in objectIDs {
+            fileDict[id] = nil
+            references["\(groupID)/\(id)"] = nil
+        }
+        
+        if references.keys.count > 0 {
+            saveCache(fileDict, forHash: hash, linkFile: false)
+        }
+        else {
+            removeCacheFile(forHash: hash, linkFile: false)
+        }
+        
+        referenceCountInfo[hash] = references
+        saveReferenceCountInfo()
     }
     
     /// Remove cache file from a disk
     ///
     /// - Parameter hash: Hash value associated with data stored in a file
-    func removeCacheFile(forHash hash: UInt64) {
+    func removeCacheFile(forHash hash: String, linkFile: Bool = true) {
         do {
-            try fileManager.removeItem(at: url(forHash: hash))
+            try fileManager.removeItem(at: url(forHash: hash, linkFile: linkFile))
         }
         catch {
             RapidLogger.debugLog(message: "Cache file wasn't removed")
@@ -397,8 +600,9 @@ fileprivate extension RapidCache {
     ///
     /// - Parameter hash: Hash value
     /// - Returns: URL to a file
-    func url(forHash hash: UInt64) -> URL {
-        return cacheDir.appendingPathComponent("\(hash).dat")
+    func url(forHash hash: String, linkFile: Bool = true) -> URL {
+        let prefix = linkFile ? "00" : "01"
+        return cacheDir.appendingPathComponent("\(prefix)\(hash).dat")
     }
     
     /// Prune outdated or oversized cached data
