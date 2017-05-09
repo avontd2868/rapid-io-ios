@@ -8,40 +8,36 @@
 
 import Foundation
 
-class RapidLogger {
+public class RapidLogger {
     
-    enum Priority {
-        case high
-        case normal
+    public enum Level: Int {
+        case off
+        case critical
+        case info
+        case debug
     }
     
-    static var logDebugMessages = false
-    static var logMessages = false
+    static let developerLogging = false
+    static var level: Level = .critical
     
-    class func log(message: String, priority: Priority = .normal) {
-        #if DEBUG
-            switch priority {
-            case .high:
-                NSLog(message)
-                
-            case .normal where logMessages:
-                NSLog(message)
-                
-            default:
-                break
-            }
-        #else
-            if priority == .high {
-                NSLog(message)
-            }
-        #endif
+    class func log(message: String, level: Level) {
+        if level.rawValue <= self.level.rawValue {
+            #if DEBUG
+                NSLog("RapidSDK - \(message)")
+            #else
+                if level == .critical {
+                    NSLog("RapidSDK - \(message)")
+                }
+            #endif
+        }
     }
     
-    class func debugLog(message: String) {
+    class func developerLog(message: String) {
         #if RAPIDDEBUG
-            if logDebugMessages {
-                print(message)
+            if developerLogging && level == .debug {
+                print("RapidSDK - \(message)")
             }
         #endif
     }
+
 }

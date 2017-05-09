@@ -115,7 +115,7 @@ class RapidAuthRequest: RapidRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid authorized")
+            RapidLogger.log(message: "Rapid authorized", level: .info)
             
             self.callback?(true, nil)
         }
@@ -123,7 +123,7 @@ class RapidAuthRequest: RapidRequest {
     
     func eventFailed(withError error: RapidErrorInstance) {
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid authorization failed")
+            RapidLogger.log(message: "Rapid authorization failed", level: .info)
             
             self.callback?(false, error.error)
         }
@@ -154,7 +154,7 @@ class RapidDeauthRequest: RapidRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid unauthorized")
+            RapidLogger.log(message: "Rapid unauthorized", level: .info)
             
             self.callback?(true, nil)
         }
@@ -162,7 +162,7 @@ class RapidDeauthRequest: RapidRequest {
     
     func eventFailed(withError error: RapidErrorInstance) {
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid unauthorization failed")
+            RapidLogger.log(message: "Rapid unauthorization failed", level: .info)
             
             self.callback?(false, error.error)
         }

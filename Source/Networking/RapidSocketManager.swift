@@ -176,7 +176,7 @@ fileprivate extension RapidSocketManager {
     
     /// Handle a situation when socket was unintentionally disconnected
     func handleDidDisconnect(withError error: RapidError?) {
-        RapidLogger.debugLog(message: "Did disconnect with error \(String(describing: error))")
+        RapidLogger.developerLog(message: "Did disconnect with error \(String(describing: error))")
         
         // Get all relevant events that were about to be sent
         let currentQueue = eventQueue.filter({
@@ -322,7 +322,7 @@ fileprivate extension RapidSocketManager {
     ///
     /// - Parameter handler: Unsubscription handler
     func unsubscribe(_ handler: RapidUnsubscriptionHandler) {
-        RapidLogger.log(message: "Unsubscribe \(handler.subscription.subscriptionHash)")
+        RapidLogger.log(message: "Unsubscribe \(handler.subscription.subscriptionHash)", level: .info)
         
         activeSubscriptions[handler.subscription.subscriptionID] = nil
         
@@ -447,7 +447,7 @@ fileprivate extension RapidSocketManager {
             acknowledge(eventWithID: response.eventID)
         
         default:
-            RapidLogger.debugLog(message: "Unrecognized response")
+            RapidLogger.developerLog(message: "Unrecognized response")
         }
     }
 }
@@ -497,9 +497,7 @@ extension RapidSocketManager: RapidConnectionRequestDelegate {
     ///
     /// - Parameter request: Connection request that was acknowledged
     func connectionEstablished(_ request: RapidConnectionRequest) {
-        RapidLogger.log(message: "Rapid connected")
-        
-        RapidLogger.debugLog(message: "Connection established")
+        RapidLogger.log(message: "Rapid connected", level: .info)
     }
     
     /// Connection request failed
@@ -508,9 +506,7 @@ extension RapidSocketManager: RapidConnectionRequestDelegate {
     ///   - request: Connection request that failed
     ///   - error: Reason of failure
     func connectingFailed(_ request: RapidConnectionRequest, error: RapidErrorInstance) {
-        RapidLogger.log(message: "Rapid connection failed")
-        
-        RapidLogger.debugLog(message: "Connection failed")
+        RapidLogger.log(message: "Rapid connection failed", level: .info)
         
         websocketQueue.async { [weak self] in
             self?.networkHandler.restartSocket(afterError: error.error)
@@ -526,7 +522,7 @@ extension RapidSocketManager: RapidTimeoutRequestDelegate {
     ///
     /// - Parameter request: Request that timeouted
     func requestTimeout(_ request: RapidTimeoutRequest) {
-        RapidLogger.debugLog(message: "Request timeout \(request)")
+        RapidLogger.developerLog(message: "Request timeout \(request)")
         
         websocketQueue.async { [weak self] in
             // If the request is pending complete it with timeout error

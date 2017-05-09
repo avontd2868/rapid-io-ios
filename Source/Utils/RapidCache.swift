@@ -59,12 +59,12 @@ class RapidCache: NSObject {
     ///   - maxSize: Maximum size of a cache directory in MB. Default value is 100 MB
     init?(apiKey: String, timeToLive: TimeInterval? = nil, maxSize: Float? = 100) {
         guard !apiKey.isEmpty, let cacheURL = RapidCache.cacheURL(forAPIKey: apiKey) else {
-            RapidLogger.debugLog(message: "Cache not initialized")
+            RapidLogger.log(message: "Cache not initialized", level: .debug)
             return nil
         }
         
         guard (timeToLive ?? 1) > 0 && (maxSize ?? 1) > 0 else {
-            RapidLogger.debugLog(message: "Cache not initialized")
+            RapidLogger.log(message: "Cache not initialized", level: .debug)
             return nil
         }
         
@@ -85,7 +85,7 @@ class RapidCache: NSObject {
                     try fileManager.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
                 }
                 catch {
-                    RapidLogger.debugLog(message: "Cache not initialized")
+                    RapidLogger.log(message: "Cache not initialized", level: .debug)
                     return nil
                 }
             }
@@ -95,7 +95,7 @@ class RapidCache: NSObject {
                 try fileManager.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
             }
             catch {
-                RapidLogger.debugLog(message: "Cache not initialized")
+                RapidLogger.log(message: "Cache not initialized", level: .debug)
                 return nil
             }
         }
@@ -277,7 +277,7 @@ extension RapidCache {
             try manager.removeItem(at: cacheURL)
         }
         catch {
-            RapidLogger.debugLog(message: "Cache wasn't cleared")
+            RapidLogger.log(message: "Cache wasn't cleared", level: .debug)
         }
     }
 }
@@ -538,7 +538,7 @@ fileprivate extension RapidCache {
             try data.write(to: self.url(forHash: hash, linkFile: linkFile))
         }
         catch {
-            RapidLogger.debugLog(message: "Cache wasn't saved")
+            RapidLogger.log(message: "Cache wasn't saved", level: .debug)
         }
     }
     
@@ -550,7 +550,7 @@ fileprivate extension RapidCache {
             try data.write(to: cacheInfoURL)
         }
         catch {
-            RapidLogger.debugLog(message: "Cache info wasn't saved")
+            RapidLogger.log(message: "Cache info wasn't saved", level: .debug)
         }
     }
     
@@ -562,7 +562,7 @@ fileprivate extension RapidCache {
             try data.write(to: referenceCountInfoURL)
         }
         catch {
-            RapidLogger.debugLog(message: "Reference count info wasn't saved")
+            RapidLogger.log(message: "Reference count info wasn't saved", level: .debug)
         }
     }
     
@@ -575,7 +575,7 @@ fileprivate extension RapidCache {
             try self.fileManager.removeItem(at: self.cacheDir)
         }
         catch {
-            RapidLogger.debugLog(message: "Cache wasn't cleared")
+            RapidLogger.log(message: "Cache wasn't cleared", level: .debug)
         }
     }
     
@@ -668,7 +668,7 @@ fileprivate extension RapidCache {
             try fileManager.removeItem(at: url(forHash: hash, linkFile: linkFile))
         }
         catch {
-            RapidLogger.debugLog(message: "Cache file wasn't removed")
+            RapidLogger.log(message: "Cache file wasn't removed", level: .debug)
         }
     }
     
@@ -699,7 +699,7 @@ fileprivate extension RapidCache {
         
         for (_, caches) in cacheInfo {
             for (key, timestamp) in caches where timestamp < referenceTimestamp {
-                RapidLogger.debugLog(message: "Outdated cache removed - key: \(key)")
+                RapidLogger.log(message: "Outdated cache removed - key: \(key)", level: .debug)
                 
                 removeDataset(forKey: key)
             }
@@ -723,7 +723,7 @@ fileprivate extension RapidCache {
         
         while (cacheDir.memorySize ?? 0) > Int((maxSize/2) * 1024 * 1024) && sortedValues.count > 0 {
             for (key, _) in sortedValues.prefix(5) {
-                RapidLogger.debugLog(message: "Cache file deleted because of size pruning - key: \(key)")
+                RapidLogger.log(message: "Cache file deleted because of size pruning - key: \(key)", level: .debug)
                 
                 removeDataset(forKey: key)
             }

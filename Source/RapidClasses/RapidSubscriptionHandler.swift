@@ -257,7 +257,14 @@ fileprivate extension RapidSubscriptionHandler {
             return
         }
         
-        RapidLogger.log(message: "New data for subscription \(subscriptionHash)")
+        if let collection = update.collection {
+            RapidLogger.log(message: "Subscription initial value - collection \(subscriptionHash)", level: .debug)
+            RapidLogger.log(message: "\(collection.map({ "\($0.id): \($0.value ?? [:])" }))", level: .debug)
+        }
+        if update.updates.count > 0 {
+            RapidLogger.log(message: "Subscription update - collection \(subscriptionHash)", level: .debug)
+            RapidLogger.log(message: "\(update.updates.map({ "\($0.id): \($0.value ?? [:])" }))", level: .debug)
+        }
         
         // Inform all subscription objects
         for subsription in subscriptions {
@@ -491,7 +498,7 @@ extension RapidSubscriptionHandler: RapidRequest {
     
     func eventFailed(withError error: RapidErrorInstance) {
         delegate?.websocketQueue.async {
-            RapidLogger.log(message: "Subscription failed \(self.subscriptionHash) with error \(error.error)")
+            RapidLogger.log(message: "Subscription failed \(self.subscriptionHash) with error \(error.error)", level: .info)
             
             self.value = nil
             self.state = .unsubscribed

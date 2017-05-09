@@ -76,7 +76,7 @@ class RapidNetworkHandler {
     /// Force connection restart
     func restartSocket(afterError error: RapidError?) {
         mainQueue.async { [weak self] in
-            RapidLogger.debugLog(message: "Restart socket")
+            RapidLogger.developerLog(message: "Restart socket")
             
             // If socket is connected, disconnect it
             // If socket is not connected and it wasn't intentionally closed, then call reconnection handler directly
@@ -99,7 +99,7 @@ class RapidNetworkHandler {
             do {
                 let jsonString = try event.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
                 
-                RapidLogger.debugLog(message: "Write request \(jsonString)")
+                RapidLogger.developerLog(message: "Write request \(jsonString)")
                 
                 self?.socket.write(string: jsonString)
             }
@@ -120,7 +120,7 @@ fileprivate extension RapidNetworkHandler {
     /// Create a websocket connection
     func createConnection() {
         // Start the timer that limits maximum time span when websocket connection is trying to be established
-        RapidLogger.debugLog(message: "Create connection")
+        RapidLogger.developerLog(message: "Create connection")
         
         state = .connecting
         
@@ -134,7 +134,7 @@ fileprivate extension RapidNetworkHandler {
     
     // Destroy existing socket connection
     func destroySocket() {
-        RapidLogger.debugLog(message: "Destroy socket")
+        RapidLogger.developerLog(message: "Destroy socket")
         
         socketTerminated = true
         
@@ -164,7 +164,7 @@ fileprivate extension RapidNetworkHandler {
     ///
     /// - Parameter message: Message received from websocket
     func parse(message: String) {
-        RapidLogger.debugLog(message: "Received message \(message)")
+        RapidLogger.developerLog(message: "Received message \(message)")
         
         if let data = message.data(using: .utf8) {
             parse(data: data)
@@ -195,7 +195,7 @@ extension RapidNetworkHandler: WebSocketDelegate {
     
     func websocketDidConnect(socket: WebSocket) {
         mainQueue.async {
-            RapidLogger.debugLog(message: "Socket did connect")
+            RapidLogger.developerLog(message: "Socket did connect")
             
             // Invalidate connection timer
             self.socketConnectTimer?.invalidate()
@@ -209,7 +209,7 @@ extension RapidNetworkHandler: WebSocketDelegate {
     
     func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
         mainQueue.async {
-            RapidLogger.debugLog(message: "Socket did disconnect \(String(describing: error))")
+            RapidLogger.developerLog(message: "Socket did disconnect \(String(describing: error))")
             
             // Invalidate connection timer
             self.socketConnectTimer?.invalidate()

@@ -122,14 +122,14 @@ public class Rapid: NSObject {
     
     /// Disconnect from server
     public func goOffline() {
-        RapidLogger.log(message: "Rapid went offline")
+        RapidLogger.log(message: "Rapid went offline", level: .info)
         
         handler.socketManager.goOffline()
     }
     
     /// Restore previously configured connection
     public func goOnline() {
-        RapidLogger.log(message: "Rapid went online")
+        RapidLogger.log(message: "Rapid went online", level: .info)
         
         handler.socketManager.goOnline()
     }
@@ -153,7 +153,7 @@ public extension Rapid {
             return shared
         }
 
-        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, priority: .high)
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
     
@@ -169,24 +169,15 @@ public extension Rapid {
         return Generator.uniqueID
     }
     
-    class var debugLoggingEnabled: Bool {
+    class var logLevel: RapidLogger.Level {
         get {
-            return RapidLogger.logDebugMessages
+            return RapidLogger.level
         }
         
         set {
-            RapidLogger.logDebugMessages = newValue
-        }
-    }
-
-    class var loggingEnabled: Bool {
-        get {
-            return RapidLogger.logMessages
+            RapidLogger.level = newValue
         }
         
-        set {
-            RapidLogger.logMessages = newValue
-        }
     }
     
     /// If `true` subscription values are stored locally to be available offline

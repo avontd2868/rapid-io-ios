@@ -13,6 +13,7 @@ class RapidSubscriptionBatch: RapidResponse {
     
     let eventID: String
     let subscriptionID: String
+    let collectionID: String
     
     internal(set) var collection: [RapidDocumentSnapshot]?
     internal(set) var updates: [RapidDocumentSnapshot]
@@ -20,6 +21,7 @@ class RapidSubscriptionBatch: RapidResponse {
     init(withSubscriptionID id: String, collection: [RapidDocumentSnapshot]) {
         self.eventID = Rapid.uniqueID
         self.subscriptionID = id
+        self.collectionID = collection.first?.collectionID ?? ""
         self.collection = collection
         self.updates = []
     }
@@ -47,6 +49,7 @@ class RapidSubscriptionBatch: RapidResponse {
         
         self.eventID = eventID
         self.subscriptionID = subscriptionID
+        self.collectionID = collectionID
         self.collection = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })
         self.updates = []
     }
@@ -78,6 +81,7 @@ class RapidSubscriptionBatch: RapidResponse {
         
         self.eventID = eventID
         self.subscriptionID = subscriptionID
+        self.collectionID = collectionID
         self.collection = nil
         self.updates = [snapshot]
     }

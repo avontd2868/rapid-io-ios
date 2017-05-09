@@ -517,6 +517,59 @@ class RapidTests: XCTestCase {
         
         waitForExpectations(timeout: 6, handler: nil)
     }
+    
+    func testDictionaryMerge() {
+        var dictionary: [AnyHashable: Any] = [
+            "att1": "val",
+            "att2": [1,2,3],
+            "att3": [
+                "att1": "val",
+                "att2": [432]
+            ]
+        ]
+        
+        dictionary.merge(with: [
+            "att2": [2,3,4],
+            "att4": true
+            ])
+        
+        XCTAssertTrue(dictionary == [
+            "att1": "val",
+            "att2": [2,3,4],
+            "att4": true,
+            "att3": [
+                "att1": "val",
+                "att2": [432]
+            ]
+            ], "Wrong merge")
+        
+        dictionary.merge(with: ["att1": NSNull()])
+        
+        XCTAssertTrue(dictionary == [
+            "att2": [2,3,4],
+            "att4": true,
+            "att3": [
+                "att1": "val",
+                "att2": [432]
+            ]
+            ], "Wrong merge")
+        
+        dictionary.merge(with: [
+            "att3": [
+                "att3": true
+            ]
+            ])
+        
+        XCTAssertTrue(dictionary == [
+            "att2": [2,3,4],
+            "att4": true,
+            "att3": [
+                "att1": "val",
+                "att2": [432],
+                "att3": true
+            ]
+            ], "Wrong merge")
+    }
 }
 
 protocol MockNetworkHandlerDelegate: class {

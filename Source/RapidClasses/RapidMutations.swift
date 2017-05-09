@@ -66,7 +66,7 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
         invalidateTimer()
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated")
+            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated", level: .info)
             
             let snapshot = RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: self.value)
             self.cacheHandler?.storeObject(snapshot)
@@ -79,7 +79,7 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
         invalidateTimer()
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid mutation failed - document \(self.documentID) in collection \(self.collectionID)")
+            RapidLogger.log(message: "Rapid mutation failed - document \(self.documentID) in collection \(self.collectionID)", level: .info)
             
             self.callback?(error.error, nil)
         }
@@ -144,7 +144,7 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
         invalidateTimer()
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) merged")
+            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) merged", level: .info)
             
             self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
                 if let snapshot = object as? RapidDocumentSnapshot, var value = snapshot.value {
@@ -161,7 +161,7 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
         invalidateTimer()
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid merge failed - document \(self.documentID) in collection \(self.collectionID)")
+            RapidLogger.log(message: "Rapid merge failed - document \(self.documentID) in collection \(self.collectionID)", level: .info)
             
             self.callback?(error.error, nil)
         }
@@ -221,7 +221,7 @@ extension RapidDocumentDelete: RapidTimeoutRequest {
         invalidateTimer()
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) deleted")
+            RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) deleted", level: .info)
             
             self.cacheHandler?.removeObject(withGroupID: self.collectionID, objectID: self.documentID)
             
@@ -233,7 +233,7 @@ extension RapidDocumentDelete: RapidTimeoutRequest {
         invalidateTimer()
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid delete failed - document \(self.documentID) in collection \(self.collectionID)")
+            RapidLogger.log(message: "Rapid delete failed - document \(self.documentID) in collection \(self.collectionID)", level: .info)
             
             self.callback?(error.error)
         }

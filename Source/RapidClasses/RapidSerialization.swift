@@ -16,7 +16,7 @@ class RapidSerialization {
     /// - Returns: Array of deserialized objects
     class func parse(json: [AnyHashable: Any]?) -> [RapidResponse]? {
         guard let json = json else {
-            RapidLogger.debugLog(message: "Server event parsing failed - no data")
+            RapidLogger.developerLog(message: "Server event parsing failed - no data")
             
             return nil
         }
@@ -53,7 +53,7 @@ class RapidSerialization {
             return [event]
         }
 
-        RapidLogger.debugLog(message: "Server event parsing failed - \(json)")
+        RapidLogger.developerLog(message: "Server event parsing failed - \(json)")
 
         return nil
     }
@@ -629,6 +629,10 @@ extension RapidSerialization {
     
     struct Cancel {
         static let name = "ca"
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
         
         struct SubscriptionID {
             static let name = "sub-id"
