@@ -21,7 +21,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>ClientIdentifier</key>
-	<string>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ91</string>
+	<string>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

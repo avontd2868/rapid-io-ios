@@ -29,7 +29,7 @@
         <!--Order View Controller-->
         <scene sceneID="bRh-uI-5Je">
             <objects>
-                <viewController storyboardIdentifier="OrderViewController" id="LYh-hW-iTM" customClass="OrderViewController" customModule="ExampleApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="OrderViewController" id="LYh-hW-iTM" customClass="OrderViewController" customModule="RapiDO" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="csI-Ih-2iq"/>
                         <viewControllerLayoutGuide type="bottom" id="Skr-Gz-sba"/>
@@ -123,7 +123,7 @@
         <!--Filter View Controller-->
         <scene sceneID="F6o-xw-lpV">
             <objects>
-                <viewController storyboardIdentifier="FilterViewController" id="bP7-yP-Xaj" customClass="FilterViewController" customModule="ExampleApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FilterViewController" id="bP7-yP-Xaj" customClass="FilterViewController" customModule="RapiDO" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="sk6-C0-9xj"/>
                         <viewControllerLayoutGuide type="bottom" id="LB2-0L-5xs"/>
@@ -164,7 +164,7 @@
                                         </segments>
                                         <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                     </segmentedControl>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Lqq-b4-Zjy" customClass="TagsTableView" customModule="ExampleApp" customModuleProvider="target">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Lqq-b4-Zjy" customClass="TagsTableView" customModule="RapiDO" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="8" width="315" height="131"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -221,7 +221,7 @@
         <!--List View Controller-->
         <scene sceneID="clh-Xr-P1g">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="D0y-jY-vHF" customClass="ListViewController" customModule="ExampleApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="D0y-jY-vHF" customClass="ListViewController" customModule="RapiDO" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2d4-xF-1oq"/>
                         <viewControllerLayoutGuide type="bottom" id="OVg-C1-fYB"/>
@@ -230,19 +230,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Z1A-Z9-Jzw">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="110" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Z1A-Z9-Jzw">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="gray" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TaskCell" id="ylN-QI-Sj0" customClass="TaskCell" customModule="ExampleApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="80"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="gray" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TaskCell" id="ylN-QI-Sj0" customClass="TaskCell" customModule="RapiDO" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="110"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ylN-QI-Sj0" id="WHu-tY-bex">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="79.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="109.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VbL-Af-IYI" customClass="BEMCheckBox">
-                                                    <rect key="frame" x="15" y="20" width="40" height="40"/>
+                                                    <rect key="frame" x="15" y="35" width="40" height="40"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="eHD-u8-PdH"/>
@@ -256,39 +256,43 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="bottom" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="6E7-hf-sMK">
-                                                    <rect key="frame" x="359" y="43.5" width="6" height="10"/>
+                                                    <rect key="frame" x="359" y="50" width="6" height="10"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="6" id="hEd-4X-OoH"/>
                                                         <constraint firstAttribute="height" priority="250" constant="10" id="row-UO-MKP"/>
                                                     </constraints>
                                                 </stackView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="djfkljakl faj fk adjkladsj kfl;aj jfklaj ljdsklfjak ljfkaldsjfk adsjfklasjfkljds klfjdskl fj" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tqp-cJ-lJK">
-                                                    <rect key="frame" x="70" y="38.5" width="259" height="31.5"/>
+                                                    <rect key="frame" x="70" y="39" width="274" height="35"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="35" id="uTb-KJ-eAa"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" distribution="fillEqually" alignment="bottom" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="T0A-TR-Q2V">
-                                                    <rect key="frame" x="344" y="52.5" width="0.0" height="15"/>
+                                                    <rect key="frame" x="70" y="79.5" width="0.0" height="15"/>
                                                     <constraints>
+                                                        <constraint firstAttribute="width" priority="250" id="AH6-XF-NuK"/>
                                                         <constraint firstAttribute="height" constant="15" id="deO-Pg-pP3"/>
                                                     </constraints>
                                                 </stackView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="tqp-cJ-lJK" firstAttribute="top" secondItem="k9u-3x-z8m" secondAttribute="bottom" constant="3" id="0sh-S7-V6l"/>
-                                                <constraint firstAttribute="bottom" secondItem="6E7-hf-sMK" secondAttribute="bottom" constant="26" id="1xU-5g-Q0p"/>
+                                                <constraint firstItem="T0A-TR-Q2V" firstAttribute="leading" secondItem="k9u-3x-z8m" secondAttribute="leading" id="5AF-BK-E79"/>
                                                 <constraint firstItem="k9u-3x-z8m" firstAttribute="leading" secondItem="VbL-Af-IYI" secondAttribute="trailing" constant="15" id="9Sn-de-dli"/>
                                                 <constraint firstItem="VbL-Af-IYI" firstAttribute="centerY" secondItem="WHu-tY-bex" secondAttribute="centerY" id="AnD-E3-tNE"/>
                                                 <constraint firstItem="tqp-cJ-lJK" firstAttribute="leading" secondItem="k9u-3x-z8m" secondAttribute="leading" id="IDe-id-V4S"/>
+                                                <constraint firstItem="6E7-hf-sMK" firstAttribute="leading" secondItem="tqp-cJ-lJK" secondAttribute="trailing" constant="15" id="JeW-Ux-ZCk"/>
                                                 <constraint firstItem="6E7-hf-sMK" firstAttribute="top" relation="greaterThanOrEqual" secondItem="WHu-tY-bex" secondAttribute="top" constant="8" id="VK5-4p-ux4"/>
-                                                <constraint firstAttribute="bottom" secondItem="T0A-TR-Q2V" secondAttribute="bottom" constant="12" id="ZV2-Tz-jZZ"/>
-                                                <constraint firstItem="6E7-hf-sMK" firstAttribute="leading" secondItem="T0A-TR-Q2V" secondAttribute="trailing" constant="15" id="ZuE-kq-qaA"/>
-                                                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="tqp-cJ-lJK" secondAttribute="bottom" constant="8" id="bAV-YL-PXT"/>
+                                                <constraint firstAttribute="bottom" secondItem="T0A-TR-Q2V" secondAttribute="bottom" constant="15" id="ZV2-Tz-jZZ"/>
+                                                <constraint firstItem="6E7-hf-sMK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="T0A-TR-Q2V" secondAttribute="trailing" constant="15" id="ZuE-kq-qaA"/>
                                                 <constraint firstItem="k9u-3x-z8m" firstAttribute="top" secondItem="WHu-tY-bex" secondAttribute="top" constant="15" id="deg-fm-4E6"/>
                                                 <constraint firstItem="VbL-Af-IYI" firstAttribute="leading" secondItem="WHu-tY-bex" secondAttribute="leading" constant="15" id="ePf-MA-G3s"/>
                                                 <constraint firstAttribute="trailing" secondItem="6E7-hf-sMK" secondAttribute="trailing" constant="10" id="lwj-WW-axL"/>
-                                                <constraint firstItem="T0A-TR-Q2V" firstAttribute="leading" secondItem="tqp-cJ-lJK" secondAttribute="trailing" constant="15" id="sU4-RT-d3e"/>
+                                                <constraint firstItem="6E7-hf-sMK" firstAttribute="centerY" secondItem="WHu-tY-bex" secondAttribute="centerY" id="qgN-el-9Is"/>
                                                 <constraint firstItem="6E7-hf-sMK" firstAttribute="leading" secondItem="k9u-3x-z8m" secondAttribute="trailing" constant="15" id="tfT-VW-CF3"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -359,7 +363,7 @@
         <!--Upsert Task View Controller-->
         <scene sceneID="F1R-fN-8VO">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="xhr-tM-IoZ" customClass="UpsertTaskViewController" customModule="ExampleApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="xhr-tM-IoZ" customClass="UpsertTaskViewController" customModule="RapiDO" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ioh-jY-wa6"/>
                         <viewControllerLayoutGuide type="bottom" id="qWI-Ea-f7Q"/>
@@ -428,7 +432,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="jzr-Xt-tl5" customClass="TagsTableView" customModule="ExampleApp" customModuleProvider="target">
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="jzr-Xt-tl5" customClass="TagsTableView" customModule="RapiDO" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="437.5" width="375" height="131"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>

@@ -94,7 +94,7 @@
 		C1BE0C751EBCBDBB0062B0B7 /* BEMPathManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMPathManager.m; sourceTree = "<group>"; };
 		C1BE0C7A1EC05EAD0062B0B7 /* UpsertTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpsertTaskViewController.swift; sourceTree = "<group>"; };
 		C1BE0C7C1EC066990062B0B7 /* TagsTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsTableView.swift; sourceTree = "<group>"; };
-		C1D6E8721E785CFA007589FC /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1D6E8721E785CFA007589FC /* RapiDO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RapiDO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1D6E8751E785CFA007589FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1D6E87A1E785CFA007589FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C1D6E87C1E785CFA007589FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -162,7 +162,7 @@
 		C1D6E8731E785CFA007589FC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C1D6E8721E785CFA007589FC /* ExampleApp.app */,
+				C1D6E8721E785CFA007589FC /* RapiDO.app */,
 				C1D6E8861E785CFB007589FC /* ExampleAppTests.xctest */,
 			);
 			name = Products;
@@ -202,9 +202,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C1D6E8711E785CFA007589FC /* ExampleApp */ = {
+		C1D6E8711E785CFA007589FC /* RapiDO */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C1D6E88F1E785CFB007589FC /* Build configuration list for PBXNativeTarget "ExampleApp" */;
+			buildConfigurationList = C1D6E88F1E785CFB007589FC /* Build configuration list for PBXNativeTarget "RapiDO" */;
 			buildPhases = (
 				C1D6E86E1E785CFA007589FC /* Sources */,
 				C1D6E86F1E785CFA007589FC /* Frameworks */,
@@ -216,9 +216,9 @@
 			dependencies = (
 				C140F9311E891CA0002AB9C5 /* PBXTargetDependency */,
 			);
-			name = ExampleApp;
+			name = RapiDO;
 			productName = ExampleApp;
-			productReference = C1D6E8721E785CFA007589FC /* ExampleApp.app */;
+			productReference = C1D6E8721E785CFA007589FC /* RapiDO.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C1D6E8851E785CFB007589FC /* ExampleAppTests */ = {
@@ -281,7 +281,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				C1D6E8711E785CFA007589FC /* ExampleApp */,
+				C1D6E8711E785CFA007589FC /* RapiDO */,
 				C1D6E8851E785CFB007589FC /* ExampleAppTests */,
 			);
 		};
@@ -364,7 +364,7 @@
 		};
 		C1D6E8881E785CFB007589FC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C1D6E8711E785CFA007589FC /* ExampleApp */;
+			target = C1D6E8711E785CFA007589FC /* RapiDO */;
 			targetProxy = C1D6E8871E785CFB007589FC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -557,7 +557,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C1D6E88F1E785CFB007589FC /* Build configuration list for PBXNativeTarget "ExampleApp" */ = {
+		C1D6E88F1E785CFB007589FC /* Build configuration list for PBXNativeTarget "RapiDO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C1D6E8901E785CFB007589FC /* Debug */,
