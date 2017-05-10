@@ -76,7 +76,7 @@ struct Task {
     init?(withSnapshot snapshot: RapidDocumentSnapshot) {
         guard let dict = snapshot.value,
             let title = dict[Task.titleAttributeName] as? String,
-            let timestamp = dict[Task.createdAttributeName] as? TimeInterval,
+            let isoString = dict[Task.createdAttributeName] as? String,
             let priority = dict[Task.priorityAttributeName] as? Int else {
                 
             return nil
@@ -87,7 +87,7 @@ struct Task {
         self.taskID = snapshot.id
         self.title = title
         self.description = dict[Task.descriptionAttributeName] as? String
-        self.createdAt = Date(timeIntervalSince1970: timestamp)
+        self.createdAt = Date.dateFromString(isoString)
         self.completed = dict[Task.completedAttributeName] as? Bool ?? false
         self.priority = Priority(rawValue: priority) ?? .low
         self.tags = tags.flatMap({ Tag(rawValue: $0) })
@@ -97,10 +97,43 @@ struct Task {
 extension Task {
     
     static let titleAttributeName = "title"
-    static let descriptionAttributeName = "desc"
-    static let createdAttributeName = "created"
+    static let descriptionAttributeName = "description"
+    static let createdAttributeName = "createdAt"
     static let priorityAttributeName = "priority"
     static let tagsAttributeName = "tags"
     static let completedAttributeName = "done"
 
+}
+
+extension Date {
+
+    var isoString: String {
+        let formatter = DateFormatter()
+        
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+        
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        return formatter.string(from: self)
+    }
+    
+    static func dateFromString(_ str: String) -> Date {
+        let formatter = DateFormatter()
+        
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+        
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        if let date = formatter.date(from: str) {
+            return date
+        }
+        else {
+            return Date()
+        }
+    }
+    
 }

@@ -8,8 +8,10 @@
 
 import Foundation
 
+/// Rapid authorization
 public struct RapidAuthorization {
     
+    /// Authorization access token
     public let accessToken: String
     
     init(accessToken: String) {

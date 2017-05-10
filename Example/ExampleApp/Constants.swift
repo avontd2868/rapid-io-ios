@@ -11,7 +11,7 @@ import Foundation
 struct Constants {
     
     static var collectionName: String {
-        let clientID = Bundle.main.infoDictionary?["ClientIdentifier"] as? String ?? ""
+        let clientID = Bundle.main.infoDictionary?["ClientIdentifier"] as! String
         return "demoapp-\(clientID)"
     }
 }

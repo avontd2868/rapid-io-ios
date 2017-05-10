@@ -18,8 +18,9 @@ enum OrderingAttribute {
     case priority
     case date
     case title
+    case done
     
-    static let allValues: [OrderingAttribute] = [.date, .priority, .title]
+    static let allValues: [OrderingAttribute] = [.date, .priority, .done, .title]
     
     var attributeName: String {
         switch self {
@@ -31,6 +32,9 @@ enum OrderingAttribute {
             
         case .title:
             return Task.titleAttributeName
+            
+        case .done:
+            return Task.completedAttributeName
         }
     }
     
@@ -44,6 +48,9 @@ enum OrderingAttribute {
             
         case .title:
             return "Title"
+            
+        case .done:
+            return "Completed"
         }
     }
 }

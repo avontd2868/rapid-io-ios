@@ -64,6 +64,8 @@ fileprivate extension ListViewController {
     
     func subscribe() {
         subscription?.unsubscribe()
+        tasks.removeAll()
+        tableView.reloadData()
         
         let collection = Rapid.collection(named: Constants.collectionName)
         
@@ -87,10 +89,17 @@ fileprivate extension ListViewController {
             collection.filtered(by: combinedFilter)
         }
         
-        subscription = collection.order(by: ordering).subscribe(completion: { (error, documents) in
+        subscription = collection.order(by: ordering).subscribe() { (error, documents, insert, update, delete) in
+            //let previousSet = self.tasks
             self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
+//            self.tableView.beginUpdates()
+//            self.tableView.deleteRows(at: delete.map({ task in IndexPath(row: previousSet.index(where: { task.id == $0.taskID })!, section: 0) }), with: .automatic)
+//            self.tableView.deleteRows(at: update.map({ task in IndexPath(row: previousSet.index(where: { task.id == $0.taskID })!, section: 0) }), with: .automatic)
+//            self.tableView.insertRows(at: insert.map({ task in IndexPath(row: self.tasks.index(where: { task.id == $0.taskID })!, section: 0) }), with: .automatic)
+//            self.tableView.insertRows(at: update.map({ task in IndexPath(row: self.tasks.index(where: { task.id == $0.taskID })!, section: 0) }), with: .automatic)
+//            self.tableView.endUpdates()
             self.tableView.reloadData()
-        })
+        }
     }
     
     func presentNewTaskController() {

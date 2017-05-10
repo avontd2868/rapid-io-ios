@@ -166,6 +166,7 @@ public class RapidDocument: NSObject {
     
     /// ID of a collection to which the document belongs
     public let collectionID: String
+    
     /// Document ID
     public let documentID: String
     

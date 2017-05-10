@@ -67,7 +67,7 @@ class UpsertTaskViewController: UIViewController {
         let task: [AnyHashable: Any] = [
             Task.titleAttributeName: title,
             Task.descriptionAttributeName: description,
-            Task.createdAttributeName: self.task?.createdAt.timeIntervalSince1970 ?? Date().timeIntervalSince1970,
+            Task.createdAttributeName: self.task?.createdAt.isoString ?? Date().isoString,
             Task.priorityAttributeName: priority,
             Task.tagsAttributeName: tags,
             Task.completedAttributeName: completedCheckbox.on

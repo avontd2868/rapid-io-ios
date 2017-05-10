@@ -47,6 +47,24 @@ extension RapidTests {
         waitForExpectations(timeout: 3, handler: nil)
     }
     
+    func testDeleteTimeout() {
+        let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
+        Rapid.timeout = 2
+        
+        let promise = expectation(description: "Delete timeout")
+        
+        rapid.collection(named: "users").document(withID: "1").delete() { error in
+            if let error = error as? RapidError, case .timeout = error {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Request did not timed out")
+            }
+        }
+        
+        waitForExpectations(timeout: 3, handler: nil)
+    }
+    
     func testCreateAndDelete() {
         let promise = expectation(description: "Delete document")
         
