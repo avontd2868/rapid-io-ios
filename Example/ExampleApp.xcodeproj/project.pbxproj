@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; };
 		C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C16E3C141EC3578C0014D7F6 /* UITableViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16E3C131EC3578C0014D7F6 /* UITableViewExtension.swift */; };
 		C1BE0C5A1EBC98E20062B0B7 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C591EBC98E20062B0B7 /* ListViewController.swift */; };
 		C1BE0C5E1EBC9CFA0062B0B7 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C5D1EBC9CFA0062B0B7 /* Task.swift */; };
 		C1BE0C621EBCA2AA0062B0B7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1BE0C611EBCA2AA0062B0B7 /* Constants.swift */; };
@@ -75,6 +76,7 @@
 
 /* Begin PBXFileReference section */
 		C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Rapid.xcodeproj; path = ../Rapid.xcodeproj; sourceTree = "<group>"; };
+		C16E3C131EC3578C0014D7F6 /* UITableViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewExtension.swift; sourceTree = "<group>"; };
 		C1BE0C591EBC98E20062B0B7 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		C1BE0C5D1EBC9CFA0062B0B7 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		C1BE0C611EBCA2AA0062B0B7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				C1BE0C6A1EBCA64C0062B0B7 /* FilterViewController.swift */,
 				C1BE0C7C1EC066990062B0B7 /* TagsTableView.swift */,
 				C1BE0C7A1EC05EAD0062B0B7 /* UpsertTaskViewController.swift */,
+				C16E3C131EC3578C0014D7F6 /* UITableViewExtension.swift */,
 				C1D6E87C1E785CFA007589FC /* Assets.xcassets */,
 				C1D6E87E1E785CFA007589FC /* LaunchScreen.storyboard */,
 				C1D6E8811E785CFA007589FC /* Info.plist */,
@@ -339,6 +342,7 @@
 				C1BE0C691EBCA6410062B0B7 /* OrderViewController.swift in Sources */,
 				C1BE0C621EBCA2AA0062B0B7 /* Constants.swift in Sources */,
 				C1BE0C761EBCBDBB0062B0B7 /* BEMAnimationManager.m in Sources */,
+				C16E3C141EC3578C0014D7F6 /* UITableViewExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

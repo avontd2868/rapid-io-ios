@@ -90,15 +90,9 @@ fileprivate extension ListViewController {
         }
         
         subscription = collection.order(by: ordering).subscribe() { (error, documents, insert, update, delete) in
-            //let previousSet = self.tasks
+            let previousSet = self.tasks
             self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
-//            self.tableView.beginUpdates()
-//            self.tableView.deleteRows(at: delete.map({ task in IndexPath(row: previousSet.index(where: { task.id == $0.taskID })!, section: 0) }), with: .automatic)
-//            self.tableView.deleteRows(at: update.map({ task in IndexPath(row: previousSet.index(where: { task.id == $0.taskID })!, section: 0) }), with: .automatic)
-//            self.tableView.insertRows(at: insert.map({ task in IndexPath(row: self.tasks.index(where: { task.id == $0.taskID })!, section: 0) }), with: .automatic)
-//            self.tableView.insertRows(at: update.map({ task in IndexPath(row: self.tasks.index(where: { task.id == $0.taskID })!, section: 0) }), with: .automatic)
-//            self.tableView.endUpdates()
-            self.tableView.reloadData()
+            self.tableView.animateChanges(previousData: previousSet, data: self.tasks, new: insert, updated: update, deleted: delete)
         }
     }
     
