@@ -17,8 +17,8 @@ class RapidTests: XCTestCase {
     
     var rapid: Rapid!
     
-    let apiKey = "ws://13.64.77.202:8080"
-    let fakeAPIKey = "ws://13.64.77.202:80805/fake"
+    let apiKey = "MTMuNjQuNzcuMjAyOjgwODA="
+    let fakeAPIKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
     let socketURL = URL(string: "ws://13.64.77.202:8080")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
@@ -28,7 +28,7 @@ class RapidTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        rapid = Rapid(apiKey: "ws://13.64.77.202:8080")!
+        rapid = Rapid(apiKey: apiKey)!
         
         rapid.authorize(withAccessToken: testAuthToken)
     }

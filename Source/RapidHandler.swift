@@ -77,17 +77,17 @@ class RapidHandler: NSObject {
     }
     
     init?(apiKey: String) {
-        self.apiKey = apiKey
-        
         // Decode connection information from API key
-        if let connectionValues = Decoder.decode(apiKey: apiKey) {
-            let networkHandler = RapidNetworkHandler(socketURL: connectionValues.hostURL)
+        if let url = Decoder.decode(apiKey: apiKey) {
+            let networkHandler = RapidNetworkHandler(socketURL: url)
             
             socketManager = RapidSocketManager(networkHandler: networkHandler)
         }
         else {
             return nil
         }
+        
+        self.apiKey = apiKey
         
         super.init()
         

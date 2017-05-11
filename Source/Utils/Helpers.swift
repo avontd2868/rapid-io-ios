@@ -87,11 +87,12 @@ class Decoder {
     ///
     /// - Parameter apiKey: API key
     /// - Returns: Tuple of decoded values
-    class func decode(apiKey: String) -> (hostURL: URL, appSecret: String)? {
+    class func decode(apiKey: String) -> URL? {
         if let data = Data(base64Encoded: apiKey),
         let decodedString = String(data: data, encoding: .utf8),
+        !decodedString.isEmpty,
         let url = URL(string: "ws://\(decodedString)") {
-            return (url, "")
+            return url
         }
 
         return nil
