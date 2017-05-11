@@ -2,6 +2,7 @@
 
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/Rapid.svg)](https://img.shields.io/cocoapods/v/Rapid.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Platform](https://img.shields.io/cocoapods/p/Rapid.svg?style=flat)](http://cocoadocs.org/docsets/Alamofire)
 
 Rapid iOS SDK is an SDK written in Swift for accessing Rapid.io realtime database.
 
@@ -15,11 +16,11 @@ Rapid iOS SDK is an SDK written in Swift for accessing Rapid.io realtime databas
 
 ## Features
 
-- [-] Connect to Rapid.io database
-- [-] Subscribe to changes
-- [-] Mutate database
-- [-] Authenticate
-- [-] Complete Documentation
+- [x] Connect to Rapid.io database
+- [x] Subscribe to changes
+- [x] Mutate database
+- [x] Authenticate
+- [ ] Complete Documentation
 
 ## Requirements
 
