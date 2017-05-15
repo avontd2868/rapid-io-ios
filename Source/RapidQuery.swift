@@ -7,7 +7,9 @@
 //
 
 import Foundation
+#if os(iOS)
 import UIKit
+#endif
 
 public protocol RapidQuery {}
 extension RapidQuery {

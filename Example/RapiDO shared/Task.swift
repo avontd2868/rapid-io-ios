@@ -37,18 +37,20 @@ enum Tag: String {
     
     static let allValues: [Tag] = [.home, .work, .other]
     
+    #if os(iOS)
     var color: UIColor {
         switch self {
         case .home:
             return UIColor(red: 116/255.0, green: 204/255.0, blue: 244/255.0, alpha: 1)
-            
+    
         case .work:
-        return UIColor(red: 237/255.0, green: 80/255.0, blue: 114/255.0, alpha: 1)
-            
+            return UIColor(red: 237/255.0, green: 80/255.0, blue: 114/255.0, alpha: 1)
+    
         case .other:
             return UIColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
         }
     }
+    #endif
     
     var title: String {
         switch self {
