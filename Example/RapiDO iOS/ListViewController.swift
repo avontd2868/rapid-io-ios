@@ -12,6 +12,9 @@ import Rapid
 class ListViewController: UIViewController {
     
     var searchBar: UISearchBar!
+    @IBOutlet weak var completionComboBox: NSComboBox!
+    @IBOutlet weak var homCheckBox: NSButton!
+    @IBOutlet weak var homeBackgroundView: NSView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var orderButton: UIBarButtonItem!
     @IBOutlet weak var filterButton: UIBarButtonItem!
@@ -178,8 +181,7 @@ extension ListViewController: TaskCellDelegate {
     func cellCheckmarkChanged(_ cell: TaskCell, value: Bool) {
         if let indexPath = tableView.indexPath(for: cell) {
             let task = tasks[indexPath.row]
-            
-            Rapid.collection(named: Constants.collectionName).document(withID: task.taskID).merge(value: [Task.completedAttributeName: value])
+            task.updateCompleted(value)
         }
     }
 }

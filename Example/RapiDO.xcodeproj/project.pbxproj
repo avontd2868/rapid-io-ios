@@ -35,6 +35,7 @@
 		C16B6C411ECA0E9B0036C9D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
 		C16B6C461ECA0F9A0036C9D4 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C16B6BFD1ECA0A200036C9D4 /* Rapid.framework */; };
 		C16B6C471ECA0F9A0036C9D4 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C16B6BFD1ECA0A200036C9D4 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1F99EA81ECAEE56004994D5 /* TagsCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -131,6 +132,7 @@
 		C16B6C3C1ECA0E4F0036C9D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* RapiDO iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiDO iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsCellView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +170,7 @@
 			children = (
 				C16B6C2D1ECA0E1B0036C9D4 /* AppDelegate.swift */,
 				C16B6C2E1ECA0E1B0036C9D4 /* CheckBoxCellView.swift */,
+				C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */,
 				C16B6C301ECA0E1B0036C9D4 /* ListViewController.swift */,
 				C16B6C371ECA0E2E0036C9D4 /* Main.storyboard */,
 			);
@@ -381,6 +384,7 @@
 				C16B6C321ECA0E1B0036C9D4 /* AppDelegate.swift in Sources */,
 				C16B6C291ECA0D510036C9D4 /* Task.swift in Sources */,
 				C16B6C281ECA0D380036C9D4 /* Constants.swift in Sources */,
+				C1F99EA81ECAEE56004994D5 /* TagsCellView.swift in Sources */,
 				C16B6C351ECA0E1B0036C9D4 /* ListViewController.swift in Sources */,
 				C16B6C331ECA0E1B0036C9D4 /* CheckBoxCellView.swift in Sources */,
 			);

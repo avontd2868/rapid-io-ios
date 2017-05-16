@@ -8,6 +8,9 @@
 
 import Foundation
 import Rapid
+#if os(OSX)
+import AppKit
+#endif
 
 enum Priority: Int {
     case low
@@ -48,6 +51,19 @@ enum Tag: String {
     
         case .other:
             return UIColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
+        }
+    }
+    #elseif os(OSX)
+    var color: NSColor {
+        switch self {
+        case .home:
+            return NSColor(red: 116/255.0, green: 204/255.0, blue: 244/255.0, alpha: 1)
+            
+        case .work:
+            return NSColor(red: 237/255.0, green: 80/255.0, blue: 114/255.0, alpha: 1)
+            
+        case .other:
+            return NSColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
         }
     }
     #endif
@@ -93,6 +109,10 @@ struct Task {
         self.completed = dict[Task.completedAttributeName] as? Bool ?? false
         self.priority = Priority(rawValue: priority) ?? .low
         self.tags = tags.flatMap({ Tag(rawValue: $0) })
+    }
+    
+    func updateCompleted(_ completed: Bool) {
+        Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).merge(value: [Task.completedAttributeName: completed])
     }
 }
 

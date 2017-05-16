@@ -12,6 +12,8 @@ import Rapid
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
+    var newTaskWindows: [NSWindowController] = []
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
     }
 
@@ -19,6 +21,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Insert code here to tear down your application
     }
 
-
+    @IBAction func newDocument(_ sender: Any) {
+        let storyboard = NSStoryboard(name: "Main", bundle: nil)
+        let window = storyboard.instantiateController(withIdentifier: "AddTaskWindow") as! NSWindowController
+        window.showWindow(self)
+        newTaskWindows.append(window)
+    }
+    
+    func updateTask(_ task: Task) {
+        let storyboard = NSStoryboard(name: "Main", bundle: nil)
+        let window = storyboard.instantiateController(withIdentifier: "AddTaskWindow") as! NSWindowController
+        window.showWindow(self)
+        newTaskWindows.append(window)
+    }
+    
 }
 

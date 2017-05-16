@@ -12,33 +12,146 @@ import Rapid
 class ListViewController: NSViewController {
 
     @IBOutlet weak var tableView: NSTableView!
+    @IBOutlet weak var completionPopUp: NSPopUpButton!
+    @IBOutlet weak var homeCheckBox: NSButton!
+    @IBOutlet weak var homeBackgroundView: NSView!
+    @IBOutlet weak var workCheckBox: NSButton!
+    @IBOutlet weak var workBackgroundView: NSView!
+    @IBOutlet weak var otherCheckBox: NSButton!
+    @IBOutlet weak var otherBackgroundView: NSView!
     
     var tasks: [Task] = []
     
+    fileprivate var subscription: RapidSubscription?
+    fileprivate var ordering: RapidOrdering?
+    fileprivate var filter: RapidFilter?
+    
+    lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        
+        formatter.timeStyle = .medium
+        formatter.dateStyle = .medium
+        
+        return formatter
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupRapid()
+        setupUI()
+        subscribe()
+    }
+    
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        
+        homeBackgroundView.wantsLayer = true
+        homeBackgroundView.layer?.backgroundColor = Tag.home.color.cgColor
+        homeBackgroundView.layer?.cornerRadius = homeBackgroundView.frame.height/2
+        
+        workBackgroundView.wantsLayer = true
+        workBackgroundView.layer?.backgroundColor = Tag.work.color.cgColor
+        workBackgroundView.layer?.cornerRadius = workBackgroundView.frame.height/2
+        
+        otherBackgroundView.wantsLayer = true
+        otherBackgroundView.layer?.backgroundColor = Tag.other.color.cgColor
+        otherBackgroundView.layer?.cornerRadius = otherBackgroundView.frame.height/2
+    }
 
+    @IBAction func filter(_ sender: AnyObject) {
+        var operands = [RapidFilter]()
+        
+        if let item = completionPopUp.selectedItem {
+            let index = completionPopUp.index(of: item)
+            
+            if index > 0 {
+                let completed = index == 2
+                operands.append(RapidFilter.equal(keyPath: Task.completedAttributeName, value: completed))
+            }
+        }
+        
+        var tags = [RapidFilter]()
+        if homeCheckBox.state > 0 {
+            tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.home.rawValue))
+        }
+        if workCheckBox.state > 0 {
+            tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.work.rawValue))
+        }
+        if otherCheckBox.state > 0 {
+            tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.other.rawValue))
+        }
+        if !tags.isEmpty {
+            operands.append(RapidFilter.or(tags))
+        }
+        
+        if operands.isEmpty {
+            filter = nil
+        }
+        else {
+            filter = RapidFilter.and(operands)
+        }
+        
+        subscribe()
+    }
+}
+
+fileprivate extension ListViewController {
+    
+    func setupUI() {
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.target = self
+        tableView.doubleAction = #selector(self.tableViewDoubleClick(_:))
+        
+        for column in tableView.tableColumns {
+            let columnID = ColumnIdentifier(rawValue: column.identifier)
+            
+            switch columnID {
+            case .some(.priority), .some(.title), .some(.completed), .some(.created):
+                column.sortDescriptorPrototype = NSSortDescriptor(key: columnID?.rawValue ?? "", ascending: true)
+                
+            default:
+                break
+            }
+        }
+        
+        homeCheckBox.title = Tag.home.title
+        
+        workCheckBox.title = Tag.work.title
+        otherCheckBox.title = Tag.other.title
+    }
+    
+    func setupRapid() {
+        assert(!(Bundle.main.infoDictionary?["ClientIdentifier"] as? String ?? "").isEmpty, "Client identifier not defined")
+        
         Rapid.timeout = 10
         Rapid.logLevel = .debug
         Rapid.configure(withAPIKey: "MTMuNjQuNzcuMjAyOjgwODA=")
         Rapid.authorize(withAccessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6ImRlbW9hcHAtLioiLCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.9e1b1eT1cfoxz7QqydF0eiFRiFP6qvHRHsqHxJ_ymuo")
         Rapid.isCacheEnabled = true
+    }
+    
+    func subscribe() {
+        subscription?.unsubscribe()
+        tasks.removeAll()
+        tableView.reloadData()
         
-        tableView.dataSource = self
-        tableView.delegate = self
+        let collection = Rapid.collection(named: Constants.collectionName)
         
-        Rapid.collection(named: "demoapp-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9").subscribe { (_, documents) in
+        if let filter = filter {
+            collection.filtered(by: filter)
+        }
+        
+        if let order = ordering {
+            collection.ordered(by: order)
+        }
+        
+        subscription = collection.subscribe() { (error, documents) in
             self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
             self.tableView.reloadData()
         }
     }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-
 }
 
 extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
@@ -47,42 +160,12 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
         case completed = "Done"
         case title = "Title"
         case description = "Desc"
+        case created = "Created"
         case priority = "Priority"
         case tags = "Tags"
         
         var cellIdentifier: String {
             return "\(self.rawValue)CellID"
-        }
-    }
-    
-    enum CellIdentifiers {
-        case completed
-        case title
-        case description
-        case priority
-        case tags
-        
-        var rawValue: String {
-            let columnID: String
-            
-            switch self {
-            case .completed:
-                columnID = ColumnIdentifier.completed.rawValue
-                
-            case .title:
-                columnID = ColumnIdentifier.title.rawValue
-                
-            case .description:
-                columnID = ColumnIdentifier.description.rawValue
-                
-            case .priority:
-                columnID = ColumnIdentifier.priority.rawValue
-                
-            case .tags:
-                columnID = ColumnIdentifier.tags.rawValue
-            }
-            
-            return "\(columnID)CellID"
         }
     }
     
@@ -93,11 +176,7 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         let task = tasks[row]
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-        dateFormatter.timeStyle = .long
-        
+
         guard let id = tableColumn?.identifier, let column = ColumnIdentifier(rawValue: id) else {
             return nil
         }
@@ -119,15 +198,65 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
         case .description:
             cell.textField?.stringValue = task.description ?? ""
             
+        case .created:
+            cell.textField?.stringValue = dateFormatter.string(from: task.createdAt)
+            
         case .priority:
             cell.textField?.stringValue = task.priority.title
             
         case .tags:
-            cell.textField?.stringValue = task.tags.map({ $0.title }).joined(separator: ",")
+            if let cell = view as? TagsCellView {
+                cell.configure(withTags: task.tags)
+            }
         }
         }
         
         return view
+    }
+    
+    func tableViewDoubleClick(_ sender: AnyObject) {
+        let row = tableView.selectedRow
+        
+        guard row >= 0 else {
+            return
+        }
+        
+        let task = tasks[row]
+        let delegate = NSApplication.shared().delegate as? AppDelegate
+        delegate?.updateTask(task)
+    }
+    
+    func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
+        guard let descriptor = tableView.sortDescriptors.first else {
+            ordering = nil
+            subscribe()
+            return
+        }
+        
+        guard let identifier = descriptor.key, let column = ColumnIdentifier(rawValue: identifier) else {
+            return
+        }
+        
+        let order = descriptor.ascending ? RapidOrdering.Ordering.ascending : .descending
+        
+        switch column {
+        case .completed:
+            ordering = RapidOrdering(keyPath: Task.completedAttributeName, ordering: order)
+            
+        case .title:
+            ordering = RapidOrdering(keyPath: Task.titleAttributeName, ordering: order)
+            
+        case .priority:
+            ordering = RapidOrdering(keyPath: Task.priorityAttributeName, ordering: order)
+            
+        case .created:
+            ordering = RapidOrdering(keyPath: Task.createdAttributeName, ordering: order)
+            
+        default:
+            break
+        }
+        
+        subscribe()
     }
 }
 
@@ -135,5 +264,10 @@ extension ListViewController: CheckBoxCellViewDelegate {
     
     func checkBoxCellChangedValue(_ cellView: CheckBoxCellView, value: Bool) {
         let row = tableView.row(for: cellView)
+        
+        if row >= 0 {
+            let task = tasks[row]
+            task.updateCompleted(value)
+        }
     }
 }
