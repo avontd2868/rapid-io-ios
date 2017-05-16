@@ -12,7 +12,7 @@ import Rapid
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
-    var newTaskWindows: [NSWindowController] = []
+    var newTaskWindows: [NSWindow] = []
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
     }
@@ -25,14 +25,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let storyboard = NSStoryboard(name: "Main", bundle: nil)
         let window = storyboard.instantiateController(withIdentifier: "AddTaskWindow") as! NSWindowController
         window.showWindow(self)
-        newTaskWindows.append(window)
+        if let window = window.window {
+            newTaskWindows.append(window)
+        }
     }
     
     func updateTask(_ task: Task) {
         let storyboard = NSStoryboard(name: "Main", bundle: nil)
         let window = storyboard.instantiateController(withIdentifier: "AddTaskWindow") as! NSWindowController
+        (window.contentViewController as? TaskViewController)?.task = task
         window.showWindow(self)
-        newTaskWindows.append(window)
+        if let window = window.window {
+            newTaskWindows.append(window)
+        }
+    }
+    
+    class func closeWindow(_ window: NSWindow) {
+        window.close()
+        windowClosed(window)
+    }
+    
+    class func windowClosed(_ window: NSWindow) {
+        let delegate = NSApplication.shared().delegate as? AppDelegate
+        if let index = delegate?.newTaskWindows.index(of: window) {
+            delegate?.newTaskWindows.remove(at: index)
+        }
     }
     
 }

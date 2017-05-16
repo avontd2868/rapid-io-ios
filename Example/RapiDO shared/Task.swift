@@ -114,6 +114,18 @@ struct Task {
     func updateCompleted(_ completed: Bool) {
         Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).merge(value: [Task.completedAttributeName: completed])
     }
+    
+    func update(withValue value: [AnyHashable: Any]) {
+        Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).mutate(value: value)
+    }
+    
+    func delete() {
+        Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).delete()
+    }
+    
+    static func create(withValue value: [AnyHashable: Any]) {
+        Rapid.collection(named: Constants.collectionName).newDocument().mutate(value: value)
+    }
 }
 
 extension Task {

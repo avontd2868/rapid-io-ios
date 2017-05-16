@@ -73,11 +73,11 @@ class UpsertTaskViewController: UIViewController {
             Task.completedAttributeName: completedCheckbox.on
         ]
         
-        if let taskID = self.task?.taskID {
-            Rapid.collection(named: Constants.collectionName).document(withID: taskID).mutate(value: task)
+        if let existingTask = self.task {
+            existingTask.update(withValue: task)
         }
         else {
-            Rapid.collection(named: Constants.collectionName).newDocument().mutate(value: task)
+            Task.create(withValue: task)
         }
         
         dismiss(animated: true, completion: nil)
