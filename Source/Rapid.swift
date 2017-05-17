@@ -31,6 +31,11 @@ public class Rapid: NSObject {
     /// Time interval between heartbeats
     static var heartbeatInterval: TimeInterval = 30
     
+    /// Nil value
+    ///
+    /// This value can be used in document merge (e.g. `["attribute": Rapid.nilValue]` would remove `attribute` from a document)
+    public static let nilValue = NSNull()
+    
     /// Optional timeout for Rapid requests. If timeout is nil requests never end up with timout error
     public static var timeout: TimeInterval?
     
@@ -101,11 +106,19 @@ public class Rapid: NSObject {
         Rapid.instances.append(WRO(object: self))
     }
     
+    /// Authorize Rapid instance
+    ///
+    /// - Parameters:
+    ///   - accessToken: Authorization access token
+    ///   - completion: Authorization completion handler
     public func authorize(withAccessToken accessToken: String, completion: RapidAuthCallback? = nil) {
         let request = RapidAuthRequest(accessToken: accessToken, callback: completion)
         handler.socketManager.authorize(authRequest: request)
     }
     
+    /// Deauthorize Rapid instance
+    ///
+    /// - Parameter completion: Deauthorization completion handler
     public func deauthorize(completion: RapidAuthCallback? = nil) {
         let request = RapidDeauthRequest(callback: completion)
         handler.socketManager.deauthorize(deauthRequest: request)
@@ -169,6 +182,7 @@ public extension Rapid {
         return Generator.uniqueID
     }
     
+    /// Log level
     class var logLevel: RapidLogger.Level {
         get {
             return RapidLogger.level
@@ -213,10 +227,18 @@ public extension Rapid {
         try! shared().unsubscribeAll()
     }
     
+    /// Authorize Rapid instance
+    ///
+    /// - Parameters:
+    ///   - accessToken: Authorization access token
+    ///   - completion: Authorization completion handler
     class func authorize(withAccessToken accessToken: String, completion: RapidAuthCallback? = nil) {
         try! shared().authorize(withAccessToken: accessToken, completion: completion)
     }
     
+    /// Deauthorize Rapid instance
+    ///
+    /// - Parameter completion: Deauthorization completion handler
     class func deauthorize(completion: RapidAuthCallback? = nil) {
         try! shared().deauthorize(completion: completion)
     }

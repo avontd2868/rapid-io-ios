@@ -11,6 +11,138 @@ import XCTest
 
 extension RapidTests {
     
+    func testContainsFilter() {
+        let promise = expectation(description: "Contains")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
+        rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "testy2"])
+        rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "testy4"])
+        
+        runAfter(1) { 
+            let subscription = self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.contains(keyPath: "name", subString: "sty")).subscribe { (_, documents) in
+                XCTAssertGreaterThan(documents.count, 1, "No documents")
+                
+                for document in documents {
+                    guard let name = document.value?["name"] as? String, name.contains("sty") else {
+                        XCTFail("String doesn't contain substring")
+                        break
+                    }
+                }
+                
+                promise.fulfill()
+            }
+            
+            if let instance = subscription as? RapidSubscriptionInstance {
+                XCTAssertEqual(instance.subscriptionHash, "\(self.testCollectionName)#name-cnt-sty##")
+            }
+            else {
+                XCTFail("No hash")
+            }
+        }
+        
+        waitForExpectations(timeout: 8, handler: nil)
+    }
+    
+    func testStartsWithFilter() {
+        let promise = expectation(description: "Contains")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "ttest1"])
+        rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
+        rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "ttest4"])
+        
+        runAfter(1) {
+            let subscription = self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.startsWith(keyPath: "name", prefix: "tt")).subscribe { (_, documents) in
+                XCTAssertGreaterThan(documents.count, 1, "No documents")
+                
+                for document in documents {
+                    guard let name = document.value?["name"] as? String, name.hasPrefix("tt") else {
+                        XCTFail("String doesn't contain substring")
+                        break
+                    }
+                }
+                
+                promise.fulfill()
+            }
+            
+            if let instance = subscription as? RapidSubscriptionInstance {
+                XCTAssertEqual(instance.subscriptionHash, "\(self.testCollectionName)#name-pref-tt##")
+            }
+            else {
+                XCTFail("No hash")
+            }
+        }
+        
+        waitForExpectations(timeout: 8, handler: nil)
+    }
+    
+    func testEndsWithFilter() {
+        let promise = expectation(description: "Contains")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
+        rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2tt"])
+        rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3tt"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"])
+        
+        runAfter(1) {
+            let subscription = self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.endsWith(keyPath: "name", suffix: "tt")).subscribe { (_, documents) in
+                XCTAssertGreaterThan(documents.count, 1, "No documents")
+                
+                for document in documents {
+                    guard let name = document.value?["name"] as? String, name.hasSuffix("tt") else {
+                        XCTFail("String doesn't contain substring")
+                        break
+                    }
+                }
+                
+                promise.fulfill()
+            }
+            
+            if let instance = subscription as? RapidSubscriptionInstance {
+                XCTAssertEqual(instance.subscriptionHash, "\(self.testCollectionName)#name-suf-tt##")
+            }
+            else {
+                XCTFail("No hash")
+            }
+        }
+        
+        waitForExpectations(timeout: 8, handler: nil)
+    }
+    
+    func testArrayContainsFilter() {
+        let promise = expectation(description: "Contains")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1", "tags": [1,2,3]])
+        rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2", "tags": [1,3]])
+        rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3", "tags": [1,3]])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4", "tags": [1,2,3]])
+        
+        runAfter(1) {
+            let subscription = self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.arrayContains(keyPath: "tags", value: 2)).subscribe { (_, documents) in
+                XCTAssertGreaterThan(documents.count, 1, "No documents")
+                
+                for document in documents {
+                    guard let tags = document.value?["tags"] as? [Int], tags.contains(2) else {
+                        XCTFail("Array doesn't contain value")
+                        break
+                    }
+                }
+                
+                promise.fulfill()
+            }
+            
+            if let instance = subscription as? RapidSubscriptionInstance {
+                XCTAssertEqual(instance.subscriptionHash, "\(self.testCollectionName)#tags-arr-cnt-2##")
+            }
+            else {
+                XCTFail("No hash")
+            }
+        }
+        
+        waitForExpectations(timeout: 8, handler: nil)
+    }
+    
     func testOrderingAsc() {
         let promise = expectation(description: "Ordering")
         

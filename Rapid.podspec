@@ -8,14 +8,14 @@
 
 Pod::Spec.new do |s|
   s.name = 'Rapid'
-  s.version = '0.0.8'
+  s.version = '0.0.9'
   s.license = 'MIT'
-  s.summary = 'Rapid.io iOS SDK'
+  s.summary = 'Rapid.io iOS and macOS SDK'
   s.homepage = 'http://www.rapid.io'
   s.authors = { 'Jan Schwarz' => 'jan.schwarz@strv.com' }
   s.source = { :git => "https://github.com/Rapid-SDK/ios.git", :tag => s.version }
 
-  s.platform     = :ios, "8.0"
+  s.platform     = { "ios": "8.0", "osx": "10.10" }
 
   s.source_files = 'Source/*.swift', 'Source/**/*.swift'
 end

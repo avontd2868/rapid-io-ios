@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if os(iOS)
+import UIKit
+#endif
 
 public protocol RapidQuery {}
 extension RapidQuery {
@@ -22,10 +25,19 @@ public class RapidFilter: RapidSubscriptionHashable, RapidQuery {
     internal var subscriptionHash: String { return "" }
 }
 
+/// Protocol describing data types that can be used in filter for comparison purposes
+///
+/// Data types that conform to `RapidComparable` defaultly are guaranteed to be
+/// compatible with Rapid.io database
+///
+/// When developer explicitly adds a conformance of another data type to `RapidComparable`
+/// we cannot guarantee any behavior
 public protocol RapidComparable {}
 extension String: RapidComparable {}
 extension Int: RapidComparable {}
 extension Double: RapidComparable {}
+extension Float: RapidComparable {}
+extension CGFloat: RapidComparable {}
 extension Bool: RapidComparable {}
 
 public extension RapidFilter {
@@ -111,23 +123,47 @@ public extension RapidFilter {
     /// - Parameters:
     ///   - keyPath: Filter parameter key path
     ///   - value: Filter value
-    /// - Returns: Filter for key path less than or equal value
+    /// - Returns: Filter for key path less than or equal to value
     class func lessThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .lessThanOrEqual, value: value)
     }
     
+    /// Create string contains filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - subString: Substring
+    /// - Returns: Filter for string at key path contains a substring
     class func contains(keyPath: String, subString: String) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .contains, value: subString)
     }
     
-    class func startsWith(keyPath: String, subString: String) -> RapidFilter {
-        return RapidFilterSimple(keyPath: keyPath, relation: .startsWith, value: subString)
+    /// Create string starts with filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - prefix: Prefix
+    /// - Returns: Filter for string at key path starts with a prefix
+    class func startsWith(keyPath: String, prefix: String) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .startsWith, value: prefix)
     }
     
-    class func endsWith(keyPath: String, subString: String) -> RapidFilter {
-        return RapidFilterSimple(keyPath: keyPath, relation: .endsWith, value: subString)
+    /// Create string ends with filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - suffix: Suffix
+    /// - Returns: Filter for string at key path ends with a suffix
+    class func endsWith(keyPath: String, suffix: String) -> RapidFilter {
+        return RapidFilterSimple(keyPath: keyPath, relation: .endsWith, value: suffix)
     }
     
+    /// Create array contains filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Filter parameter key path
+    ///   - value: Value that should be present in an array
+    /// - Returns: Filter for array at key path that contains a value
     class func arrayContains(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .arrayContains, value: value)
     }

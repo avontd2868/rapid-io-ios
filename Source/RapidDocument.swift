@@ -64,7 +64,7 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
     public let etag: String?
     
     /// Document creation time
-    public let createdAt: Date?
+    public let createdAt: String?
     
     /// Value that serves to order documents
     ///
@@ -83,20 +83,14 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
         let body = dict[RapidSerialization.Document.Body.name] as? [AnyHashable: Any]
         let etag = dict[RapidSerialization.Document.Etag.name] as? String
         let sortValue = dict[RapidSerialization.Document.SortKeys.name] as? [String]
-        let createdAt = dict[RapidSerialization.Document.Created.name] as? TimeInterval
+        let createdAt = dict[RapidSerialization.Document.Created.name] as? String
         
         self.id = id
         self.collectionID = collectionID
         self.value = body
         self.etag = etag
         self.sortKeys = sortValue ?? []
-        
-        if let createdAt = createdAt {
-            self.createdAt = Date(timeIntervalSince1970: createdAt/1000)
-        }
-        else {
-            self.createdAt = nil
-        }
+        self.createdAt = createdAt
     }
     
     init(id: String, collectionID: String, value: [AnyHashable: Any]?, etag: String? = nil) {
@@ -125,7 +119,7 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
         self.collectionID = collectionID
         self.etag = aDecoder.decodeObject(forKey: "etag") as? String
         self.sortKeys = sortKeys
-        self.createdAt = aDecoder.decodeObject(forKey: "createdAt") as? Date
+        self.createdAt = aDecoder.decodeObject(forKey: "createdAt") as? String
         do {
             self.value = try (aDecoder.decodeObject(forKey: "value") as? String)?.json()
         }
@@ -166,6 +160,7 @@ public class RapidDocument: NSObject {
     
     /// ID of a collection to which the document belongs
     public let collectionID: String
+    
     /// Document ID
     public let documentID: String
     

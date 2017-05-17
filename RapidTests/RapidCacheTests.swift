@@ -632,16 +632,36 @@ extension RapidTests {
                     socketManager.authorize(authRequest: RapidAuthRequest(accessToken: self.testAuthToken))
                     socketManager.cacheHandler = self.rapid.handler
                     
-                    let subscription = RapidCollectionSub(collectionID: self.testCollectionName, filter: nil, ordering: nil, paging: nil, callback: { (_, cachedDocuments) in
-                        if cachedDocuments == documents {
-                            promise.fulfill()
-                        }
-                        else {
-                            XCTFail("Documents not equal")
-                        }
-                    }, callbackWithChanges: nil)
-                    
-                    socketManager.subscribe(subscription)
+                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "Description"], completion: { (_, _) in
+                        runAfter(1, closure: {
+                            let subscription = RapidCollectionSub(collectionID: self.testCollectionName, filter: nil, ordering: nil, paging: nil, callback: { (_, cachedDocuments) in
+                                if cachedDocuments == documents {
+                                    XCTFail("Cache not updated")
+                                }
+                                else {
+                                    for document in documents {
+                                        if let index = cachedDocuments.index(where: { $0.id == document.id }) {
+                                            let cached = cachedDocuments[index]
+                                            if cached.id == "1" {
+                                                XCTAssertEqual(cached.value?["name"] as? String, document.value?["name"] as? String, "Merge failed")
+                                                XCTAssertEqual(cached.value?["desc"] as? String, "Description", "Cache not updated")
+                                            }
+                                            else {
+                                                XCTAssertTrue(cached == document, "Documents not equal")
+                                            }
+                                        }
+                                        else {
+                                            XCTFail("Missing document")
+                                        }
+                                    }
+                                    
+                                    promise.fulfill()
+                                }
+                            }, callbackWithChanges: nil)
+                            
+                            socketManager.subscribe(subscription)
+                        })
+                    })
                 }
             })
         }
