@@ -25,6 +25,7 @@ Rapid iOS SDK is an SDK written in Swift for accessing Rapid.io realtime databas
 ## Requirements
 
 - iOS 8.0+
+- macOS 10.10+
 - Xcode 8.1+
 - Swift 3.0+
 
@@ -85,7 +86,7 @@ Run `carthage update` to build the framework and drag the built `Rapid.framework
 
 ### Manually
 
-If you prefer not to use either of the dependency managers, you can download the latest [framework](Framework/Rapid.framework.zip) and integrate Rapid iOS SDK into your project manually.
+If you prefer not to use either of the dependency managers, you can either clone whole project or download the latest [iOS framework](Framework/iOS/Rapid.framework.zip) or [macOS framework](Framework/Mac/Rapid.framework.zip) and integrate Rapid SDK into your project manually.
 
 ---
 
