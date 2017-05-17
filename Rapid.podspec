@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.authors = { 'Jan Schwarz' => 'jan.schwarz@strv.com' }
   s.source = { :git => "https://github.com/Rapid-SDK/ios.git", :tag => s.version }
 
-  s.platform     = { "ios": "8.0", "osx": "10.10" }
+  s.platforms = { :ios => "8.0", :osx => "10.10" }
 
   s.source_files = 'Source/*.swift', 'Source/**/*.swift'
 end
