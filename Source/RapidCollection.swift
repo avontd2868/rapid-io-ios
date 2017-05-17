@@ -14,6 +14,9 @@ public typealias RapidColSubCallback = (_ error: Error?, _ value: [RapidDocument
 /// Collection subscription callback which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
 public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) -> Void
 
+/// Collection read callback which provides a client either with an error or with an array of documents
+public typealias RapidColReadCallback = RapidColSubCallback
+
 /// Class representing Rapid.io collection
 public class RapidCollection: NSObject {
     
@@ -191,6 +194,12 @@ public class RapidCollection: NSObject {
         socketManager.subscribe(subscription)
         
         return subscription
+    }
+    
+    public func readOnce(completion: @escaping RapidColReadCallback) {
+        let fetch = RapidCollectionFetch(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, callback: completion, cache: handler)
+        
+        socketManager.fetch(fetch)
     }
 }
 

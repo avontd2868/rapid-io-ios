@@ -41,3 +41,18 @@ protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionH
     /// - Parameter callback: Block of code that should be called when the subscription should be unregistered
     func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void)
 }
+
+protocol RapidFetchInstance: class, RapidSerializable, RapidTimeoutRequest, RapidSubscriptionHashable {
+    func receivedData(_ documents: [RapidDocumentSnapshot])
+    func fetchFailed(withError error: RapidError)
+}
+
+extension RapidFetchInstance {
+    
+    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {}
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        fetchFailed(withError: error.error)
+    }
+
+}

@@ -105,6 +105,12 @@ class RapidSocketManager {
         }
     }
     
+    func fetch(_ fetch: RapidFetchInstance) {
+        websocketQueue.async { [weak self] in
+            self?.post(event: fetch)
+        }
+    }
+    
     /// Send register subscription event
     ///
     /// - Parameter subscription: Subscription object

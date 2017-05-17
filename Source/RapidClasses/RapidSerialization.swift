@@ -122,6 +122,26 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize a collection fetch into JSON string
+    ///
+    /// - Parameters:
+    ///   - subscription: Fetch object
+    ///   - identifiers: Identifiers that are associated with the subscription event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(fetch: RapidCollectionFetch, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Fetch.CollectionID.name] = try Validator.validate(identifier: fetch.collectionID)
+        json[Fetch.Filter.name] = try serialize(filter: fetch.filter)
+        json[Fetch.Ordering.name] = try serialize(ordering: fetch.ordering)
+        json[Fetch.Limit.name] = fetch.paging?.take
+        json[Fetch.Skip.name] = fetch.paging?.skip
+        
+        let resultDict: [AnyHashable: Any] = [Fetch.name: json]
+        return try resultDict.jsonString()
+    }
+    
     /// Serialize a collection subscription into JSON string
     ///
     /// - Parameters:
@@ -489,6 +509,30 @@ extension RapidSerialization {
         
         struct DocumentID {
             static let name = "doc-id"
+        }
+    }
+    
+    struct Fetch {
+        static let name = "ftc"
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
+        
+        struct Filter {
+            static let name = "filter"
+        }
+        
+        struct Ordering {
+            static let name = "order"
+        }
+        
+        struct Limit {
+            static let name = "limit"
+        }
+        
+        struct Skip {
+            static let name = "skip"
         }
     }
     
