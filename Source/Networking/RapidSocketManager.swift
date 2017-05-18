@@ -43,6 +43,8 @@ class RapidSocketManager {
     
     fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
     
+    fileprivate var pendingConOptRequests: [String: RapidConcurrencyOptimisticMutation] = [:]
+    
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
     
@@ -104,6 +106,15 @@ class RapidSocketManager {
     func mutate<T: RapidMutationRequest>(mutationRequest: T) {
         websocketQueue.async { [weak self] in
             self?.post(event: mutationRequest)
+        }
+    }
+    
+    func concurrencyOptimisticMutate<T: RapidConcurrencyOptimisticMutation>(mutation: T) {
+        websocketQueue.async { [weak self] in
+            self?.pendingConOptRequests[mutation.identifier] = mutation
+            
+            let request = mutation.fetchRequest
+            self?.post(event: request)
         }
     }
     
@@ -564,6 +575,22 @@ extension RapidSocketManager: RapidTimeoutRequestDelegate {
                 let error = RapidErrorInstance(eventID: eventID, error: .timeout)
                 self?.handle(response: error)
             }
+        }
+    }
+}
+
+// MARK: Concurrency optimistic mutation delegate
+extension RapidSocketManager: RapidConOptMutationDelegate {
+    
+    func conOptMutationCompleted(_ mutation: RapidConcurrencyOptimisticMutation) {
+        websocketQueue.async { [weak self] in
+            self?.pendingConOptRequests[mutation.identifier] = nil
+        }
+    }
+    
+    func sendConOptRequest<Request: RapidRequest>(_ request: Request) where Request: RapidSerializable {
+        websocketQueue.async { [weak self] in
+            self?.post(event: request)
         }
     }
 }

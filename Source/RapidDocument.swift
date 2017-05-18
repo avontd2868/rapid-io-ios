@@ -23,6 +23,15 @@ public typealias RapidDeletionCallback = (_ error: Error?) -> Void
 /// Document merge callback which provides a client either with an error or with a successfully merged values
 public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
 
+public typealias RapidConcurrencyOptimisticBlock = (_ currentValue: [AnyHashable: Any]?) -> RapidConOptResult
+public typealias RapidConcurrencyCompletionBlock = (_ error: Error?) -> Void
+
+public enum RapidConOptResult {
+    case write(value: [AnyHashable: Any])
+    case delete()
+    case abort()
+}
+
 /// Compare two docuement snapshots
 ///
 /// Compera ids, etags and dictionaries
@@ -181,8 +190,21 @@ public class RapidDocument: NSObject {
     ///   - value: Dictionary with new values that the document should contain
     ///   - completion: Mutation callback which provides a client either with an error or with a successfully mutated object
     public func mutate(value: [AnyHashable: Any], completion: RapidMutationCallback? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, callback: completion, cache: handler)
+        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: handler, callback: completion)
         socketManager.mutate(mutationRequest: mutation)
+    }
+    
+    //FIXME: Better name
+    public func concurrencySafeMutate(value: [AnyHashable: Any], etag: String, completion: RapidMutationCallback? = nil) {
+        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: handler, callback: completion)
+        mutation.etag = etag
+        socketManager.mutate(mutationRequest: mutation)
+    }
+    
+    public func concurrencySafeMutate(concurrencyBlock: @escaping RapidConcurrencyOptimisticBlock, completion: RapidConcurrencyCompletionBlock? = nil) {
+        let concurrencyMutation = RapidConOptDocumentMutation(collectionID: collectionID, documentID: documentID, type: .mutate, delegate: socketManager, concurrencyBlock: concurrencyBlock, completion: completion)
+        concurrencyMutation.cacheHandler = handler
+        socketManager.concurrencyOptimisticMutate(mutation: concurrencyMutation)
     }
     
     /// Merge values in the document with new ones
@@ -194,7 +216,14 @@ public class RapidDocument: NSObject {
     ///   - value: Dictionary with new values that should be merged into the document
     ///   - completion: merge callback which provides a client either with an error or with a successfully merged values
     public func merge(value: [AnyHashable: Any], completion: RapidMergeCallback? = nil) {
-        let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, callback: completion, cache: handler)
+        let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: handler, callback: completion)
+        socketManager.mutate(mutationRequest: merge)
+    }
+    
+    //FIXME: Better name
+    public func concurencySafeMerge(value: [AnyHashable: Any], etag: String, completion: RapidMergeCallback? = nil) {
+        let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: handler, callback: completion)
+        merge.etag = etag
         socketManager.mutate(mutationRequest: merge)
     }
     
@@ -204,7 +233,14 @@ public class RapidDocument: NSObject {
     ///
     /// - Parameter completion: Delete callback which provides a client either with an error or with the document object how it looked before it was deleted
     public func delete(completion: RapidDeletionCallback? = nil) {
-        let deletion = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, callback: completion, cache: handler)
+        let deletion = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: handler, callback: completion)
+        socketManager.mutate(mutationRequest: deletion)
+    }
+    
+    //FIXME: Better name
+    public func concurencySafeDelete(etag: String, completion: RapidDeletionCallback? = nil) {
+        let deletion = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: handler, callback: completion)
+        deletion.etag = etag
         socketManager.mutate(mutationRequest: deletion)
     }
     

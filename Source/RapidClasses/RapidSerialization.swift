@@ -69,9 +69,8 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-
         doc[Mutation.Document.DocumentID.name] = try Validator.validate(identifier: mutation.documentID)
-        
+        doc[Mutation.Document.Etag.name] = mutation.etag
         doc[Mutation.Document.Body.name] = try Validator.validate(document: mutation.value)
         
         json[Mutation.CollectionID.name] = try Validator.validate(identifier: mutation.collectionID)
@@ -93,9 +92,8 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-        
         doc[Merge.Document.DocumentID.name] = try Validator.validate(identifier: merge.documentID)
-        
+        doc[Merge.Document.Etag.name] = merge.etag
         doc[Merge.Document.Body.name] = try Validator.validate(document: merge.value)
         
         json[Merge.CollectionID.name] = try Validator.validate(identifier: merge.collectionID)
@@ -115,8 +113,12 @@ class RapidSerialization {
     class func serialize(delete: RapidDocumentDelete, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
+        var doc = [AnyHashable: Any]()
+        doc[Delete.Document.DocumentID.name] = try Validator.validate(identifier: delete.documentID)
+        doc[Delete.Document.Etag.name] = delete.etag
+        
         json[Delete.CollectionID.name] = try Validator.validate(identifier: delete.collectionID)
-        json[Delete.DocumentID.name] = try Validator.validate(identifier: delete.documentID)
+        json[Delete.Document.name] = doc
         
         let resultDict: [AnyHashable: Any] = [Delete.name: json]
         return try resultDict.jsonString()
@@ -456,6 +458,14 @@ extension RapidSerialization {
             struct InvalidAuthToken {
                 static let name = "invalid-auth-token"
             }
+            
+            struct ClientSide {
+                static let name = "client-error"
+            }
+            
+            struct WriteConflict {
+                static let name = "etag-conflict"
+            }
         }
         
         struct ErrorMessage {
@@ -475,6 +485,10 @@ extension RapidSerialization {
             
             struct DocumentID {
                 static let name = "id"
+            }
+            
+            struct Etag {
+                static let name = "etag"
             }
             
             struct Body {
@@ -497,6 +511,10 @@ extension RapidSerialization {
                 static let name = "id"
             }
             
+            struct Etag {
+                static let name = "etag"
+            }
+            
             struct Body {
                 static let name = "body"
             }
@@ -510,8 +528,16 @@ extension RapidSerialization {
             static let name = "col-id"
         }
         
-        struct DocumentID {
-            static let name = "doc-id"
+        struct Document {
+            static let name = "doc"
+            
+            struct DocumentID {
+                static let name = "id"
+            }
+            
+            struct Etag {
+                static let name = "etag"
+            }
         }
     }
     

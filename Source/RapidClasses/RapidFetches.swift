@@ -47,7 +47,7 @@ class RapidCollectionFetch: NSObject {
     ///   - ordering: Subscription ordering
     ///   - paging: Subscription paging
     ///   - callback: Read callback
-    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, callback: RapidColFetchCallback?, cache: RapidCacheHandler?) {
+    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, callback: RapidColFetchCallback?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
@@ -137,9 +137,9 @@ class RapidDocumentFetch: NSObject {
     ///   - ordering: Subscription ordering
     ///   - paging: Subscription paging
     ///   - callback: Read callback
-    init(collectionID: String, documentID: String, callback: RapidDocFetchCallback?, cache: RapidCacheHandler?) {
+    init(collectionID: String, documentID: String, cache: RapidCacheHandler? = nil, callback: RapidDocFetchCallback?) {
         let filter = RapidFilterSimple(keyPath: RapidFilter.documentIdKey, relation: .equal, value: documentID)
-        self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, callback: nil, cache: nil)
+        self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, cache: nil, callback: nil)
         
         self.documentID = documentID
         self.callback = callback

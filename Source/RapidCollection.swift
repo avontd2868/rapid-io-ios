@@ -202,7 +202,7 @@ public class RapidCollection: NSObject {
     ///
     /// - Parameter completion: Fetch callback which provides a client either with an error or with an array of documents
     public func readOnce(completion: @escaping RapidColFetchCallback) {
-        let fetch = RapidCollectionFetch(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, callback: completion, cache: handler)
+        let fetch = RapidCollectionFetch(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, callback: completion)
         
         socketManager.fetch(fetch)
     }
