@@ -43,6 +43,8 @@ protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionH
 }
 
 protocol RapidFetchInstance: class, RapidSerializable, RapidTimeoutRequest, RapidSubscriptionHashable {
+    var fetchID: String { get set }
+    
     func receivedData(_ documents: [RapidDocumentSnapshot])
     func fetchFailed(withError error: RapidError)
 }

@@ -409,6 +409,9 @@ fileprivate extension RapidSerialization {
         else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
             return RapidSubscriptionCancel(json: ca)
         }
+        else if let res = json[FetchValue.name] as? [AnyHashable: Any] {
+            return RapidFetchResponse(withJSON: res)
+        }
 
         return nil
     }
@@ -515,6 +518,10 @@ extension RapidSerialization {
     struct Fetch {
         static let name = "ftc"
         
+        struct FetchID {
+            static let name = "ftc-id"
+        }
+        
         struct CollectionID {
             static let name = "col-id"
         }
@@ -561,6 +568,22 @@ extension RapidSerialization {
         
         struct Skip {
             static let name = "skip"
+        }
+    }
+    
+    struct FetchValue {
+        static let name = "res"
+        
+        struct FetchID {
+            static let name = "ftc-id"
+        }
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
+        
+        struct Documents {
+            static let name = "docs"
         }
     }
     

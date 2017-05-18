@@ -11,6 +11,9 @@ import Foundation
 /// Document subscription callback which provides a client either with an error or with a document
 public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocumentSnapshot) -> Void
 
+/// Document fetch callback which provides a client either with an error or with a document
+public typealias RapidDocFetchCallback = RapidDocSubCallback
+
 /// Document mutation callback which provides a client either with an error or with a successfully mutated object
 public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
 
@@ -216,6 +219,13 @@ public class RapidDocument: NSObject {
         socketManager.subscribe(subscription)
         
         return subscription
+    }
+    
+    /// Fetch document
+    ///
+    /// - Parameter completion: Fetch callback which provides a client either with an error or with an array of documents
+    public func readOnce(completion: @escaping RapidDocFetchCallback) {
+        
     }
     
 }
