@@ -81,7 +81,7 @@ struct RapidErrorInstance: RapidResponse {
 /// - invalidData: Data are in an invalid format
 /// - timeout: Request timout
 /// - invalidAuthToken: Authorization token is invalid
-/// - concurrencyWriteFailed: Server wasn't able to fulfill concurrency optimistic write to database
+/// - concurrencyWriteFailed: Optimistic concurrency write failed
 /// - `default`: General error
 public enum RapidError: Error {
     
@@ -111,6 +111,11 @@ public enum RapidError: Error {
     }
     
     //FIXME: Better name
+    /// Reason of `concurrencyWriteFailed`
+    ///
+    /// - writeConflict: Server wasn't able to fulfill concurrency optimistic write to database
+    /// - invalidResult: Unexpected result of `RapidConcurrencyOptimisticBlock`
+    /// - aborted: Client aborted an optimistic concurrency flow
     public enum ConcurrencyWriteError {
         case writeConflict(message: String?)
         case invalidResult(message: String)

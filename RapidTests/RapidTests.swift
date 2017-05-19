@@ -406,8 +406,8 @@ class RapidTests: XCTestCase {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         manager.subscribe(subscription)
         manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil))
-        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], callback: nil, cache: nil))
-        manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], callback: nil, cache: nil))
+        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], cache: nil, callback: nil))
+        manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], cache: nil, callback: nil))
         manager.sendEmptyRequest()
         subscription.unsubscribe()
         
@@ -498,12 +498,12 @@ class RapidTests: XCTestCase {
         
         runAfter(0.5) { 
             manager.subscribe(subscription1)
-            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], callback: nil, cache: nil))
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], cache: nil, callback: nil))
             manager.subscribe(subscription2)
-            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], callback: nil, cache: nil))
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], cache: nil, callback: nil))
             manager.goOffline()
             runAfter(0.5, closure: {
-                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], callback: nil, cache: nil))
+                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], cache: nil, callback: nil))
                 manager.subscribe(subscription3)
                 shouldConnect = false
                 manager.goOnline()

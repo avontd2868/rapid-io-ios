@@ -14,18 +14,31 @@ public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocumentS
 /// Document fetch callback which provides a client either with an error or with a document
 public typealias RapidDocFetchCallback = RapidDocSubCallback
 
-/// Document mutation callback which provides a client either with an error or with a successfully mutated object
-public typealias RapidMutationCallback = (_ error: Error?, _ object: Any?) -> Void
+/// Document mutation callback which informs a client about the operation result
+public typealias RapidMutationCallback = (_ error: Error?) -> Void
 
-/// Document deletion callback which provides a client with an possible error
-public typealias RapidDeletionCallback = (_ error: Error?) -> Void
+/// Document mutation callback which informs a client about the operation result
+public typealias RapidDeletionCallback = RapidMutationCallback
 
-/// Document merge callback which provides a client either with an error or with a successfully merged values
-public typealias RapidMergeCallback = (_ error: Error?, _ object: Any?) -> Void
+/// Document mutation callback which informs a client about the operation result
+public typealias RapidMergeCallback = RapidMutationCallback
 
+/// Block of code which is called on optimistic concurrency write
 public typealias RapidConcurrencyOptimisticBlock = (_ currentValue: [AnyHashable: Any]?) -> RapidConOptResult
-public typealias RapidConcurrencyCompletionBlock = (_ error: Error?) -> Void
 
+/// Optimistic concurrency write completion callback which informs a client about the operation result
+public typealias RapidConcurrencyCompletionBlock = RapidMutationCallback
+
+//FIXME: Better name
+
+/// Return type for `RapidConcurrencyOptimisticBlock`
+///
+/// `RapidConOptResult` represents an action that should be performed based on a current value
+/// that is provided as an input parameter of `RapidConcurrencyOptimisticBlock`
+///
+/// - write: Write new data
+/// - delete: Delete document. This action is applicable only for optimistic concurrency delete
+/// - abort: Abort process
 public enum RapidConOptResult {
     case write(value: [AnyHashable: Any])
     case delete()
@@ -75,8 +88,8 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
     /// Etag identifier
     public let etag: String?
     
-    /// Document creation time
-    public let createdAt: String?
+    /// Document creation sort identifier
+    let createdAt: String?
     
     /// Value that serves to order documents
     ///
@@ -160,6 +173,15 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
         return false
     }
     
+    override public var description: String {
+        return [
+            "id": id,
+            "etag": String(describing: etag),
+            "collectionID": collectionID,
+            "value": String(describing: value)
+        ]
+        .description
+    }
 }
 
 /// Class representing Rapid.io document
@@ -195,9 +217,9 @@ public class RapidDocument: NSObject {
     }
     
     //FIXME: Better name
-    public func concurrencySafeMutate(value: [AnyHashable: Any], etag: String, completion: RapidMutationCallback? = nil) {
+    public func concurrencySafeMutate(value: [AnyHashable: Any], etag: String?, completion: RapidMutationCallback? = nil) {
         let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: handler, callback: completion)
-        mutation.etag = etag
+        mutation.etag = etag ?? Rapid.nilValue
         socketManager.mutate(mutationRequest: mutation)
     }
     
@@ -221,10 +243,16 @@ public class RapidDocument: NSObject {
     }
     
     //FIXME: Better name
-    public func concurencySafeMerge(value: [AnyHashable: Any], etag: String, completion: RapidMergeCallback? = nil) {
+    public func concurrencySafeMerge(value: [AnyHashable: Any], etag: String?, completion: RapidMergeCallback? = nil) {
         let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: handler, callback: completion)
-        merge.etag = etag
+        merge.etag = etag ?? Rapid.nilValue
         socketManager.mutate(mutationRequest: merge)
+    }
+    
+    public func concurrencySafeMerge(concurrencyBlock: @escaping RapidConcurrencyOptimisticBlock, completion: RapidConcurrencyCompletionBlock? = nil) {
+        let concurrencyMutation = RapidConOptDocumentMutation(collectionID: collectionID, documentID: documentID, type: .merge, delegate: socketManager, concurrencyBlock: concurrencyBlock, completion: completion)
+        concurrencyMutation.cacheHandler = handler
+        socketManager.concurrencyOptimisticMutate(mutation: concurrencyMutation)
     }
     
     /// Delete the document
@@ -238,10 +266,16 @@ public class RapidDocument: NSObject {
     }
     
     //FIXME: Better name
-    public func concurencySafeDelete(etag: String, completion: RapidDeletionCallback? = nil) {
+    public func concurrencySafeDelete(etag: String, completion: RapidDeletionCallback? = nil) {
         let deletion = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: handler, callback: completion)
         deletion.etag = etag
         socketManager.mutate(mutationRequest: deletion)
+    }
+    
+    public func concurrencySafeDelete(concurrencyBlock: @escaping RapidConcurrencyOptimisticBlock, completion: RapidConcurrencyCompletionBlock? = nil) {
+        let concurrencyMutation = RapidConOptDocumentMutation(collectionID: collectionID, documentID: documentID, type: .delete, delegate: socketManager, concurrencyBlock: concurrencyBlock, completion: completion)
+        concurrencyMutation.cacheHandler = handler
+        socketManager.concurrencyOptimisticMutate(mutation: concurrencyMutation)
     }
     
     /// Subscribe for listening to the document changes
@@ -261,7 +295,9 @@ public class RapidDocument: NSObject {
     ///
     /// - Parameter completion: Fetch callback which provides a client either with an error or with an array of documents
     public func readOnce(completion: @escaping RapidDocFetchCallback) {
+        let fetch = RapidDocumentFetch(collectionID: collectionID, documentID: documentID, cache: handler, callback: completion)
         
+        socketManager.fetch(fetch)
     }
     
 }

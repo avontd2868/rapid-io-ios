@@ -8,21 +8,22 @@
 
 import Foundation
 
+/// Collection fetch object
 class RapidCollectionFetch: NSObject {
     
     /// Collection ID
     let collectionID: String
     
-    /// Subscription filter
+    /// Fetch filter
     let filter: RapidFilter?
     
-    /// Subscription ordering
+    /// Fetch ordering
     let ordering: [RapidOrdering]?
     
-    /// Subscription paging
+    /// Fetch paging
     let paging: RapidPaging?
     
-    /// Default subscription callback
+    /// Completion callback
     let callback: RapidColFetchCallback?
     
     /// Cache handler
@@ -33,20 +34,20 @@ class RapidCollectionFetch: NSObject {
     
     /// Timout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
-    
     internal var requestTimeoutTimer: Timer?
     
     /// Fetch identifier
-    var fetchID: String = ""
+    let fetchID = Generator.uniqueID
     
-    /// Initialize collection subscription object
+    /// Initialize collection fetch object
     ///
     /// - Parameters:
     ///   - collectionID: Collection ID
     ///   - filter: Subscription filter
     ///   - ordering: Subscription ordering
     ///   - paging: Subscription paging
-    ///   - callback: Read callback
+    ///   - Cache handler
+    ///   - callback: Completion callback
     init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, callback: RapidColFetchCallback?) {
         self.collectionID = collectionID
         self.filter = filter
@@ -99,6 +100,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
 
 // MARK: Document fetch
 
+/// Document fetch object
 class RapidDocumentFetch: NSObject {
     
     /// Document identifier
@@ -123,21 +125,21 @@ class RapidDocumentFetch: NSObject {
     
     /// Timout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
-    
     internal var requestTimeoutTimer: Timer?
     
     /// Fetch identifier
-    var fetchID: String = ""
+    var fetchID: String {
+        return collectionFetch.fetchID
+    }
     
-    /// Initialize collection subscription object
+    /// Initialize document fetch object
     ///
     /// - Parameters:
     ///   - collectionID: Collection ID
-    ///   - filter: Subscription filter
-    ///   - ordering: Subscription ordering
-    ///   - paging: Subscription paging
-    ///   - callback: Read callback
-    init(collectionID: String, documentID: String, cache: RapidCacheHandler? = nil, callback: RapidDocFetchCallback?) {
+    ///   - documentID: Document ID
+    ///   - cache: Cache handler
+    ///   - callback: Completion callback
+    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, callback: RapidDocFetchCallback?) {
         let filter = RapidFilterSimple(keyPath: RapidFilter.documentIdKey, relation: .equal, value: documentID)
         self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, cache: nil, callback: nil)
         

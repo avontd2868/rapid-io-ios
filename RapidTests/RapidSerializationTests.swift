@@ -27,13 +27,13 @@ extension RapidTests {
     }
     
     func testJSONValidationInvalidValue() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], callback: nil, cache: nil)
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], cache: nil, callback: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
     
     func testJSONalidationInvalidKey() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], callback: nil, cache: nil)
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], cache: nil, callback: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -421,7 +421,7 @@ extension RapidTests {
     func testMutationWithArray() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["test2": 2]], "json": ["testJSON": "blaaaa"] ] ) { error, _ in
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["test2": 2]], "json": ["testJSON": "blaaaa"] ] ) { error in
             XCTAssertNil(error, "Error not nil")
             promise.fulfill()
         }
@@ -432,7 +432,7 @@ extension RapidTests {
     func testInvalidNestedDictionaryMutation() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["tes.t": 2]] ] ) { error, _ in
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["tes.t": 2]] ] ) { error in
             if let error = error as? RapidError,
                 case .invalidData(let reason) = error,
                 case .invalidDocument = reason {
@@ -449,7 +449,7 @@ extension RapidTests {
     func testWrongDocumentIDMutation() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").mutate(value: ["name": "test"]) { error, _ in
+        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").mutate(value: ["name": "test"]) { error in
             if let error = error as? RapidError,
                 case .invalidData(let reason) = error,
                 case .invalidIdentifierFormat(let idef) = reason, idef as? String == "t e s t" {
@@ -466,7 +466,7 @@ extension RapidTests {
     func testInvalidKeyMutation() {
         let promise = expectation(description: "Wrong key")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["na.me": "test"]) { error, _ in
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["na.me": "test"]) { error in
             if let error = error as? RapidError,
                 case .invalidData(let reason) = error,
                 case .invalidDocument = reason {
@@ -583,24 +583,20 @@ extension RapidTests {
     }
     
     func testSubscriptionBatchObjectForValue() {
-        let update1 = RapidSubscriptionBatch(withCollectionJSON: ["test"])
         let update2 = RapidSubscriptionBatch(withCollectionJSON: [:])
         let update3 = RapidSubscriptionBatch(withCollectionJSON: ["evt-id": "kdsjghds"])
         let update4 = RapidSubscriptionBatch(withCollectionJSON: ["evt-id": "kdsjghds", "sub-id": "fjdslkfj"])
         
-        XCTAssertNil(update1, "Object created")
         XCTAssertNil(update2, "Object created")
         XCTAssertNil(update3, "Object created")
         XCTAssertNil(update4, "Object created")
     }
     
     func testSubscriptionBatchObjectForUpdate() {
-        let update1 = RapidSubscriptionBatch(withUpdateJSON: ["test"])
         let update2 = RapidSubscriptionBatch(withUpdateJSON: [:])
         let update3 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds"])
         let update4 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds", "sub-id": "fjdslkfj"])
         
-        XCTAssertNil(update1, "Object created")
         XCTAssertNil(update2, "Object created")
         XCTAssertNil(update3, "Object created")
         XCTAssertNil(update4, "Object created")

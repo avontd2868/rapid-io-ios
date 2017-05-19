@@ -113,18 +113,13 @@ class RapidSocketManager {
         websocketQueue.async { [weak self] in
             self?.pendingConOptRequests[mutation.identifier] = mutation
             
-            let request = mutation.fetchRequest
-            self?.post(event: request)
+            self?.fetch(mutation.fetchRequest)
         }
     }
     
     func fetch(_ fetch: RapidFetchInstance) {
         websocketQueue.async { [weak self] in
-            let fetchID = Generator.uniqueID
-            
-            fetch.fetchID = fetchID
-            
-            self?.pendingFetches[fetchID] = fetch
+            self?.pendingFetches[fetch.fetchID] = fetch
             
             self?.post(event: fetch)
         }
@@ -588,10 +583,12 @@ extension RapidSocketManager: RapidConOptMutationDelegate {
         }
     }
     
-    func sendConOptRequest<Request: RapidRequest>(_ request: Request) where Request: RapidSerializable {
-        websocketQueue.async { [weak self] in
-            self?.post(event: request)
-        }
+    func sendMutationRequest<T: RapidMutationRequest>(_ request: T) {
+        mutate(mutationRequest: request)
+    }
+    
+    func sendFetchRequest(_ request: RapidFetchInstance) {
+        fetch(request)
     }
 }
 

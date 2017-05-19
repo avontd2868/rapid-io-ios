@@ -14,13 +14,14 @@ protocol RapidConcurrencyOptimisticMutation {
 }
 
 protocol RapidConOptMutationDelegate: class {
-    func sendConOptRequest<Request: RapidRequest>(_ request: Request) where Request: RapidSerializable
+    func sendFetchRequest(_ request: RapidFetchInstance)
+    func sendMutationRequest<T: RapidMutationRequest>(_ request: T)
     func conOptMutationCompleted(_ mutation: RapidConcurrencyOptimisticMutation)
 }
 
 /// Protocol describing concurrency optimistic request
 protocol RapidConcOptRequest {
-    var etag: String? { get set }
+    var etag: Any? { get set }
 }
 
 /// Protocol describing mutation request

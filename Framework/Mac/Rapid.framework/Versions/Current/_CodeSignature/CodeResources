@@ -15,7 +15,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ESTyW6UeM26w0DNoM79kXP5bQW7nWnA++QoS40g+A1M=
+			8mbU2fhtmHPlxSoYaip6qSDwKK+Em33fh9MYrZ7DJNA=
 			</data>
 		</dict>
 		<key>Headers/Rapid.h</key>
@@ -29,14 +29,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			qba84V3vcscVrXqpyONF1C8eq4XFoBujXUiuKy3m3Ks=
+			G2oVJUnZKbPfOYkCk6z0+/KZvh60GIC0TAEvldFOhEk=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			on1xm8wgOyL5GjdT1cl8YpAa/7Q1GOhQqqcNmVtcT3Q=
+			0zAolp7l/Hl0gkHernmmkH001W3XVQa101LQ3keuWk8=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

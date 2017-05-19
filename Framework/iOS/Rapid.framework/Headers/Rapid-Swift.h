@@ -241,6 +241,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isCacheEnabled;)
 @end
 
 @class RapidDocument;
+@class RapidDocumentSnapshot;
 
 /// Class representing Rapid.io collection
 SWIFT_CLASS("_TtC5Rapid15RapidCollection")
@@ -259,6 +260,11 @@ SWIFT_CLASS("_TtC5Rapid15RapidCollection")
 /// returns:
 /// Instance of a <code>RapidDocument</code> in the collection with a specified ID
 - (RapidDocument * _Nonnull)documentWithID:(NSString * _Nonnull)id SWIFT_WARN_UNUSED_RESULT;
+/// Fetch collection
+/// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
+/// \param completion Fetch callback which provides a client either with an error or with an array of documents
+///
+- (void)readOnceWithCompletion:(void (^ _Nonnull)(NSError * _Nullable, NSArray<RapidDocumentSnapshot *> * _Nonnull))completion;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
@@ -280,7 +286,8 @@ SWIFT_CLASS("_TtC5Rapid13RapidDocument")
 ///
 /// \param completion Mutation callback which provides a client either with an error or with a successfully mutated object
 ///
-- (void)mutateWithValue:(NSDictionary * _Nonnull)value completion:(void (^ _Nullable)(NSError * _Nullable, id _Nullable))completion;
+- (void)mutateWithValue:(NSDictionary * _Nonnull)value completion:(void (^ _Nullable)(NSError * _Nullable))completion;
+- (void)concurrencySafeMutateWithValue:(NSDictionary * _Nonnull)value etag:(NSString * _Nullable)etag completion:(void (^ _Nullable)(NSError * _Nullable))completion;
 /// Merge values in the document with new ones
 /// Values that are not mentioned in the provided dictionary remains as they are.
 /// Values that are mentioned in the provided dictionary are either replaced or added to the document.
@@ -288,12 +295,18 @@ SWIFT_CLASS("_TtC5Rapid13RapidDocument")
 ///
 /// \param completion merge callback which provides a client either with an error or with a successfully merged values
 ///
-- (void)mergeWithValue:(NSDictionary * _Nonnull)value completion:(void (^ _Nullable)(NSError * _Nullable, id _Nullable))completion;
+- (void)mergeWithValue:(NSDictionary * _Nonnull)value completion:(void (^ _Nullable)(NSError * _Nullable))completion;
+- (void)concurrencySafeMergeWithValue:(NSDictionary * _Nonnull)value etag:(NSString * _Nullable)etag completion:(void (^ _Nullable)(NSError * _Nullable))completion;
 /// Delete the document
 /// <code>Delete</code> is equivalent to <code>Mutate</code> with a value equal to <code>nil</code>
 /// \param completion Delete callback which provides a client either with an error or with the document object how it looked before it was deleted
 ///
 - (void)deleteWithCompletion:(void (^ _Nullable)(NSError * _Nullable))completion;
+- (void)concurrencySafeDeleteWithEtag:(NSString * _Nonnull)etag completion:(void (^ _Nullable)(NSError * _Nullable))completion;
+/// Fetch document
+/// \param completion Fetch callback which provides a client either with an error or with an array of documents
+///
+- (void)readOnceWithCompletion:(void (^ _Nonnull)(NSError * _Nullable, RapidDocumentSnapshot * _Nonnull))completion;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
@@ -313,11 +326,10 @@ SWIFT_CLASS("_TtC5Rapid21RapidDocumentSnapshot")
 @property (nonatomic, readonly, copy) NSDictionary * _Nullable value;
 /// Etag identifier
 @property (nonatomic, readonly, copy) NSString * _Nullable etag;
-/// Document creation time
-@property (nonatomic, readonly, copy) NSString * _Nullable createdAt;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
 - (void)encodeWithCoder:(NSCoder * _Nonnull)aCoder;
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
