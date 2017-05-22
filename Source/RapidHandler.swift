@@ -22,7 +22,7 @@ protocol RapidCacheHandler: class {
     /// - Parameters:
     ///   - value: Data to be stored
     ///   - subscription: Subscription handler object
-    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHandler)
+    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHashable)
     
     /// Store single `RapidCachableObject`
     ///
@@ -102,7 +102,7 @@ extension RapidHandler: RapidCacheHandler {
         cache?.loadDataset(forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken, completion: completion)
     }
 
-    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHandler) {
+    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHashable) {
         cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken)
     }
     

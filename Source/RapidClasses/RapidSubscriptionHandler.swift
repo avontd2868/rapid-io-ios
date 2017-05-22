@@ -104,7 +104,7 @@ protocol RapidSubscriptionHandlerDelegate: class {
 }
 
 /// Class that handles all subscriptions which listen to the same dataset
-class RapidSubscriptionHandler: NSObject {
+class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
     
     /// Subscripstion state
     enum State {

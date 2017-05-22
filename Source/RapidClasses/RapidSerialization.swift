@@ -69,9 +69,8 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-
         doc[Mutation.Document.DocumentID.name] = try Validator.validate(identifier: mutation.documentID)
-        
+        doc[Mutation.Document.Etag.name] = mutation.etag
         doc[Mutation.Document.Body.name] = try Validator.validate(document: mutation.value)
         
         json[Mutation.CollectionID.name] = try Validator.validate(identifier: mutation.collectionID)
@@ -93,9 +92,8 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-        
         doc[Merge.Document.DocumentID.name] = try Validator.validate(identifier: merge.documentID)
-        
+        doc[Merge.Document.Etag.name] = merge.etag
         doc[Merge.Document.Body.name] = try Validator.validate(document: merge.value)
         
         json[Merge.CollectionID.name] = try Validator.validate(identifier: merge.collectionID)
@@ -115,10 +113,34 @@ class RapidSerialization {
     class func serialize(delete: RapidDocumentDelete, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
+        var doc = [AnyHashable: Any]()
+        doc[Delete.Document.DocumentID.name] = try Validator.validate(identifier: delete.documentID)
+        doc[Delete.Document.Etag.name] = delete.etag
+        
         json[Delete.CollectionID.name] = try Validator.validate(identifier: delete.collectionID)
-        json[Delete.DocumentID.name] = try Validator.validate(identifier: delete.documentID)
+        json[Delete.Document.name] = doc
         
         let resultDict: [AnyHashable: Any] = [Delete.name: json]
+        return try resultDict.jsonString()
+    }
+    
+    /// Serialize a collection fetch into JSON string
+    ///
+    /// - Parameters:
+    ///   - subscription: Fetch object
+    ///   - identifiers: Identifiers that are associated with the subscription event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(fetch: RapidCollectionFetch, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Fetch.CollectionID.name] = try Validator.validate(identifier: fetch.collectionID)
+        json[Fetch.Filter.name] = try serialize(filter: fetch.filter)
+        json[Fetch.Ordering.name] = try serialize(ordering: fetch.ordering)
+        json[Fetch.Limit.name] = fetch.paging?.take
+        json[Fetch.Skip.name] = fetch.paging?.skip
+        
+        let resultDict: [AnyHashable: Any] = [Fetch.name: json]
         return try resultDict.jsonString()
     }
     
@@ -389,6 +411,9 @@ fileprivate extension RapidSerialization {
         else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
             return RapidSubscriptionCancel(json: ca)
         }
+        else if let res = json[FetchValue.name] as? [AnyHashable: Any] {
+            return RapidFetchResponse(withJSON: res)
+        }
 
         return nil
     }
@@ -433,6 +458,14 @@ extension RapidSerialization {
             struct InvalidAuthToken {
                 static let name = "invalid-auth-token"
             }
+            
+            struct ClientSide {
+                static let name = "client-error"
+            }
+            
+            struct WriteConflict {
+                static let name = "etag-conflict"
+            }
         }
         
         struct ErrorMessage {
@@ -452,6 +485,10 @@ extension RapidSerialization {
             
             struct DocumentID {
                 static let name = "id"
+            }
+            
+            struct Etag {
+                static let name = "etag"
             }
             
             struct Body {
@@ -474,6 +511,10 @@ extension RapidSerialization {
                 static let name = "id"
             }
             
+            struct Etag {
+                static let name = "etag"
+            }
+            
             struct Body {
                 static let name = "body"
             }
@@ -487,8 +528,44 @@ extension RapidSerialization {
             static let name = "col-id"
         }
         
-        struct DocumentID {
-            static let name = "doc-id"
+        struct Document {
+            static let name = "doc"
+            
+            struct DocumentID {
+                static let name = "id"
+            }
+            
+            struct Etag {
+                static let name = "etag"
+            }
+        }
+    }
+    
+    struct Fetch {
+        static let name = "ftc"
+        
+        struct FetchID {
+            static let name = "ftc-id"
+        }
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
+        
+        struct Filter {
+            static let name = "filter"
+        }
+        
+        struct Ordering {
+            static let name = "order"
+        }
+        
+        struct Limit {
+            static let name = "limit"
+        }
+        
+        struct Skip {
+            static let name = "skip"
         }
     }
     
@@ -517,6 +594,22 @@ extension RapidSerialization {
         
         struct Skip {
             static let name = "skip"
+        }
+    }
+    
+    struct FetchValue {
+        static let name = "res"
+        
+        struct FetchID {
+            static let name = "ftc-id"
+        }
+        
+        struct CollectionID {
+            static let name = "col-id"
+        }
+        
+        struct Documents {
+            static let name = "docs"
         }
     }
     

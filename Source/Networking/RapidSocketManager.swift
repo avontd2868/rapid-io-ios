@@ -41,6 +41,10 @@ class RapidSocketManager {
     /// Dictionary of registered subscriptions. Either active or those that are waiting for acknowledgement from the server. Subscriptions are identified by a subscriptioon ID
     fileprivate var activeSubscriptions: [String: RapidSubscriptionHandler] = [:]
     
+    fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
+    
+    fileprivate var pendingConOptRequests: [String: RapidConcurrencyOptimisticMutation] = [:]
+    
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
     
@@ -102,6 +106,22 @@ class RapidSocketManager {
     func mutate<T: RapidMutationRequest>(mutationRequest: T) {
         websocketQueue.async { [weak self] in
             self?.post(event: mutationRequest)
+        }
+    }
+    
+    func concurrencyOptimisticMutate<T: RapidConcurrencyOptimisticMutation>(mutation: T) {
+        websocketQueue.async { [weak self] in
+            self?.pendingConOptRequests[mutation.identifier] = mutation
+            
+            self?.fetch(mutation.fetchRequest)
+        }
+    }
+    
+    func fetch(_ fetch: RapidFetchInstance) {
+        websocketQueue.async { [weak self] in
+            self?.pendingFetches[fetch.fetchID] = fetch
+            
+            self?.post(event: fetch)
         }
     }
     
@@ -420,6 +440,10 @@ fileprivate extension RapidSocketManager {
             if let subscription = tuple?.request as? RapidSubscriptionHandler {
                 activeSubscriptions[subscription.subscriptionID] = nil
             }
+            // If fetch failed remove it from the list of pending fetches
+            else if let fetch = tuple?.request as? RapidFetchInstance {
+                pendingFetches[fetch.fetchID] = nil
+            }
             else if let request = tuple?.request as? RapidAuthRequest, self.auth?.accessToken == request.auth.accessToken {
                 self.auth = nil
             }
@@ -445,6 +469,12 @@ fileprivate extension RapidSocketManager {
             subscription?.eventFailed(withError: error)
             activeSubscriptions[response.subscriptionID] = nil
             acknowledge(eventWithID: response.eventID)
+            
+        // Fetch response
+        case let response as RapidFetchResponse:
+            let fetch = pendingFetches[response.fetchID]
+            fetch?.receivedData(response.documents)
+            pendingFetches[response.fetchID] = nil
         
         default:
             RapidLogger.developerLog(message: "Unrecognized response")
@@ -541,6 +571,24 @@ extension RapidSocketManager: RapidTimeoutRequestDelegate {
                 self?.handle(response: error)
             }
         }
+    }
+}
+
+// MARK: Concurrency optimistic mutation delegate
+extension RapidSocketManager: RapidConOptMutationDelegate {
+    
+    func conOptMutationCompleted(_ mutation: RapidConcurrencyOptimisticMutation) {
+        websocketQueue.async { [weak self] in
+            self?.pendingConOptRequests[mutation.identifier] = nil
+        }
+    }
+    
+    func sendMutationRequest<T: RapidMutationRequest>(_ request: T) {
+        mutate(mutationRequest: request)
+    }
+    
+    func sendFetchRequest(_ request: RapidFetchInstance) {
+        fetch(request)
     }
 }
 

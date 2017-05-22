@@ -8,6 +8,22 @@
 
 import Foundation
 
+protocol RapidConcurrencyOptimisticMutation {
+    var identifier: String { get }
+    var fetchRequest: RapidFetchInstance { get }
+}
+
+protocol RapidConOptMutationDelegate: class {
+    func sendFetchRequest(_ request: RapidFetchInstance)
+    func sendMutationRequest<T: RapidMutationRequest>(_ request: T)
+    func conOptMutationCompleted(_ mutation: RapidConcurrencyOptimisticMutation)
+}
+
+/// Protocol describing concurrency optimistic request
+protocol RapidConcOptRequest {
+    var etag: Any? { get set }
+}
+
 /// Protocol describing mutation request
-protocol RapidMutationRequest: RapidTimeoutRequest, RapidSerializable {
+protocol RapidMutationRequest: RapidTimeoutRequest, RapidSerializable, RapidConcOptRequest {
 }

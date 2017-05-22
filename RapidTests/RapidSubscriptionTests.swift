@@ -236,7 +236,7 @@ extension RapidTests {
     
     func testUpdate() {
         let promise = expectation(description: "Subscription update")
-        
+
         mutate(documentID: "1", value: ["name": "testUpdate"])
         
         runAfter(1) { 
@@ -973,6 +973,146 @@ extension RapidTests {
             XCTFail("Wrong response")
         }
     }
+    
+    func testCollectionFetch() {
+        let promise = expectation(description: "Subscription update")
+        
+        rapid.isCacheEnabled = true
+
+        mutate(documentID: "1", value: ["name": "testUpdate"])
+        
+        runAfter(1) {
+            var initialValue = true
+            self.rapid.collection(named: self.testCollectionName).subscribe { (_, documents) in
+                XCTAssertGreaterThan(documents.count, 0, "No documentss")
+                
+                if initialValue {
+                    initialValue = false
+                    let docs = documents
+                    
+                    self.rapid.collection(named: self.testCollectionName).readOnce(completion: { (_, fetched) in
+                        if docs == fetched {
+                            promise.fulfill()
+                        }
+                        else{
+                            XCTFail("Fetched collection is different")
+                        }
+                    })
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+    
+    func testDocumentFetch() {
+        let promise = expectation(description: "Subscription update")
+        
+        rapid.isCacheEnabled = true
+        
+        mutate(documentID: "1", value: ["name": "testUpdate"])
+        
+        runAfter(1) {
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, document) in
+                XCTAssertEqual(document.value?["name"] as? String, "testUpdate", "Wrong document")
+                promise.fulfill()
+            })
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+    
+    func testUnauthorizedCollectionFetch() {
+        let promise = expectation(description: "Subscription update")
+
+        self.rapid.collection(named: "fakeCollectionName").readOnce(completion: { (error, _) in
+            if let error = error as? RapidError, case RapidError.permissionDenied = error {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Fetch passed")
+            }
+        })
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testUnauthorizedDocumentFetch() {
+        let promise = expectation(description: "Subscription update")
+
+        self.rapid.collection(named: "fakeCollectionName").document(withID: "1").readOnce(completion: { (error, _) in
+            if let error = error as? RapidError, case RapidError.permissionDenied = error {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Fetch passed")
+            }
+        })
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+
+    func testDotConventionFilter() {
+        let promise = expectation(description: "Subscription update")
+        
+        rapid.isCacheEnabled = true
+        
+        mutate(documentID: "1", value: ["car": ["type": "Skoda", "model": "Octavia"]])
+        
+        runAfter(1) {
+
+            self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.equal(keyPath: "car.type", value: "Skoda")).readOnce { (_, documents) in
+                XCTAssertGreaterThan(documents.count, 0, "No documentss")
+                
+                for document in documents {
+                    let car = document.value?["car"] as? [AnyHashable: Any]
+                    XCTAssertEqual(car?["type"] as? String, "Skoda", "Wrong document")
+                }
+                
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testDotConventionOrder() {
+        let promise = expectation(description: "Subscription update")
+        
+        rapid.isCacheEnabled = true
+        
+        mutate(documentID: "1", value: ["car": ["type": "Skoda", "model": "Octavia"]])
+        mutate(documentID: "2", value: ["car": ["type": "Skoda", "model": "Fabia"]])
+        
+        runAfter(1) {
+            
+            self.rapid.collection(named: self.testCollectionName).order(by: RapidOrdering(keyPath: "car.model", ordering: .ascending)).readOnce { (_, documents) in
+                XCTAssertGreaterThan(documents.count, 0, "No documents")
+                
+                var lastValue: String?
+                for document in documents {
+                    let car = document.value?["car"] as? [AnyHashable: Any]
+                    let model = car?["model"] as? String
+                    
+                    if let value = lastValue {
+                        if let model = model {
+                            XCTAssertGreaterThanOrEqual(model, value, "Wrong order")
+                        }
+                        else {
+                            XCTFail("No model")
+                        }
+                    }
+                    
+                    lastValue = model
+                }
+                
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+    
 }
 
 // MARK: Helper methods
@@ -1026,7 +1166,7 @@ class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandle
         cache?.loadDataset(forKey: subscription.subscriptionHash, secret: authorization?.accessToken, completion: completion)
     }
     
-    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHandler) {
+    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHashable) {
         cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: authorization?.accessToken)
     }
     

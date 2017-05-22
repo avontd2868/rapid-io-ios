@@ -26,11 +26,7 @@ class RapidSubscriptionBatch: RapidResponse {
         self.updates = []
     }
     
-    init?(withCollectionJSON json: Any?) {
-        guard let dict = json as? [AnyHashable: Any] else {
-            return nil
-        }
-        
+    init?(withCollectionJSON dict: [AnyHashable: Any]) {
         guard let eventID = dict[RapidSerialization.EventID.name] as? String else {
             return nil
         }
@@ -54,11 +50,7 @@ class RapidSubscriptionBatch: RapidResponse {
         self.updates = []
     }
     
-    init?(withUpdateJSON json: Any?) {
-        guard let dict = json as? [AnyHashable: Any] else {
-            return nil
-        }
-        
+    init?(withUpdateJSON dict: [AnyHashable: Any]) {
         guard let eventID = dict[RapidSerialization.EventID.name] as? String else {
             return nil
         }
@@ -98,6 +90,41 @@ class RapidSubscriptionBatch: RapidResponse {
         else {
             self.updates.append(contentsOf: event.updates)
         }
+    }
+    
+}
+
+class RapidFetchResponse: RapidResponse {
+    
+    let eventID: String
+    
+    let fetchID: String
+    
+    let collectionID: String
+    
+    let documents: [RapidDocumentSnapshot]
+    
+    init?(withJSON json: [AnyHashable: Any]) {
+        guard let eventID = json[RapidSerialization.EventID.name] as? String else {
+            return nil
+        }
+        
+        guard let fetchID = json[RapidSerialization.FetchValue.FetchID.name] as? String else {
+            return nil
+        }
+        
+        guard let collectionID = json[RapidSerialization.FetchValue.CollectionID.name] as? String else {
+            return nil
+        }
+        
+        guard let documents = json[RapidSerialization.FetchValue.Documents.name] as? [Any] else {
+            return nil
+        }
+        
+        self.eventID = eventID
+        self.fetchID = fetchID
+        self.collectionID = collectionID
+        self.documents = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })
     }
     
 }
