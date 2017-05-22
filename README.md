@@ -20,6 +20,7 @@ Rapid iOS SDK is an SDK written in Swift for accessing Rapid.io realtime databas
 - [x] Subscribe to changes
 - [x] Mutate database
 - [x] Authenticate
+- [X] Optimistic concurrency
 - [ ] Complete Documentation
 
 ## Requirements

@@ -236,7 +236,7 @@ extension RapidTests {
     
     func testUpdate() {
         let promise = expectation(description: "Subscription update")
-        Rapid.logLevel = .debug
+
         mutate(documentID: "1", value: ["name": "testUpdate"])
         
         runAfter(1) { 
