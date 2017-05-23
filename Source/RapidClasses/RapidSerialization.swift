@@ -134,6 +134,10 @@ class RapidSerialization {
     class func serialize(fetch: RapidCollectionFetch, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
+        if let paging = fetch.paging, paging.take > RapidPaging.takeLimit {
+            throw RapidError.invalidData(reason: .invalidLimit)
+        }
+        
         json[Fetch.CollectionID.name] = try Validator.validate(identifier: fetch.collectionID)
         json[Fetch.Filter.name] = try serialize(filter: fetch.filter)
         json[Fetch.Ordering.name] = try serialize(ordering: fetch.ordering)
@@ -153,6 +157,10 @@ class RapidSerialization {
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(subscription: RapidCollectionSub, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
+        
+        if let paging = subscription.paging, paging.take > RapidPaging.takeLimit {
+            throw RapidError.invalidData(reason: .invalidLimit)
+        }
         
         json[Subscription.CollectionID.name] = try Validator.validate(identifier: subscription.collectionID)
         json[Subscription.Filter.name] = try serialize(filter: subscription.filter)

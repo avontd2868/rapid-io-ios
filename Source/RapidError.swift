@@ -97,17 +97,19 @@ public enum RapidError: Error {
     
     /// Reason of `invalidData` error
     ///
-    /// - serializationFailure: Serialization failed because data were in a wrong format
+    /// - serializationFailure: Serialization failed because data were in a wrongsubscription format
     /// - invalidFilter: Invalid subscription filter
     /// - invalidDocument: Invalid document JSON when mutating or merging
     /// - invalidIdentifierFormat: Invalid identifier format - all identifiers e.g. collection ID, document ID must be strings consiting only of alphanumeric characters, dashes and underscores
     /// - invalidKeyPath: Invalid key path format
+    /// - invalidLimit: Limit is greater than `RapidPaging.takeLimit`
     public enum InvalidDataReason {
         case serializationFailure
         case invalidFilter(filter: RapidFilter)
         case invalidDocument(document: [AnyHashable: Any])
         case invalidIdentifierFormat(identifier: Any?)
         case invalidKeyPath(keyPath: String)
+        case invalidLimit
     }
     
     //FIXME: Better name

@@ -619,4 +619,19 @@ extension RapidTests {
         XCTAssertNil(ca2, "Not nil")
         XCTAssertNil(ca3, "Not nil")
     }
+    
+    func testLimitExceeded() {
+        let promise = expectation(description: "Limit exceeded")
+        
+        rapid.collection(named: testCollectionName).limit(to: RapidPaging.takeLimit+1).subscribe { (error, _) in
+            if let error = error as? RapidError, case RapidError.invalidData(let reason) = error, case RapidError.InvalidDataReason.invalidLimit = reason {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Wrong error")
+            }
+        }
+        
+        waitForExpectations(timeout: 1, handler: nil)
+    }
 }

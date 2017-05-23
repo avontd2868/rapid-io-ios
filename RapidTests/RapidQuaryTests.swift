@@ -273,4 +273,31 @@ extension RapidTests {
         waitForExpectations(timeout: 10, handler: nil)
     }
 
+    func testLimit() {
+        let promise = expectation(description: "Limit")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
+        rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
+        rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"])
+        
+        rapid.collection(named: testCollectionName).filter(by: RapidFilter.lessThan(keyPath: RapidFilter.documentIdKey, value: "5")).order(by: RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .descending)).limit(to: 2).subscribe { (_, documents) in
+            XCTAssertEqual(documents.count, 2, "No documents")
+            
+            var lastID: String?
+            for document in documents {
+                if let lastID = lastID {
+                    XCTAssertLessThanOrEqual(document.id, lastID, "Wrong order")
+                }
+                else {
+                    lastID = document.id
+                }
+            }
+            
+            promise.fulfill()
+        }
+        
+        waitForExpectations(timeout: 8, handler: nil)
+    }
+    
 }
