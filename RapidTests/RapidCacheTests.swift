@@ -629,7 +629,7 @@ extension RapidTests {
                     let documents = docs
                     let networkHanlder = RapidNetworkHandler(socketURL: self.fakeSocketURL)
                     socketManager = RapidSocketManager(networkHandler: networkHanlder)
-                    socketManager.authorize(authRequest: RapidAuthRequest(accessToken: self.testAuthToken))
+                    socketManager.authorize(authRequest: RapidAuthRequest(token: self.testAuthToken))
                     socketManager.cacheHandler = self.rapid.handler
                     
                     self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "Description"], completion: { _ in

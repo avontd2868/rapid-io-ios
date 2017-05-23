@@ -488,9 +488,9 @@ fileprivate extension RapidSubscriptionHandler {
     }
 }
 
-extension RapidSubscriptionHandler: RapidRequest {
+extension RapidSubscriptionHandler: RapidClientRequest {
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         delegate?.websocketQueue.async {
             self.state = .subscribed
         }
@@ -536,9 +536,9 @@ extension RapidUnsubscriptionHandler: RapidSerializable {
     }
 }
 
-extension RapidUnsubscriptionHandler: RapidRequest {
+extension RapidUnsubscriptionHandler: RapidClientRequest {
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         subscription.didUnsubscribe()
     }
     

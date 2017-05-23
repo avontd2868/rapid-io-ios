@@ -10,8 +10,8 @@ import Foundation
 
 /// Acknowledgement event object
 ///
-/// This object represents either an acknowledgement from the server or an acknowledgement which is about to be sent to the server
-class RapidSocketAcknowledgement: RapidResponse {
+/// This acknowledgement is sent by server as a response to a client request
+class RapidServerAcknowledgement: RapidServerResponse {
     
     let eventID: String
     
@@ -32,16 +32,41 @@ class RapidSocketAcknowledgement: RapidResponse {
     }
 }
 
-extension RapidSocketAcknowledgement: RapidSerializable, RapidClientEvent {
+extension RapidServerAcknowledgement: RapidSerializable {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(acknowledgement: self)
     }
 }
 
-class RapidSubscriptionCancel: RapidResponse {
+/// Acknowledgement event object
+///
+/// This acknowledgement is sent to server as a response to a server event
+class RapidClientAcknowledgement: RapidClientEvent {
     
     let eventID: String
+    
+    init(eventID: String) {
+        self.eventID = eventID
+    }
+}
+
+extension RapidClientAcknowledgement: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(acknowledgement: self)
+    }
+}
+
+// MARK: Subscription cancel
+
+/// Subscription cancel event object
+///
+/// Subscription cancel is a sever event which occurs 
+/// when a client has no longer permissions to read collection after reauthorization/deauthorization
+class RapidSubscriptionCancel: RapidServerEvent {
+    
+    let eventIDsToAcknowledge: [String]
     let subscriptionID: String
     let collectionID: String
     
@@ -62,7 +87,7 @@ class RapidSubscriptionCancel: RapidResponse {
             return nil
         }
         
-        self.eventID = eventID
+        self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subID
         self.collectionID = colID
     }

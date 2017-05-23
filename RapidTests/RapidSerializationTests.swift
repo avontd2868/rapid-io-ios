@@ -223,7 +223,7 @@ extension RapidTests {
         
         XCTAssertEqual(responses.count, 4, "Number of responses")
         
-        if !(responses[0] is RapidSocketAcknowledgement) {
+        if !(responses[0] is RapidServerAcknowledgement) {
             XCTFail("Not an acknowledgement")
         }
         
@@ -603,8 +603,8 @@ extension RapidTests {
     }
     
     func testSocketAcknowledgement() {
-        let ack1 = RapidSocketAcknowledgement(json: ["test"])
-        let ack2 = RapidSocketAcknowledgement(json: [:])
+        let ack1 = RapidServerAcknowledgement(json: ["test"])
+        let ack2 = RapidServerAcknowledgement(json: [:])
         
         XCTAssertNil(ack1, "Object created")
         XCTAssertNil(ack2, "Object created")

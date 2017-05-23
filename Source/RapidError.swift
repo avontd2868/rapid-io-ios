@@ -21,7 +21,7 @@ enum RapidInternalError: Error {
 }
 
 /// Wrapper structure for `RapidError`
-struct RapidErrorInstance: RapidResponse {
+struct RapidErrorInstance: RapidServerResponse {
     
     let eventID: String
     let error: RapidError

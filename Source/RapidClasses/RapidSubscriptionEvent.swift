@@ -9,9 +9,9 @@
 import Foundation
 
 /// Wrapper for subscription events that came in one batch
-class RapidSubscriptionBatch: RapidResponse {
+class RapidSubscriptionBatch: RapidServerEvent {
     
-    let eventID: String
+    internal var eventIDsToAcknowledge: [String]
     let subscriptionID: String
     let collectionID: String
     
@@ -19,7 +19,7 @@ class RapidSubscriptionBatch: RapidResponse {
     internal(set) var updates: [RapidDocumentSnapshot]
     
     init(withSubscriptionID id: String, collection: [RapidDocumentSnapshot]) {
-        self.eventID = Rapid.uniqueID
+        self.eventIDsToAcknowledge = [Rapid.uniqueID]
         self.subscriptionID = id
         self.collectionID = collection.first?.collectionID ?? ""
         self.collection = collection
@@ -43,7 +43,7 @@ class RapidSubscriptionBatch: RapidResponse {
             return nil
         }
         
-        self.eventID = eventID
+        self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subscriptionID
         self.collectionID = collectionID
         self.collection = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })
@@ -71,7 +71,7 @@ class RapidSubscriptionBatch: RapidResponse {
             return nil
         }
         
-        self.eventID = eventID
+        self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subscriptionID
         self.collectionID = collectionID
         self.collection = nil
@@ -82,6 +82,8 @@ class RapidSubscriptionBatch: RapidResponse {
     ///
     /// - Parameter initialValue: Subscription dataset object
     func merge(event: RapidSubscriptionBatch) {
+        eventIDsToAcknowledge.append(contentsOf: event.eventIDsToAcknowledge)
+        
         // Since initial value contains whole dataset it overrides all previous single updates
         if let collection = event.collection {
             self.collection = collection
@@ -94,9 +96,9 @@ class RapidSubscriptionBatch: RapidResponse {
     
 }
 
-class RapidFetchResponse: RapidResponse {
+class RapidFetchResponse: RapidServerEvent {
     
-    let eventID: String
+    let eventIDsToAcknowledge: [String]
     
     let fetchID: String
     
@@ -121,7 +123,7 @@ class RapidFetchResponse: RapidResponse {
             return nil
         }
         
-        self.eventID = eventID
+        self.eventIDsToAcknowledge = [eventID]
         self.fetchID = fetchID
         self.collectionID = collectionID
         self.documents = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })

@@ -239,7 +239,7 @@ extension RapidDocumentMutation: RapidSerializable {
 
 extension RapidDocumentMutation: RapidTimeoutRequest {
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         invalidateTimer()
         
         DispatchQueue.main.async {
@@ -320,7 +320,7 @@ extension RapidDocumentMerge: RapidSerializable {
 
 extension RapidDocumentMerge: RapidTimeoutRequest {
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         invalidateTimer()
         
         DispatchQueue.main.async {
@@ -400,7 +400,7 @@ extension RapidDocumentDelete: RapidSerializable {
 
 extension RapidDocumentDelete: RapidTimeoutRequest {
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         invalidateTimer()
         
         DispatchQueue.main.async {

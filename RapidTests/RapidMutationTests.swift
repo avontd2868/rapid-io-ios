@@ -245,7 +245,7 @@ extension RapidTests {
         
         let manager = RapidSocketManager(networkHandler: mockHandler)
         
-        let auth = RapidAuthRequest(accessToken: self.testAuthToken)
+        let auth = RapidAuthRequest(token: self.testAuthToken)
         manager.authorize(authRequest: auth)
         
         let mutate = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": "mergeTest", "desc": "description"], cache: nil) { error in

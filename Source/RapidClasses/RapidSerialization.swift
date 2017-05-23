@@ -14,7 +14,7 @@ class RapidSerialization {
     ///
     /// - Parameter json: Received JSON
     /// - Returns: Array of deserialized objects
-    class func parse(json: [AnyHashable: Any]?) -> [RapidResponse]? {
+    class func parse(json: [AnyHashable: Any]?) -> [RapidServerMessage]? {
         guard let json = json else {
             RapidLogger.developerLog(message: "Server event parsing failed - no data")
             
@@ -23,7 +23,7 @@ class RapidSerialization {
         
         // If websocket received a batch of events
         if let batch = json[Batch.name] as? [[AnyHashable: Any]] {
-            var events = [RapidResponse]()
+            var events = [RapidServerMessage]()
             var updates = [String: RapidSubscriptionBatch]()
             
             for json in batch {
@@ -311,7 +311,18 @@ class RapidSerialization {
     ///   - acknowledgement: Acknowledgement object
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(acknowledgement: RapidSocketAcknowledgement) throws -> String {
+    class func serialize(acknowledgement: RapidClientAcknowledgement) throws -> String {
+        let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
+        return try resultDict.jsonString()
+    }
+    
+    /// Serialize an event acknowledgement into JSON string
+    ///
+    /// - Parameters:
+    ///   - acknowledgement: Acknowledgement object
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(acknowledgement: RapidServerAcknowledgement) throws -> String {
         let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
         return try resultDict.jsonString()
     }
@@ -373,7 +384,7 @@ class RapidSerialization {
     class func serialize(authRequest: RapidAuthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
-        json[Authorization.AccessToken.name] = authRequest.auth.accessToken
+        json[Authorization.Token.name] = authRequest.auth.token
         
         let resultDict = [Authorization.name: json]
         return try resultDict.jsonString()
@@ -392,9 +403,9 @@ fileprivate extension RapidSerialization {
     ///
     /// - Parameter json: Event JSON
     /// - Returns: Deserialized object
-    class func parseEvent(json: [AnyHashable: Any]) -> RapidResponse? {
+    class func parseEvent(json: [AnyHashable: Any]) -> RapidServerMessage? {
         if let ack = json[Acknowledgement.name] as? [AnyHashable: Any] {
-            return RapidSocketAcknowledgement(json: ack)
+            return RapidServerAcknowledgement(json: ack)
         }
         else if let err = json[Error.name] as? [AnyHashable: Any] {
             return RapidErrorInstance(json: err)
@@ -711,7 +722,7 @@ extension RapidSerialization {
     struct Authorization {
         static let name = "auth"
         
-        struct AccessToken {
+        struct Token {
             static let name = "token"
         }
     }

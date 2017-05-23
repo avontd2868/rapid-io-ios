@@ -11,7 +11,7 @@ import Foundation
 protocol RapidNetworkHandlerDelegate: class {
     func socketDidConnect()
     func socketDidDisconnect(withError error: RapidError?)
-    func handlerDidReceive(response: RapidResponse)
+    func handlerDidReceive(message: RapidServerMessage)
 }
 
 class RapidNetworkHandler {
@@ -23,7 +23,13 @@ class RapidNetworkHandler {
     fileprivate let socket: WebSocket
     
     /// State of a websocket connection
-    fileprivate(set) var state: Rapid.ConnectionState = .disconnected
+    fileprivate(set) var state: Rapid.ConnectionState = .disconnected {
+        didSet {
+            if oldValue != state {
+                onConnectionStateChanged?(state)
+            }
+        }
+    }
     
     /// Socket was intentionally terminated
     fileprivate var socketTerminated = false
@@ -40,6 +46,9 @@ class RapidNetworkHandler {
     
     /// Network handler delegate
     weak var delegate: RapidNetworkHandlerDelegate?
+    
+    /// Connection state changed callback
+    var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)?
     
     init(socketURL: URL) {
         self.parseQueue = DispatchQueue(label: "RapidParseQueue-\(socketURL.lastPathComponent)", attributes: [])
@@ -104,10 +113,10 @@ class RapidNetworkHandler {
                 self?.socket.write(string: jsonString)
             }
             catch let rapidError as RapidError {
-                self?.delegate?.handlerDidReceive(response: RapidErrorInstance(eventID: eventID, error: rapidError))
+                self?.delegate?.handlerDidReceive(message: RapidErrorInstance(eventID: eventID, error: rapidError))
             }
             catch {
-                self?.delegate?.handlerDidReceive(response: RapidErrorInstance(eventID: eventID, error: .invalidData(reason: .serializationFailure)))
+                self?.delegate?.handlerDidReceive(message: RapidErrorInstance(eventID: eventID, error: .invalidData(reason: .serializationFailure)))
             }
         }
     }
@@ -181,7 +190,7 @@ fileprivate extension RapidNetworkHandler {
             if let json = json, let responses = RapidSerialization.parse(json: json) {
                 self?.mainQueue.async {
                     for response in responses {
-                        self?.delegate?.handlerDidReceive(response: response)
+                        self?.delegate?.handlerDidReceive(message: response)
                     }
                 }
             }

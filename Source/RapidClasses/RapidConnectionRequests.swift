@@ -54,7 +54,7 @@ extension RapidConnectionRequest: RapidPriorityRequest {
 
 extension RapidConnectionRequest: RapidTimeoutRequest {
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         invalidateTimer()
         
         DispatchQueue.main.async {
@@ -103,17 +103,17 @@ class RapidEmptyRequest: RapidSerializable, RapidClientEvent {
 
 // MARK: Authorization
 
-class RapidAuthRequest: RapidRequest {
+class RapidAuthRequest: RapidClientRequest {
     
     let auth: RapidAuthorization
     let callback: RapidAuthCallback?
     
-    init(accessToken: String, callback: RapidAuthCallback? = nil) {
-        self.auth = RapidAuthorization(accessToken: accessToken)
+    init(token: String, callback: RapidAuthCallback? = nil) {
+        self.auth = RapidAuthorization(token: token)
         self.callback = callback
     }
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid authorized", level: .info)
             
@@ -144,7 +144,7 @@ extension RapidAuthRequest: RapidSerializable {
     }
 }
 
-class RapidDeauthRequest: RapidRequest {
+class RapidDeauthRequest: RapidClientRequest {
     
     let callback: RapidAuthCallback?
     
@@ -152,7 +152,7 @@ class RapidDeauthRequest: RapidRequest {
         self.callback = callback
     }
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid unauthorized", level: .info)
             

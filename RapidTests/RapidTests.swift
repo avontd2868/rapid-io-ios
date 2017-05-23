@@ -18,19 +18,20 @@ class RapidTests: XCTestCase {
     var rapid: Rapid!
     
     let apiKey = "MTMuNjQuNzcuMjAyOjgwODA="
+    let localApiKey = "bG9jYWxob3N0OjgwODA="
     let fakeAPIKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
     let socketURL = URL(string: "ws://13.64.77.202:8080")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6Imlvcy4qIiwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.c4txRLDwrgecxOIEfUqSYa_46DpVIKvymg4oG6TZRbU"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6Imlvcy4qIiwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.e6k8nnCC-WIFornRaBgaI9Uy2YW4uxlZ1FJMzUqj42A"
     
     override func setUp() {
         super.setUp()
         
         rapid = Rapid(apiKey: apiKey)!
         
-        rapid.authorize(withAccessToken: testAuthToken)
+        rapid.authorize(withToken: testAuthToken)
     }
     
     override func tearDown() {
@@ -38,6 +39,7 @@ class RapidTests: XCTestCase {
         Rapid.defaultTimeout = 300
         Rapid.heartbeatInterval = 30
         rapid.isCacheEnabled = false
+        rapid.goOffline()
         rapid = nil
         
         super.tearDown()
@@ -476,16 +478,16 @@ class RapidTests: XCTestCase {
             else {
                 if let subscription = event as? RapidSubscriptionHandler {
                     if subscription.subscriptionHash != subHash {
-                        handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                        handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                     }
                 }
                 else if let mutation = event as? RapidDocumentMutation {
                     if mutation.documentID != mutatationDocumentID {
-                        handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                        handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                     }
                 }
                 else {
-                    handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                    handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                 }
             }
         }, goOnlineCallback: { handler in
@@ -630,9 +632,9 @@ class MockNetworkHandlerDelegateObject: RapidNetworkHandlerDelegate {
     
     let connectCallback: (() -> Void)?
     let disconnectCallback: ((_ error: RapidError?) -> Void)?
-    let responseCallback: ((_ response: RapidResponse) -> Void)?
+    let responseCallback: ((_ message: RapidServerMessage) -> Void)?
     
-    init(connectCallback: (() -> Void)? = nil, disconnectCallback: ((_ error: RapidError?) -> Void)? = nil, responseCallback: ((_ response: RapidResponse) -> Void)? = nil) {
+    init(connectCallback: (() -> Void)? = nil, disconnectCallback: ((_ error: RapidError?) -> Void)? = nil, responseCallback: ((_ message: RapidServerMessage) -> Void)? = nil) {
         self.connectCallback = connectCallback
         self.disconnectCallback = disconnectCallback
         self.responseCallback = responseCallback
@@ -646,7 +648,7 @@ class MockNetworkHandlerDelegateObject: RapidNetworkHandlerDelegate {
         disconnectCallback?(error)
     }
     
-    func handlerDidReceive(response: RapidResponse) {
-        responseCallback?(response)
+    func handlerDidReceive(message: RapidServerMessage) {
+        responseCallback?(message)
     }
 }

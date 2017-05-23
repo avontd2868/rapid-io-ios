@@ -9,6 +9,12 @@
 import Foundation
 
 /// Protocol for events received from the server
-protocol RapidResponse {
+protocol RapidServerMessage {}
+
+protocol RapidServerResponse: RapidServerMessage {
     var eventID: String { get }
+}
+
+protocol RapidServerEvent: RapidServerMessage {
+    var eventIDsToAcknowledge: [String] { get }
 }

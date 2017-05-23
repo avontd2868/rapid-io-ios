@@ -143,7 +143,7 @@ extension RapidTests {
         let networkHandler = RapidNetworkHandler(socketURL: self.socketURL)
         let fakeNetworkHandler = RapidNetworkHandler(socketURL: self.fakeSocketURL)
         let socketManager = RapidSocketManager(networkHandler: networkHandler)
-        socketManager.authorize(authRequest: RapidAuthRequest(accessToken: testAuthToken))
+        socketManager.authorize(authRequest: RapidAuthRequest(token: testAuthToken))
         let fakeSocketManager = RapidSocketManager(networkHandler: fakeNetworkHandler)
         
         socketManager.subscribe(sub2)
@@ -233,7 +233,7 @@ extension RapidTests {
         
         waitForExpectations(timeout: 10, handler: nil)
     }
-    
+
     func testUpdate() {
         let promise = expectation(description: "Subscription update")
 
@@ -882,29 +882,32 @@ extension RapidTests {
     }
     
     func testInitialValueOnDuplicateSubscription() {
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testInitialValueOnDuplicateSubscription"])
-        
         let promise = expectation(description: "Duplicate initial value")
         
-        var initial = true
-        self.rapid.collection(named: testCollectionName).subscribe { (_, docs, ins, _, _) in
-            
-            if initial {
-                initial = false
+        self.rapid.collection(named: testCollectionName).document(withID: "1")
+            .mutate(value: ["name": "testInitialValueOnDuplicateSubscription"])
+            { error in
                 
-                let documents = docs
-                let inserts = ins
-                
-                self.rapid.collection(named: self.testCollectionName).subscribe(completionWithChanges: { (_, docs, ins, _, _) in
-                    if documents == docs && inserts == ins {
-                        promise.fulfill()
+                var initial = true
+                self.rapid.collection(named: self.testCollectionName).subscribe { (_, docs, ins, _, _) in
+                    
+                    if initial {
+                        initial = false
+                        
+                        let documents = docs
+                        let inserts = ins
+                        
+                        self.rapid.collection(named: self.testCollectionName).subscribe(completionWithChanges: { (_, docs, ins, _, _) in
+                            if documents == docs && inserts == ins {
+                                promise.fulfill()
+                            }
+                            else {
+                                XCTFail("Initial value different")
+                            }
+                        })
                     }
-                    else {
-                        XCTFail("Initial value different")
-                    }
-                })
+                }
             }
-        }
         
         waitForExpectations(timeout: 8, handler: nil)
     }
@@ -1112,7 +1115,7 @@ extension RapidTests {
         
         waitForExpectations(timeout: 10, handler: nil)
     }
-    
+
 }
 
 // MARK: Helper methods
@@ -1163,19 +1166,19 @@ class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandle
     }
     
     func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping ([RapidCachableObject]?) -> Void) {
-        cache?.loadDataset(forKey: subscription.subscriptionHash, secret: authorization?.accessToken, completion: completion)
+        cache?.loadDataset(forKey: subscription.subscriptionHash, secret: authorization?.token, completion: completion)
     }
     
     func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHashable) {
-        cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: authorization?.accessToken)
+        cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: authorization?.token)
     }
     
     func storeObject(_ object: RapidCachableObject) {
-        cache?.save(object: object, withSecret: authorization?.accessToken)
+        cache?.save(object: object, withSecret: authorization?.token)
     }
     
     func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidCachableObject?) -> Void) {
-        cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: authorization?.accessToken, completion: completion)
+        cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: authorization?.token, completion: completion)
     }
     
     func removeObject(withGroupID groupID: String, objectID: String) {

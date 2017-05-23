@@ -51,7 +51,7 @@ protocol RapidFetchInstance: class, RapidSerializable, RapidTimeoutRequest, Rapi
 
 extension RapidFetchInstance {
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {}
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {}
     
     func eventFailed(withError error: RapidErrorInstance) {
         fetchFailed(withError: error.error)
