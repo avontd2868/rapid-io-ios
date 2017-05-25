@@ -20,7 +20,7 @@ public protocol RapidSubscription {
 public typealias RapidAuthCallback = (_ success: Bool, _ error: Error?) -> Void
 
 /// Class representing a connection to Rapid.io database
-public class Rapid: NSObject {
+open class Rapid: NSObject {
     
     /// All instances which have been initialized
     fileprivate static var instances: [WRO<Rapid>] = []
@@ -149,7 +149,7 @@ public class Rapid: NSObject {
     /// - parameter named:     Collection identifier
     ///
     /// - returns: New object representing Rapid collection
-    public func collection(named: String) -> RapidCollection {
+    open func collection(named: String) -> RapidCollection {
         return RapidCollection(id: named, handler: handler)
     }
     

@@ -20,8 +20,10 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>ClientIdentifier</key>
-	<string>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9</string>
+	<key>RapidDemoIdentifier</key>
+	<string>85c46391-2234-e738-dc03-7b178d0ec4f0</string>
+	<key>RapidApiKey</key>
+	<string>bG9jYWxob3N0OjgwODA=</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -46,5 +48,7 @@
 	<string>Copyright © 2017 Rapid.io. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSPrincipalClass</key>
+	<string>$(PRINCIPAL_CLASS)</string>
 </dict>
 </plist>

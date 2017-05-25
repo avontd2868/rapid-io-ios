@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; };
 		C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C14A3EEA1ED70EEB0042597B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
+		C14A3EEB1ED70EEB0042597B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
+		C14A3EEE1ED70F310042597B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
+		C14A3EEF1ED70F310042597B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
 		C16B6C091ECA0BC90036C9D4 /* BEMAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */; };
 		C16B6C0A1ECA0BC90036C9D4 /* BEMCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C041ECA0BC90036C9D4 /* BEMCheckBox.m */; };
 		C16B6C0B1ECA0BC90036C9D4 /* BEMCheckBoxGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C061ECA0BC90036C9D4 /* BEMCheckBoxGroup.m */; };
@@ -105,6 +109,9 @@
 
 /* Begin PBXFileReference section */
 		C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Rapid.xcodeproj; path = ../Rapid.xcodeproj; sourceTree = "<group>"; };
+		C14A3EE41ED6E1890042597B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C14A3EE91ED70EEB0042597B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		C14A3EED1ED70F310042597B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		C16B6BEC1ECA0A200036C9D4 /* RapiDO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RapiDO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C16B6C011ECA0BC90036C9D4 /* BEMAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMAnimationManager.h; sourceTree = "<group>"; };
 		C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMAnimationManager.m; sourceTree = "<group>"; };
@@ -135,8 +142,6 @@
 		C1A1E82A1ECB51EE004FB5CA /* TaskWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskWindowController.swift; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* RapiDO iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiDO iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsCellView.swift; sourceTree = "<group>"; };
-		C1F99EAB1ECB3976004994D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C1F99EAC1ECB3987004994D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1F99EAD1ECB3F97004994D5 /* TaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -175,12 +180,11 @@
 			children = (
 				C16B6C2D1ECA0E1B0036C9D4 /* AppDelegate.swift */,
 				C16B6C2E1ECA0E1B0036C9D4 /* CheckBoxCellView.swift */,
-				C1F99EAB1ECB3976004994D5 /* Info.plist */,
-				C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */,
 				C16B6C301ECA0E1B0036C9D4 /* ListViewController.swift */,
-				C1A1E82A1ECB51EE004FB5CA /* TaskWindowController.swift */,
-				C1F99EAD1ECB3F97004994D5 /* TaskViewController.swift */,
 				C16B6C371ECA0E2E0036C9D4 /* Main.storyboard */,
+				C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */,
+				C1F99EAD1ECB3F97004994D5 /* TaskViewController.swift */,
+				C1A1E82A1ECB51EE004FB5CA /* TaskWindowController.swift */,
 			);
 			path = "RapiDO macOS";
 			sourceTree = "<group>";
@@ -188,7 +192,6 @@
 		C16B6BFF1ECA0B1C0036C9D4 /* RapiDO iOS */ = {
 			isa = PBXGroup;
 			children = (
-				C1F99EAC1ECB3987004994D5 /* Info.plist */,
 				C16B6C001ECA0BB90036C9D4 /* Checkbox */,
 				C16B6C231ECA0CDE0036C9D4 /* AppDelegate.swift */,
 				C16B6C0F1ECA0BF10036C9D4 /* FilterViewController.swift */,
@@ -228,6 +231,7 @@
 				C16B6BFF1ECA0B1C0036C9D4 /* RapiDO iOS */,
 				C16B6BED1ECA0A200036C9D4 /* RapiDO macOS */,
 				C1D6E8741E785CFA007589FC /* RapiDO shared */,
+				C14A3EE41ED6E1890042597B /* Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -245,7 +249,9 @@
 			children = (
 				C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */,
 				C16B6C0D1ECA0BF10036C9D4 /* Constants.swift */,
+				C14A3EE91ED70EEB0042597B /* Extensions.swift */,
 				C16B6C141ECA0BF10036C9D4 /* Task.swift */,
+				C14A3EED1ED70F310042597B /* Helpers.swift */,
 			);
 			path = "RapiDO shared";
 			sourceTree = "<group>";
@@ -390,7 +396,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C16B6C321ECA0E1B0036C9D4 /* AppDelegate.swift in Sources */,
+				C14A3EEB1ED70EEB0042597B /* Extensions.swift in Sources */,
 				C16B6C291ECA0D510036C9D4 /* Task.swift in Sources */,
+				C14A3EEF1ED70F310042597B /* Helpers.swift in Sources */,
 				C1F99EAA1ECB2EC2004994D5 /* ListViewController.swift in Sources */,
 				C16B6C281ECA0D380036C9D4 /* Constants.swift in Sources */,
 				C1A1E82B1ECB51EE004FB5CA /* TaskWindowController.swift in Sources */,
@@ -414,6 +422,8 @@
 				C16B6C0A1ECA0BC90036C9D4 /* BEMCheckBox.m in Sources */,
 				C16B6C211ECA0BF10036C9D4 /* UpsertTaskViewController.swift in Sources */,
 				C16B6C0C1ECA0BC90036C9D4 /* BEMPathManager.m in Sources */,
+				C14A3EEA1ED70EEB0042597B /* Extensions.swift in Sources */,
+				C14A3EEE1ED70F310042597B /* Helpers.swift in Sources */,
 				C16B6C1F1ECA0BF10036C9D4 /* TaskCell.swift in Sources */,
 				C16B6C1D1ECA0BF10036C9D4 /* TagsTableView.swift in Sources */,
 				C16B6C1B1ECA0BF10036C9D4 /* ListViewController.swift in Sources */,
@@ -466,9 +476,10 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "RapiDO macOS/Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRINCIPAL_CLASS = NSApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapido;
 				PRODUCT_NAME = RapiDO;
 				SDKROOT = macosx;
@@ -484,9 +495,10 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "RapiDO macOS/Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRINCIPAL_CLASS = NSApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapido;
 				PRODUCT_NAME = RapiDO;
 				SDKROOT = macosx;
@@ -595,8 +607,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
 				FRAMEWORK_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "RapiDO iOS/Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRINCIPAL_CLASS = UIApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapido;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO iOS/RapiDO-Bridging-Header.h";
@@ -613,8 +626,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
 				FRAMEWORK_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "RapiDO iOS/Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRINCIPAL_CLASS = UIApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapido;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO iOS/RapiDO-Bridging-Header.h";

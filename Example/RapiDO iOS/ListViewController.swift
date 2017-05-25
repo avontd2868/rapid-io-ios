@@ -67,7 +67,7 @@ fileprivate extension ListViewController {
         tasks.removeAll()
         tableView.reloadData()
         
-        let collection = Rapid.collection(named: Constants.collectionName)
+        let collection = Rapid.collection(withName: Constants.collectionName)
         
         if let filter = filter {
             if let text = searchBar.text, !text.isEmpty {

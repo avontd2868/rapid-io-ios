@@ -138,36 +138,3 @@ extension Task {
     static let completedAttributeName = "done"
 
 }
-
-extension Date {
-
-    var isoString: String {
-        let formatter = DateFormatter()
-        
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-        
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        return formatter.string(from: self)
-    }
-    
-    static func dateFromString(_ str: String) -> Date {
-        let formatter = DateFormatter()
-        
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-        
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        if let date = formatter.date(from: str) {
-            return date
-        }
-        else {
-            return Date()
-        }
-    }
-    
-}

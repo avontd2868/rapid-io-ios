@@ -11,7 +11,7 @@ import Foundation
 /// Class for websocket communication management
 class RapidSocketManager {
     
-    typealias Event = RapidClientMessage & RapidSerializable
+    typealias Event = RapidSerializable & RapidClientMessage
     typealias Request = RapidClientRequest & Event
     
     /// Network communication handler
@@ -254,16 +254,22 @@ fileprivate extension RapidSocketManager {
                 
                 return !toBeSent && !toBeAcknowledged
             })
-            eventQueue = resubscribe
+            for handler in resubscribe {
+                eventQueue.append(handler)
+            }
         }
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
         let pendingArray = (Array(pendingRequests.values) as [(request: Request, timestamp: TimeInterval)])
         let eventArray = pendingArray.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
-        eventQueue.append(contentsOf: eventArray)
+        for event in eventArray {
+            eventQueue.append(event)
+        }
 
         // Finally append relevant requests that were waiting to be sent
-        eventQueue.append(contentsOf: currentQueue)
+        for event in currentQueue {
+            eventQueue.append(event)
+        }
         
         // Create new connection
         networkHandler.goOnline()
