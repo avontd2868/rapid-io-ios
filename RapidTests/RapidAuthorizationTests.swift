@@ -11,7 +11,7 @@ import XCTest
 
 extension RapidTests {
 
-    func testSubscribeWithoutAuthorization() {
+    func testSubscribeWituhoutAuthorization() {
         let promise = expectation(description: "Permission denied")
         
         rapid.collection(named: "test1").subscribe { (error, _) in
@@ -30,7 +30,7 @@ extension RapidTests {
         let promise = expectation(description: "Authorization")
         
         XCTAssertEqual(rapid.authorization?.token, testAuthToken)
-        
+
         rapid.collection(named: testCollectionName).subscribe { (error, _) in
             if error == nil {
                 promise.fulfill()

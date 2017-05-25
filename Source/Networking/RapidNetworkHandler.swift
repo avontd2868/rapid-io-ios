@@ -104,13 +104,15 @@ class RapidNetworkHandler {
     ///
     /// - Parameter serializableRequest: Request which is going to be sent
     func write(event: RapidSocketManager.Event, withID eventID: String) {
-        mainQueue.async { [weak self] in
+        parseQueue.async { [weak self] in
             do {
                 let jsonString = try event.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
                 
                 RapidLogger.developerLog(message: "Write request \(jsonString)")
                 
-                self?.socket.write(string: jsonString)
+                self?.mainQueue.async {
+                    self?.socket.write(string: jsonString)
+                }
             }
             catch let rapidError as RapidError {
                 self?.delegate?.handlerDidReceive(message: RapidErrorInstance(eventID: eventID, error: rapidError))

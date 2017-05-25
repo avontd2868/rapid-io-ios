@@ -306,4 +306,49 @@ extension RapidTests {
         
         waitForExpectations(timeout: 5, handler: nil)
     }
+    
+    func testConcurrencyMergeSafeWithBlock() {
+        let promise = expectation(description: "Merge document")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "loadTest"])
+        
+        var iterations = [Int]()
+
+        let numberOfIterations = 20
+        
+        runAfter(1) {
+            
+            for i in 0..<numberOfIterations {
+                self.rapid.collection(named: self.testCollectionName).document(withID: "1").concurrencySafeMerge(
+                    concurrencyBlock: { (value) -> RapidConOptResult in
+                        let count = value?["counter"] as? Int ?? 0
+                        return .write(value: ["counter": count+1])
+                },
+                    completion: { error in
+
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, value) in
+                            if let counter = value.value?["counter"] as? Int {
+
+                                iterations.append(i)
+                                if counter == numberOfIterations {
+                                    runAfter(1, closure: {
+                                        promise.fulfill()
+                                    })
+                                }
+                                else if counter > numberOfIterations {
+                                    XCTFail("Counter greater than expected")
+                                }
+                            }
+                            else {
+                                XCTFail("No counter")
+                            }
+                        })
+                })
+            }
+        }
+        
+        waitForExpectations(timeout: TimeInterval(numberOfIterations), handler: { error in print(iterations.sorted())})
+    }
+    
+
 }
