@@ -86,10 +86,10 @@ open class Rapid: NSObject {
     
     /// Initializes a Rapid instance
     ///
-    /// - parameter withAPIKey:     API key that contains necessary information about a database to which you want to connect
+    /// - parameter withApiKey:     API key that contains necessary information about a database to which you want to connect
     ///
     /// - returns: New or previously initialized instance
-    public class func getInstance(withAPIKey apiKey: String) -> Rapid? {
+    public class func getInstance(withApiKey apiKey: String) -> Rapid? {
         
         // Delete released instances
         Rapid.instances = Rapid.instances.filter({ $0.object != nil })
@@ -280,9 +280,9 @@ public extension Rapid {
     ///
     /// Initializes an instance that can be lately accessed through singleton class functions
     ///
-    /// - parameter withAPIKey:     API key that contains necessary information about a database to which you want to connect
-    class func configure(withAPIKey key: String) {
-        sharedInstance = Rapid.getInstance(withAPIKey: key)
+    /// - parameter withApiKey:     API key that contains necessary information about a database to which you want to connect
+    class func configure(withApiKey key: String) {
+        sharedInstance = Rapid.getInstance(withApiKey: key)
     }
     
     /// Creates a new object representing Rapid collection

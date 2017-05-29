@@ -58,7 +58,7 @@ class RapidCache: NSObject {
     ///   - timeToLive: Maximum Time To Live of a single piece of data in seconds. Default value is nil e.i. no expiration
     ///   - maxSize: Maximum size of a cache directory in MB. Default value is 100 MB
     init?(apiKey: String, timeToLive: TimeInterval? = nil, maxSize: Float? = 100) {
-        guard !apiKey.isEmpty, let cacheURL = RapidCache.cacheURL(forAPIKey: apiKey) else {
+        guard !apiKey.isEmpty, let cacheURL = RapidCache.cacheURL(forApiKey: apiKey) else {
             RapidLogger.log(message: "Cache not initialized", level: .debug)
             return nil
         }
@@ -253,21 +253,21 @@ extension RapidCache {
     ///
     /// - Parameter apiKey: API key of a Rapid database
     /// - Returns: URL to a cache directory
-    class func cacheURL(forAPIKey apiKey: String) -> URL? {
-        let urlSafeAPIKey = apiKey.components(separatedBy: CharacterSet.alphanumerics.inverted).joined(separator: "-")
+    class func cacheURL(forApiKey apiKey: String) -> URL? {
+        let urlSafeApiKey = apiKey.components(separatedBy: CharacterSet.alphanumerics.inverted).joined(separator: "-")
         
         guard let cachePath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first else {
             return nil
         }
         
-        return URL(string: cachePath, relativeTo: URL(string: "file://"))?.appendingPathComponent("io.rapid.cache", isDirectory: true).appendingPathComponent(urlSafeAPIKey, isDirectory: true)
+        return URL(string: cachePath, relativeTo: URL(string: "file://"))?.appendingPathComponent("io.rapid.cache", isDirectory: true).appendingPathComponent(urlSafeApiKey, isDirectory: true)
     }
     
     /// Remove all data from a cache with a given API key
     ///
     /// - Parameter apiKey: API key of a Rapid database
-    class func clearCache(forAPIKey apiKey: String) {
-        guard let cacheURL = cacheURL(forAPIKey: apiKey) else {
+    class func clearCache(forApiKey apiKey: String) {
+        guard let cacheURL = cacheURL(forApiKey: apiKey) else {
             return
         }
         

@@ -109,7 +109,7 @@ extension RapidTests {
     }
     
     func testCreateCacheDir() {
-        let cacheURL = RapidCache.cacheURL(forAPIKey: apiKey)!
+        let cacheURL = RapidCache.cacheURL(forApiKey: apiKey)!
         
         do {
             try FileManager.default.removeItem(at: cacheURL)
@@ -128,7 +128,7 @@ extension RapidTests {
     }
     
     func testOverrideFileWithCacheDir() {
-        let cacheURL = RapidCache.cacheURL(forAPIKey: apiKey)!
+        let cacheURL = RapidCache.cacheURL(forApiKey: apiKey)!
         
         do {
             try FileManager.default.removeItem(at: cacheURL)
@@ -270,7 +270,7 @@ extension RapidTests {
         cache?.save(dataset: ["testString" as NSString], forKey: "testKey")
         cache?.save(dataset: ["testString2" as NSString], forKey: "testKey2")
         
-        RapidCache.clearCache(forAPIKey: apiKey)
+        RapidCache.clearCache(forApiKey: apiKey)
         
         cache?.loadDataset(forKey: "testKey", completion: { (value) in
             if value != nil {

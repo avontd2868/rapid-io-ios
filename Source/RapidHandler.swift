@@ -81,7 +81,7 @@ class RapidHandler: NSObject {
             // If caching was disabled release a cache instance and remove cached data
             else if !cacheEnabled {
                 cache = nil
-                RapidCache.clearCache(forAPIKey: apiKey)
+                RapidCache.clearCache(forApiKey: apiKey)
             }
         }
     }

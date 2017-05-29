@@ -19,7 +19,7 @@ class RapidTests: XCTestCase {
     
     let apiKey = "MTMuNjQuNzcuMjAyOjgwODA="
     let localApiKey = "bG9jYWxob3N0OjgwODA="
-    let fakeAPIKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
+    let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
     let socketURL = URL(string: "ws://13.64.77.202:8080")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
@@ -47,8 +47,8 @@ class RapidTests: XCTestCase {
     
     // MARK: Test general stuff
     
-    func testWrongAPIKey() {
-        let rapid = Rapid.getInstance(withAPIKey: "")
+    func testWrongApiKey() {
+        let rapid = Rapid.getInstance(withApiKey: "")
         
         XCTAssertNil(rapid, "Rapid with wrong API key initialized")
     }
@@ -61,7 +61,7 @@ class RapidTests: XCTestCase {
     }
     
     func testConfiguredSingleton() {
-        Rapid.configure(withAPIKey: fakeAPIKey)
+        Rapid.configure(withApiKey: fakeApiKey)
         
         XCTAssertNotNil(Rapid.connectionState, "Wrong connection state")
         
@@ -76,32 +76,32 @@ class RapidTests: XCTestCase {
     }
     
     func testInstanceHandling() {
-        let rapid = Rapid.getInstance(withAPIKey: apiKey)
-        let newInstance = Rapid.getInstance(withAPIKey: apiKey)
+        let rapid = Rapid.getInstance(withApiKey: apiKey)
+        let newInstance = Rapid.getInstance(withApiKey: apiKey)
         
         XCTAssertEqual(rapid?.description, newInstance?.description, "Different instances for one database")
     }
     
     func testInstanceWeakReferencing() {
-        var rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)
+        var rapid = Rapid.getInstance(withApiKey: fakeApiKey)
         
         let instanceDescription = rapid?.description
         rapid = nil
         
-        rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)
+        rapid = Rapid.getInstance(withApiKey: fakeApiKey)
         
         XCTAssertNotEqual(instanceDescription, rapid?.description, "Instance wasn't released")
     }
     
     func testMultipleInstances() {
-        let rapid = Rapid.getInstance(withAPIKey: apiKey)
-        let newInstance = Rapid.getInstance(withAPIKey: fakeAPIKey)
+        let rapid = Rapid.getInstance(withApiKey: apiKey)
+        let newInstance = Rapid.getInstance(withApiKey: fakeApiKey)
         
         XCTAssertNotEqual(rapid?.description, newInstance?.description, "Same instances for different databases")
     }
     
     func testConnectionStates() {
-        let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
+        let rapid = Rapid.getInstance(withApiKey: fakeApiKey)!
         
         let promise = expectation(description: "Rapid forced disconnect")
         
