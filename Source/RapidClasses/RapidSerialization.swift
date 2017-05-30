@@ -203,7 +203,7 @@ class RapidSerialization {
             throw RapidError.invalidData(reason: .invalidKeyPath(keyPath: simpleFilter.keyPath))
         }
         
-        if simpleFilter.keyPath == RapidFilter.documentIdKey {
+        if simpleFilter.keyPath == RapidFilter.docIdKey {
             if let value = simpleFilter.value as? String {
                 try Validator.validate(identifier: value)
             }
@@ -422,10 +422,10 @@ fileprivate extension RapidSerialization {
             return RapidSubscriptionBatch(withCollectionJSON: val)
         }
         else if let upd = json[SubscriptionUpdate.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionBatch(withUpdateJSON: upd)
+            return RapidSubscriptionBatch(withUpdateJSON: upd, docRemoved: false)
         }
         else if let rm = json[SubscriptionDocRemoved.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionBatch(withUpdateJSON: rm)
+            return RapidSubscriptionBatch(withUpdateJSON: rm, docRemoved: true)
         }
         else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
             return RapidSubscriptionCancel(json: ca)
@@ -678,8 +678,16 @@ extension RapidSerialization {
             static let name = "ts"
         }
         
-        struct Created {
+        struct SortValue {
             static let name = "crt"
+        }
+        
+        struct CreatedAt {
+            static let name = "crt-ts"
+        }
+        
+        struct ModifiedAt {
+            static let name = "mod-ts"
         }
         
         struct Body {

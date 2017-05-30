@@ -456,8 +456,8 @@ fileprivate extension RapidSubscriptionHandler {
             }
         }
         
-        let referenceDate = collection[referenceIndex].createdAt ?? ""
-        let createdAt = document.createdAt ?? "_"
+        let referenceDate = collection[referenceIndex].sortValue 
+        let createdAt = document.sortValue 
         let ordering = subscriptionOrdering.first ?? .ascending
         
         if createdAt == referenceDate {

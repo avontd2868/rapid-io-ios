@@ -69,11 +69,6 @@ func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
 /// Class representing Rapid.io document that is returned from a subscription callback
 public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
     
-    /// Document ID
-    public let id: String
-    
-    public let collectionID: String
-    
     var objectID: String {
         return id
     }
@@ -82,21 +77,71 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
         return collectionID
     }
     
+    /// Document ID
+    public let id: String
+    
+    /// Collection ID
+    public let collectionID: String
+    
     /// Document body
     public let value: [AnyHashable: Any]?
     
     /// Etag identifier
     public let etag: String?
     
+    /// Time of a document creation
+    public let createdAt: Date?
+    
+    /// Time of a document modification
+    public let modifiedAt: Date?
+    
     /// Document creation sort identifier
-    let createdAt: String?
+    let sortValue: String
     
     /// Value that serves to order documents
     ///
     /// Value is computed by Rapid.io database based on sort descriptors in a subscription
     let sortKeys: [String]
     
-    init?(json: Any?, collectionID: String) {
+    init?(existingDocJson json: Any?, collectionID: String) {
+        guard let dict = json as? [AnyHashable: Any] else {
+            return nil
+        }
+        
+        guard let id = dict[RapidSerialization.Document.DocumentID.name] as? String else {
+            return nil
+        }
+        
+        guard let etag = dict[RapidSerialization.Document.Etag.name] as? String else {
+            return nil
+        }
+        
+        guard let sortValue = dict[RapidSerialization.Document.SortValue.name] as? String else {
+            return nil
+        }
+        
+        guard let createdAt = dict[RapidSerialization.Document.CreatedAt.name] as? TimeInterval else {
+            return nil
+        }
+        
+        guard let modifiedAt = dict[RapidSerialization.Document.ModifiedAt.name] as? TimeInterval else {
+            return nil
+        }
+        
+        let body = dict[RapidSerialization.Document.Body.name] as? [AnyHashable: Any]
+        let sortKeys = dict[RapidSerialization.Document.SortKeys.name] as? [String]
+        
+        self.id = id
+        self.collectionID = collectionID
+        self.value = body
+        self.etag = etag
+        self.createdAt = Date(timeIntervalSince1970: createdAt)
+        self.modifiedAt = Date(timeIntervalSince1970: modifiedAt)
+        self.sortKeys = sortKeys ?? []
+        self.sortValue = sortValue
+    }
+    
+    init?(removedDocJson json: Any?, collectionID: String) {
         guard let dict = json as? [AnyHashable: Any] else {
             return nil
         }
@@ -106,25 +151,38 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
         }
         
         let body = dict[RapidSerialization.Document.Body.name] as? [AnyHashable: Any]
-        let etag = dict[RapidSerialization.Document.Etag.name] as? String
-        let sortValue = dict[RapidSerialization.Document.SortKeys.name] as? [String]
-        let createdAt = dict[RapidSerialization.Document.Created.name] as? String
+        let sortKeys = dict[RapidSerialization.Document.SortKeys.name] as? [String]
         
         self.id = id
         self.collectionID = collectionID
         self.value = body
-        self.etag = etag
-        self.sortKeys = sortValue ?? []
-        self.createdAt = createdAt
+        self.etag = nil
+        self.createdAt = nil
+        self.modifiedAt = nil
+        self.sortKeys = sortKeys ?? []
+        self.sortValue = ""
     }
     
-    init(id: String, collectionID: String, value: [AnyHashable: Any]?, etag: String? = nil) {
+    init(removedDocId id: String, collectionID: String) {
         self.id = id
         self.collectionID = collectionID
-        self.value = value
-        self.etag = etag
-        self.sortKeys = []
+        self.value = nil
+        self.etag = nil
         self.createdAt = nil
+        self.modifiedAt = nil
+        self.sortKeys = []
+        self.sortValue = ""
+    }
+    
+    init?(snapshot: RapidDocumentSnapshot, newValue: [AnyHashable: Any]) {
+        self.id = snapshot.id
+        self.collectionID = snapshot.collectionID
+        self.etag = snapshot.etag
+        self.createdAt = snapshot.createdAt
+        self.modifiedAt = snapshot.modifiedAt
+        self.sortKeys = snapshot.sortKeys
+        self.sortValue = snapshot.sortValue
+        self.value = newValue
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -140,16 +198,40 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
             return nil
         }
         
+        guard let sortValue = aDecoder.decodeObject(forKey: "sortValue") as? String else {
+            return nil
+        }
+        
         self.id = id
         self.collectionID = collectionID
-        self.etag = aDecoder.decodeObject(forKey: "etag") as? String
         self.sortKeys = sortKeys
-        self.createdAt = aDecoder.decodeObject(forKey: "createdAt") as? String
+        self.sortValue = sortValue
         do {
             self.value = try (aDecoder.decodeObject(forKey: "value") as? String)?.json()
         }
         catch {
             self.value = nil
+        }
+        
+        if let etag = aDecoder.decodeObject(forKey: "etag") as? String {
+            self.etag = etag
+        }
+        else {
+            self.etag = nil
+        }
+        
+        if let createdAt = aDecoder.decodeObject(forKey: "createdAt") as? Date {
+            self.createdAt = createdAt
+        }
+        else {
+            self.createdAt = nil
+        }
+        
+        if let modifiedAt = aDecoder.decodeObject(forKey: "modifiedAt") as? Date {
+            self.modifiedAt = modifiedAt
+        }
+        else {
+            self.modifiedAt = nil
         }
     }
     
@@ -158,7 +240,9 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
         aCoder.encode(collectionID, forKey: "collectionID")
         aCoder.encode(etag, forKey: "etag")
         aCoder.encode(sortKeys, forKey: "sortKeys")
+        aCoder.encode(sortValue, forKey: "sortValue")
         aCoder.encode(createdAt, forKey: "createdAt")
+        aCoder.encode(modifiedAt, forKey: "modifiedAt")
         do {
             aCoder.encode(try value?.jsonString(), forKey: "value")
         }

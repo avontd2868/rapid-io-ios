@@ -245,8 +245,13 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated", level: .info)
             
-            let snapshot = RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: self.value)
-            self.cacheHandler?.storeObject(snapshot)
+            self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
+                if let oldSnapshot = object as? RapidDocumentSnapshot,
+                    let snapshot = RapidDocumentSnapshot(snapshot: oldSnapshot, newValue: self.value) {
+                    
+                    self.cacheHandler?.storeObject(snapshot)
+                }
+            })
             
             self.callback?(nil)
         }
@@ -327,10 +332,11 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) merged", level: .info)
             
             self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
-                if let snapshot = object as? RapidDocumentSnapshot, var value = snapshot.value {
+                if let oldSnapshot = object as? RapidDocumentSnapshot, var value = oldSnapshot.value {
                     value.merge(with: self.value)
-                    let snapshot = RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: value)
-                    self.cacheHandler?.storeObject(snapshot)
+                    if let snapshot = RapidDocumentSnapshot(snapshot: oldSnapshot, newValue: value) {
+                        self.cacheHandler?.storeObject(snapshot)
+                    }
                 }
             })
             self.callback?(nil)

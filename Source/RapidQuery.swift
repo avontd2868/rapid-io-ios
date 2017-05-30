@@ -15,8 +15,18 @@ public protocol RapidQuery {}
 extension RapidQuery {
     
     /// Special key which stands for a document ID
-    static var documentIdKey: String {
+    public static var docIdKey: String {
         return "$id"
+    }
+    
+    /// Special key which stands for a document creation timestamp
+    public static var docCreatedAtKey: String {
+        return "$created"
+    }
+    
+    /// Special key which stands for a document modification timestamp
+    public static var docModifiedAtKey: String {
+        return "$modified"
     }
 }
 

@@ -140,7 +140,7 @@ class RapidDocumentFetch: NSObject {
     ///   - cache: Cache handler
     ///   - callback: Completion callback
     init(collectionID: String, documentID: String, cache: RapidCacheHandler?, callback: RapidDocFetchCallback?) {
-        let filter = RapidFilterSimple(keyPath: RapidFilter.documentIdKey, relation: .equal, value: documentID)
+        let filter = RapidFilterSimple(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID)
         self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, cache: nil, callback: nil)
         
         self.documentID = documentID
@@ -172,7 +172,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
             
             self.cacheHandler?.storeDataset(documents, forSubscription: self)
             
-            let document = documents.first ?? RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: nil)
+            let document = documents.first ?? RapidDocumentSnapshot(removedDocId: self.documentID, collectionID: self.collectionID)
             self.callback?(nil, document)
         }
     }
@@ -183,7 +183,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document fetch failed - document \(self.documentID) collection \(self.collectionID)", level: .info)
             
-            self.callback?(error, RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: nil))
+            self.callback?(error, RapidDocumentSnapshot(removedDocId: self.documentID, collectionID: self.collectionID))
         }
     }
 }

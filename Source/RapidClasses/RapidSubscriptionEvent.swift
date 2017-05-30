@@ -46,11 +46,11 @@ class RapidSubscriptionBatch: RapidServerEvent {
         self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subscriptionID
         self.collectionID = collectionID
-        self.collection = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })
+        self.collection = documents.flatMap({ RapidDocumentSnapshot(existingDocJson: $0, collectionID: collectionID) })
         self.updates = []
     }
     
-    init?(withUpdateJSON dict: [AnyHashable: Any]) {
+    init?(withUpdateJSON dict: [AnyHashable: Any], docRemoved: Bool) {
         guard let eventID = dict[RapidSerialization.EventID.name] as? String else {
             return nil
         }
@@ -67,7 +67,15 @@ class RapidSubscriptionBatch: RapidServerEvent {
             return nil
         }
         
-        guard let snapshot = RapidDocumentSnapshot(json: document, collectionID: collectionID) else {
+        let snapshot: RapidDocumentSnapshot?
+        if docRemoved {
+            snapshot = RapidDocumentSnapshot(removedDocJson: document, collectionID: collectionID)
+        }
+        else {
+            snapshot = RapidDocumentSnapshot(existingDocJson: document, collectionID: collectionID)
+        }
+        
+        guard let snap = snapshot else {
             return nil
         }
         
@@ -75,7 +83,7 @@ class RapidSubscriptionBatch: RapidServerEvent {
         self.subscriptionID = subscriptionID
         self.collectionID = collectionID
         self.collection = nil
-        self.updates = [snapshot]
+        self.updates = [snap]
     }
 
     /// Add subscription event to the batch
@@ -126,7 +134,7 @@ class RapidFetchResponse: RapidServerEvent {
         self.eventIDsToAcknowledge = [eventID]
         self.fetchID = fetchID
         self.collectionID = collectionID
-        self.documents = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })
+        self.documents = documents.flatMap({ RapidDocumentSnapshot(existingDocJson: $0, collectionID: collectionID) })
     }
     
 }
