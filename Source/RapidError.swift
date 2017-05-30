@@ -56,7 +56,7 @@ struct RapidErrorInstance: RapidServerResponse {
             error = .invalidRequest(message: message)
             
         case .some(let type) where type == RapidSerialization.Error.ErrorType.WriteConflict.name:
-            error = .concurrencyWriteFailed(reason: .writeConflict(message: message))
+            error = .executionFailed(reason: .writeConflict(message: message))
             
         default:
             error = .default
@@ -81,7 +81,7 @@ struct RapidErrorInstance: RapidServerResponse {
 /// - invalidData: Data are in an invalid format
 /// - timeout: Request timout
 /// - invalidAuthToken: Authorization token is invalid
-/// - concurrencyWriteFailed: Optimistic concurrency write failed
+/// - executionFailed: Execution failed
 /// - `default`: General error
 public enum RapidError: Error {
     
@@ -92,7 +92,7 @@ public enum RapidError: Error {
     case invalidData(reason: InvalidDataReason)
     case timeout
     case invalidAuthToken(message: String?)
-    case concurrencyWriteFailed(reason: ConcurrencyWriteError)
+    case executionFailed(reason: ExecutionError)
     case `default`
     
     /// Reason of `invalidData` error
@@ -112,15 +112,12 @@ public enum RapidError: Error {
         case invalidLimit
     }
     
-    //FIXME: Better name
-    /// Reason of `concurrencyWriteFailed`
+    /// Reason of `executionFailed`
     ///
-    /// - writeConflict: Server wasn't able to fulfill concurrency optimistic write to database
-    /// - invalidResult: Unexpected result of `RapidConcurrencyOptimisticBlock`
-    /// - aborted: Client aborted an optimistic concurrency flow
-    public enum ConcurrencyWriteError {
+    /// - writeConflict: Server wasn't able to execute a database operation
+    /// - aborted: Client aborted an execution flow
+    public enum ExecutionError {
         case writeConflict(message: String?)
-        case invalidResult(message: String)
         case aborted
     }
 }

@@ -8,15 +8,15 @@
 
 import Foundation
 
-protocol RapidConcurrencyOptimisticMutation {
+protocol RapidExecution {
     var identifier: String { get }
     var fetchRequest: RapidFetchInstance { get }
 }
 
-protocol RapidConOptMutationDelegate: class {
+protocol RapidExectuionDelegate: class {
     func sendFetchRequest(_ request: RapidFetchInstance)
     func sendMutationRequest<T: RapidMutationRequest>(_ request: T)
-    func conOptMutationCompleted(_ mutation: RapidConcurrencyOptimisticMutation)
+    func executionCompleted(_ execution: RapidExecution)
 }
 
 /// Protocol describing concurrency optimistic request

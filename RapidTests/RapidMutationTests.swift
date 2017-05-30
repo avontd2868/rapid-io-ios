@@ -119,10 +119,10 @@ extension RapidTests {
         
         let document = self.rapid.collection(named: testCollectionName).newDocument()
         
-        document.concurrencySafeMutate(value: ["name": "delete"], etag: nil, completion: { error in
+        document.mutate(value: ["name": "delete"], etag: nil, completion: { error in
             if error == nil {
                 self.rapid.collection(named: self.testCollectionName).document(withID: document.documentID).readOnce(completion: { (_, document) in
-                    self.rapid.collection(named: self.testCollectionName).document(withID: document.id).concurrencySafeDelete(etag: document.etag!, completion: { (error) in
+                    self.rapid.collection(named: self.testCollectionName).document(withID: document.id).delete(etag: document.etag!, completion: { (error) in
                         if error == nil {
                             promise.fulfill()
                         }
@@ -146,17 +146,17 @@ extension RapidTests {
         
         let document = self.rapid.collection(named: testCollectionName).newDocument()
         
-        document.concurrencySafeMutate(concurrencyBlock: { current -> RapidConOptResult in
+        document.execute(block: { current -> RapidExecutionResult in
             XCTAssertNil(current, "Document exists")
             return .write(value: ["name": "delete"])
         }) { (_) in
-            document.concurrencySafeDelete(concurrencyBlock: { value -> RapidConOptResult in
+            document.execute(block: { value -> RapidExecutionResult in
                 if let dict = value, dict["name"] as? String == "delete" {
-                    return .delete()
+                    return .delete
                 }
                 else {
                     XCTFail("Wrong value")
-                    return .abort()
+                    return .abort
                 }
             }, completion: { error in
                 XCTAssertNil(error, "Delete error")
@@ -177,7 +177,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { (_, value) in
                 if initial {
                     initial = false
-                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").concurrencySafeMerge(value: ["desc": "desc", "bla": 6], etag: value.etag) { error in
+                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "desc", "bla": 6], etag: value.etag) { error in
                         XCTAssertNil(error, "Merge error")
                     }
                 }
@@ -199,10 +199,14 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"])
         
         runAfter(1) {
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").concurrencySafeMerge(
-                concurrencyBlock: { (value) -> RapidConOptResult in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").execute(
+                block: { (value) -> RapidExecutionResult in
+                    var newValue = value ?? [:]
                     
-                    return .write(value: ["desc": "desc", "bla": 6])
+                    newValue["desc"] = "desc"
+                    newValue["bla"] = 6
+                    
+                    return .write(value: newValue)
                 },
                 completion: { (_) in
                     self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, value) in
@@ -234,8 +238,13 @@ extension RapidTests {
             return (try? json.jsonString()) ?? ""
         }
         
+        var firstMutation = true
         let mockHandler = MockNetworkHandler(socketURL: socketURL, writeCallback: { (handler, event, eventID) in
-            if event is RapidDocumentMerge {
+            if event is RapidDocumentMutation && firstMutation {
+                firstMutation = false
+                handler.writeToSocket(event: event, withID: eventID)
+            }
+            else if event is RapidDocumentMutation {
                 handler.websocketDidReceiveMessage(socket: WebSocket(url: self.socketURL), text: conflictMessageForID(eventID))
             }
             else {
@@ -252,18 +261,18 @@ extension RapidTests {
             XCTAssertNil(error, "Error occured")
             
             var firstTry = true
-            let merge = RapidConOptDocumentMutation(collectionID: self.testCollectionName, documentID: "1", type: .merge, delegate: manager, concurrencyBlock: { (value) -> RapidConOptResult in
+            let merge = RapidDocumentExecution(collectionID: self.testCollectionName, documentID: "1", delegate: manager, block: { (value) -> RapidExecutionResult in
                 if firstTry {
                     firstTry = false
                     return .write(value: ["desc": "desc", "bla": 6])
                 }
                 else {
-                    return .abort()
+                    return .abort
                 }
             }, completion: { error in
                 if let error = error as? RapidError,
-                    case RapidError.concurrencyWriteFailed(let reason) = error,
-                    case RapidError.ConcurrencyWriteError.aborted = reason {
+                    case RapidError.executionFailed(let reason) = error,
+                    case RapidError.ExecutionError.aborted = reason {
                     
                     promise.fulfill()
                 }
@@ -272,7 +281,7 @@ extension RapidTests {
                 }
             })
             
-            manager.concurrencyOptimisticMutate(mutation: merge)
+            manager.execute(execution: merge)
         }
         
         manager.mutate(mutationRequest: mutate)
@@ -287,10 +296,10 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testMutateSefeWithWrongEtag"]) { error in
             XCTAssertNil(error, "Error occured")
             
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").concurrencySafeMutate(value: ["name": "errorTest"], etag: Rapid.uniqueID) { error in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["name": "errorTest"], etag: Rapid.uniqueID) { error in
                 if let error = error as? RapidError,
-                    case RapidError.concurrencyWriteFailed(let reason) = error,
-                    case RapidError.ConcurrencyWriteError.writeConflict = reason {
+                    case RapidError.executionFailed(let reason) = error,
+                    case RapidError.ExecutionError.writeConflict = reason {
                     
                     self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, document) in
                         XCTAssertEqual(document.id, "1", "Wrong ID")
@@ -319,13 +328,12 @@ extension RapidTests {
         runAfter(1) {
             
             for i in 0..<numberOfIterations {
-                self.rapid.collection(named: self.testCollectionName).document(withID: "1").concurrencySafeMerge(
-                    concurrencyBlock: { (value) -> RapidConOptResult in
+                self.rapid.collection(named: self.testCollectionName).document(withID: "1").execute(
+                    block: { (value) -> RapidExecutionResult in
                         let count = value?["counter"] as? Int ?? 0
                         return .write(value: ["counter": count+1])
                 },
                     completion: { error in
-
                         self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, value) in
                             if let counter = value.value?["counter"] as? Int {
 

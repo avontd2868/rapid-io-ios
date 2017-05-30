@@ -43,7 +43,7 @@ class RapidSocketManager {
     
     fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
     
-    fileprivate var pendingConOptRequests: [String: RapidConcurrencyOptimisticMutation] = [:]
+    fileprivate var pendingExectuionRequests: [String: RapidExecution] = [:]
     
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
@@ -109,11 +109,11 @@ class RapidSocketManager {
         }
     }
     
-    func concurrencyOptimisticMutate<T: RapidConcurrencyOptimisticMutation>(mutation: T) {
+    func execute<T: RapidExecution>(execution: T) {
         websocketQueue.async { [weak self] in
-            self?.pendingConOptRequests[mutation.identifier] = mutation
+            self?.pendingExectuionRequests[execution.identifier] = execution
             
-            self?.fetch(mutation.fetchRequest)
+            self?.fetch(execution.fetchRequest)
         }
     }
     
@@ -586,11 +586,11 @@ extension RapidSocketManager: RapidTimeoutRequestDelegate {
 }
 
 // MARK: Concurrency optimistic mutation delegate
-extension RapidSocketManager: RapidConOptMutationDelegate {
+extension RapidSocketManager: RapidExectuionDelegate {
     
-    func conOptMutationCompleted(_ mutation: RapidConcurrencyOptimisticMutation) {
+    func executionCompleted(_ execution: RapidExecution) {
         websocketQueue.async { [weak self] in
-            self?.pendingConOptRequests[mutation.identifier] = nil
+            self?.pendingExectuionRequests[execution.identifier] = nil
         }
     }
     

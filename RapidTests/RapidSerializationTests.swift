@@ -27,13 +27,13 @@ extension RapidTests {
     }
     
     func testJSONValidationInvalidValue() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], cache: nil, callback: nil)
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], cache: nil, completion: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
     
     func testJSONalidationInvalidKey() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], cache: nil, callback: nil)
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], cache: nil, completion: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }

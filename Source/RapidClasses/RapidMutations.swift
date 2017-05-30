@@ -8,21 +8,10 @@
 
 import Foundation
 
-// MARK: Concurrency optimistic mutations
+// MARK: Execution
 
-/// Flow controller for optimistic concurrency document write
-class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
-    
-    /// Optimistic concurrency write
-    ///
-    /// - mutate: Document mutation
-    /// - merge: Document merge
-    /// - delete: Document delete
-    enum WriteType {
-        case mutate
-        case merge
-        case delete
-    }
+/// Flow controller for a document execution
+class RapidDocumentExecution: RapidExecution {
     
     /// Operation identifier
     let identifier = Generator.uniqueID
@@ -33,26 +22,23 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
     /// Document identifier
     let documentID: String
     
-    /// Write type
-    let type: WriteType
-    
     /// Flow controller delegate
-    weak var delegate: RapidConOptMutationDelegate?
+    weak var delegate: RapidExectuionDelegate?
     
     /// Cache handler
     weak var cacheHandler: RapidCacheHandler?
     
-    /// Optimistic concurrency block that returns a client action based on current data
-    let concurrencyBlock: RapidConcurrencyOptimisticBlock
+    /// Execution block that returns a client action based on current data
+    let executionBlock: RapidExecutionBlock
     
     /// Completion callback
-    let completion: RapidConcurrencyCompletionBlock?
+    let completion: RapidExecutionCompletion?
     
     /// Fetch document request
     var fetchRequest: RapidFetchInstance {
         let fetch = RapidDocumentFetch(collectionID: collectionID, documentID: documentID, cache: cacheHandler, callback: { [weak self] (error, document) in
             if let error = error {
-                self?.completeMutation(withError: error)
+                self?.completeExecution(withError: error)
             }
             else {
                 self?.resolveValue(forDocument: document)
@@ -67,15 +53,13 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
     /// - Parameters:
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
-    ///   - type: Write type
     ///   - delegate: Flow controller delegate
-    ///   - concurrencyBlock: Optimistic concurrency block that returns a client action based on current data
+    ///   - block: Execution block that returns a client action based on current data
     ///   - completion: Completion callback
-    init(collectionID: String, documentID: String, type: WriteType, delegate: RapidConOptMutationDelegate, concurrencyBlock: @escaping RapidConcurrencyOptimisticBlock, completion: RapidConcurrencyCompletionBlock?) {
+    init(collectionID: String, documentID: String, delegate: RapidExectuionDelegate, block: @escaping RapidExecutionBlock, completion: RapidExecutionCompletion?) {
         self.collectionID = collectionID
         self.documentID = documentID
-        self.type = type
-        self.concurrencyBlock = concurrencyBlock
+        self.executionBlock = block
         self.completion = completion
         self.delegate = delegate
     }
@@ -85,13 +69,13 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
         delegate?.sendFetchRequest(fetchRequest)
     }
     
-    /// Pass current value to `RapidConcurrencyOptimisticBlock` and perform an action based on a result
+    /// Pass current value to `RapidExecutionBlock` and perform an action based on a result
     ///
     /// - Parameter document: `RapidDocument` returned from fetch
     fileprivate func resolveValue(forDocument document: RapidDocument) {
         DispatchQueue.main.async { [weak self] in
             // Get developer action
-            guard let result = self?.concurrencyBlock(document.value) else {
+            guard let result = self?.executionBlock(document.value) else {
                 return
             }
             
@@ -99,11 +83,11 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
             case .write(let value):
                 self?.write(value: value, forDocument: document)
                 
-            case .delete():
+            case .delete:
                 self?.delete(document: document)
                 
-            case .abort():
-                self?.completeMutation(withError: RapidError.concurrencyWriteFailed(reason: .aborted))
+            case .abort:
+                self?.completeExecution(withError: RapidError.executionFailed(reason: .aborted))
             }
         }
     }
@@ -115,22 +99,22 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
         // If the error is a write-conflict error start over the whole flow
         // Otherwise, finish the optimistic concurrency flow
         if let error = error as? RapidError,
-            case RapidError.concurrencyWriteFailed(let reason) = error,
-            case RapidError.ConcurrencyWriteError.writeConflict = reason {
+            case RapidError.executionFailed(let reason) = error,
+            case RapidError.ExecutionError.writeConflict = reason {
             
             sendFetchRequest()
         }
         else {
-            completeMutation(withError: error)
+            completeExecution(withError: error)
         }
     }
     
     /// Finish the optimistic concurrency flow
     ///
     /// - Parameter error: Optional resulting error
-    fileprivate func completeMutation(withError error: Error?) {
+    fileprivate func completeExecution(withError error: Error?) {
         // Inform the delegate so that it can release the flow controller
-        delegate?.conOptMutationCompleted(self)
+        delegate?.executionCompleted(self)
         
         DispatchQueue.main.async {
             self.completion?(error)
@@ -143,42 +127,22 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
     ///   - value: Value to be written
     ///   - document: `RapidDocument` returned from fetch
     fileprivate func write(value: [AnyHashable: Any], forDocument document: RapidDocument) {
-        switch type {
-        case .mutate:
-            let request = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: cacheHandler, callback: { [weak self] error in
-                self?.resolveWriteResponse(withError: error)
-            })
-            request.etag = document.etag ?? Rapid.nilValue
-            delegate?.sendMutationRequest(request)
-            
-        case .merge:
-            let request = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: cacheHandler, callback: { [weak self] error in
-                self?.resolveWriteResponse(withError: error)
-            })
-            request.etag = document.etag ?? Rapid.nilValue
-            delegate?.sendMutationRequest(request)
-            
-        case .delete:
-            let message = "Concurrecy block returned value, but the concurrency request type is delete"
-            completeMutation(withError: RapidError.concurrencyWriteFailed(reason: .invalidResult(message: message)))
-        }
+        let request = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: cacheHandler, completion: { [weak self] error in
+            self?.resolveWriteResponse(withError: error)
+        })
+        request.etag = document.etag ?? Rapid.nilValue
+        delegate?.sendMutationRequest(request)
     }
     
     /// Process a delete action returned from `RapidConcurrencyOptimisticBlock`
     ///
     /// - Parameter document: `RapidDocument` returned from fetch
     fileprivate func delete(document: RapidDocument) {
-        if type == .delete {
-            let request = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: cacheHandler, callback: { [weak self] (error) in
-                self?.resolveWriteResponse(withError: error)
-            })
-            request.etag = document.etag ?? Rapid.nilValue
-            delegate?.sendMutationRequest(request)
-        }
-        else {
-            let message = "Concurrecy block returned `delete` result, but the concurrency request type is different from delete"
-            completeMutation(withError: RapidError.concurrencyWriteFailed(reason: .invalidResult(message: message)))
-        }
+        let request = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: cacheHandler, completion: { [weak self] (error) in
+            self?.resolveWriteResponse(withError: error)
+        })
+        request.etag = document.etag ?? Rapid.nilValue
+        delegate?.sendMutationRequest(request)
     }
 }
 
@@ -199,8 +163,8 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     /// Document ID
     let documentID: String
     
-    /// Mutation callback
-    let callback: RapidMutationCallback?
+    /// Mutation completion
+    let completion: RapidMutationCompletion?
     
     /// Timout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
@@ -219,12 +183,12 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
     ///   - value: Document JSON
-    ///   - callback: Mutation callback
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, callback: RapidMutationCallback?) {
+    ///   - completion: Mutation completion
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidMutationCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
-        self.callback = callback
+        self.completion = completion
         self.cacheHandler = cache
     }
     
@@ -253,7 +217,7 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
                 }
             })
             
-            self.callback?(nil)
+            self.completion?(nil)
         }
     }
     
@@ -263,7 +227,7 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid mutation failed - document \(self.documentID) in collection \(self.collectionID)", level: .info)
             
-            self.callback?(error.error)
+            self.completion?(error.error)
         }
     }
 }
@@ -285,8 +249,8 @@ class RapidDocumentMerge: NSObject, RapidMutationRequest {
     /// Document ID
     let documentID: String
     
-    /// Merge callback
-    let callback: RapidMutationCallback?
+    /// Merge completion
+    let completion: RapidMergeCompletion?
     
     /// Timeout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
@@ -305,12 +269,12 @@ class RapidDocumentMerge: NSObject, RapidMutationRequest {
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
     ///   - value: JSON with values to be merged
-    ///   - callback: Merge callback
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, callback: RapidMergeCallback?) {
+    ///   - completion: Merge completion
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidMergeCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
-        self.callback = callback
+        self.completion = completion
         self.cacheHandler = cache
     }
     
@@ -339,7 +303,7 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
                     }
                 }
             })
-            self.callback?(nil)
+            self.completion?(nil)
         }
     }
     
@@ -349,7 +313,7 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid merge failed - document \(self.documentID) in collection \(self.collectionID)", level: .info)
             
-            self.callback?(error.error)
+            self.completion?(error.error)
         }
     }
 }
@@ -368,8 +332,8 @@ class RapidDocumentDelete: NSObject, RapidMutationRequest {
     /// Document ID
     let documentID: String
     
-    /// Merge callback
-    let callback: RapidDeletionCallback?
+    /// Deletion completion
+    let completion: RapidDeletionCompletion?
     
     /// Timeout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
@@ -388,10 +352,10 @@ class RapidDocumentDelete: NSObject, RapidMutationRequest {
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
     ///   - callback: Delete callback
-    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, callback: RapidDeletionCallback?) {
+    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDeletionCompletion?) {
         self.collectionID = collectionID
         self.documentID = documentID
-        self.callback = callback
+        self.completion = completion
         self.cacheHandler = cache
     }
     
@@ -414,7 +378,7 @@ extension RapidDocumentDelete: RapidTimeoutRequest {
             
             self.cacheHandler?.removeObject(withGroupID: self.collectionID, objectID: self.documentID)
             
-            self.callback?(nil)
+            self.completion?(nil)
         }
     }
     
@@ -424,7 +388,7 @@ extension RapidDocumentDelete: RapidTimeoutRequest {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid delete failed - document \(self.documentID) in collection \(self.collectionID)", level: .info)
             
-            self.callback?(error.error)
+            self.completion?(error.error)
         }
     }
 }
