@@ -210,14 +210,14 @@ class RapidTests: XCTestCase {
     }
     
     func testCollectionWithoutHandler() {
-        let collection = RapidCollection(id: testCollectionName, handler: nil)
+        let collection = RapidCollectionRef(id: testCollectionName, handler: nil)
         
         XCTAssertThrowsError(try collection.getSocketManager(), "Collection didn't throw")
         XCTAssertThrowsError(try collection.document(id: "1"), "Collection didn't throw")
     }
     
     func testDocumentWithoutHandler() {
-        let document = RapidDocument(id: "1", inCollection: testCollectionName, handler: nil)
+        let document = RapidDocumentRef(id: "1", inCollection: testCollectionName, handler: nil)
         
         XCTAssertThrowsError(try document.getSocketManager(), "Document didn't throw")
     }

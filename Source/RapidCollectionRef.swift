@@ -18,7 +18,7 @@ public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [Ra
 public typealias RapidColFetchCallback = RapidColSubCallback
 
 /// Class representing Rapid.io collection
-public class RapidCollection: NSObject {
+public class RapidCollectionRef: NSObject {
     
     fileprivate weak var handler: RapidHandler?
     
@@ -49,7 +49,7 @@ public class RapidCollection: NSObject {
     /// Create an instance of a Rapid document in the collection with a new unique ID
     ///
     /// - Returns: Instance of `RapidDocument` in the collection with a new unique ID
-    public func newDocument() -> RapidDocument {
+    public func newDocument() -> RapidDocumentRef {
         return document(withID: Rapid.uniqueID)
     }
     
@@ -57,7 +57,7 @@ public class RapidCollection: NSObject {
     ///
     /// - Parameter id: Document ID
     /// - Returns: Instance of a `RapidDocument` in the collection with a specified ID
-    public func document(withID id: String) -> RapidDocument {
+    public func document(withID id: String) -> RapidDocumentRef {
         return try! document(id: id)
     }
     
@@ -67,8 +67,8 @@ public class RapidCollection: NSObject {
     ///
     /// - Parameter filter: Filter object
     /// - Returns: The collection with the filter assigned
-    public func filter(by filter: RapidFilter) -> RapidCollection {
-        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+    public func filter(by filter: RapidFilter) -> RapidCollectionRef {
+        let collection = RapidCollectionRef(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.filtered(by: filter)
         return collection
     }
@@ -95,8 +95,8 @@ public class RapidCollection: NSObject {
     ///
     /// - Parameter ordering: Ordering object
     /// - Returns: The collection with the ordering assigned
-    public func order(by ordering: RapidOrdering) -> RapidCollection {
-        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+    public func order(by ordering: RapidOrdering) -> RapidCollectionRef {
+        let collection = RapidCollectionRef(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
     }
@@ -123,8 +123,8 @@ public class RapidCollection: NSObject {
     ///
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
-    func order(by ordering: [RapidOrdering]) -> RapidCollection {
-        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+    func order(by ordering: [RapidOrdering]) -> RapidCollectionRef {
+        let collection = RapidCollectionRef(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
     }
@@ -149,8 +149,8 @@ public class RapidCollection: NSObject {
     ///   - take: Maximum number of documents to be returned
     ///   - skip: Number of documents to be skipped
     /// - Returns: The collection with the limit assigned
-    public func limit(to take: Int, skip: Int? = nil) -> RapidCollection {
-        let collection = RapidCollection(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+    public func limit(to take: Int, skip: Int? = nil) -> RapidCollectionRef {
+        let collection = RapidCollectionRef(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.limited(to: take, skip: skip)
         return collection
     }
@@ -208,11 +208,11 @@ public class RapidCollection: NSObject {
     }
 }
 
-extension RapidCollection {
+extension RapidCollectionRef {
     
-    func document(id: String) throws -> RapidDocument {
+    func document(id: String) throws -> RapidDocumentRef {
         if let handler = handler {
-            return RapidDocument(id: id, inCollection: collectionID, handler: handler)
+            return RapidDocumentRef(id: id, inCollection: collectionID, handler: handler)
         }
 
         RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)

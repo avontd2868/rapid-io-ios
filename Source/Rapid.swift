@@ -149,8 +149,8 @@ open class Rapid: NSObject {
     /// - parameter named:     Collection identifier
     ///
     /// - returns: New object representing Rapid collection
-    open func collection(named: String) -> RapidCollection {
-        return RapidCollection(id: named, handler: handler)
+    open func collection(named: String) -> RapidCollectionRef {
+        return RapidCollectionRef(id: named, handler: handler)
     }
     
     /// Disconnect from server
@@ -290,7 +290,7 @@ public extension Rapid {
     /// - parameter named:     Collection identifier
     ///
     /// - returns: New object representing Rapid collection
-    class func collection(named: String) -> RapidCollection {
+    class func collection(named: String) -> RapidCollectionRef {
         return try! shared().collection(named: named)
     }
     
