@@ -11,7 +11,7 @@ import Rapid
 
 extension Rapid {
     
-    class func collection(withName name: String) -> RapidCollection {
+    class func collection(withName name: String) -> RapidCollectionRef {
         assert(Validator.isValid(collectionName: name), "App uses different collection name than it is supposed to. Make sure that you pasted correct identifier to Info.plist key `RapidDemoIdentifier` and that you didn't modify default Rapid collection name.")
         
         return collection(named: name)

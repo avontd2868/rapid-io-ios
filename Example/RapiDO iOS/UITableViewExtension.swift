@@ -11,7 +11,7 @@ import Rapid
 
 extension UITableView {
     
-    func animateChanges(previousData: [Task], data: [Task], new: [RapidDocumentSnapshot], updated: [RapidDocumentSnapshot], deleted: [RapidDocumentSnapshot]) {
+    func animateChanges(previousData: [Task], data: [Task], new: [RapidDocument], updated: [RapidDocument], deleted: [RapidDocument]) {
         let deleteIndexPaths = deleted.map({ task in IndexPath(row: previousData.index(where: { task.id == $0.taskID })!, section: 0) })
         let insertIndexPaths = new.map({ task in IndexPath(row: data.index(where: { task.id == $0.taskID })!, section: 0) })
         

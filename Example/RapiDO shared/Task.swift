@@ -91,7 +91,7 @@ struct Task {
     let priority: Priority
     let tags: [Tag]
     
-    init?(withSnapshot snapshot: RapidDocumentSnapshot) {
+    init?(withSnapshot snapshot: RapidDocument) {
         guard let dict = snapshot.value,
             let title = dict[Task.titleAttributeName] as? String,
             let isoString = dict[Task.createdAttributeName] as? String,
