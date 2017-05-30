@@ -12,41 +12,161 @@ import XCTest
 extension RapidTests {
     
     func testSnapshotEqualityEquals() {
-        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
-        let snap3 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test"], etag: "123")
-        let snap4 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test"], etag: "123")
+        let doc1 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123"
+        ] as [String : Any]
+        let doc2 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123"
+        ] as [String : Any]
+        let doc3 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123",
+            "body": [
+                "name": "test"
+            ]
+        ] as [String : Any]
+        let doc4 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123",
+            "body": [
+                "name": "test"
+            ]
+        ] as [String : Any]
+        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
+        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: testCollectionName)
+        let snap3 = RapidDocumentSnapshot(existingDocJson: doc3, collectionID: testCollectionName)
+        let snap4 = RapidDocumentSnapshot(existingDocJson: doc4, collectionID: testCollectionName)
         
         XCTAssertEqual(snap1, snap2, "Snapshots not equal")
         XCTAssertEqual(snap3, snap4, "Snapshots not equal")
    }
     
     func testSnapshotEqualityDifferentID() {
-        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "2", collectionID: testCollectionName, value: [:], etag: "123")
+        let doc1 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123"
+            ] as [String : Any]
+        let doc2 = [
+            "id": "2",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123",
+            "body": [
+                "name": "test"
+            ]
+            ] as [String : Any]
+        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
+        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: testCollectionName)
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
     }
     
     func testSnapshotEqualityDifferentCollectionID() {
-        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "2", collectionID: "1", value: [:], etag: "123")
+        let doc1 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123"
+            ] as [String : Any]
+        let doc2 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123",
+            "body": [
+                "name": "test"
+            ]
+            ] as [String : Any]
+        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
+        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: "1")
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
     }
     
     func testSnapshotEqualityDifferentEtag() {
-        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: [:], etag: "1234")
+        let doc1 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123"
+            ] as [String : Any]
+        let doc2 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "1234",
+            "body": [
+                "name": "test"
+            ]
+            ] as [String : Any]
+        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
+        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: testCollectionName)
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
     }
     
     func testSnapshotEqualityDifferentValues() {
-        let snap1 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: nil, etag: "123")
-        let snap2 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: [:], etag: "123")
-        let snap3 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test1"], etag: "123")
-        let snap4 = RapidDocumentSnapshot(id: "1", collectionID: testCollectionName, value: ["name": "test2"], etag: "123")
+        let doc1 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123"
+            ] as [String : Any]
+        let doc2 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123",
+            "body": [:]
+            ] as [String : Any]
+        let doc3 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123",
+            "body": [
+                "name": "test1"
+            ]
+            ] as [String : Any]
+        let doc4 = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "123",
+            "body": [
+                "name": "test2"
+            ]
+            ] as [String : Any]
+        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
+        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: testCollectionName)
+        let snap3 = RapidDocumentSnapshot(existingDocJson: doc3, collectionID: testCollectionName)
+        let snap4 = RapidDocumentSnapshot(existingDocJson: doc4, collectionID: testCollectionName)
         
         XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
         XCTAssertNotEqual(snap3, snap4, "Snapshots not equal")
@@ -58,7 +178,7 @@ extension RapidTests {
             return
         }
         
-        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(keyPath: RapidFilterSimple.documentIdKey, relation: .equal, value: "1")).subscribe(completion: { (_, _) in }) as? RapidCollectionSub else {
+        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: "1")).subscribe(completion: { (_, _) in }) as? RapidCollectionSub else {
             XCTFail("Subscription of wrong type")
             return
         }
@@ -134,10 +254,10 @@ extension RapidTests {
     func testDoubleUnsubscriptionOnOneHandler() {
         let promise = expectation(description: "Double unsubscription")
         
-        let sub1 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let sub1 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         let sub2 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
         
-        let sub3 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.documentIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let sub3 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         let sub4 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
         
         let networkHandler = RapidNetworkHandler(socketURL: self.socketURL)
@@ -298,6 +418,9 @@ extension RapidTests {
                 "docs": [
                     [
                         "id": "1",
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "etag": doc1Etag,
                         "body": [
                             "name": "test1"
@@ -305,6 +428,9 @@ extension RapidTests {
                     ],
                     [
                         "id": "2",
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "etag": doc2Etag,
                         "body": [
                             "name": "test2"
@@ -312,6 +438,9 @@ extension RapidTests {
                     ],
                     [
                         "id": "3",
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "etag": doc3Etag,
                         "body": [
                             "name": "test3"
@@ -366,6 +495,9 @@ extension RapidTests {
                     [
                         "id": "1",
                         "skey": ["1"],
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "etag": Rapid.uniqueID,
                         "body": [
                             "name": "test1"
@@ -374,6 +506,9 @@ extension RapidTests {
                     [
                         "id": "2",
                         "skey": ["2"],
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "etag": Rapid.uniqueID,
                         "body": [
                             "name": "test2"
@@ -382,6 +517,9 @@ extension RapidTests {
                     [
                         "id": "3",
                         "skey": ["3"],
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "etag": docEtag,
                         "body": [
                             "name": "test3"
@@ -401,6 +539,9 @@ extension RapidTests {
                         "docs": [
                             [
                                 "id": "2",
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
                                 "skey": ["2"],
                                 "body": [
@@ -409,6 +550,9 @@ extension RapidTests {
                             ],
                             [
                                 "id": "3",
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "etag": docEtag,
                                 "skey": ["3"],
                                 "body": [
@@ -417,6 +561,9 @@ extension RapidTests {
                             ],
                             [
                                 "id": "4",
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
                                 "skey": ["4"],
                                 "body": [
@@ -438,6 +585,9 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "4",
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "skey": ["1"],
                                 "etag": Rapid.uniqueID,
                                 "body": [
@@ -455,6 +605,9 @@ extension RapidTests {
                             [
                                 "id": "5",
                                 "skey": ["5"],
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test5"
@@ -468,7 +621,7 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
         
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 3, "Number of documents")
@@ -532,6 +685,9 @@ extension RapidTests {
                     [
                         "id": "1",
                         "etag": Rapid.uniqueID,
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "skey": ["1"],
                         "body": [
                             "name": "test1"
@@ -540,6 +696,9 @@ extension RapidTests {
                     [
                         "id": "2",
                         "etag": doc2Etag,
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "skey": ["2"],
                         "body": [
                             "name": "test2"
@@ -548,6 +707,9 @@ extension RapidTests {
                     [
                         "id": "3",
                         "etag": doc3Etag,
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "skey": ["3"],
                         "body": [
                             "name": "test3"
@@ -568,6 +730,9 @@ extension RapidTests {
                             [
                                 "id": "1",
                                 "etag": Rapid.uniqueID,
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "skey": ["1"],
                                 "body": [
                                     "name": "test11"
@@ -576,6 +741,9 @@ extension RapidTests {
                             [
                                 "id": "2",
                                 "etag": doc2Etag,
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "skey": ["2"],
                                 "body": [
                                     "name": "test2"
@@ -585,6 +753,9 @@ extension RapidTests {
                                 "id": "3",
                                 "etag": doc3Etag,
                                 "skey": ["3"],
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "body": [
                                     "name": "test3"
                                 ]
@@ -602,6 +773,9 @@ extension RapidTests {
                                 "id": "1",
                                 "skey": ["5"],
                                 "etag": Rapid.uniqueID,
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "body": [
                                     "name": "test111"
                                 ]
@@ -618,6 +792,9 @@ extension RapidTests {
                                 "id": "3",
                                 "skey": ["4"],
                                 "etag": Rapid.uniqueID,
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "body": [
                                     "name": "test33"
                                 ]
@@ -630,7 +807,7 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
         
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 3, "Number of documents")
@@ -690,6 +867,9 @@ extension RapidTests {
                     [
                         "id": "1",
                         "etag": Rapid.uniqueID,
+                        "crt": "a",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "body": [
                             "name": "test1"
                         ]
@@ -706,8 +886,8 @@ extension RapidTests {
                         "col-id": testCollectionName,
                         "sub-id": subID,
                         "doc": [
-                                "id": "1",
-                                "etag": Rapid.uniqueID,
+                            "id": "1",
+                            "etag": Rapid.uniqueID,
                         ]
                     ]
                 ],
@@ -719,6 +899,9 @@ extension RapidTests {
                         "doc": [
                                 "id": "1",
                                 "etag": Rapid.uniqueID,
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "body": [
                                     "name": "test11"
                                 ]
@@ -734,6 +917,9 @@ extension RapidTests {
                         "doc": [
                                 "id": "2",
                                 "etag": Rapid.uniqueID,
+                                "crt": "a",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "body": [
                                     "name": "test2"
                                 ]
@@ -741,11 +927,10 @@ extension RapidTests {
                     ]
                 ],
                 [
-                    "upd": [
+                    "rm": [
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": subID,
-                        "psib-id": "1",
                         "doc": [
                                 "id": "2",
                                 "etag": Rapid.uniqueID,
@@ -805,13 +990,15 @@ extension RapidTests {
                 "evt-id": Rapid.uniqueID,
                 "col-id": testCollectionName,
                 "sub-id": subID,
-                "doc":
-                    [
-                        "id": "5",
-                        "etag": Rapid.uniqueID,
-                        "body": [
-                            "name": "test5"
-                        ]
+                "doc": [
+                    "id": "5",
+                    "etag": Rapid.uniqueID,
+                    "crt": "a",
+                    "crt-ts": 0.0,
+                    "mod-ts": 0.0,
+                    "body": [
+                        "name": "test5"
+                    ]
                 ]
             ]
         ]
@@ -845,13 +1032,13 @@ extension RapidTests {
         let subID = Rapid.uniqueID
         
         let subValue: [AnyHashable: Any] = [
-            "upd": [
+            "rm": [
                 "evt-id": Rapid.uniqueID,
                 "col-id": testCollectionName,
                 "sub-id": subID,
                 "doc": [
-                        "id": "666",
-                        "etag": Rapid.uniqueID
+                    "id": "666",
+                    "etag": Rapid.uniqueID
                 ]
             ]
         ]
@@ -923,6 +1110,9 @@ extension RapidTests {
                 "docs": [
                     [
                         "id": "1",
+                        "crt": "<DEFAULT SORT ORDER>",
+                        "crt-ts": 0.0,
+                        "mod-ts": 0.0,
                         "etag": Rapid.uniqueID,
                         "body": [
                             "name": "test"
@@ -939,7 +1129,10 @@ extension RapidTests {
                         "sub-id": subID,
                         "doc": [
                             "id": "1",
-                            "etag": Rapid.uniqueID,
+                            "crt": "<DEFAULT SORT ORDER>",
+                            "crt-ts": 0.0,
+                            "mod-ts": 0.0,
+                            "etag": "<SERVER ETAG>",
                         ]
                     ]
                 ]

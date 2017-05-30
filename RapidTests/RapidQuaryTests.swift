@@ -201,7 +201,7 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
         rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"])
         
-        rapid.collection(named: testCollectionName).order(by: RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .descending)).subscribe { (_, documents) in
+        rapid.collection(named: testCollectionName).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .descending)).subscribe { (_, documents) in
             XCTAssertGreaterThan(documents.count, 1, "No documents")
             
             var lastID: String?
@@ -281,7 +281,7 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
         rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"])
         
-        rapid.collection(named: testCollectionName).filter(by: RapidFilter.lessThan(keyPath: RapidFilter.documentIdKey, value: "5")).order(by: RapidOrdering(keyPath: RapidOrdering.documentIdKey, ordering: .descending)).limit(to: 2).subscribe { (_, documents) in
+        rapid.collection(named: testCollectionName).filter(by: RapidFilter.lessThan(keyPath: RapidFilter.docIdKey, value: "5")).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .descending)).limit(to: 2).subscribe { (_, documents) in
             XCTAssertEqual(documents.count, 2, "No documents")
             
             var lastID: String?

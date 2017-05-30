@@ -81,7 +81,7 @@ extension RapidTests {
     func testJSONValidationInvalidIDParameter() {
         let sub = RapidCollectionSub(
             collectionID: testCollectionName,
-            filter: RapidFilter.equal(keyPath: RapidFilter.documentIdKey, value: 3),
+            filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: 3),
             ordering: nil,
             paging: nil,
             callback: nil,
@@ -139,7 +139,10 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "1",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
+                                "crt": "",
                                 "body": [
                                     "name": "testy"
                                 ]
@@ -154,6 +157,9 @@ extension RapidTests {
                         "docs": [
                             [
                                 "id": "1",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
+                                "crt": "",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test"
@@ -161,6 +167,9 @@ extension RapidTests {
                             ],
                             [
                                 "id": "2",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
+                                "crt": "",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test"
@@ -177,6 +186,9 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "1",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
+                                "crt": "",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "testy"
@@ -193,6 +205,9 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "2",
+                                "crt-ts": 0.0,
+                                "crt": "",
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "testy"
@@ -205,10 +220,12 @@ extension RapidTests {
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": Rapid.uniqueID,
-                        "psib-id": "1",
                         "doc":
                             [
                                 "id": "2",
+                                "crt-ts": 0.0,
+                                "crt": "",
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "testy"
@@ -593,9 +610,9 @@ extension RapidTests {
     }
     
     func testSubscriptionBatchObjectForUpdate() {
-        let update2 = RapidSubscriptionBatch(withUpdateJSON: [:])
-        let update3 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds"])
-        let update4 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds", "sub-id": "fjdslkfj"])
+        let update2 = RapidSubscriptionBatch(withUpdateJSON: [:], docRemoved: false)
+        let update3 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds"], docRemoved: false)
+        let update4 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds", "sub-id": "fjdslkfj"], docRemoved: false)
         
         XCTAssertNil(update2, "Object created")
         XCTAssertNil(update3, "Object created")
