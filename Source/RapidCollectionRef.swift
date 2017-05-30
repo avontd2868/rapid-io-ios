@@ -9,10 +9,10 @@
 import Foundation
 
 /// Collection subscription callback which provides a client either with an error or with an array of documents
-public typealias RapidColSubCallback = (_ error: Error?, _ value: [RapidDocumentSnapshot]) -> Void
+public typealias RapidColSubCallback = (_ error: Error?, _ value: [RapidDocument]) -> Void
 
 /// Collection subscription callback which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
-public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) -> Void
+public typealias RapidColSubCallbackWithChanges = (_ error: Error?, _ value: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument]) -> Void
 
 /// Collection read callback which provides a client either with an error or with an array of documents
 public typealias RapidColFetchCallback = RapidColSubCallback

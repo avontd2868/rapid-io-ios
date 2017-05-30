@@ -75,7 +75,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
         return "\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
     }
 
-    func receivedData(_ documents: [RapidDocumentSnapshot]) {
+    func receivedData(_ documents: [RapidDocument]) {
         invalidateTimer()
         
         DispatchQueue.main.async {
@@ -164,7 +164,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
         return collectionFetch.subscriptionHash
     }
     
-    func receivedData(_ documents: [RapidDocumentSnapshot]) {
+    func receivedData(_ documents: [RapidDocument]) {
         invalidateTimer()
         
         DispatchQueue.main.async {
@@ -172,7 +172,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
             
             self.cacheHandler?.storeDataset(documents, forSubscription: self)
             
-            let document = documents.first ?? RapidDocumentSnapshot(removedDocId: self.documentID, collectionID: self.collectionID)
+            let document = documents.first ?? RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID)
             self.callback?(nil, document)
         }
     }
@@ -183,7 +183,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document fetch failed - document \(self.documentID) collection \(self.collectionID)", level: .info)
             
-            self.callback?(error, RapidDocumentSnapshot(removedDocId: self.documentID, collectionID: self.collectionID))
+            self.callback?(error, RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
         }
     }
 }

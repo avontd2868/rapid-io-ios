@@ -11,7 +11,7 @@ import Foundation
 /// Rapid authorization
 public struct RapidAuthorization {
     
-    /// Authorization access token
+    /// Authorization token
     public let token: String
     
     init(token: String) {

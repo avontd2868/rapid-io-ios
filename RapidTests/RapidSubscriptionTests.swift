@@ -11,7 +11,7 @@ import XCTest
 
 extension RapidTests {
     
-    func testSnapshotEqualityEquals() {
+    func testDocumentEqualityEquals() {
         let doc1 = [
             "id": "1",
             "crt": "a",
@@ -46,16 +46,16 @@ extension RapidTests {
                 "name": "test"
             ]
         ] as [String : Any]
-        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
-        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: testCollectionName)
-        let snap3 = RapidDocumentSnapshot(existingDocJson: doc3, collectionID: testCollectionName)
-        let snap4 = RapidDocumentSnapshot(existingDocJson: doc4, collectionID: testCollectionName)
+        let document1 = RapidDocument(existingDocJson: doc1, collectionID: testCollectionName)
+        let document2 = RapidDocument(existingDocJson: doc2, collectionID: testCollectionName)
+        let document3 = RapidDocument(existingDocJson: doc3, collectionID: testCollectionName)
+        let document4 = RapidDocument(existingDocJson: doc4, collectionID: testCollectionName)
         
-        XCTAssertEqual(snap1, snap2, "Snapshots not equal")
-        XCTAssertEqual(snap3, snap4, "Snapshots not equal")
+        XCTAssertEqual(document1, document2, "Documents not equal")
+        XCTAssertEqual(document3, document4, "Documents not equal")
    }
     
-    func testSnapshotEqualityDifferentID() {
+    func testDocumentsEqualityDifferentID() {
         let doc1 = [
             "id": "1",
             "crt": "a",
@@ -73,13 +73,13 @@ extension RapidTests {
                 "name": "test"
             ]
             ] as [String : Any]
-        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
-        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: testCollectionName)
+        let document1 = RapidDocument(existingDocJson: doc1, collectionID: testCollectionName)
+        let document2 = RapidDocument(existingDocJson: doc2, collectionID: testCollectionName)
         
-        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
+        XCTAssertNotEqual(document1, document2, "Documents not equal")
     }
     
-    func testSnapshotEqualityDifferentCollectionID() {
+    func testDocumentsEqualityDifferentCollectionID() {
         let doc1 = [
             "id": "1",
             "crt": "a",
@@ -97,13 +97,13 @@ extension RapidTests {
                 "name": "test"
             ]
             ] as [String : Any]
-        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
-        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: "1")
+        let document1 = RapidDocument(existingDocJson: doc1, collectionID: testCollectionName)
+        let document2 = RapidDocument(existingDocJson: doc2, collectionID: "1")
         
-        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
+        XCTAssertNotEqual(document1, document2, "Documents not equal")
     }
     
-    func testSnapshotEqualityDifferentEtag() {
+    func testDocumentsEqualityDifferentEtag() {
         let doc1 = [
             "id": "1",
             "crt": "a",
@@ -121,13 +121,13 @@ extension RapidTests {
                 "name": "test"
             ]
             ] as [String : Any]
-        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
-        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: testCollectionName)
+        let document1 = RapidDocument(existingDocJson: doc1, collectionID: testCollectionName)
+        let document2 = RapidDocument(existingDocJson: doc2, collectionID: testCollectionName)
         
-        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
+        XCTAssertNotEqual(document1, document2, "Documents not equal")
     }
     
-    func testSnapshotEqualityDifferentValues() {
+    func testDocumentsEqualityDifferentValues() {
         let doc1 = [
             "id": "1",
             "crt": "a",
@@ -163,13 +163,13 @@ extension RapidTests {
                 "name": "test2"
             ]
             ] as [String : Any]
-        let snap1 = RapidDocumentSnapshot(existingDocJson: doc1, collectionID: testCollectionName)
-        let snap2 = RapidDocumentSnapshot(existingDocJson: doc2, collectionID: testCollectionName)
-        let snap3 = RapidDocumentSnapshot(existingDocJson: doc3, collectionID: testCollectionName)
-        let snap4 = RapidDocumentSnapshot(existingDocJson: doc4, collectionID: testCollectionName)
+        let document1 = RapidDocument(existingDocJson: doc1, collectionID: testCollectionName)
+        let document2 = RapidDocument(existingDocJson: doc2, collectionID: testCollectionName)
+        let document3 = RapidDocument(existingDocJson: doc3, collectionID: testCollectionName)
+        let document4 = RapidDocument(existingDocJson: doc4, collectionID: testCollectionName)
         
-        XCTAssertNotEqual(snap1, snap2, "Snapshots not equal")
-        XCTAssertNotEqual(snap3, snap4, "Snapshots not equal")
+        XCTAssertNotEqual(document1, document2, "Documents not equal")
+        XCTAssertNotEqual(document3, document4, "Documents not equal")
     }
     
     func testDuplicateSubscriptions() {

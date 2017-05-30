@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Compare two docuement snapshots
+/// Compare two docuements
 ///
 /// Compera ids, etags and dictionaries
 ///
@@ -16,7 +16,7 @@ import Foundation
 ///   - lhs: Left operand
 ///   - rhs: Right operand
 /// - Returns: `true` if operands are equal
-func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
+func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
     if lhs.id == rhs.id && lhs.collectionID == rhs.collectionID && lhs.etag == rhs.etag {
         if let lValue = lhs.value, let rValue = rhs.value {
             return NSDictionary(dictionary: lValue).isEqual(to: rValue)
@@ -30,7 +30,7 @@ func == (lhs: RapidDocumentSnapshot, rhs: RapidDocumentSnapshot) -> Bool {
 }
 
 /// Class representing Rapid.io document that is returned from a subscription callback
-public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
+public class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     var objectID: String {
         return id
@@ -137,14 +137,14 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
         self.sortValue = ""
     }
     
-    init?(snapshot: RapidDocumentSnapshot, newValue: [AnyHashable: Any]) {
-        self.id = snapshot.id
-        self.collectionID = snapshot.collectionID
-        self.etag = snapshot.etag
-        self.createdAt = snapshot.createdAt
-        self.modifiedAt = snapshot.modifiedAt
-        self.sortKeys = snapshot.sortKeys
-        self.sortValue = snapshot.sortValue
+    init?(document: RapidDocument, newValue: [AnyHashable: Any]) {
+        self.id = document.id
+        self.collectionID = document.collectionID
+        self.etag = document.etag
+        self.createdAt = document.createdAt
+        self.modifiedAt = document.modifiedAt
+        self.sortKeys = document.sortKeys
+        self.sortValue = document.sortValue
         self.value = newValue
     }
     
@@ -213,8 +213,8 @@ public class RapidDocumentSnapshot: NSObject, NSCoding, RapidCachableObject {
     }
     
     override public func isEqual(_ object: Any?) -> Bool {
-        if let snapshot = object as? RapidDocumentSnapshot {
-            return self == snapshot
+        if let document = object as? RapidDocument {
+            return self == document
         }
         
         return false

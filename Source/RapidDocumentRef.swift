@@ -9,7 +9,7 @@
 import Foundation
 
 /// Document subscription callback which provides a client either with an error or with a document
-public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocumentSnapshot) -> Void
+public typealias RapidDocSubCallback = (_ error: Error?, _ value: RapidDocument) -> Void
 
 /// Document fetch callback which provides a client either with an error or with a document
 public typealias RapidDocFetchCallback = RapidDocSubCallback

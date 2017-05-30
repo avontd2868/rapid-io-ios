@@ -8,12 +8,12 @@
 
 import Foundation
 
-fileprivate func == (lhs: RapidDocSnapOperation, rhs: RapidDocSnapOperation) -> Bool {
-    return lhs.snapshot.id == rhs.snapshot.id
+fileprivate func == (lhs: RapidDocumentOperation, rhs: RapidDocumentOperation) -> Bool {
+    return lhs.document.id == rhs.document.id
 }
 
 /// Struct describing what happened with a document since previous subscription update
-fileprivate struct RapidDocSnapOperation: Hashable {
+fileprivate struct RapidDocumentOperation: Hashable {
     enum Operation {
         case add
         case update
@@ -21,25 +21,25 @@ fileprivate struct RapidDocSnapOperation: Hashable {
         case none
     }
     
-    let snapshot: RapidDocumentSnapshot
+    let document: RapidDocument
     let operation: Operation
     
     var hashValue: Int {
-        return snapshot.id.hashValue
+        return document.id.hashValue
     }
 }
 
-/// Wrapper for a set of `RPDSnapshotOperation`
+/// Wrapper for a set of `RapidDocumentOperation`
 ///
 /// Set updates are treated specially because operations have different priority
-fileprivate struct RapidDocSnapOperationSet: Sequence {
+fileprivate struct RapidDocumentOperationSet: Sequence {
     
-    fileprivate var set = Set<RapidDocSnapOperation>()
+    fileprivate var set = Set<RapidDocumentOperation>()
     
     /// Inserts or updates the given element into the set
     ///
     /// - Parameter operation: An element to insert into the set.
-    mutating func insertOrUpdate(_ operation: RapidDocSnapOperation) {
+    mutating func insertOrUpdate(_ operation: RapidDocumentOperation) {
         if let index = set.index(of: operation) {
             let previousOperation = set[index]
             
@@ -54,7 +54,7 @@ fileprivate struct RapidDocSnapOperationSet: Sequence {
                 set.remove(at: index)
                 
             case (.remove, .add):
-                set.update(with: RapidDocSnapOperation(snapshot: operation.snapshot, operation: .update))
+                set.update(with: RapidDocumentOperation(document: operation.document, operation: .update))
             }
         }
         else {
@@ -65,21 +65,21 @@ fileprivate struct RapidDocSnapOperationSet: Sequence {
     /// Inserts the given element into the set unconditionally
     ///
     /// - Parameter operation: An element to insert into the set
-    mutating func update(_ operation: RapidDocSnapOperation) {
+    mutating func update(_ operation: RapidDocumentOperation) {
         set.update(with: operation)
     }
     
     /// Adds the elements of the given array to the set
     ///
-    /// - Parameter other: An array of document snapshots
-    mutating func formUnion(_ other: [RapidDocSnapOperation]) {
+    /// - Parameter other: An array of document operations
+    mutating func formUnion(_ other: [RapidDocumentOperation]) {
         set.formUnion(other)
     }
     
     /// Returns an iterator over the elements of this sequence
     ///
     /// - Returns: Iterator
-    func makeIterator() -> SetIterator<RapidDocSnapOperation> {
+    func makeIterator() -> SetIterator<RapidDocumentOperation> {
         return set.makeIterator()
     }
 }
@@ -139,7 +139,7 @@ class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
     fileprivate var subscriptions: [RapidSubscriptionInstance] = []
     
     /// Last known value of the dataset
-    fileprivate var value: [RapidDocumentSnapshot]? {
+    fileprivate var value: [RapidDocument]? {
         didSet {
             if let value = value {
                 // Store last known value to a cache
@@ -225,7 +225,7 @@ fileprivate extension RapidSubscriptionHandler {
     func loadCachedData() {
         delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, completion: { [weak self] (cachedValue) in
             self?.delegate?.parseQueue.async {
-                if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedValue = cachedValue as? [RapidDocumentSnapshot] {
+                if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedValue = cachedValue as? [RapidDocument] {
                     let batch = RapidSubscriptionBatch(withSubscriptionID: subscriptionID, collection: cachedValue)
                     self?.receivedNewValue(batch)
                 }
@@ -280,21 +280,21 @@ fileprivate extension RapidSubscriptionHandler {
     ///   - rawArray: Updated documents
     ///   - oldValue: Last known dataset
     /// - Returns: Tuple with a new dataset and arrays of new, updated and removed documents
-    func incorporate(batch: RapidSubscriptionBatch, oldValue: [RapidDocumentSnapshot]?) -> (dataSet: [RapidDocumentSnapshot], insert: [RapidDocumentSnapshot], update: [RapidDocumentSnapshot], delete: [RapidDocumentSnapshot]) {
+    func incorporate(batch: RapidSubscriptionBatch, oldValue: [RapidDocument]?) -> (dataSet: [RapidDocument], insert: [RapidDocument], update: [RapidDocument], delete: [RapidDocument]) {
         
-        var updates = RapidDocSnapOperationSet()
+        var updates = RapidDocumentOperationSet()
         
         // Store previously known dataset to `documents`
         // If there is a new complete dataset in the update work with it
         // If there is no previous dataset work with a collection from the update
-        var documents: [RapidDocumentSnapshot]
+        var documents: [RapidDocument]
         
         if var oldValue = oldValue, let collection = batch.collection {
             documents = collection.flatMap({ $0.value == nil ? nil : $0 })
             
             // Firstly, consider all original documents as being removed
             // Their status will be changed if they are present in the new dataset from update
-            updates.formUnion(oldValue.map { RapidDocSnapOperation(snapshot: $0, operation: .remove) })
+            updates.formUnion(oldValue.map { RapidDocumentOperation(document: $0, operation: .remove) })
             
             for document in documents {
                 let operation = incorporate(document: document, inCollection: &oldValue, mutateCollection: false)
@@ -306,7 +306,7 @@ fileprivate extension RapidSubscriptionHandler {
         }
         else {
             documents = batch.collection?.flatMap({ $0.value == nil ? nil : $0 }) ?? []
-            updates.formUnion(documents.map { RapidDocSnapOperation(snapshot: $0, operation: .add) })
+            updates.formUnion(documents.map { RapidDocumentOperation(document: $0, operation: .add) })
         }
         
         // Loop through updated documents
@@ -318,7 +318,7 @@ fileprivate extension RapidSubscriptionHandler {
         // If there are more documents than a subscription callback expects remove them
         if let take = subscriptionTake, documents.count > take {
             for document in documents[take..<documents.count] {
-                let operation = RapidDocSnapOperation(snapshot: document, operation: .remove)
+                let operation = RapidDocumentOperation(document: document, operation: .remove)
                 updates.insertOrUpdate(operation)
             }
             
@@ -331,21 +331,21 @@ fileprivate extension RapidSubscriptionHandler {
             return (documents, documents, [], [])
         }
         
-        var inserted = [RapidDocumentSnapshot]()
-        var updated = [RapidDocumentSnapshot]()
-        var deleted = [RapidDocumentSnapshot]()
+        var inserted = [RapidDocument]()
+        var updated = [RapidDocument]()
+        var deleted = [RapidDocument]()
         
         // Sort updates according to type
-        for document in updates {
-            switch document.operation {
+        for docOp in updates {
+            switch docOp.operation {
             case .add:
-                inserted.append(document.snapshot)
+                inserted.append(docOp.document)
                 
             case .update:
-                updated.append(document.snapshot)
+                updated.append(docOp.document)
                 
             case .remove:
-                deleted.append(document.snapshot)
+                deleted.append(docOp.document)
                 
             case .none:
                 break
@@ -361,20 +361,20 @@ fileprivate extension RapidSubscriptionHandler {
     ///   - document: Document to process
     ///   - documents: Original collection
     ///   - mutateCollection: Set to `true` if `documents` array should be mutated
-    /// - Returns: Resulting `RapidDocumentSnapshotOperation`
-    func incorporate(document: RapidDocumentSnapshot, inCollection documents: inout [RapidDocumentSnapshot], mutateCollection: Bool = true) -> RapidDocSnapOperation {
+    /// - Returns: Resulting `RapidDocumentOperation`
+    func incorporate(document: RapidDocument, inCollection documents: inout [RapidDocument], mutateCollection: Bool = true) -> RapidDocumentOperation {
         // Index of the document in the last known dataset
         let index = documents.index(where: { $0.id == document.id })
         
         // If etag of the document hasn't changed the document itself hasn't changed
         if let index = index, documents[index].etag == document.etag {
-            return RapidDocSnapOperation(snapshot: document, operation: .none)
+            return RapidDocumentOperation(document: document, operation: .none)
         }
         
         // If documents should not be mutated return an operation right away
         if !mutateCollection {
-            let operation: RapidDocSnapOperation.Operation
-            let doc: RapidDocumentSnapshot
+            let operation: RapidDocumentOperation.Operation
+            let doc: RapidDocument
             
             if document.value == nil, let index = index {
                 operation = .remove
@@ -389,7 +389,7 @@ fileprivate extension RapidSubscriptionHandler {
                 doc = document
             }
  
-            return RapidDocSnapOperation(snapshot: doc, operation: operation)
+            return RapidDocumentOperation(document: doc, operation: operation)
         }
         
         // If the document was removed
@@ -397,10 +397,10 @@ fileprivate extension RapidSubscriptionHandler {
             if let index = index {
                 let removedDoc = documents.remove(at: index)
                 
-                return RapidDocSnapOperation(snapshot: removedDoc, operation: .remove)
+                return RapidDocumentOperation(document: removedDoc, operation: .remove)
             }
             
-            return RapidDocSnapOperation(snapshot: document, operation: .none)
+            return RapidDocumentOperation(document: document, operation: .none)
         }
         
         // Get a new index of the new/updated document
@@ -419,11 +419,11 @@ fileprivate extension RapidSubscriptionHandler {
                 documents.remove(at: index)
             }
             
-            return RapidDocSnapOperation(snapshot: document, operation: .update)
+            return RapidDocumentOperation(document: document, operation: .update)
         }
         
         documents.insert(document, at: newIndex)
-        return RapidDocSnapOperation(snapshot: document, operation: .add)
+        return RapidDocumentOperation(document: document, operation: .add)
     }
     
     /// Find an index where should be a new/updated document inserted
@@ -432,7 +432,7 @@ fileprivate extension RapidSubscriptionHandler {
     ///   - document: Document to be inserted
     ///   - collection: Original collection
     /// - Returns: Index where should be a new/updated document inserted
-    func findInsertIndex(forDocument document: RapidDocumentSnapshot, toCollection collection: ArraySlice<RapidDocumentSnapshot>, sliceStartIndex: Int = 0) -> Int {
+    func findInsertIndex(forDocument document: RapidDocument, toCollection collection: ArraySlice<RapidDocument>, sliceStartIndex: Int = 0) -> Int {
         guard !collection.isEmpty else {
             return 0
         }

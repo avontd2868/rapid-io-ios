@@ -87,8 +87,8 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
     
     /// Pass current value to `RapidConcurrencyOptimisticBlock` and perform an action based on a result
     ///
-    /// - Parameter document: `RapidDocumentSnapshot` returned from fetch
-    fileprivate func resolveValue(forDocument document: RapidDocumentSnapshot) {
+    /// - Parameter document: `RapidDocument` returned from fetch
+    fileprivate func resolveValue(forDocument document: RapidDocument) {
         DispatchQueue.main.async { [weak self] in
             // Get developer action
             guard let result = self?.concurrencyBlock(document.value) else {
@@ -141,8 +141,8 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
     ///
     /// - Parameters:
     ///   - value: Value to be written
-    ///   - document: `RapidDocumentSnapshot` returned from fetch
-    fileprivate func write(value: [AnyHashable: Any], forDocument document: RapidDocumentSnapshot) {
+    ///   - document: `RapidDocument` returned from fetch
+    fileprivate func write(value: [AnyHashable: Any], forDocument document: RapidDocument) {
         switch type {
         case .mutate:
             let request = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: cacheHandler, callback: { [weak self] error in
@@ -166,8 +166,8 @@ class RapidConOptDocumentMutation: RapidConcurrencyOptimisticMutation {
     
     /// Process a delete action returned from `RapidConcurrencyOptimisticBlock`
     ///
-    /// - Parameter document: `RapidDocumentSnapshot` returned from fetch
-    fileprivate func delete(document: RapidDocumentSnapshot) {
+    /// - Parameter document: `RapidDocument` returned from fetch
+    fileprivate func delete(document: RapidDocument) {
         if type == .delete {
             let request = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: cacheHandler, callback: { [weak self] (error) in
                 self?.resolveWriteResponse(withError: error)
@@ -246,10 +246,10 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated", level: .info)
             
             self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
-                if let oldSnapshot = object as? RapidDocumentSnapshot,
-                    let snapshot = RapidDocumentSnapshot(snapshot: oldSnapshot, newValue: self.value) {
+                if let oldDoc = object as? RapidDocument,
+                    let document = RapidDocument(document: oldDoc, newValue: self.value) {
                     
-                    self.cacheHandler?.storeObject(snapshot)
+                    self.cacheHandler?.storeObject(document)
                 }
             })
             
@@ -332,10 +332,10 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) merged", level: .info)
             
             self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
-                if let oldSnapshot = object as? RapidDocumentSnapshot, var value = oldSnapshot.value {
+                if let oldDoc = object as? RapidDocument, var value = oldDoc.value {
                     value.merge(with: self.value)
-                    if let snapshot = RapidDocumentSnapshot(snapshot: oldSnapshot, newValue: value) {
-                        self.cacheHandler?.storeObject(snapshot)
+                    if let document = RapidDocument(document: oldDoc, newValue: value) {
+                        self.cacheHandler?.storeObject(document)
                     }
                 }
             })

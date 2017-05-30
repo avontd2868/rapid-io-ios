@@ -222,9 +222,9 @@ class RapidTests: XCTestCase {
         XCTAssertThrowsError(try document.getSocketManager(), "Document didn't throw")
     }
     
-    func testSnapshotInitialization() {
-        XCTAssertNil(RapidDocumentSnapshot(existingDocJson: [1,2,3], collectionID: "1"), "Snapshot initialized")
-        XCTAssertNil(RapidDocumentSnapshot(existingDocJson: ["id": 6], collectionID: "1"), "Snapshot initialized")
+    func testDocumentsInitialization() {
+        XCTAssertNil(RapidDocument(existingDocJson: [1,2,3], collectionID: "1"), "Documents initialized")
+        XCTAssertNil(RapidDocument(existingDocJson: ["id": 6], collectionID: "1"), "Documents initialized")
         
         let doc = [
             "id": "1",
@@ -233,15 +233,15 @@ class RapidTests: XCTestCase {
             "mod-ts": 0.0,
             "etag": "1234",
             "body": [
-                "name": "testSnapshotInitialization"
+                "name": "testDocumentsInitialization"
             ]
             ] as [String : Any]
-        let snapshot = RapidDocumentSnapshot(existingDocJson: doc, collectionID: "1")
+        let document = RapidDocument(existingDocJson: doc, collectionID: "1")
         
-        XCTAssertEqual(snapshot?.id, "1", "Wrong snapshot")
-        XCTAssertEqual(snapshot?.collectionID, "1", "Wrong snapshot")
-        XCTAssertEqual(snapshot?.etag, "1234", "Wrong snapshot")
-        XCTAssertEqual(snapshot?.value?["name"] as? String, "testSnapshotInitialization", "Wrong snapshot")
+        XCTAssertEqual(document?.id, "1", "Wrong Document")
+        XCTAssertEqual(document?.collectionID, "1", "Wrong Document")
+        XCTAssertEqual(document?.etag, "1234", "Wrong Document")
+        XCTAssertEqual(document?.value?["name"] as? String, "testDocumentsInitialization", "Wrong document")
     }
     
     func testErrorInstanceInitialization() {

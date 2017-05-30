@@ -129,7 +129,7 @@ open class Rapid: NSObject {
     /// Authorize Rapid instance
     ///
     /// - Parameters:
-    ///   - token: Authorization access token
+    ///   - token: Authorization token
     ///   - completion: Authorization completion handler
     public func authorize(withToken token: String, completion: RapidAuthCallback? = nil) {
         let request = RapidAuthRequest(token: token, callback: completion)
@@ -263,7 +263,7 @@ public extension Rapid {
     /// Authorize Rapid instance
     ///
     /// - Parameters:
-    ///   - token: Authorization access token
+    ///   - token: Authorization token
     ///   - completion: Authorization completion handler
     class func authorize(withToken token: String, completion: RapidAuthCallback? = nil) {
         try! shared().authorize(withToken: token, completion: completion)
