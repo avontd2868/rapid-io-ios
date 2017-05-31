@@ -18,19 +18,20 @@ class RapidTests: XCTestCase {
     var rapid: Rapid!
     
     let apiKey = "MTMuNjQuNzcuMjAyOjgwODA="
-    let fakeAPIKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
+    let localApiKey = "bG9jYWxob3N0OjgwODA="
+    let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
     let socketURL = URL(string: "ws://13.64.77.202:8080")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6Imlvcy4qIiwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.c4txRLDwrgecxOIEfUqSYa_46DpVIKvymg4oG6TZRbU"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6Imlvcy4qIiwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.e6k8nnCC-WIFornRaBgaI9Uy2YW4uxlZ1FJMzUqj42A"
     
     override func setUp() {
         super.setUp()
         
         rapid = Rapid(apiKey: apiKey)!
         
-        rapid.authorize(withAccessToken: testAuthToken)
+        rapid.authorize(withToken: testAuthToken)
     }
     
     override func tearDown() {
@@ -38,6 +39,7 @@ class RapidTests: XCTestCase {
         Rapid.defaultTimeout = 300
         Rapid.heartbeatInterval = 30
         rapid.isCacheEnabled = false
+        rapid.goOffline()
         rapid = nil
         
         super.tearDown()
@@ -45,8 +47,8 @@ class RapidTests: XCTestCase {
     
     // MARK: Test general stuff
     
-    func testWrongAPIKey() {
-        let rapid = Rapid.getInstance(withAPIKey: "")
+    func testWrongApiKey() {
+        let rapid = Rapid.getInstance(withApiKey: "")
         
         XCTAssertNil(rapid, "Rapid with wrong API key initialized")
     }
@@ -59,7 +61,7 @@ class RapidTests: XCTestCase {
     }
     
     func testConfiguredSingleton() {
-        Rapid.configure(withAPIKey: fakeAPIKey)
+        Rapid.configure(withApiKey: fakeApiKey)
         
         XCTAssertNotNil(Rapid.connectionState, "Wrong connection state")
         
@@ -74,32 +76,32 @@ class RapidTests: XCTestCase {
     }
     
     func testInstanceHandling() {
-        let rapid = Rapid.getInstance(withAPIKey: apiKey)
-        let newInstance = Rapid.getInstance(withAPIKey: apiKey)
+        let rapid = Rapid.getInstance(withApiKey: apiKey)
+        let newInstance = Rapid.getInstance(withApiKey: apiKey)
         
         XCTAssertEqual(rapid?.description, newInstance?.description, "Different instances for one database")
     }
     
     func testInstanceWeakReferencing() {
-        var rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)
+        var rapid = Rapid.getInstance(withApiKey: fakeApiKey)
         
         let instanceDescription = rapid?.description
         rapid = nil
         
-        rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)
+        rapid = Rapid.getInstance(withApiKey: fakeApiKey)
         
         XCTAssertNotEqual(instanceDescription, rapid?.description, "Instance wasn't released")
     }
     
     func testMultipleInstances() {
-        let rapid = Rapid.getInstance(withAPIKey: apiKey)
-        let newInstance = Rapid.getInstance(withAPIKey: fakeAPIKey)
+        let rapid = Rapid.getInstance(withApiKey: apiKey)
+        let newInstance = Rapid.getInstance(withApiKey: fakeApiKey)
         
         XCTAssertNotEqual(rapid?.description, newInstance?.description, "Same instances for different databases")
     }
     
     func testConnectionStates() {
-        let rapid = Rapid.getInstance(withAPIKey: fakeAPIKey)!
+        let rapid = Rapid.getInstance(withApiKey: fakeApiKey)!
         
         let promise = expectation(description: "Rapid forced disconnect")
         
@@ -208,28 +210,38 @@ class RapidTests: XCTestCase {
     }
     
     func testCollectionWithoutHandler() {
-        let collection = RapidCollection(id: testCollectionName, handler: nil)
+        let collection = RapidCollectionRef(id: testCollectionName, handler: nil)
         
         XCTAssertThrowsError(try collection.getSocketManager(), "Collection didn't throw")
         XCTAssertThrowsError(try collection.document(id: "1"), "Collection didn't throw")
     }
     
     func testDocumentWithoutHandler() {
-        let document = RapidDocument(id: "1", inCollection: testCollectionName, handler: nil)
+        let document = RapidDocumentRef(id: "1", inCollection: testCollectionName, handler: nil)
         
         XCTAssertThrowsError(try document.getSocketManager(), "Document didn't throw")
     }
     
-    func testSnapshotInitialization() {
-        XCTAssertNil(RapidDocumentSnapshot(json: [1,2,3], collectionID: "1"), "Snapshot initialized")
-        XCTAssertNil(RapidDocumentSnapshot(json: ["id": 6], collectionID: "1"), "Snapshot initialized")
+    func testDocumentsInitialization() {
+        XCTAssertNil(RapidDocument(existingDocJson: [1,2,3], collectionID: "1"), "Documents initialized")
+        XCTAssertNil(RapidDocument(existingDocJson: ["id": 6], collectionID: "1"), "Documents initialized")
         
-        let snapshot = RapidDocumentSnapshot(id: "1", collectionID: "1", value: ["name": "testSnapshotInitialization"], etag: "1234")
+        let doc = [
+            "id": "1",
+            "crt": "a",
+            "crt-ts": 0.0,
+            "mod-ts": 0.0,
+            "etag": "1234",
+            "body": [
+                "name": "testDocumentsInitialization"
+            ]
+            ] as [String : Any]
+        let document = RapidDocument(existingDocJson: doc, collectionID: "1")
         
-        XCTAssertEqual(snapshot.id, "1", "Wrong snapshot")
-        XCTAssertEqual(snapshot.collectionID, "1", "Wrong snapshot")
-        XCTAssertEqual(snapshot.etag, "1234", "Wrong snapshot")
-        XCTAssertEqual(snapshot.value?["name"] as? String, "testSnapshotInitialization", "Wrong snapshot")
+        XCTAssertEqual(document?.id, "1", "Wrong Document")
+        XCTAssertEqual(document?.collectionID, "1", "Wrong Document")
+        XCTAssertEqual(document?.etag, "1234", "Wrong Document")
+        XCTAssertEqual(document?.value?["name"] as? String, "testDocumentsInitialization", "Wrong document")
     }
     
     func testErrorInstanceInitialization() {
@@ -406,8 +418,8 @@ class RapidTests: XCTestCase {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
         manager.subscribe(subscription)
         manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil))
-        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], cache: nil, callback: nil))
-        manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], cache: nil, callback: nil))
+        manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], cache: nil, completion: nil))
+        manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], cache: nil, completion: nil))
         manager.sendEmptyRequest()
         subscription.unsubscribe()
         
@@ -476,16 +488,16 @@ class RapidTests: XCTestCase {
             else {
                 if let subscription = event as? RapidSubscriptionHandler {
                     if subscription.subscriptionHash != subHash {
-                        handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                        handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                     }
                 }
                 else if let mutation = event as? RapidDocumentMutation {
                     if mutation.documentID != mutatationDocumentID {
-                        handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                        handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                     }
                 }
                 else {
-                    handler.delegate?.handlerDidReceive(response: RapidSocketAcknowledgement(eventID: eventID))
+                    handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                 }
             }
         }, goOnlineCallback: { handler in
@@ -498,12 +510,12 @@ class RapidTests: XCTestCase {
         
         runAfter(0.5) { 
             manager.subscribe(subscription1)
-            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], cache: nil, callback: nil))
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], cache: nil, completion: nil))
             manager.subscribe(subscription2)
-            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], cache: nil, callback: nil))
+            manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], cache: nil, completion: nil))
             manager.goOffline()
             runAfter(0.5, closure: {
-                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], cache: nil, callback: nil))
+                manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], cache: nil, completion: nil))
                 manager.subscribe(subscription3)
                 shouldConnect = false
                 manager.goOnline()
@@ -630,9 +642,9 @@ class MockNetworkHandlerDelegateObject: RapidNetworkHandlerDelegate {
     
     let connectCallback: (() -> Void)?
     let disconnectCallback: ((_ error: RapidError?) -> Void)?
-    let responseCallback: ((_ response: RapidResponse) -> Void)?
+    let responseCallback: ((_ message: RapidServerMessage) -> Void)?
     
-    init(connectCallback: (() -> Void)? = nil, disconnectCallback: ((_ error: RapidError?) -> Void)? = nil, responseCallback: ((_ response: RapidResponse) -> Void)? = nil) {
+    init(connectCallback: (() -> Void)? = nil, disconnectCallback: ((_ error: RapidError?) -> Void)? = nil, responseCallback: ((_ message: RapidServerMessage) -> Void)? = nil) {
         self.connectCallback = connectCallback
         self.disconnectCallback = disconnectCallback
         self.responseCallback = responseCallback
@@ -646,7 +658,7 @@ class MockNetworkHandlerDelegateObject: RapidNetworkHandlerDelegate {
         disconnectCallback?(error)
     }
     
-    func handlerDidReceive(response: RapidResponse) {
-        responseCallback?(response)
+    func handlerDidReceive(message: RapidServerMessage) {
+        responseCallback?(message)
     }
 }

@@ -10,6 +10,12 @@ import Foundation
 
 public class RapidLogger {
     
+    /// Logging level
+    ///
+    /// - off: Logging is completely turned off
+    /// - critical: Show only critical messages e.g. reason of Rapid SDK intentional crash
+    /// - info: Show info about what is going on in Rapid SDK
+    /// - debug: Show info about what is going on in Rapid SDK along with I/O data description
     public enum Level: Int {
         case off
         case critical

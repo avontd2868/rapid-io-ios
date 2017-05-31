@@ -27,13 +27,13 @@ extension RapidTests {
     }
     
     func testJSONValidationInvalidValue() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], cache: nil, callback: nil)
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], cache: nil, completion: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
     
     func testJSONalidationInvalidKey() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], cache: nil, callback: nil)
+        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], cache: nil, completion: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -81,7 +81,7 @@ extension RapidTests {
     func testJSONValidationInvalidIDParameter() {
         let sub = RapidCollectionSub(
             collectionID: testCollectionName,
-            filter: RapidFilter.equal(keyPath: RapidFilter.documentIdKey, value: 3),
+            filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: 3),
             ordering: nil,
             paging: nil,
             callback: nil,
@@ -139,7 +139,10 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "1",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
+                                "crt": "",
                                 "body": [
                                     "name": "testy"
                                 ]
@@ -154,6 +157,9 @@ extension RapidTests {
                         "docs": [
                             [
                                 "id": "1",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
+                                "crt": "",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test"
@@ -161,6 +167,9 @@ extension RapidTests {
                             ],
                             [
                                 "id": "2",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
+                                "crt": "",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "test"
@@ -177,6 +186,9 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "1",
+                                "crt-ts": 0.0,
+                                "mod-ts": 0.0,
+                                "crt": "",
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "testy"
@@ -193,6 +205,9 @@ extension RapidTests {
                         "doc":
                             [
                                 "id": "2",
+                                "crt-ts": 0.0,
+                                "crt": "",
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "testy"
@@ -205,10 +220,12 @@ extension RapidTests {
                         "evt-id": Rapid.uniqueID,
                         "col-id": testCollectionName,
                         "sub-id": Rapid.uniqueID,
-                        "psib-id": "1",
                         "doc":
                             [
                                 "id": "2",
+                                "crt-ts": 0.0,
+                                "crt": "",
+                                "mod-ts": 0.0,
                                 "etag": Rapid.uniqueID,
                                 "body": [
                                     "name": "testy"
@@ -223,7 +240,7 @@ extension RapidTests {
         
         XCTAssertEqual(responses.count, 4, "Number of responses")
         
-        if !(responses[0] is RapidSocketAcknowledgement) {
+        if !(responses[0] is RapidServerAcknowledgement) {
             XCTFail("Not an acknowledgement")
         }
         
@@ -593,9 +610,9 @@ extension RapidTests {
     }
     
     func testSubscriptionBatchObjectForUpdate() {
-        let update2 = RapidSubscriptionBatch(withUpdateJSON: [:])
-        let update3 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds"])
-        let update4 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds", "sub-id": "fjdslkfj"])
+        let update2 = RapidSubscriptionBatch(withUpdateJSON: [:], docRemoved: false)
+        let update3 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds"], docRemoved: false)
+        let update4 = RapidSubscriptionBatch(withUpdateJSON: ["evt-id": "kdsjghds", "sub-id": "fjdslkfj"], docRemoved: false)
         
         XCTAssertNil(update2, "Object created")
         XCTAssertNil(update3, "Object created")
@@ -603,8 +620,8 @@ extension RapidTests {
     }
     
     func testSocketAcknowledgement() {
-        let ack1 = RapidSocketAcknowledgement(json: ["test"])
-        let ack2 = RapidSocketAcknowledgement(json: [:])
+        let ack1 = RapidServerAcknowledgement(json: ["test"])
+        let ack2 = RapidServerAcknowledgement(json: [:])
         
         XCTAssertNil(ack1, "Object created")
         XCTAssertNil(ack2, "Object created")
@@ -618,5 +635,20 @@ extension RapidTests {
         XCTAssertNil(ca1, "Not nil")
         XCTAssertNil(ca2, "Not nil")
         XCTAssertNil(ca3, "Not nil")
+    }
+    
+    func testLimitExceeded() {
+        let promise = expectation(description: "Limit exceeded")
+        
+        rapid.collection(named: testCollectionName).limit(to: RapidPaging.takeLimit+1).subscribe { (error, _) in
+            if let error = error as? RapidError, case RapidError.invalidData(let reason) = error, case RapidError.InvalidDataReason.invalidLimit = reason {
+                promise.fulfill()
+            }
+            else {
+                XCTFail("Wrong error")
+            }
+        }
+        
+        waitForExpectations(timeout: 1, handler: nil)
     }
 }

@@ -11,7 +11,7 @@ import XCTest
 
 extension RapidTests {
 
-    func testSubscribeWithoutAuthorization() {
+    func testSubscribeWituhoutAuthorization() {
         let promise = expectation(description: "Permission denied")
         
         rapid.collection(named: "test1").subscribe { (error, _) in
@@ -29,8 +29,8 @@ extension RapidTests {
     func testAuthorizeAndSubscribe() {
         let promise = expectation(description: "Authorization")
         
-        XCTAssertEqual(rapid.authorization?.accessToken, testAuthToken)
-        
+        XCTAssertEqual(rapid.authorization?.token, testAuthToken)
+
         rapid.collection(named: testCollectionName).subscribe { (error, _) in
             if error == nil {
                 promise.fulfill()
@@ -75,7 +75,7 @@ extension RapidTests {
     func testInvalidAuthToken() {
         let promise = expectation(description: "Authorization")
 
-        rapid.authorize(withAccessToken: "fakeToken") { (_, error) in
+        rapid.authorize(withToken: "fakeToken") { (_, error) in
             if let error = error as? RapidError, case RapidError.invalidAuthToken = error {
                 promise.fulfill()
             }
@@ -92,7 +92,7 @@ extension RapidTests {
         
         let mockHandler = MockNetworkHandler(socketURL: self.socketURL, writeCallback: { (handler, event, eventID) in
             if event is RapidDeauthRequest {
-                handler.delegate?.handlerDidReceive(response: RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "test")))
+                handler.delegate?.handlerDidReceive(message: RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "test")))
             }
             else {
                 handler.writeToSocket(event: event, withID: eventID)

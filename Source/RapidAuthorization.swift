@@ -11,10 +11,10 @@ import Foundation
 /// Rapid authorization
 public struct RapidAuthorization {
     
-    /// Authorization access token
-    public let accessToken: String
+    /// Authorization token
+    public let token: String
     
-    init(accessToken: String) {
-        self.accessToken = accessToken
+    init(token: String) {
+        self.token = token
     }
 }

@@ -10,6 +10,9 @@ import Foundation
 
 /// Protocol for handling existing subscription
 public protocol RapidSubscription {
+    /// Unique subscription identifier
+    var subscriptionHash: String { get }
+    
     /// Remove subscription
     func unsubscribe()
 }
@@ -17,7 +20,7 @@ public protocol RapidSubscription {
 public typealias RapidAuthCallback = (_ success: Bool, _ error: Error?) -> Void
 
 /// Class representing a connection to Rapid.io database
-public class Rapid: NSObject {
+open class Rapid: NSObject {
     
     /// All instances which have been initialized
     fileprivate static var instances: [WRO<Rapid>] = []
@@ -35,6 +38,11 @@ public class Rapid: NSObject {
     ///
     /// This value can be used in document merge (e.g. `["attribute": Rapid.nilValue]` would remove `attribute` from a document)
     public static let nilValue = NSNull()
+    
+    /// Placeholder for a server timestamp
+    ///
+    /// When Rapid.io tries to write a json to a database it replaces every occurance of `serverTimestamp` with Unix timestamp
+    public static let serverTimestamp = "__TIMESTAMP__"
     
     /// Optional timeout for Rapid requests. If timeout is nil requests never end up with timout error
     public static var timeout: TimeInterval?
@@ -58,6 +66,18 @@ public class Rapid: NSObject {
         return handler.state
     }
     
+    /// Block of code that is called every time the `connectionState` changes
+    var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)? {
+        get {
+            return handler.onConnectionStateChanged
+        }
+        
+        set {
+            handler.onConnectionStateChanged = newValue
+        }
+    }
+    
+    /// Current authorization instace
     public var authorization: RapidAuthorization? {
         return handler.authorization
     }
@@ -66,10 +86,10 @@ public class Rapid: NSObject {
     
     /// Initializes a Rapid instance
     ///
-    /// - parameter withAPIKey:     API key that contains necessary information about a database to which you want to connect
+    /// - parameter withApiKey:     API key that contains necessary information about a database to which you want to connect
     ///
     /// - returns: New or previously initialized instance
-    public class func getInstance(withAPIKey apiKey: String) -> Rapid? {
+    public class func getInstance(withApiKey apiKey: String) -> Rapid? {
         
         // Delete released instances
         Rapid.instances = Rapid.instances.filter({ $0.object != nil })
@@ -109,10 +129,10 @@ public class Rapid: NSObject {
     /// Authorize Rapid instance
     ///
     /// - Parameters:
-    ///   - accessToken: Authorization access token
+    ///   - token: Authorization token
     ///   - completion: Authorization completion handler
-    public func authorize(withAccessToken accessToken: String, completion: RapidAuthCallback? = nil) {
-        let request = RapidAuthRequest(accessToken: accessToken, callback: completion)
+    public func authorize(withToken token: String, completion: RapidAuthCallback? = nil) {
+        let request = RapidAuthRequest(token: token, callback: completion)
         handler.socketManager.authorize(authRequest: request)
     }
     
@@ -129,8 +149,8 @@ public class Rapid: NSObject {
     /// - parameter named:     Collection identifier
     ///
     /// - returns: New object representing Rapid collection
-    public func collection(named: String) -> RapidCollection {
-        return RapidCollection(id: named, handler: handler)
+    open func collection(named: String) -> RapidCollectionRef {
+        return RapidCollectionRef(id: named, handler: handler)
     }
     
     /// Disconnect from server
@@ -212,6 +232,19 @@ public extension Rapid {
         return try! shared().connectionState
     }
     
+    /// Block of code that is called every time the `connectionState` changes
+    class var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)? {
+        get {
+            let instance = try! shared()
+            return instance.onConnectionStateChanged
+        }
+        
+        set {
+            let instance = try! shared()
+            instance.onConnectionStateChanged = newValue
+        }
+    }
+    
     /// Disconnect from server
     class func goOffline() {
         try! shared().goOffline()
@@ -230,10 +263,10 @@ public extension Rapid {
     /// Authorize Rapid instance
     ///
     /// - Parameters:
-    ///   - accessToken: Authorization access token
+    ///   - token: Authorization token
     ///   - completion: Authorization completion handler
-    class func authorize(withAccessToken accessToken: String, completion: RapidAuthCallback? = nil) {
-        try! shared().authorize(withAccessToken: accessToken, completion: completion)
+    class func authorize(withToken token: String, completion: RapidAuthCallback? = nil) {
+        try! shared().authorize(withToken: token, completion: completion)
     }
     
     /// Deauthorize Rapid instance
@@ -247,9 +280,9 @@ public extension Rapid {
     ///
     /// Initializes an instance that can be lately accessed through singleton class functions
     ///
-    /// - parameter withAPIKey:     API key that contains necessary information about a database to which you want to connect
-    class func configure(withAPIKey key: String) {
-        sharedInstance = Rapid.getInstance(withAPIKey: key)
+    /// - parameter withApiKey:     API key that contains necessary information about a database to which you want to connect
+    class func configure(withApiKey key: String) {
+        sharedInstance = Rapid.getInstance(withApiKey: key)
     }
     
     /// Creates a new object representing Rapid collection
@@ -257,7 +290,7 @@ public extension Rapid {
     /// - parameter named:     Collection identifier
     ///
     /// - returns: New object representing Rapid collection
-    class func collection(named: String) -> RapidCollection {
+    class func collection(named: String) -> RapidCollectionRef {
         return try! shared().collection(named: named)
     }
     

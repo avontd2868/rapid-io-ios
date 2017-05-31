@@ -29,7 +29,7 @@ protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionH
     ///   - added: Documents that have been added since last call
     ///   - updated: Documents that have been modified since last call
     ///   - removed: Documents that have been removed since last call
-    func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot])
+    func receivedUpdate(_ documents: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument])
     
     /// Subscription failed to be registered
     ///
@@ -45,13 +45,13 @@ protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionH
 protocol RapidFetchInstance: class, RapidSerializable, RapidTimeoutRequest, RapidSubscriptionHashable {
     var fetchID: String { get }
     
-    func receivedData(_ documents: [RapidDocumentSnapshot])
+    func receivedData(_ documents: [RapidDocument])
     func fetchFailed(withError error: RapidError)
 }
 
 extension RapidFetchInstance {
     
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement) {}
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {}
     
     func eventFailed(withError error: RapidErrorInstance) {
         fetchFailed(withError: error.error)

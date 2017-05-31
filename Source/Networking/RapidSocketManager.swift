@@ -11,8 +11,8 @@ import Foundation
 /// Class for websocket communication management
 class RapidSocketManager {
     
-    typealias Event = RapidSocketEvent & RapidSerializable
-    typealias Request = RapidRequest & Event
+    typealias Event = RapidSerializable & RapidClientMessage
+    typealias Request = RapidClientRequest & Event
     
     /// Network communication handler
     let networkHandler: RapidNetworkHandler
@@ -43,7 +43,7 @@ class RapidSocketManager {
     
     fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
     
-    fileprivate var pendingConOptRequests: [String: RapidConcurrencyOptimisticMutation] = [:]
+    fileprivate var pendingExectuionRequests: [String: RapidExecution] = [:]
     
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
@@ -109,11 +109,11 @@ class RapidSocketManager {
         }
     }
     
-    func concurrencyOptimisticMutate<T: RapidConcurrencyOptimisticMutation>(mutation: T) {
+    func execute<T: RapidExecution>(execution: T) {
         websocketQueue.async { [weak self] in
-            self?.pendingConOptRequests[mutation.identifier] = mutation
+            self?.pendingExectuionRequests[execution.identifier] = execution
             
-            self?.fetch(mutation.fetchRequest)
+            self?.fetch(execution.fetchRequest)
         }
     }
     
@@ -184,7 +184,7 @@ class RapidSocketManager {
     ///
     /// - Parameter request: Request that has been sent to the server
     /// - Returns: Event ID of the request
-    func eventID(forPendingRequest request: RapidRequest) -> String? {
+    func eventID(forPendingRequest request: RapidClientRequest) -> String? {
         let pendingTuples = pendingRequests.filter({ $0.value.request === request })
         return pendingTuples.first?.key
     }
@@ -254,16 +254,22 @@ fileprivate extension RapidSocketManager {
                 
                 return !toBeSent && !toBeAcknowledged
             })
-            eventQueue = resubscribe
+            for handler in resubscribe {
+                eventQueue.append(handler)
+            }
         }
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
         let pendingArray = (Array(pendingRequests.values) as [(request: Request, timestamp: TimeInterval)])
         let eventArray = pendingArray.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
-        eventQueue.append(contentsOf: eventArray)
+        for event in eventArray {
+            eventQueue.append(event)
+        }
 
         // Finally append relevant requests that were waiting to be sent
-        eventQueue.append(contentsOf: currentQueue)
+        for event in currentQueue {
+            eventQueue.append(event)
+        }
         
         // Create new connection
         networkHandler.goOnline()
@@ -282,7 +288,7 @@ fileprivate extension RapidSocketManager {
     func sendConnectionRequest() {
         let connection: RapidConnectionRequest
         let authorization: RapidAuthRequest?
-        
+
         if let connectionID = connectionID {
             connection = RapidReconnectionRequest(connectionID: connectionID, delegate: self)
             
@@ -295,8 +301,8 @@ fileprivate extension RapidSocketManager {
             self.connectionID = connectionID
             
             // Client needs to reauthorize when creating a new connection
-            if let token = self.auth?.accessToken {
-                authorization = RapidAuthRequest(accessToken: token)
+            if let token = self.auth?.token {
+                authorization = RapidAuthRequest(token: token)
             }
             else {
                 authorization = nil
@@ -306,7 +312,7 @@ fileprivate extension RapidSocketManager {
         post(event: connection, prioritize: true)
         
         if let authorization = authorization,
-            !eventQueue.contains(where: { authorization.auth.accessToken == ($0 as? RapidAuthRequest)?.auth.accessToken }) {
+            !eventQueue.contains(where: { authorization.auth.token == ($0 as? RapidAuthRequest)?.auth.token }) {
             post(event: authorization, prioritize: true)
         }
     }
@@ -322,7 +328,7 @@ fileprivate extension RapidSocketManager {
     ///
     /// - Parameter eventID: Event ID of the event to be acknowledged
     func acknowledge(eventWithID eventID: String) {
-        let acknowledgement = RapidSocketAcknowledgement(eventID: eventID)
+        let acknowledgement = RapidClientAcknowledgement(eventID: eventID)
         
         post(event: acknowledgement)
     }
@@ -404,7 +410,7 @@ fileprivate extension RapidSocketManager {
             // Generate unique event ID
             let eventID = Generator.uniqueID
             
-            if let request = event as? RapidRequest {
+            if let request = event as? RapidClientRequest {
                 registerPendingRequest(request, withID: eventID)
             }
             
@@ -420,7 +426,7 @@ fileprivate extension RapidSocketManager {
     /// - Parameters:
     ///   - request: Sent request
     ///   - eventID: Event ID associated with the request
-    func registerPendingRequest(_ request: RapidRequest, withID eventID: String) {
+    func registerPendingRequest(_ request: RapidClientRequest, withID eventID: String) {
         if let request = request as? Request {
             pendingRequests[eventID] = (request, Date().timeIntervalSince1970)
         }
@@ -429,12 +435,12 @@ fileprivate extension RapidSocketManager {
     /// Handle an event sent from the server
     ///
     /// - Parameter response: Event sent from the server
-    func handle(response: RapidResponse) {
-        switch response {
+    func handle(message: RapidServerMessage) {
+        switch message {
         // Event failed
-        case let response as RapidErrorInstance:
-            let tuple = pendingRequests[response.eventID]
-            tuple?.request.eventFailed(withError: response)
+        case let message as RapidErrorInstance:
+            let tuple = pendingRequests[message.eventID]
+            tuple?.request.eventFailed(withError: message)
             
             // If subscription registration failed remove if from the list of active subscriptions
             if let subscription = tuple?.request as? RapidSubscriptionHandler {
@@ -444,40 +450,45 @@ fileprivate extension RapidSocketManager {
             else if let fetch = tuple?.request as? RapidFetchInstance {
                 pendingFetches[fetch.fetchID] = nil
             }
-            else if let request = tuple?.request as? RapidAuthRequest, self.auth?.accessToken == request.auth.accessToken {
+            else if let request = tuple?.request as? RapidAuthRequest, self.auth?.token == request.auth.token {
                 self.auth = nil
             }
             
-            pendingRequests[response.eventID] = nil
+            pendingRequests[message.eventID] = nil
         
         // Event acknowledged
-        case let response as RapidSocketAcknowledgement:
-            let tuple = pendingRequests[response.eventID]
-            tuple?.request.eventAcknowledged(response)
-            pendingRequests[response.eventID] = nil
+        case let message as RapidServerAcknowledgement:
+            let tuple = pendingRequests[message.eventID]
+            tuple?.request.eventAcknowledged(message)
+            pendingRequests[message.eventID] = nil
         
         // Subscription event
-        case let response as RapidSubscriptionBatch:
-            let subscription = activeSubscriptions[response.subscriptionID]
-            subscription?.receivedSubscriptionEvent(response)
-            acknowledge(eventWithID: response.eventID)
+        case let message as RapidSubscriptionBatch:
+            let subscription = activeSubscriptions[message.subscriptionID]
+            subscription?.receivedSubscriptionEvent(message)
             
         // Subscription cancel
-        case let response as RapidSubscriptionCancel:
-            let subscription = activeSubscriptions[response.subscriptionID]
-            let error = RapidErrorInstance(eventID: response.eventID, error: .permissionDenied(message: "No longer authorized to read data"))
+        case let message as RapidSubscriptionCancel:
+            let subscription = activeSubscriptions[message.subscriptionID]
+            let eventID = message.eventIDsToAcknowledge.first ?? Generator.uniqueID
+            let error = RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "No longer authorized to read data"))
             subscription?.eventFailed(withError: error)
-            activeSubscriptions[response.subscriptionID] = nil
-            acknowledge(eventWithID: response.eventID)
+            activeSubscriptions[message.subscriptionID] = nil
             
         // Fetch response
-        case let response as RapidFetchResponse:
-            let fetch = pendingFetches[response.fetchID]
-            fetch?.receivedData(response.documents)
-            pendingFetches[response.fetchID] = nil
+        case let message as RapidFetchResponse:
+            let fetch = pendingFetches[message.fetchID]
+            fetch?.receivedData(message.documents)
+            pendingFetches[message.fetchID] = nil
         
         default:
             RapidLogger.developerLog(message: "Unrecognized response")
+        }
+        
+        if let event = message as? RapidServerEvent {
+            for eventID in event.eventIDsToAcknowledge {
+                acknowledge(eventWithID: eventID)
+            }
         }
     }
 }
@@ -559,7 +570,7 @@ extension RapidSocketManager: RapidTimeoutRequestDelegate {
             // Otherwise, if the request is still in the queue move it to pending requests and complete it with timeout error
             if let eventID = self?.eventID(forPendingRequest: request) {
                 let error = RapidErrorInstance(eventID: eventID, error: .timeout)
-                self?.handle(response: error)
+                self?.handle(message: error)
             }
             else if let index = self?.eventQueue.flatMap({ $0 as? Request }).index(where: { request === $0 }), let request = request as? Request {
                 self?.eventQueue.remove(at: index)
@@ -568,18 +579,18 @@ extension RapidSocketManager: RapidTimeoutRequestDelegate {
                 self?.registerPendingRequest(request, withID: eventID)
                 
                 let error = RapidErrorInstance(eventID: eventID, error: .timeout)
-                self?.handle(response: error)
+                self?.handle(message: error)
             }
         }
     }
 }
 
 // MARK: Concurrency optimistic mutation delegate
-extension RapidSocketManager: RapidConOptMutationDelegate {
+extension RapidSocketManager: RapidExectuionDelegate {
     
-    func conOptMutationCompleted(_ mutation: RapidConcurrencyOptimisticMutation) {
+    func executionCompleted(_ execution: RapidExecution) {
         websocketQueue.async { [weak self] in
-            self?.pendingConOptRequests[mutation.identifier] = nil
+            self?.pendingExectuionRequests[execution.identifier] = nil
         }
     }
     
@@ -613,13 +624,13 @@ extension RapidSocketManager: RapidNetworkHandlerDelegate {
         }
     }
     
-    func handlerDidReceive(response: RapidResponse) {
+    func handlerDidReceive(message: RapidServerMessage) {
         websocketQueue.async { [weak self] in
             
             // Restart heartbeat timer
             self?.rescheduleHeartbeatTimer()
             
-            self?.handle(response: response)
+            self?.handle(message: message)
         }
     }
 }

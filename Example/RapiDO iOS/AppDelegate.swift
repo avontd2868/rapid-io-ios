@@ -9,20 +9,19 @@
 import UIKit
 import Rapid
 
+//typealias Rapid = DemoRapid
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        assert(!(Bundle.main.infoDictionary?["ClientIdentifier"] as? String ?? "").isEmpty, "Client identifier not defined")
-        
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {        
         Rapid.timeout = 10
         Rapid.logLevel = .debug
-        Rapid.configure(withAPIKey: "MTMuNjQuNzcuMjAyOjgwODA=")
-        Rapid.authorize(withAccessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6ImRlbW9hcHAtLioiLCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.9e1b1eT1cfoxz7QqydF0eiFRiFP6qvHRHsqHxJ_ymuo")
+        Rapid.configure(withApiKey: Constants.apiKey)
         Rapid.isCacheEnabled = true
+ 
         return true
     }
 

@@ -109,7 +109,7 @@ extension RapidTests {
     }
     
     func testCreateCacheDir() {
-        let cacheURL = RapidCache.cacheURL(forAPIKey: apiKey)!
+        let cacheURL = RapidCache.cacheURL(forApiKey: apiKey)!
         
         do {
             try FileManager.default.removeItem(at: cacheURL)
@@ -128,7 +128,7 @@ extension RapidTests {
     }
     
     func testOverrideFileWithCacheDir() {
-        let cacheURL = RapidCache.cacheURL(forAPIKey: apiKey)!
+        let cacheURL = RapidCache.cacheURL(forApiKey: apiKey)!
         
         do {
             try FileManager.default.removeItem(at: cacheURL)
@@ -270,7 +270,7 @@ extension RapidTests {
         cache?.save(dataset: ["testString" as NSString], forKey: "testKey")
         cache?.save(dataset: ["testString2" as NSString], forKey: "testKey2")
         
-        RapidCache.clearCache(forAPIKey: apiKey)
+        RapidCache.clearCache(forApiKey: apiKey)
         
         cache?.loadDataset(forKey: "testKey", completion: { (value) in
             if value != nil {
@@ -629,7 +629,7 @@ extension RapidTests {
                     let documents = docs
                     let networkHanlder = RapidNetworkHandler(socketURL: self.fakeSocketURL)
                     socketManager = RapidSocketManager(networkHandler: networkHanlder)
-                    socketManager.authorize(authRequest: RapidAuthRequest(accessToken: self.testAuthToken))
+                    socketManager.authorize(authRequest: RapidAuthRequest(token: self.testAuthToken))
                     socketManager.cacheHandler = self.rapid.handler
                     
                     self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "Description"], completion: { _ in

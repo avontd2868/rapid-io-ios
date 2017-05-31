@@ -55,6 +55,16 @@ class RapidHandler: NSObject {
         return socketManager.networkHandler.state
     }
     
+    var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)? {
+        get {
+            return socketManager.networkHandler.onConnectionStateChanged
+        }
+        
+        set {
+            socketManager.networkHandler.onConnectionStateChanged = newValue
+        }
+    }
+    
     var authorization: RapidAuthorization? {
         return socketManager.auth
     }
@@ -71,7 +81,7 @@ class RapidHandler: NSObject {
             // If caching was disabled release a cache instance and remove cached data
             else if !cacheEnabled {
                 cache = nil
-                RapidCache.clearCache(forAPIKey: apiKey)
+                RapidCache.clearCache(forApiKey: apiKey)
             }
         }
     }
@@ -99,19 +109,19 @@ class RapidHandler: NSObject {
 extension RapidHandler: RapidCacheHandler {
     
     func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping ([RapidCachableObject]?) -> Void) {
-        cache?.loadDataset(forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken, completion: completion)
+        cache?.loadDataset(forKey: subscription.subscriptionHash, secret: socketManager.auth?.token, completion: completion)
     }
 
     func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHashable) {
-        cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: socketManager.auth?.accessToken)
+        cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: socketManager.auth?.token)
     }
     
     func storeObject(_ object: RapidCachableObject) {
-        cache?.save(object: object, withSecret: socketManager.auth?.accessToken)
+        cache?.save(object: object, withSecret: socketManager.auth?.token)
     }
     
     func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidCachableObject?) -> Void) {
-        cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: socketManager.auth?.accessToken, completion: completion)
+        cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: socketManager.auth?.token, completion: completion)
     }
     
     func removeObject(withGroupID groupID: String, objectID: String) {

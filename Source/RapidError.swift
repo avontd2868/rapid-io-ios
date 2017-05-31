@@ -21,7 +21,7 @@ enum RapidInternalError: Error {
 }
 
 /// Wrapper structure for `RapidError`
-struct RapidErrorInstance: RapidResponse {
+struct RapidErrorInstance: RapidServerResponse {
     
     let eventID: String
     let error: RapidError
@@ -56,7 +56,7 @@ struct RapidErrorInstance: RapidResponse {
             error = .invalidRequest(message: message)
             
         case .some(let type) where type == RapidSerialization.Error.ErrorType.WriteConflict.name:
-            error = .concurrencyWriteFailed(reason: .writeConflict(message: message))
+            error = .executionFailed(reason: .writeConflict(message: message))
             
         default:
             error = .default
@@ -81,7 +81,7 @@ struct RapidErrorInstance: RapidResponse {
 /// - invalidData: Data are in an invalid format
 /// - timeout: Request timout
 /// - invalidAuthToken: Authorization token is invalid
-/// - concurrencyWriteFailed: Optimistic concurrency write failed
+/// - executionFailed: Execution failed
 /// - `default`: General error
 public enum RapidError: Error {
     
@@ -92,33 +92,32 @@ public enum RapidError: Error {
     case invalidData(reason: InvalidDataReason)
     case timeout
     case invalidAuthToken(message: String?)
-    case concurrencyWriteFailed(reason: ConcurrencyWriteError)
+    case executionFailed(reason: ExecutionError)
     case `default`
     
     /// Reason of `invalidData` error
     ///
-    /// - serializationFailure: Serialization failed because data were in a wrong format
+    /// - serializationFailure: Serialization failed because data were in a wrongsubscription format
     /// - invalidFilter: Invalid subscription filter
     /// - invalidDocument: Invalid document JSON when mutating or merging
     /// - invalidIdentifierFormat: Invalid identifier format - all identifiers e.g. collection ID, document ID must be strings consiting only of alphanumeric characters, dashes and underscores
     /// - invalidKeyPath: Invalid key path format
+    /// - invalidLimit: Limit is greater than `RapidPaging.takeLimit`
     public enum InvalidDataReason {
         case serializationFailure
         case invalidFilter(filter: RapidFilter)
         case invalidDocument(document: [AnyHashable: Any])
         case invalidIdentifierFormat(identifier: Any?)
         case invalidKeyPath(keyPath: String)
+        case invalidLimit
     }
     
-    //FIXME: Better name
-    /// Reason of `concurrencyWriteFailed`
+    /// Reason of `executionFailed`
     ///
-    /// - writeConflict: Server wasn't able to fulfill concurrency optimistic write to database
-    /// - invalidResult: Unexpected result of `RapidConcurrencyOptimisticBlock`
-    /// - aborted: Client aborted an optimistic concurrency flow
-    public enum ConcurrencyWriteError {
+    /// - writeConflict: Server wasn't able to execute a database operation
+    /// - aborted: Client aborted an execution flow
+    public enum ExecutionError {
         case writeConflict(message: String?)
-        case invalidResult(message: String)
         case aborted
     }
 }

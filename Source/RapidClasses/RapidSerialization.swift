@@ -14,7 +14,7 @@ class RapidSerialization {
     ///
     /// - Parameter json: Received JSON
     /// - Returns: Array of deserialized objects
-    class func parse(json: [AnyHashable: Any]?) -> [RapidResponse]? {
+    class func parse(json: [AnyHashable: Any]?) -> [RapidServerMessage]? {
         guard let json = json else {
             RapidLogger.developerLog(message: "Server event parsing failed - no data")
             
@@ -23,7 +23,7 @@ class RapidSerialization {
         
         // If websocket received a batch of events
         if let batch = json[Batch.name] as? [[AnyHashable: Any]] {
-            var events = [RapidResponse]()
+            var events = [RapidServerMessage]()
             var updates = [String: RapidSubscriptionBatch]()
             
             for json in batch {
@@ -134,6 +134,10 @@ class RapidSerialization {
     class func serialize(fetch: RapidCollectionFetch, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
+        if let paging = fetch.paging, paging.take > RapidPaging.takeLimit {
+            throw RapidError.invalidData(reason: .invalidLimit)
+        }
+        
         json[Fetch.CollectionID.name] = try Validator.validate(identifier: fetch.collectionID)
         json[Fetch.Filter.name] = try serialize(filter: fetch.filter)
         json[Fetch.Ordering.name] = try serialize(ordering: fetch.ordering)
@@ -153,6 +157,10 @@ class RapidSerialization {
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(subscription: RapidCollectionSub, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
+        
+        if let paging = subscription.paging, paging.take > RapidPaging.takeLimit {
+            throw RapidError.invalidData(reason: .invalidLimit)
+        }
         
         json[Subscription.CollectionID.name] = try Validator.validate(identifier: subscription.collectionID)
         json[Subscription.Filter.name] = try serialize(filter: subscription.filter)
@@ -195,7 +203,7 @@ class RapidSerialization {
             throw RapidError.invalidData(reason: .invalidKeyPath(keyPath: simpleFilter.keyPath))
         }
         
-        if simpleFilter.keyPath == RapidFilter.documentIdKey {
+        if simpleFilter.keyPath == RapidFilter.docIdKey {
             if let value = simpleFilter.value as? String {
                 try Validator.validate(identifier: value)
             }
@@ -311,7 +319,18 @@ class RapidSerialization {
     ///   - acknowledgement: Acknowledgement object
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(acknowledgement: RapidSocketAcknowledgement) throws -> String {
+    class func serialize(acknowledgement: RapidClientAcknowledgement) throws -> String {
+        let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
+        return try resultDict.jsonString()
+    }
+    
+    /// Serialize an event acknowledgement into JSON string
+    ///
+    /// - Parameters:
+    ///   - acknowledgement: Acknowledgement object
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(acknowledgement: RapidServerAcknowledgement) throws -> String {
         let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
         return try resultDict.jsonString()
     }
@@ -373,7 +392,7 @@ class RapidSerialization {
     class func serialize(authRequest: RapidAuthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
-        json[Authorization.AccessToken.name] = authRequest.auth.accessToken
+        json[Authorization.Token.name] = authRequest.auth.token
         
         let resultDict = [Authorization.name: json]
         return try resultDict.jsonString()
@@ -392,9 +411,9 @@ fileprivate extension RapidSerialization {
     ///
     /// - Parameter json: Event JSON
     /// - Returns: Deserialized object
-    class func parseEvent(json: [AnyHashable: Any]) -> RapidResponse? {
+    class func parseEvent(json: [AnyHashable: Any]) -> RapidServerMessage? {
         if let ack = json[Acknowledgement.name] as? [AnyHashable: Any] {
-            return RapidSocketAcknowledgement(json: ack)
+            return RapidServerAcknowledgement(json: ack)
         }
         else if let err = json[Error.name] as? [AnyHashable: Any] {
             return RapidErrorInstance(json: err)
@@ -403,10 +422,10 @@ fileprivate extension RapidSerialization {
             return RapidSubscriptionBatch(withCollectionJSON: val)
         }
         else if let upd = json[SubscriptionUpdate.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionBatch(withUpdateJSON: upd)
+            return RapidSubscriptionBatch(withUpdateJSON: upd, docRemoved: false)
         }
         else if let rm = json[SubscriptionDocRemoved.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionBatch(withUpdateJSON: rm)
+            return RapidSubscriptionBatch(withUpdateJSON: rm, docRemoved: true)
         }
         else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
             return RapidSubscriptionCancel(json: ca)
@@ -659,8 +678,16 @@ extension RapidSerialization {
             static let name = "ts"
         }
         
-        struct Created {
+        struct SortValue {
             static let name = "crt"
+        }
+        
+        struct CreatedAt {
+            static let name = "crt-ts"
+        }
+        
+        struct ModifiedAt {
+            static let name = "mod-ts"
         }
         
         struct Body {
@@ -711,7 +738,7 @@ extension RapidSerialization {
     struct Authorization {
         static let name = "auth"
         
-        struct AccessToken {
+        struct Token {
             static let name = "token"
         }
     }

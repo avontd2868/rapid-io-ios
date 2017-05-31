@@ -14,19 +14,19 @@ protocol RapidSerializable {
 }
 
 /// Protocol describing events that can be sent to the server
-protocol RapidSocketEvent {}
+protocol RapidClientMessage {}
 
 /// Protocol describing socket events that wait for a server response
-protocol RapidRequest: class, RapidSocketEvent {
-    func eventAcknowledged(_ acknowledgement: RapidSocketAcknowledgement)
+protocol RapidClientRequest: class, RapidClientMessage {
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement)
     func eventFailed(withError error: RapidErrorInstance)
 }
 
 /// Protocol describing socket events that inform server and do not wait for a server response
-protocol RapidClientEvent: RapidSocketEvent {}
+protocol RapidClientEvent: RapidClientMessage {}
 
 /// `RapidRequest` that implements timeout
-protocol RapidTimeoutRequest: RapidRequest {
+protocol RapidTimeoutRequest: RapidClientRequest {
     /// Request should timeout even if `Rapid.timeout` is `nil`
     var alwaysTimeout: Bool { get }
     

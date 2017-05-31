@@ -92,7 +92,7 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
         unsubscribeCallback = callback
     }
     
-    func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) {
+    func receivedUpdate(_ documents: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument]) {
         // Pass changes to callbacks
         DispatchQueue.main.async {
             self.callback?(nil, documents)
@@ -146,7 +146,7 @@ class RapidDocumentSub: NSObject {
         
         super.init()
         
-        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilterSimple.documentIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
     }
 }
 
@@ -175,7 +175,7 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
     func subscriptionFailed(withError error: RapidError) {
         // Pass error to callback
         DispatchQueue.main.async {
-            self.callback?(error, RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: nil))
+            self.callback?(error, RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
         }
     }
     
@@ -183,10 +183,10 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
         unsubscribeCallback = callback
     }
     
-    func receivedUpdate(_ documents: [RapidDocumentSnapshot], _ added: [RapidDocumentSnapshot], _ updated: [RapidDocumentSnapshot], _ removed: [RapidDocumentSnapshot]) {
+    func receivedUpdate(_ documents: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument]) {
         // Pass changes to callback
         DispatchQueue.main.async {
-            self.callback?(nil, documents.last ?? RapidDocumentSnapshot(id: self.documentID, collectionID: self.collectionID, value: nil))
+            self.callback?(nil, documents.last ?? RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
         }
     }
     

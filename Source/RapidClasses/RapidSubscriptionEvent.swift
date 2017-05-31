@@ -9,17 +9,17 @@
 import Foundation
 
 /// Wrapper for subscription events that came in one batch
-class RapidSubscriptionBatch: RapidResponse {
+class RapidSubscriptionBatch: RapidServerEvent {
     
-    let eventID: String
+    internal var eventIDsToAcknowledge: [String]
     let subscriptionID: String
     let collectionID: String
     
-    internal(set) var collection: [RapidDocumentSnapshot]?
-    internal(set) var updates: [RapidDocumentSnapshot]
+    internal(set) var collection: [RapidDocument]?
+    internal(set) var updates: [RapidDocument]
     
-    init(withSubscriptionID id: String, collection: [RapidDocumentSnapshot]) {
-        self.eventID = Rapid.uniqueID
+    init(withSubscriptionID id: String, collection: [RapidDocument]) {
+        self.eventIDsToAcknowledge = [Rapid.uniqueID]
         self.subscriptionID = id
         self.collectionID = collection.first?.collectionID ?? ""
         self.collection = collection
@@ -43,14 +43,14 @@ class RapidSubscriptionBatch: RapidResponse {
             return nil
         }
         
-        self.eventID = eventID
+        self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subscriptionID
         self.collectionID = collectionID
-        self.collection = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })
+        self.collection = documents.flatMap({ RapidDocument(existingDocJson: $0, collectionID: collectionID) })
         self.updates = []
     }
     
-    init?(withUpdateJSON dict: [AnyHashable: Any]) {
+    init?(withUpdateJSON dict: [AnyHashable: Any], docRemoved: Bool) {
         guard let eventID = dict[RapidSerialization.EventID.name] as? String else {
             return nil
         }
@@ -63,25 +63,35 @@ class RapidSubscriptionBatch: RapidResponse {
             return nil
         }
         
-        guard let document = dict[RapidSerialization.SubscriptionUpdate.Document.name] as? [AnyHashable: Any] else {
+        guard let docDict = dict[RapidSerialization.SubscriptionUpdate.Document.name] as? [AnyHashable: Any] else {
             return nil
         }
         
-        guard let snapshot = RapidDocumentSnapshot(json: document, collectionID: collectionID) else {
+        let document: RapidDocument?
+        if docRemoved {
+            document = RapidDocument(removedDocJson: docDict, collectionID: collectionID)
+        }
+        else {
+            document = RapidDocument(existingDocJson: docDict, collectionID: collectionID)
+        }
+        
+        guard let doc = document else {
             return nil
         }
         
-        self.eventID = eventID
+        self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subscriptionID
         self.collectionID = collectionID
         self.collection = nil
-        self.updates = [snapshot]
+        self.updates = [doc]
     }
 
     /// Add subscription event to the batch
     ///
     /// - Parameter initialValue: Subscription dataset object
     func merge(event: RapidSubscriptionBatch) {
+        eventIDsToAcknowledge.append(contentsOf: event.eventIDsToAcknowledge)
+        
         // Since initial value contains whole dataset it overrides all previous single updates
         if let collection = event.collection {
             self.collection = collection
@@ -94,15 +104,15 @@ class RapidSubscriptionBatch: RapidResponse {
     
 }
 
-class RapidFetchResponse: RapidResponse {
+class RapidFetchResponse: RapidServerEvent {
     
-    let eventID: String
+    let eventIDsToAcknowledge: [String]
     
     let fetchID: String
     
     let collectionID: String
     
-    let documents: [RapidDocumentSnapshot]
+    let documents: [RapidDocument]
     
     init?(withJSON json: [AnyHashable: Any]) {
         guard let eventID = json[RapidSerialization.EventID.name] as? String else {
@@ -121,10 +131,10 @@ class RapidFetchResponse: RapidResponse {
             return nil
         }
         
-        self.eventID = eventID
+        self.eventIDsToAcknowledge = [eventID]
         self.fetchID = fetchID
         self.collectionID = collectionID
-        self.documents = documents.flatMap({ RapidDocumentSnapshot(json: $0, collectionID: collectionID) })
+        self.documents = documents.flatMap({ RapidDocument(existingDocJson: $0, collectionID: collectionID) })
     }
     
 }

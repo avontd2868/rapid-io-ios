@@ -91,7 +91,7 @@ struct Task {
     let priority: Priority
     let tags: [Tag]
     
-    init?(withSnapshot snapshot: RapidDocumentSnapshot) {
+    init?(withSnapshot snapshot: RapidDocument) {
         guard let dict = snapshot.value,
             let title = dict[Task.titleAttributeName] as? String,
             let isoString = dict[Task.createdAttributeName] as? String,
@@ -137,37 +137,4 @@ extension Task {
     static let tagsAttributeName = "tags"
     static let completedAttributeName = "done"
 
-}
-
-extension Date {
-
-    var isoString: String {
-        let formatter = DateFormatter()
-        
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-        
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        return formatter.string(from: self)
-    }
-    
-    static func dateFromString(_ str: String) -> Date {
-        let formatter = DateFormatter()
-        
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-        
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        if let date = formatter.date(from: str) {
-            return date
-        }
-        else {
-            return Date()
-        }
-    }
-    
 }
