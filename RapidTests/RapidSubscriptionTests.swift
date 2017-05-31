@@ -1186,7 +1186,7 @@ extension RapidTests {
                     initialValue = false
                     let docs = documents
                     
-                    self.rapid.collection(named: self.testCollectionName).readOnce(completion: { (_, fetched) in
+                    self.rapid.collection(named: self.testCollectionName).fetch(completion: { (_, fetched) in
                         if docs == fetched {
                             promise.fulfill()
                         }
@@ -1209,7 +1209,7 @@ extension RapidTests {
         mutate(documentID: "1", value: ["name": "testUpdate"])
         
         runAfter(1) {
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, document) in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { (_, document) in
                 XCTAssertEqual(document.value?["name"] as? String, "testUpdate", "Wrong document")
                 promise.fulfill()
             })
@@ -1221,7 +1221,7 @@ extension RapidTests {
     func testUnauthorizedCollectionFetch() {
         let promise = expectation(description: "Subscription update")
 
-        self.rapid.collection(named: "fakeCollectionName").readOnce(completion: { (error, _) in
+        self.rapid.collection(named: "fakeCollectionName").fetch(completion: { (error, _) in
             if let error = error as? RapidError, case RapidError.permissionDenied = error {
                 promise.fulfill()
             }
@@ -1236,7 +1236,7 @@ extension RapidTests {
     func testUnauthorizedDocumentFetch() {
         let promise = expectation(description: "Subscription update")
 
-        self.rapid.collection(named: "fakeCollectionName").document(withID: "1").readOnce(completion: { (error, _) in
+        self.rapid.collection(named: "fakeCollectionName").document(withID: "1").fetch(completion: { (error, _) in
             if let error = error as? RapidError, case RapidError.permissionDenied = error {
                 promise.fulfill()
             }
@@ -1257,7 +1257,7 @@ extension RapidTests {
         
         runAfter(1) {
 
-            self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.equal(keyPath: "car.type", value: "Skoda")).readOnce { (_, documents) in
+            self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.equal(keyPath: "car.type", value: "Skoda")).fetch { (_, documents) in
                 XCTAssertGreaterThan(documents.count, 0, "No documentss")
                 
                 for document in documents {
@@ -1282,7 +1282,7 @@ extension RapidTests {
         
         runAfter(1) {
             
-            self.rapid.collection(named: self.testCollectionName).order(by: RapidOrdering(keyPath: "car.model", ordering: .ascending)).readOnce { (_, documents) in
+            self.rapid.collection(named: self.testCollectionName).order(by: RapidOrdering(keyPath: "car.model", ordering: .ascending)).fetch { (_, documents) in
                 XCTAssertGreaterThan(documents.count, 0, "No documents")
                 
                 var lastValue: String?

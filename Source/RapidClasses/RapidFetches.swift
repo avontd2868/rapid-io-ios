@@ -1,5 +1,5 @@
 //
-//  RapidReads.swift
+//  RapidFetchess.swift
 //  Rapid
 //
 //  Created by Jan Schwarz on 17/05/2017.
@@ -24,7 +24,7 @@ class RapidCollectionFetch: NSObject {
     let paging: RapidPaging?
     
     /// Completion callback
-    let callback: RapidColFetchCallback?
+    let completion: RapidColFetchCompletion?
     
     /// Cache handler
     internal weak var cacheHandler: RapidCacheHandler?
@@ -48,12 +48,12 @@ class RapidCollectionFetch: NSObject {
     ///   - paging: Subscription paging
     ///   - Cache handler
     ///   - callback: Completion callback
-    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, callback: RapidColFetchCallback?) {
+    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, completion: RapidColFetchCompletion?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
         self.paging = paging
-        self.callback = callback
+        self.completion = completion
         self.cacheHandler = cache
     }
     
@@ -83,7 +83,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
             
             self.cacheHandler?.storeDataset(documents, forSubscription: self)
             
-            self.callback?(nil, documents)
+            self.completion?(nil, documents)
         }
     }
     
@@ -93,7 +93,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid fetch collection \(self.collectionID) failed", level: .info)
             
-            self.callback?(error, [])
+            self.completion?(error, [])
         }
     }
 }
@@ -115,7 +115,7 @@ class RapidDocumentFetch: NSObject {
     let collectionFetch: RapidCollectionFetch
     
     /// Default subscription callback
-    let callback: RapidDocFetchCallback?
+    let completion: RapidDocFetchCompletion?
     
     /// Cache handler
     internal weak var cacheHandler: RapidCacheHandler?
@@ -139,12 +139,12 @@ class RapidDocumentFetch: NSObject {
     ///   - documentID: Document ID
     ///   - cache: Cache handler
     ///   - callback: Completion callback
-    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, callback: RapidDocFetchCallback?) {
+    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDocFetchCompletion?) {
         let filter = RapidFilterSimple(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID)
-        self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, cache: nil, callback: nil)
+        self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, cache: nil, completion: nil)
         
         self.documentID = documentID
-        self.callback = callback
+        self.completion = completion
         self.cacheHandler = cache
     }
 
@@ -173,7 +173,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
             self.cacheHandler?.storeDataset(documents, forSubscription: self)
             
             let document = documents.first ?? RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID)
-            self.callback?(nil, document)
+            self.completion?(nil, document)
         }
     }
     
@@ -183,7 +183,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document fetch failed - document \(self.documentID) collection \(self.collectionID)", level: .info)
             
-            self.callback?(error, RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
+            self.completion?(error, RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
         }
     }
 }

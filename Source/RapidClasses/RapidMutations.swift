@@ -36,7 +36,7 @@ class RapidDocumentExecution: RapidExecution {
     
     /// Fetch document request
     var fetchRequest: RapidFetchInstance {
-        let fetch = RapidDocumentFetch(collectionID: collectionID, documentID: documentID, cache: cacheHandler, callback: { [weak self] (error, document) in
+        let fetch = RapidDocumentFetch(collectionID: collectionID, documentID: documentID, cache: cacheHandler, completion: { [weak self] (error, document) in
             if let error = error {
                 self?.completeExecution(withError: error)
             }

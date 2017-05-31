@@ -121,7 +121,7 @@ extension RapidTests {
         
         document.mutate(value: ["name": "delete"], etag: nil, completion: { error in
             if error == nil {
-                self.rapid.collection(named: self.testCollectionName).document(withID: document.documentID).readOnce(completion: { (_, document) in
+                self.rapid.collection(named: self.testCollectionName).document(withID: document.documentID).fetch(completion: { (_, document) in
                     self.rapid.collection(named: self.testCollectionName).document(withID: document.id).delete(etag: document.etag!, completion: { (error) in
                         if error == nil {
                             promise.fulfill()
@@ -209,7 +209,7 @@ extension RapidTests {
                     return .write(value: newValue)
                 },
                 completion: { (_) in
-                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, value) in
+                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { (_, value) in
                         if let dict = value.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
                             promise.fulfill()
                         }
@@ -301,7 +301,7 @@ extension RapidTests {
                     case RapidError.executionFailed(let reason) = error,
                     case RapidError.ExecutionError.writeConflict = reason {
                     
-                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, document) in
+                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { (_, document) in
                         XCTAssertEqual(document.id, "1", "Wrong ID")
                         XCTAssertEqual(document.value?["name"] as? String, "testMutateSefeWithWrongEtag", "Wrong value")
                         promise.fulfill()
@@ -334,7 +334,7 @@ extension RapidTests {
                         return .write(value: ["counter": count+1])
                 },
                     completion: { error in
-                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, value) in
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { (_, value) in
                             if let counter = value.value?["counter"] as? Int {
 
                                 iterations.append(i)
