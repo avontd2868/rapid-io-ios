@@ -6,7 +6,7 @@
 	<dict>
 		<key>Resources/Info.plist</key>
 		<data>
-		bX+JymA4cCTZp6IwITokWC7aMLo=
+		UJZXn2T4HHEEfu1JJ7SALdX3VHU=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -15,7 +15,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			8mbU2fhtmHPlxSoYaip6qSDwKK+Em33fh9MYrZ7DJNA=
+			Ft+AFr0rV6DKNrdcUEdMFOIiTTUucpBeko1raGtH+fQ=
 			</data>
 		</dict>
 		<key>Headers/Rapid.h</key>
@@ -29,14 +29,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			BTxbebTRbRscKJxgXkNPkdJiUc6WXMuEqMWhsQjhyvk=
+			21qS3Pscb8zxdXOgIi8A/u5CxL1FWjRX8669lPxJ8yg=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OuuRbTwjOUmAHEySZEyPqtVKUl91jaEEx266ONCRh+M=
+			XZBXNjk2SmoKpP0dbUns2wQf8itsrnSMr0F04QjJjkc=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -50,7 +50,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			lfLUrXSlcUGnjge6aFjPhSXVXT9pFnifid4AdnJ+6aU=
+			N8WRZ0qG+U1vP7gAr/58v0za5rJSZ8xpkofDNR98KNc=
 			</data>
 		</dict>
 	</dict>
