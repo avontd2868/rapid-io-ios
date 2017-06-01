@@ -125,7 +125,7 @@ fileprivate extension ListViewController {
     func setupRapid() {
         Rapid.timeout = 10
         Rapid.logLevel = .debug
-        Rapid.configure(withAPIKey: Constants.apiKey)
+        Rapid.configure(withApiKey: Constants.apiKey)
         Rapid.isCacheEnabled = true
     }
     
@@ -144,8 +144,15 @@ fileprivate extension ListViewController {
             collection.ordered(by: order)
         }
         
-        subscription = collection.subscribe() { (error, documents) in
-            self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
+        subscription = collection.subscribe() { result in
+            switch result {
+            case .success(let documents):
+                self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
+                
+            case .failure:
+                self.tasks = []
+            }
+            
             self.tableView.reloadData()
         }
     }
