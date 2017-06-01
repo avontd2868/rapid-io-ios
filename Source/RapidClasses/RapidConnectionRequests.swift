@@ -106,18 +106,18 @@ class RapidEmptyRequest: RapidSerializable, RapidClientEvent {
 class RapidAuthRequest: RapidClientRequest {
     
     let auth: RapidAuthorization
-    let callback: RapidAuthCallback?
+    let handler: RapidAuthHandler?
     
-    init(token: String, callback: RapidAuthCallback? = nil) {
+    init(token: String, handler: RapidAuthHandler? = nil) {
         self.auth = RapidAuthorization(token: token)
-        self.callback = callback
+        self.handler = handler
     }
     
     func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid authorized", level: .info)
             
-            self.callback?(true, nil)
+            self.handler?(.success(value: self.auth))
         }
     }
     
@@ -125,7 +125,7 @@ class RapidAuthRequest: RapidClientRequest {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid authorization failed", level: .info)
             
-            self.callback?(false, error.error)
+            self.handler?(.failure(error: error.error))
         }
     }
 }
@@ -146,17 +146,17 @@ extension RapidAuthRequest: RapidSerializable {
 
 class RapidDeauthRequest: RapidClientRequest {
     
-    let callback: RapidAuthCallback?
+    let handler: RapidDeuthHandler?
     
-    init(callback: RapidAuthCallback?) {
-        self.callback = callback
+    init(handler: RapidDeuthHandler?) {
+        self.handler = handler
     }
     
     func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid unauthorized", level: .info)
             
-            self.callback?(true, nil)
+            self.handler?(.success(value: nil))
         }
     }
     
@@ -164,7 +164,7 @@ class RapidDeauthRequest: RapidClientRequest {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid unauthorization failed", level: .info)
             
-            self.callback?(false, error.error)
+            self.handler?(.failure(error: error.error))
         }
     }
 }

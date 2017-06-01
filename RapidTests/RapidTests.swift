@@ -55,8 +55,9 @@ class RapidTests: XCTestCase {
     
     func testUnconfiguredSingleton() {
         XCTAssertThrowsError(
-            try Rapid.shared().collection(named: "users").subscribe { (_, _) in
-            }
+            try Rapid.shared().collection(named: "users").subscribe(completion: { _ in
+                
+            })
         )
     }
     

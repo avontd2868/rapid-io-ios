@@ -80,8 +80,8 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     func subscriptionFailed(withError error: RapidError) {
         // Pass error to callbacks
         DispatchQueue.main.async {
-            self.callback?(error, [])
-            self.callbackWithChanges?(error, [], [], [], [])
+            self.callback?(.failure(error: error))
+            self.callbackWithChanges?(.failure(error: error))
         }
     }
     
@@ -95,8 +95,8 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     func receivedUpdate(_ documents: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument]) {
         // Pass changes to callbacks
         DispatchQueue.main.async {
-            self.callback?(nil, documents)
-            self.callbackWithChanges?(nil, documents, added, updated, removed)
+            self.callback?(.success(value: documents))
+            self.callbackWithChanges?(.success(value: (documents, added, updated, removed) ))
         }
     }
     
@@ -175,7 +175,7 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
     func subscriptionFailed(withError error: RapidError) {
         // Pass error to callback
         DispatchQueue.main.async {
-            self.callback?(error, RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
+            self.callback?(.failure(error: error))
         }
     }
     
@@ -186,7 +186,7 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
     func receivedUpdate(_ documents: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument]) {
         // Pass changes to callback
         DispatchQueue.main.async {
-            self.callback?(nil, documents.last ?? RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
+            self.callback?(.success(value: documents.last ?? RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID)))
         }
     }
     

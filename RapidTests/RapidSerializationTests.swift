@@ -421,8 +421,8 @@ extension RapidTests {
     func testWrongDocumentIDSubscription() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").subscribe { (error, _) in
-            if let error = error as? RapidError,
+        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").subscribe { result in
+            if case .failure(let error) = result,
                 case .invalidData(let reason) = error,
                 case .invalidIdentifierFormat(let idef) = reason, idef as? String == "t e s t" {
                 promise.fulfill()
@@ -438,8 +438,14 @@ extension RapidTests {
     func testMutationWithArray() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["test2": 2]], "json": ["testJSON": "blaaaa"] ] ) { error in
-            XCTAssertNil(error, "Error not nil")
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["test2": 2]], "json": ["testJSON": "blaaaa"] ] ) { result in
+            switch result {
+            case .failure:
+                XCTFail("Error occured")
+                
+            default:
+                break
+            }
             promise.fulfill()
         }
         
@@ -449,8 +455,8 @@ extension RapidTests {
     func testInvalidNestedDictionaryMutation() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["tes.t": 2]] ] ) { error in
-            if let error = error as? RapidError,
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["tes.t": 2]] ] ) { result in
+            if case .failure(let error) = result,
                 case .invalidData(let reason) = error,
                 case .invalidDocument = reason {
                 promise.fulfill()
@@ -466,8 +472,8 @@ extension RapidTests {
     func testWrongDocumentIDMutation() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").mutate(value: ["name": "test"]) { error in
-            if let error = error as? RapidError,
+        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").mutate(value: ["name": "test"]) { result in
+            if case .failure(let error) = result,
                 case .invalidData(let reason) = error,
                 case .invalidIdentifierFormat(let idef) = reason, idef as? String == "t e s t" {
                 promise.fulfill()
@@ -483,8 +489,8 @@ extension RapidTests {
     func testInvalidKeyMutation() {
         let promise = expectation(description: "Wrong key")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["na.me": "test"]) { error in
-            if let error = error as? RapidError,
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["na.me": "test"]) { result in
+            if case .failure(let error) = result,
                 case .invalidData(let reason) = error,
                 case .invalidDocument = reason {
                 promise.fulfill()
@@ -500,8 +506,8 @@ extension RapidTests {
     func testEmptyAndFilter() {
         let promise = expectation(description: "Empty compound filter")
         
-        self.rapid.collection(named: testCollectionName).filter(by: RapidFilter.and([])).subscribe { (error, _) in
-            if let error = error as? RapidError, case .invalidData = error {
+        self.rapid.collection(named: testCollectionName).filter(by: RapidFilter.and([])).subscribe { result in
+            if case .failure(let error) = result, case .invalidData = error {
                 promise.fulfill()
             }
             else {
@@ -515,8 +521,8 @@ extension RapidTests {
     func testEmptyOrFilter() {
         let promise = expectation(description: "Empty compound filter")
         
-        self.rapid.collection(named: testCollectionName).filter(by: RapidFilter.or([])).subscribe { (error, _) in
-            if let error = error as? RapidError, case .invalidData = error {
+        self.rapid.collection(named: testCollectionName).filter(by: RapidFilter.or([])).subscribe { result in
+            if case .failure(let error) = result, case .invalidData = error {
                 promise.fulfill()
             }
             else {
@@ -640,8 +646,8 @@ extension RapidTests {
     func testLimitExceeded() {
         let promise = expectation(description: "Limit exceeded")
         
-        rapid.collection(named: testCollectionName).limit(to: RapidPaging.takeLimit+1).subscribe { (error, _) in
-            if let error = error as? RapidError, case RapidError.invalidData(let reason) = error, case RapidError.InvalidDataReason.invalidLimit = reason {
+        rapid.collection(named: testCollectionName).limit(to: RapidPaging.takeLimit+1).subscribe { result in
+            if case .failure(let error) = result, case RapidError.invalidData(let reason) = error, case RapidError.InvalidDataReason.invalidLimit = reason {
                 promise.fulfill()
             }
             else {

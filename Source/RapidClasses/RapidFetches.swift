@@ -83,7 +83,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
             
             self.cacheHandler?.storeDataset(documents, forSubscription: self)
             
-            self.completion?(nil, documents)
+            self.completion?(.success(value: documents))
         }
     }
     
@@ -93,7 +93,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid fetch collection \(self.collectionID) failed", level: .info)
             
-            self.completion?(error, [])
+            self.completion?(.failure(error: error))
         }
     }
 }
@@ -173,7 +173,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
             self.cacheHandler?.storeDataset(documents, forSubscription: self)
             
             let document = documents.first ?? RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID)
-            self.completion?(nil, document)
+            self.completion?(.success(value: document))
         }
     }
     
@@ -183,7 +183,7 @@ extension RapidDocumentFetch: RapidFetchInstance {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document fetch failed - document \(self.documentID) collection \(self.collectionID)", level: .info)
             
-            self.completion?(error, RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
+            self.completion?(.failure(error: error))
         }
     }
 }
