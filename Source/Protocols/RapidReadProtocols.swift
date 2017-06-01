@@ -38,8 +38,8 @@ protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionH
     
     /// Pass a block of code that should be called when the subscription should be unregistered
     ///
-    /// - Parameter callback: Block of code that should be called when the subscription should be unregistered
-    func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void)
+    /// - Parameter block: Block of code that should be called when the subscription should be unregistered
+    func registerUnsubscribeHandler(_ block: @escaping (RapidSubscriptionInstance) -> Void)
 }
 
 protocol RapidFetchInstance: class, RapidSerializable, RapidTimeoutRequest, RapidSubscriptionHashable {

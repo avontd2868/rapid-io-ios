@@ -237,7 +237,7 @@ fileprivate extension RapidSubscriptionHandler {
     ///
     /// - Parameter subscription: New subscription object
     func appendSubscription(_ subscription: RapidSubscriptionInstance) {
-        subscription.registerUnsubscribeCallback { [weak self] instance in
+        subscription.registerUnsubscribeHandler { [weak self] instance in
             self?.delegate?.websocketQueue.async {
                 self?.unsubscribe(instance: instance)
             }
@@ -315,7 +315,7 @@ fileprivate extension RapidSubscriptionHandler {
             updates.insertOrUpdate(operation)
         }
         
-        // If there are more documents than a subscription callback expects remove them
+        // If there are more documents than a subscription handler expects remove them
         if let take = subscriptionTake, documents.count > take {
             for document in documents[take..<documents.count] {
                 let operation = RapidDocumentOperation(document: document, operation: .remove)

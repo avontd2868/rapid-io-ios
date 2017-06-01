@@ -31,7 +31,7 @@ class RapidDocumentExecution: RapidExecution {
     /// Execution block that returns a client action based on current data
     let executionBlock: RapidExecutionBlock
     
-    /// Completion callback
+    /// Completion handler
     let completion: RapidExecutionCompletion?
     
     /// Fetch document request
@@ -56,7 +56,7 @@ class RapidDocumentExecution: RapidExecution {
     ///   - documentID: Document ID
     ///   - delegate: Flow controller delegate
     ///   - block: Execution block that returns a client action based on current data
-    ///   - completion: Completion callback
+    ///   - completion: Completion handler
     init(collectionID: String, documentID: String, delegate: RapidExectuionDelegate, block: @escaping RapidExecutionBlock, completion: RapidExecutionCompletion?) {
         self.collectionID = collectionID
         self.documentID = documentID
@@ -368,7 +368,7 @@ class RapidDocumentDelete: NSObject, RapidMutationRequest {
     /// - Parameters:
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
-    ///   - callback: Delete callback
+    ///   - completion: Delete completion handler
     init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDeletionCompletion?) {
         self.collectionID = collectionID
         self.documentID = documentID

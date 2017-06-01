@@ -14,7 +14,7 @@ extension RapidTests {
     func testSubscribeWituhoutAuthorization() {
         let promise = expectation(description: "Permission denied")
         
-        rapid.collection(named: "test1").subscribe(completion: { result in
+        rapid.collection(named: "test1").subscribe(block: { result in
             if case .failure(let error) = result, case .permissionDenied = error {
                 promise.fulfill()
             }
@@ -31,7 +31,7 @@ extension RapidTests {
         
         XCTAssertEqual(rapid.authorization?.token, testAuthToken)
 
-        rapid.collection(named: testCollectionName).subscribe(completion: { result in
+        rapid.collection(named: testCollectionName).subscribe(block: { result in
             if case .success = result {
                 promise.fulfill()
             }
@@ -48,7 +48,7 @@ extension RapidTests {
         
         var initialValue = true
         
-        rapid.collection(named: testCollectionName).subscribe(completion: { result in
+        rapid.collection(named: testCollectionName).subscribe(block: { result in
             if initialValue {
                 initialValue = false
                 

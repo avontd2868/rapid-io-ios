@@ -8,14 +8,14 @@
 
 import Foundation
 
-/// Collection subscription callback which provides a client either with an error or with an array of documents
-public typealias RapidColSubCallback = (_ result: RapidResult<[RapidDocument]>) -> Void
+/// Collection subscription handler which provides a client either with an error or with an array of documents
+public typealias RapidColSubHandler = (_ result: RapidResult<[RapidDocument]>) -> Void
 
-/// Collection subscription callback which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
-public typealias RapidColSubCallbackWithChanges = (_ result: RapidResult<(documents: [RapidDocument], added: [RapidDocument], updated: [RapidDocument], removed: [RapidDocument])>) -> Void
+/// Collection subscription handler which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
+public typealias RapidColSubHandlerWithChanges = (_ result: RapidResult<(documents: [RapidDocument], added: [RapidDocument], updated: [RapidDocument], removed: [RapidDocument])>) -> Void
 
-/// Collection fetch completion callback which provides a client either with an error or with an array of documents
-public typealias RapidColFetchCompletion = RapidColSubCallback
+/// Collection fetch completion handler which provides a client either with an error or with an array of documents
+public typealias RapidColFetchCompletion = RapidColSubHandler
 
 /// Class representing Rapid.io collection
 open class RapidCollectionRef: NSObject {
@@ -170,11 +170,11 @@ open class RapidCollectionRef: NSObject {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
-    /// - Parameter completion: Subscription callback which provides a client either with an error or with an array of documents
+    /// - Parameter block: Subscription handler which provides a client either with an error or with an array of documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribe(completion: @escaping RapidColSubCallback) -> RapidSubscription {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, callback: completion, callbackWithChanges: nil)
+    open func subscribe(block: @escaping RapidColSubHandler) -> RapidSubscription {
+        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: block, handlerWithChanges: nil)
         
         socketManager.subscribe(subscription)
         
@@ -185,11 +185,11 @@ open class RapidCollectionRef: NSObject {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
-    /// - Parameter completion: Subscription handler which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
+    /// - Parameter block: Subscription handler which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribeWithChanges(completion: @escaping RapidColSubCallbackWithChanges) -> RapidSubscription {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, callback: nil, callbackWithChanges: completion)
+    open func subscribeWithChanges(block: @escaping RapidColSubHandlerWithChanges) -> RapidSubscription {
+        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: nil, handlerWithChanges: block)
         
         socketManager.subscribe(subscription)
         
@@ -200,7 +200,7 @@ open class RapidCollectionRef: NSObject {
     ///
     /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
     ///
-    /// - Parameter completion: Fetch callback which provides a client either with an error or with an array of documents
+    /// - Parameter completion: Fetch completion handler which provides a client either with an error or with an array of documents
     open func fetch(completion: @escaping RapidColFetchCompletion) {
         let fetch = RapidCollectionFetch(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, completion: completion)
         

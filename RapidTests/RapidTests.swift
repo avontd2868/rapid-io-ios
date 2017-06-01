@@ -55,7 +55,7 @@ class RapidTests: XCTestCase {
     
     func testUnconfiguredSingleton() {
         XCTAssertThrowsError(
-            try Rapid.shared().collection(named: "users").subscribe(completion: { _ in
+            try Rapid.shared().collection(named: "users").subscribe(block: { _ in
                 
             })
         )
@@ -416,9 +416,9 @@ class RapidTests: XCTestCase {
         
         let manager = RapidSocketManager(networkHandler: mockHandler)
         
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
         manager.subscribe(subscription)
-        manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil))
+        manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", handler: nil))
         manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], cache: nil, completion: nil))
         manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], cache: nil, completion: nil))
         manager.sendEmptyRequest()
@@ -434,9 +434,9 @@ class RapidTests: XCTestCase {
         
         var shouldConnect = true
         
-        let subscription1 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
-        let subscription2 = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
-        let subscription3 = RapidDocumentSub(collectionID: testCollectionName, documentID: "2", callback: nil)
+        let subscription1 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", handler: nil)
+        let subscription2 = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
+        let subscription3 = RapidDocumentSub(collectionID: testCollectionName, documentID: "2", handler: nil)
         let subHash = subscription2.subscriptionHash
         let mutatationDocumentID = "2"
         var acknowledgeAll = false

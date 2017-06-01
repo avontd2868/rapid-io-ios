@@ -44,8 +44,8 @@ extension RapidTests {
             filter: RapidFilter.equal(keyPath: "sender.hu.", value: "john123"),
             ordering: nil,
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -63,16 +63,16 @@ extension RapidTests {
                 ]),
             ordering: [RapidOrdering(keyPath: "sentDate", ordering: .descending)],
             paging: RapidPaging(skip: 10, take: 50),
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         let sub2 = RapidCollectionSub(
             collectionID: testCollectionName,
             filter: RapidFilter.equal(keyPath: "sender.hu", value: "john123"),
             ordering: nil,
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertNoThrow(try sub1.serialize(withIdentifiers: [:]), "JSON validation")
         XCTAssertNoThrow(try sub2.serialize(withIdentifiers: [:]), "JSON validation")
@@ -84,8 +84,8 @@ extension RapidTests {
             filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: 3),
             ordering: nil,
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -96,8 +96,8 @@ extension RapidTests {
             filter: RapidFilterSimple(keyPath: "name", relation: .greaterThanOrEqual),
             ordering: nil,
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -108,8 +108,8 @@ extension RapidTests {
             filter: nil,
             ordering: [RapidOrdering(keyPath: "name.", ordering: .ascending)],
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -270,7 +270,7 @@ extension RapidTests {
     }
     
     func testCollectionSubscription() {
-        let subscription = RapidCollectionSub(collectionID: "users", filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let subscription = RapidCollectionSub(collectionID: "users", filter: nil, ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -294,7 +294,7 @@ extension RapidTests {
         let collection = self.rapid.collection(named: "users")
             .filter(by: RapidFilterSimple(keyPath: "text", relation: .equal, value: "texty text"))
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -320,7 +320,7 @@ extension RapidTests {
             .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
             .order(by: [RapidOrdering(keyPath: "second_nem", ordering: .descending)])
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -368,7 +368,7 @@ extension RapidTests {
                 ])
             .limit(to: 50, skip: 10)
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -557,7 +557,7 @@ extension RapidTests {
                 ])
             .limit(to: 50, skip: 10)
 
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let hash = "\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a|o-sentDate-d#t50s10"
         
@@ -597,9 +597,9 @@ extension RapidTests {
                         ])
                     ]))
         
-        let sub1 = RapidCollectionSub(collectionID: collection1.collectionID, filter: collection1.subscriptionFilter, ordering: collection1.subscriptionOrdering, paging: collection1.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub1 = RapidCollectionSub(collectionID: collection1.collectionID, filter: collection1.subscriptionFilter, ordering: collection1.subscriptionOrdering, paging: collection1.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let sub2 = RapidCollectionSub(collectionID: collection2.collectionID, filter: collection2.subscriptionFilter, ordering: collection2.subscriptionOrdering, paging: collection2.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub2 = RapidCollectionSub(collectionID: collection2.collectionID, filter: collection2.subscriptionFilter, ordering: collection2.subscriptionOrdering, paging: collection2.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         XCTAssertEqual(sub1.subscriptionHash, sub2.subscriptionHash)
 

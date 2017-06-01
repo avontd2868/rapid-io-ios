@@ -22,7 +22,7 @@ extension RapidTests {
         runAfter(1) { 
             let subscription = self.rapid.collection(named: self.testCollectionName)
                 .filter(by: RapidFilter.contains(keyPath: "name", subString: "sty"))
-                .subscribe(completion: { result in
+                .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
                         return
@@ -62,7 +62,7 @@ extension RapidTests {
         runAfter(1) {
             let subscription = self.rapid.collection(named: self.testCollectionName)
                 .filter(by: RapidFilter.startsWith(keyPath: "name", prefix: "tt"))
-                .subscribe(completion: { result in
+                .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
                         return
@@ -102,7 +102,7 @@ extension RapidTests {
         runAfter(1) {
             let subscription = self.rapid.collection(named: self.testCollectionName)
                 .filter(by: RapidFilter.endsWith(keyPath: "name", suffix: "tt"))
-                .subscribe(completion: { result in
+                .subscribe(block: { result in
                     
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
@@ -143,7 +143,7 @@ extension RapidTests {
         runAfter(1) {
             let subscription = self.rapid.collection(named: self.testCollectionName)
                 .filter(by: RapidFilter.arrayContains(keyPath: "tags", value: 2))
-                .subscribe(completion: { result in
+                .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
                         return
@@ -182,7 +182,7 @@ extension RapidTests {
         
         rapid.collection(named: testCollectionName)
             .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
-            .subscribe(completion: { result in
+            .subscribe(block: { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
                     return
@@ -212,7 +212,7 @@ extension RapidTests {
         
         rapid.collection(named: testCollectionName)
             .order(by: RapidOrdering(keyPath: "name", ordering: .descending))
-            .subscribe(completion: { result in
+            .subscribe(block: { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
                     return
@@ -246,7 +246,7 @@ extension RapidTests {
         
         rapid.collection(named: testCollectionName)
             .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .descending))
-            .subscribe(completion: { result in
+            .subscribe(block: { result in
                 
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
@@ -285,7 +285,7 @@ extension RapidTests {
         runAfter(1) { 
             self.rapid.collection(named: self.testCollectionName)
                 .order(by: RapidOrdering(keyPath: "name", ordering: .descending))
-                .subscribe(completion: { result in
+                .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
                         return
@@ -343,7 +343,7 @@ extension RapidTests {
             .filter(by: RapidFilter.lessThan(keyPath: RapidFilter.docIdKey, value: "5"))
             .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .descending))
             .limit(to: 2)
-            .subscribe(completion: { result in
+            .subscribe(block: { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
                     return

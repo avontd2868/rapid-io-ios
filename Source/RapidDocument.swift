@@ -29,7 +29,7 @@ func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
     return false
 }
 
-/// Class representing Rapid.io document that is returned from a subscription callback
+/// Class representing Rapid.io document that is returned from a subscription handler
 open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     var objectID: String {

@@ -621,7 +621,7 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testLoadingSubscriptionFromCache"]) { _ in
             
             var initialValue = true
-            self.rapid.collection(named: self.testCollectionName).subscribe(completion: { result in
+            self.rapid.collection(named: self.testCollectionName).subscribe(block: { result in
                 guard case .success(let docs) = result else {
                     XCTFail("Error")
                     return
@@ -639,7 +639,7 @@ extension RapidTests {
                     
                     self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "Description"], completion: { _ in
                         runAfter(1, closure: {
-                            let subscription = RapidCollectionSub(collectionID: self.testCollectionName, filter: nil, ordering: nil, paging: nil, callback: { result in
+                            let subscription = RapidCollectionSub(collectionID: self.testCollectionName, filter: nil, ordering: nil, paging: nil, handler: { result in
                                 guard case .success(let cachedDocuments) = result else {
                                     XCTFail("Error")
                                     return
@@ -667,7 +667,7 @@ extension RapidTests {
                                     
                                     promise.fulfill()
                                 }
-                            }, callbackWithChanges: nil)
+                            }, handlerWithChanges: nil)
                             
                             socketManager.subscribe(subscription)
                         })
