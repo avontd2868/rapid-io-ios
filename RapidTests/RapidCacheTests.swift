@@ -678,6 +678,48 @@ extension RapidTests {
         
         waitForExpectations(timeout: 10, handler: nil)
     }
+    
+    func testRemovingCachedValuesOnFailure() {
+        let promise = expectation(description: "Load cached data")
+        
+        rapid.isCacheEnabled = false
+        rapid.isCacheEnabled = true
+        
+        XCTAssertEqual(rapid.isCacheEnabled, true)
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testLoadingSubscriptionFromCache"]) { _ in
+            
+            var initialValue = true
+            var hash = ""
+            let sub = self.rapid.collection(named: self.testCollectionName).subscribe(block: { result in
+                if initialValue {
+                    initialValue = false
+                    
+                    guard case .success(let docs) = result else {
+                        XCTFail("Error")
+                        return
+                    }
+                    
+                    XCTAssertGreaterThan(docs.count, 0, "No documents")
+                    
+                    self.rapid.deauthorize()
+                }
+                else {
+                    self.rapid.handler.cache?.loadDataset(forKey: hash, secret: self.testAuthToken, completion: { objects in
+                        XCTAssertNotNil(objects, "No objects")
+                        XCTAssertEqual(objects?.count ?? -1, 0, "Wrong count of objects")
+                        
+                        promise.fulfill()
+                    })
+                }
+            })
+            
+            hash = sub.subscriptionHash
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+
 }
 
 extension RapidTests {

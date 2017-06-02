@@ -145,6 +145,9 @@ class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
                 // Store last known value to a cache
                 delegate?.cacheHandler?.storeDataset(value, forSubscription: self)
             }
+            else {
+                delegate?.cacheHandler?.storeDataset([], forSubscription: self)
+            }
         }
     }
     

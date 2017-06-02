@@ -93,6 +93,8 @@ extension RapidCollectionFetch: RapidFetchInstance {
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid fetch collection \(self.collectionID) failed", level: .info)
             
+            self.cacheHandler?.storeDataset([], forSubscription: self)
+            
             self.completion?(.failure(error: error))
         }
     }
@@ -182,6 +184,8 @@ extension RapidDocumentFetch: RapidFetchInstance {
         
         DispatchQueue.main.async {
             RapidLogger.log(message: "Rapid document fetch failed - document \(self.documentID) collection \(self.collectionID)", level: .info)
+            
+            self.cacheHandler?.storeDataset([], forSubscription: self)
             
             self.completion?(.failure(error: error))
         }
