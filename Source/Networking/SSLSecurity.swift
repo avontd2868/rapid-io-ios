@@ -24,11 +24,11 @@
 import Foundation
 import Security
 
-public protocol SSLTrustValidator {
+protocol SSLTrustValidator {
     func isValid(_ trust: SecTrust, domain: String?) -> Bool
 }
 
-open class SSLCert {
+class SSLCert {
     var certData: Data?
     var key: SecKey?
     
@@ -39,7 +39,7 @@ open class SSLCert {
     
     - returns: a representation security object to be used with
     */
-    public init(data: Data) {
+    init(data: Data) {
         self.certData = data
     }
     
@@ -50,13 +50,13 @@ open class SSLCert {
     
     - returns: a representation security object to be used with
     */
-    public init(key: SecKey) {
+    init(key: SecKey) {
         self.key = key
     }
 }
 
-open class SSLSecurity : SSLTrustValidator {
-    public var validatedDN = true //should the domain name be validated?
+class SSLSecurity : SSLTrustValidator {
+    var validatedDN = true //should the domain name be validated?
     
     var isReady = false //is the key processing done?
     var certificates: [Data]? //the certificates
@@ -70,7 +70,7 @@ open class SSLSecurity : SSLTrustValidator {
     
     - returns: a representation security object to be used with
     */
-    public convenience init(usePublicKeys: Bool = false) {
+    convenience init(usePublicKeys: Bool = false) {
         let paths = Bundle.main.paths(forResourcesOfType: "cer", inDirectory: ".")
         
         let certs = paths.reduce([SSLCert]()) { (certs: [SSLCert], path: String) -> [SSLCert] in
@@ -92,7 +92,7 @@ open class SSLSecurity : SSLTrustValidator {
     
     - returns: a representation security object to be used with
     */
-    public init(certs: [SSLCert], usePublicKeys: Bool) {
+    init(certs: [SSLCert], usePublicKeys: Bool) {
         self.usePublicKeys = usePublicKeys
         
         if self.usePublicKeys {
@@ -132,7 +132,7 @@ open class SSLSecurity : SSLTrustValidator {
     
     - returns: if the key was successfully validated
     */
-    public func isValid(_ trust: SecTrust, domain: String?) -> Bool {
+    func isValid(_ trust: SecTrust, domain: String?) -> Bool {
         
         var tries = 0
         while !self.isReady {

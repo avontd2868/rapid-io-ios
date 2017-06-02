@@ -17,8 +17,8 @@ extension RapidTests {
         
         let promise = expectation(description: "Mutation timeout")
         
-        rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { error in
-            if let error = error as? RapidError, case .timeout = error {
+        rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan"]) { result in
+            if case .failure(let error) = result, case .timeout = error {
                 promise.fulfill()
             }
             else {
@@ -35,8 +35,8 @@ extension RapidTests {
         
         let promise = expectation(description: "Merge timeout")
         
-        rapid.collection(named: "users").newDocument().merge(value: ["name": "Jan"]) { error in
-            if let error = error as? RapidError, case .timeout = error {
+        rapid.collection(named: "users").newDocument().merge(value: ["name": "Jan"]) { result in
+            if case .failure(let error) = result, case .timeout = error {
                 promise.fulfill()
             }
             else {
@@ -53,8 +53,8 @@ extension RapidTests {
         
         let promise = expectation(description: "Delete timeout")
         
-        rapid.collection(named: "users").document(withID: "1").delete() { error in
-            if let error = error as? RapidError, case .timeout = error {
+        rapid.collection(named: "users").document(withID: "1").delete() { result in
+            if case .failure(let error) = result, case .timeout = error {
                 promise.fulfill()
             }
             else {
@@ -70,10 +70,10 @@ extension RapidTests {
         
         let document = self.rapid.collection(named: testCollectionName).newDocument()
         
-        document.mutate(value: ["name": "delete"], completion: { error in
-            if error == nil {
-                self.rapid.collection(named: self.testCollectionName).document(withID: document.documentID).delete(completion: { (error) in
-                    if error == nil {
+        document.mutate(value: ["name": "delete"], completion: { result in
+            if case .success = result {
+                self.rapid.collection(named: self.testCollectionName).document(withID: document.documentID).delete(completion: { result in
+                    if case .success = result {
                         promise.fulfill()
                     }
                     else {
@@ -97,12 +97,12 @@ extension RapidTests {
         
         runAfter(1) { 
             var initial = true
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { (_, value) in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { result in
                 if initial {
                     initial = false
                     self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "desc", "bla": 6])
                 }
-                else if let dict = value.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
+                else if case .success(let doc) = result, let dict = doc.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
                     promise.fulfill()
                 }
                 else {
@@ -119,17 +119,22 @@ extension RapidTests {
         
         let document = self.rapid.collection(named: testCollectionName).newDocument()
         
-        document.mutate(value: ["name": "delete"], etag: nil, completion: { error in
-            if error == nil {
-                self.rapid.collection(named: self.testCollectionName).document(withID: document.documentID).readOnce(completion: { (_, document) in
-                    self.rapid.collection(named: self.testCollectionName).document(withID: document.id).delete(etag: document.etag!, completion: { (error) in
-                        if error == nil {
-                            promise.fulfill()
-                        }
-                        else {
-                            XCTFail("Document not deleted")
-                        }
-                    })
+        document.mutate(value: ["name": "delete"], etag: nil, completion: { result in
+            if case .success = result {
+                self.rapid.collection(named: self.testCollectionName).document(withID: document.documentID).fetch(completion: { result in
+                    if case .success(let document) = result {
+                        self.rapid.collection(named: self.testCollectionName).document(withID: document.id).delete(etag: document.etag!, completion: { result in
+                            if case .success = result {
+                                promise.fulfill()
+                            }
+                            else {
+                                XCTFail("Document not deleted")
+                            }
+                        })
+                    }
+                    else {
+                        XCTFail("Document not fetched")
+                    }
                 })
             }
             else {
@@ -158,8 +163,11 @@ extension RapidTests {
                     XCTFail("Wrong value")
                     return .abort
                 }
-            }, completion: { error in
-                XCTAssertNil(error, "Delete error")
+            }, completion: { result in
+                if case .failure = result {
+                    XCTFail("Error occured")
+                }
+                
                 promise.fulfill()
             })
         }
@@ -174,18 +182,22 @@ extension RapidTests {
         
         runAfter(1) {
             var initial = true
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { (_, value) in
-                if initial {
-                    initial = false
-                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "desc", "bla": 6], etag: value.etag) { error in
-                        XCTAssertNil(error, "Merge error")
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { result in
+                if case .success(let doc) = result {
+                    if initial {
+                        initial = false
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "desc", "bla": 6], etag: doc.etag) { result in
+                            if case .failure = result {
+                                XCTFail("Error occured")
+                            }
+                        }
                     }
-                }
-                else if let dict = value.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
-                    promise.fulfill()
-                }
-                else {
-                    XCTFail("Values doesn't match")
+                    else if let dict = doc.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
+                        promise.fulfill()
+                    }
+                    else {
+                        XCTFail("Values doesn't match")
+                    }
                 }
             }
         }
@@ -209,8 +221,8 @@ extension RapidTests {
                     return .write(value: newValue)
                 },
                 completion: { (_) in
-                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, value) in
-                        if let dict = value.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
+                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
+                        if case .success(let doc) = result, let dict = doc.value, dict == ["name": "mergeTest", "desc": "desc", "bla": 6] {
                             promise.fulfill()
                         }
                         else {
@@ -257,8 +269,10 @@ extension RapidTests {
         let auth = RapidAuthRequest(token: self.testAuthToken)
         manager.authorize(authRequest: auth)
         
-        let mutate = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": "mergeTest", "desc": "description"], cache: nil) { error in
-            XCTAssertNil(error, "Error occured")
+        let mutate = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": "mergeTest", "desc": "description"], cache: nil) { result in
+            if case .failure = result {
+                XCTFail("Error occured")
+            }
             
             var firstTry = true
             let merge = RapidDocumentExecution(collectionID: self.testCollectionName, documentID: "1", delegate: manager, block: { (value) -> RapidExecutionResult in
@@ -269,8 +283,8 @@ extension RapidTests {
                 else {
                     return .abort
                 }
-            }, completion: { error in
-                if let error = error as? RapidError,
+            }, completion: { result in
+                if case .failure(let error) = result,
                     case RapidError.executionFailed(let reason) = error,
                     case RapidError.ExecutionError.aborted = reason {
                     
@@ -293,17 +307,21 @@ extension RapidTests {
     func testMutateSefeWithWrongEtag() {
         let promise = expectation(description: "Safe mutate")
         
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testMutateSefeWithWrongEtag"]) { error in
-            XCTAssertNil(error, "Error occured")
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testMutateSefeWithWrongEtag"]) { result in
+            if case .failure = result {
+                XCTFail("Error occured")
+            }
             
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["name": "errorTest"], etag: Rapid.uniqueID) { error in
-                if let error = error as? RapidError,
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["name": "errorTest"], etag: Rapid.uniqueID) { result in
+                if case .failure(let error) = result,
                     case RapidError.executionFailed(let reason) = error,
                     case RapidError.ExecutionError.writeConflict = reason {
                     
-                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, document) in
-                        XCTAssertEqual(document.id, "1", "Wrong ID")
-                        XCTAssertEqual(document.value?["name"] as? String, "testMutateSefeWithWrongEtag", "Wrong value")
+                    self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
+                        if case .success(let document) = result {
+                            XCTAssertEqual(document.id, "1", "Wrong ID")
+                            XCTAssertEqual(document.value?["name"] as? String, "testMutateSefeWithWrongEtag", "Wrong value")
+                        }
                         promise.fulfill()
                     })
                 }
@@ -334,8 +352,8 @@ extension RapidTests {
                         return .write(value: ["counter": count+1])
                 },
                     completion: { error in
-                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, value) in
-                            if let counter = value.value?["counter"] as? Int {
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
+                            if case .success(let doc) = result, let counter = doc.value?["counter"] as? Int {
 
                                 iterations.append(i)
                                 if counter == numberOfIterations {

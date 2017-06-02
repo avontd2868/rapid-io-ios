@@ -44,8 +44,8 @@ extension RapidTests {
             filter: RapidFilter.equal(keyPath: "sender.hu.", value: "john123"),
             ordering: nil,
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -63,16 +63,16 @@ extension RapidTests {
                 ]),
             ordering: [RapidOrdering(keyPath: "sentDate", ordering: .descending)],
             paging: RapidPaging(skip: 10, take: 50),
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         let sub2 = RapidCollectionSub(
             collectionID: testCollectionName,
             filter: RapidFilter.equal(keyPath: "sender.hu", value: "john123"),
             ordering: nil,
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertNoThrow(try sub1.serialize(withIdentifiers: [:]), "JSON validation")
         XCTAssertNoThrow(try sub2.serialize(withIdentifiers: [:]), "JSON validation")
@@ -84,8 +84,8 @@ extension RapidTests {
             filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: 3),
             ordering: nil,
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -96,8 +96,8 @@ extension RapidTests {
             filter: RapidFilterSimple(keyPath: "name", relation: .greaterThanOrEqual),
             ordering: nil,
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -108,8 +108,8 @@ extension RapidTests {
             filter: nil,
             ordering: [RapidOrdering(keyPath: "name.", ordering: .ascending)],
             paging: nil,
-            callback: nil,
-            callbackWithChanges: nil)
+            handler: nil,
+            handlerWithChanges: nil)
         
         XCTAssertThrowsError(try sub.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -270,7 +270,7 @@ extension RapidTests {
     }
     
     func testCollectionSubscription() {
-        let subscription = RapidCollectionSub(collectionID: "users", filter: nil, ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        let subscription = RapidCollectionSub(collectionID: "users", filter: nil, ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -294,7 +294,7 @@ extension RapidTests {
         let collection = self.rapid.collection(named: "users")
             .filter(by: RapidFilterSimple(keyPath: "text", relation: .equal, value: "texty text"))
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -320,7 +320,7 @@ extension RapidTests {
             .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
             .order(by: [RapidOrdering(keyPath: "second_nem", ordering: .descending)])
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -368,7 +368,7 @@ extension RapidTests {
                 ])
             .limit(to: 50, skip: 10)
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -421,8 +421,8 @@ extension RapidTests {
     func testWrongDocumentIDSubscription() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").subscribe { (error, _) in
-            if let error = error as? RapidError,
+        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").subscribe { result in
+            if case .failure(let error) = result,
                 case .invalidData(let reason) = error,
                 case .invalidIdentifierFormat(let idef) = reason, idef as? String == "t e s t" {
                 promise.fulfill()
@@ -438,8 +438,14 @@ extension RapidTests {
     func testMutationWithArray() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["test2": 2]], "json": ["testJSON": "blaaaa"] ] ) { error in
-            XCTAssertNil(error, "Error not nil")
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["test2": 2]], "json": ["testJSON": "blaaaa"] ] ) { result in
+            switch result {
+            case .failure:
+                XCTFail("Error occured")
+                
+            default:
+                break
+            }
             promise.fulfill()
         }
         
@@ -449,8 +455,8 @@ extension RapidTests {
     func testInvalidNestedDictionaryMutation() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["tes.t": 2]] ] ) { error in
-            if let error = error as? RapidError,
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": [["test": 1], ["tes.t": 2]] ] ) { result in
+            if case .failure(let error) = result,
                 case .invalidData(let reason) = error,
                 case .invalidDocument = reason {
                 promise.fulfill()
@@ -466,8 +472,8 @@ extension RapidTests {
     func testWrongDocumentIDMutation() {
         let promise = expectation(description: "Wrong document id")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").mutate(value: ["name": "test"]) { error in
-            if let error = error as? RapidError,
+        self.rapid.collection(named: testCollectionName).document(withID: "t e s t").mutate(value: ["name": "test"]) { result in
+            if case .failure(let error) = result,
                 case .invalidData(let reason) = error,
                 case .invalidIdentifierFormat(let idef) = reason, idef as? String == "t e s t" {
                 promise.fulfill()
@@ -483,8 +489,8 @@ extension RapidTests {
     func testInvalidKeyMutation() {
         let promise = expectation(description: "Wrong key")
         
-        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["na.me": "test"]) { error in
-            if let error = error as? RapidError,
+        self.rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["na.me": "test"]) { result in
+            if case .failure(let error) = result,
                 case .invalidData(let reason) = error,
                 case .invalidDocument = reason {
                 promise.fulfill()
@@ -500,8 +506,8 @@ extension RapidTests {
     func testEmptyAndFilter() {
         let promise = expectation(description: "Empty compound filter")
         
-        self.rapid.collection(named: testCollectionName).filter(by: RapidFilter.and([])).subscribe { (error, _) in
-            if let error = error as? RapidError, case .invalidData = error {
+        self.rapid.collection(named: testCollectionName).filter(by: RapidFilter.and([])).subscribe { result in
+            if case .failure(let error) = result, case .invalidData = error {
                 promise.fulfill()
             }
             else {
@@ -515,8 +521,8 @@ extension RapidTests {
     func testEmptyOrFilter() {
         let promise = expectation(description: "Empty compound filter")
         
-        self.rapid.collection(named: testCollectionName).filter(by: RapidFilter.or([])).subscribe { (error, _) in
-            if let error = error as? RapidError, case .invalidData = error {
+        self.rapid.collection(named: testCollectionName).filter(by: RapidFilter.or([])).subscribe { result in
+            if case .failure(let error) = result, case .invalidData = error {
                 promise.fulfill()
             }
             else {
@@ -551,7 +557,7 @@ extension RapidTests {
                 ])
             .limit(to: 50, skip: 10)
 
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let hash = "\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a|o-sentDate-d#t50s10"
         
@@ -591,9 +597,9 @@ extension RapidTests {
                         ])
                     ]))
         
-        let sub1 = RapidCollectionSub(collectionID: collection1.collectionID, filter: collection1.subscriptionFilter, ordering: collection1.subscriptionOrdering, paging: collection1.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub1 = RapidCollectionSub(collectionID: collection1.collectionID, filter: collection1.subscriptionFilter, ordering: collection1.subscriptionOrdering, paging: collection1.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let sub2 = RapidCollectionSub(collectionID: collection2.collectionID, filter: collection2.subscriptionFilter, ordering: collection2.subscriptionOrdering, paging: collection2.subscriptionPaging, callback: nil, callbackWithChanges: nil)
+        let sub2 = RapidCollectionSub(collectionID: collection2.collectionID, filter: collection2.subscriptionFilter, ordering: collection2.subscriptionOrdering, paging: collection2.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         XCTAssertEqual(sub1.subscriptionHash, sub2.subscriptionHash)
 
@@ -640,8 +646,8 @@ extension RapidTests {
     func testLimitExceeded() {
         let promise = expectation(description: "Limit exceeded")
         
-        rapid.collection(named: testCollectionName).limit(to: RapidPaging.takeLimit+1).subscribe { (error, _) in
-            if let error = error as? RapidError, case RapidError.invalidData(let reason) = error, case RapidError.InvalidDataReason.invalidLimit = reason {
+        rapid.collection(named: testCollectionName).limit(to: RapidPaging.takeLimit+1).subscribe { result in
+            if case .failure(let error) = result, case RapidError.invalidData(let reason) = error, case RapidError.InvalidDataReason.invalidLimit = reason {
                 promise.fulfill()
             }
             else {

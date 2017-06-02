@@ -17,7 +17,20 @@ public protocol RapidSubscription {
     func unsubscribe()
 }
 
-public typealias RapidAuthCallback = (_ success: Bool, _ error: Error?) -> Void
+/// Authorization completion handler
+public typealias RapidAuthHandler = (_ result: RapidResult<RapidAuthorization>) -> Void
+
+/// Authorization completion handler
+public typealias RapidDeuthHandler = (_ result: RapidResult<Any?>) -> Void
+
+/// Result for completion handlers
+///
+/// - success: Request was proceeded without any error
+/// - failure: An error occured
+public enum RapidResult<Value> {
+    case success(value: Value)
+    case failure(error: RapidError)
+}
 
 /// Class representing a connection to Rapid.io database
 open class Rapid: NSObject {
@@ -44,7 +57,7 @@ open class Rapid: NSObject {
     /// When Rapid.io tries to write a json to a database it replaces every occurance of `serverTimestamp` with Unix timestamp
     public static let serverTimestamp = "__TIMESTAMP__"
     
-    /// Optional timeout for Rapid requests. If timeout is nil requests never end up with timout error
+    /// Optional timeout is seconds for Rapid requests. If timeout is nil requests never end up with timeout error
     public static var timeout: TimeInterval?
     
     /// API key that serves to connect to Rapid.io database
@@ -131,16 +144,16 @@ open class Rapid: NSObject {
     /// - Parameters:
     ///   - token: Authorization token
     ///   - completion: Authorization completion handler
-    public func authorize(withToken token: String, completion: RapidAuthCallback? = nil) {
-        let request = RapidAuthRequest(token: token, callback: completion)
+    open func authorize(withToken token: String, completion: RapidAuthHandler? = nil) {
+        let request = RapidAuthRequest(token: token, handler: completion)
         handler.socketManager.authorize(authRequest: request)
     }
     
     /// Deauthorize Rapid instance
     ///
     /// - Parameter completion: Deauthorization completion handler
-    public func deauthorize(completion: RapidAuthCallback? = nil) {
-        let request = RapidDeauthRequest(callback: completion)
+    open func deauthorize(completion: RapidDeuthHandler? = nil) {
+        let request = RapidDeauthRequest(handler: completion)
         handler.socketManager.deauthorize(deauthRequest: request)
     }
     
@@ -154,21 +167,21 @@ open class Rapid: NSObject {
     }
     
     /// Disconnect from server
-    public func goOffline() {
+    open func goOffline() {
         RapidLogger.log(message: "Rapid went offline", level: .info)
         
         handler.socketManager.goOffline()
     }
     
     /// Restore previously configured connection
-    public func goOnline() {
+    open func goOnline() {
         RapidLogger.log(message: "Rapid went online", level: .info)
         
         handler.socketManager.goOnline()
     }
     
     /// Remove all subscriptions
-    public func unsubscribeAll() {
+    open func unsubscribeAll() {
         handler.socketManager.unsubscribeAll()
     }
 }
@@ -265,14 +278,14 @@ public extension Rapid {
     /// - Parameters:
     ///   - token: Authorization token
     ///   - completion: Authorization completion handler
-    class func authorize(withToken token: String, completion: RapidAuthCallback? = nil) {
+    class func authorize(withToken token: String, completion: RapidAuthHandler? = nil) {
         try! shared().authorize(withToken: token, completion: completion)
     }
     
     /// Deauthorize Rapid instance
     ///
     /// - Parameter completion: Deauthorization completion handler
-    class func deauthorize(completion: RapidAuthCallback? = nil) {
+    class func deauthorize(completion: RapidDeuthHandler? = nil) {
         try! shared().deauthorize(completion: completion)
     }
     

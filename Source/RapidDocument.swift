@@ -29,8 +29,8 @@ func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
     return false
 }
 
-/// Class representing Rapid.io document that is returned from a subscription callback
-public class RapidDocument: NSObject, NSCoding, RapidCachableObject {
+/// Class representing Rapid.io document that is returned from a subscription handler
+open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     var objectID: String {
         return id
@@ -212,7 +212,7 @@ public class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         catch {}
     }
     
-    override public func isEqual(_ object: Any?) -> Bool {
+    override open func isEqual(_ object: Any?) -> Bool {
         if let document = object as? RapidDocument {
             return self == document
         }
@@ -220,7 +220,7 @@ public class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         return false
     }
     
-    override public var description: String {
+    override open var description: String {
         var dict: [AnyHashable: Any] = [
             "id": id,
             "etag": String(describing: etag),

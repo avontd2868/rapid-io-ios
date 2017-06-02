@@ -173,12 +173,12 @@ extension RapidTests {
     }
     
     func testDuplicateSubscriptions() {
-        guard let sub1 = self.rapid.collection(named: "users").document(withID: "1").subscribe(completion: { (_, _) in }) as? RapidDocumentSub else {
+        guard let sub1 = self.rapid.collection(named: "users").document(withID: "1").subscribe(block: { _ in }) as? RapidDocumentSub else {
             XCTFail("Subscription of wrong type")
             return
         }
         
-        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: "1")).subscribe(completion: { (_, _) in }) as? RapidCollectionSub else {
+        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: "1")).subscribe(block: { _ in }) as? RapidCollectionSub else {
             XCTFail("Subscription of wrong type")
             return
         }
@@ -192,9 +192,9 @@ extension RapidTests {
     func testSubscriptionInitialResponse() {
         let promise = expectation(description: "Subscription initial value")
         
-        self.rapid.collection(named: testCollectionName).subscribe { (_, _) in
+        self.rapid.collection(named: testCollectionName).subscribe(block: { _ in
             promise.fulfill()
-        }
+        })
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -203,14 +203,14 @@ extension RapidTests {
         let promise = expectation(description: "Unsubscribe")
         
         var initialValue = true
-        let subscription = self.rapid.collection(named: testCollectionName).subscribe { (_, _) in
+        let subscription = self.rapid.collection(named: testCollectionName).subscribe(block: { _ in
             if initialValue {
                 initialValue = false
             }
             else {
                 XCTFail("Subscription not uregistered")
             }
-        }
+        })
         
         runAfter(2) {
             subscription.unsubscribe()
@@ -225,7 +225,7 @@ extension RapidTests {
     }
     
     func testUnsubsciptionRetry() {
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { _ in
         }
         
         var activeSubscriptions = [RapidSubscriptionHandler]()
@@ -254,11 +254,11 @@ extension RapidTests {
     func testDoubleUnsubscriptionOnOneHandler() {
         let promise = expectation(description: "Double unsubscription")
         
-        let sub1 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
-        let sub2 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
+        let sub1 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
+        let sub2 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", handler: nil)
         
-        let sub3 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
-        let sub4 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", callback: nil)
+        let sub3 = RapidCollectionSub(collectionID: testCollectionName, filter: RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
+        let sub4 = RapidDocumentSub(collectionID: testCollectionName, documentID: "1", handler: nil)
         
         let networkHandler = RapidNetworkHandler(socketURL: self.socketURL)
         let fakeNetworkHandler = RapidNetworkHandler(socketURL: self.fakeSocketURL)
@@ -299,23 +299,23 @@ extension RapidTests {
         var initial1 = true
         var initial2 = true
         
-        self.rapid.collection(named: testCollectionName).subscribe { (_, _) in
+        self.rapid.collection(named: testCollectionName).subscribe(block: { _ in
             if initial1 {
                 initial1 = false
             }
             else {
                 XCTFail("Subscription not uregistered")
             }
-        }
+        })
         
-        self.rapid.collection(named: testCollectionName).order(by: RapidOrdering(keyPath: "name", ordering: .ascending)).subscribe { (_, _) in
+        self.rapid.collection(named: testCollectionName).order(by: RapidOrdering(keyPath: "name", ordering: .ascending)).subscribe(block: { _ in
             if initial2 {
                 initial2 = false
             }
             else {
                 XCTFail("Subscription not uregistered")
             }
-        }
+        })
         
         runAfter(2) {
             self.rapid.unsubscribeAll()
@@ -336,11 +336,16 @@ extension RapidTests {
         
         runAfter(1) { 
             var initialValue = true
-            self.rapid.collection(named: self.testCollectionName).subscribe { (_, _, inserts, updates, deletes) in
+            self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
+                guard case .success(let tuple) = result else {
+                    XCTFail("Document not inserted")
+                    return
+                }
+                
                 if initialValue {
                     initialValue = false
                 }
-                else if inserts.count == 1 && updates.count == 0 && deletes.count == 0 && inserts.first?.id == "1" {
+                else if tuple.added.count == 1 && tuple.updated.count == 0 && tuple.removed.count == 0 && tuple.added.first?.id == "1" {
                     promise.fulfill()
                 }
                 else {
@@ -361,11 +366,16 @@ extension RapidTests {
         
         runAfter(1) { 
             var initialValue = true
-            self.rapid.collection(named: self.testCollectionName).subscribe { (_, documents, inserts, updates, deletes) in
+            self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
+                guard case .success(let tuple) = result else {
+                    XCTFail("Document not inserted")
+                    return
+                }
+                
                 if initialValue {
                     initialValue = false
                 }
-                else if inserts.count == 0 && updates.count == 1 && deletes.count == 0 && updates.first?.id == "1" {
+                else if tuple.added.count == 0 && tuple.updated.count == 1 && tuple.removed.count == 0 && tuple.updated.first?.id == "1" {
                     promise.fulfill()
                 }
                 else {
@@ -386,11 +396,16 @@ extension RapidTests {
         
         runAfter(1) { 
             var initialValue = true
-            self.rapid.collection(named: self.testCollectionName).subscribe { (_, _, inserts, updates, deletes) in
+            self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
+                guard case .success(let tuple) = result else {
+                    XCTFail("Document not inserted")
+                    return
+                }
+                
                 if initialValue {
                     initialValue = false
                 }
-                else if inserts.count == 0 && updates.count == 0 && deletes.count == 1 && deletes.first?.id == "1" {
+                else if tuple.added.count == 0 && tuple.updated.count == 0 && tuple.removed.count == 1 && tuple.removed.first?.id == "1" {
                     promise.fulfill()
                 }
                 else {
@@ -453,7 +468,7 @@ extension RapidTests {
         let promise = expectation(description: "Subscription empty update")
         
         var initial = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { _ in
             if initial {
                 initial = false
             }
@@ -621,7 +636,14 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
         
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending)], paging: nil, handler: nil) { result in
+            guard case .success(let changes) = result else {
+                XCTFail("Error")
+                return
+            }
+            
+            let (documents, insert, update, delete) = changes
+            
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 3, "Number of documents")
@@ -807,7 +829,15 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
         
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending)], paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending)], paging: nil, handler: nil) { result in
+            
+            guard case .success(let changes) = result else {
+                XCTFail("Error")
+                return
+            }
+            
+            let (documents, insert, update, delete) = changes
+            
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 3, "Number of documents")
@@ -943,7 +973,14 @@ extension RapidTests {
         let promise = expectation(description: "Subscription updates")
 
         var val = true
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { result in
+            guard case .success(let changes) = result else {
+                XCTFail("Error")
+                return
+            }
+            
+            let (documents, insert, update, delete) = changes
+            
             if val {
                 val = false
                 XCTAssertEqual(documents.count, 1, "Number of documents")
@@ -1005,7 +1042,14 @@ extension RapidTests {
         
         let promise = expectation(description: "Subscription no initial value")
         
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { result in
+            guard case .success(let changes) = result else {
+                XCTFail("Error")
+                return
+            }
+            
+            let (documents, insert, update, delete) = changes
+            
             if insert.count == 1 && update.count == 0 && delete.count == 0 && documents == insert && documents.first?.id == "5" {
                 promise.fulfill()
             }
@@ -1045,7 +1089,14 @@ extension RapidTests {
         
         let promise = expectation(description: "Subscription no initial value")
         
-        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, callback: nil) { (_, documents, insert, update, delete) in
+        let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { result in
+            guard case .success(let changes) = result else {
+                XCTFail("Error")
+                return
+            }
+            
+            let (documents, insert, update, delete) = changes
+            
             if insert.count == 0 && update.count == 0 && delete.count == 0 && documents.count == 0 {
                 promise.fulfill()
             }
@@ -1076,7 +1127,13 @@ extension RapidTests {
             { error in
                 
                 var initial = true
-                self.rapid.collection(named: self.testCollectionName).subscribe { (_, docs, ins, _, _) in
+                self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
+                    guard case .success(let changes) = result else {
+                        XCTFail("Error")
+                        return
+                    }
+                    
+                    let (docs, ins, _, _) = changes
                     
                     if initial {
                         initial = false
@@ -1084,14 +1141,21 @@ extension RapidTests {
                         let documents = docs
                         let inserts = ins
                         
-                        self.rapid.collection(named: self.testCollectionName).subscribe(completionWithChanges: { (_, docs, ins, _, _) in
+                        self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
+                            guard case .success(let changes) = result else {
+                                XCTFail("Error")
+                                return
+                            }
+                            
+                            let (docs, ins, _, _) = changes
+                            
                             if documents == docs && inserts == ins {
                                 promise.fulfill()
                             }
                             else {
                                 XCTFail("Initial value different")
                             }
-                        })
+                        }
                     }
                 }
             }
@@ -1140,7 +1204,12 @@ extension RapidTests {
         let promise = expectation(description: "Document subscription delete")
         
         var initial = true
-        let subscription = RapidDocumentSub(collectionID: testCollectionName, documentID: "1") { (_, document) in
+        let subscription = RapidDocumentSub(collectionID: testCollectionName, documentID: "1") { result in
+            guard case .success(let document) = result else {
+                XCTFail("Error")
+                return
+            }
+            
             if initial {
                 initial = false
                 XCTAssertEqual(document.id, "1", "Wrong document id")
@@ -1179,14 +1248,24 @@ extension RapidTests {
         
         runAfter(1) {
             var initialValue = true
-            self.rapid.collection(named: self.testCollectionName).subscribe { (_, documents) in
+            self.rapid.collection(named: self.testCollectionName).subscribe { result in
+                guard case .success(let documents) = result else {
+                    XCTFail("Error")
+                    return
+                }
+                
                 XCTAssertGreaterThan(documents.count, 0, "No documentss")
                 
                 if initialValue {
                     initialValue = false
                     let docs = documents
                     
-                    self.rapid.collection(named: self.testCollectionName).readOnce(completion: { (_, fetched) in
+                    self.rapid.collection(named: self.testCollectionName).fetch(completion: { result in
+                        guard case .success(let fetched) = result else {
+                            XCTFail("Error")
+                            return
+                        }
+                        
                         if docs == fetched {
                             promise.fulfill()
                         }
@@ -1209,7 +1288,12 @@ extension RapidTests {
         mutate(documentID: "1", value: ["name": "testUpdate"])
         
         runAfter(1) {
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").readOnce(completion: { (_, document) in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
+                guard case .success(let document) = result else {
+                    XCTFail("Error")
+                    return
+                }
+                
                 XCTAssertEqual(document.value?["name"] as? String, "testUpdate", "Wrong document")
                 promise.fulfill()
             })
@@ -1221,8 +1305,8 @@ extension RapidTests {
     func testUnauthorizedCollectionFetch() {
         let promise = expectation(description: "Subscription update")
 
-        self.rapid.collection(named: "fakeCollectionName").readOnce(completion: { (error, _) in
-            if let error = error as? RapidError, case RapidError.permissionDenied = error {
+        self.rapid.collection(named: "fakeCollectionName").fetch(completion: { result in
+            if case .failure(let error) = result, case RapidError.permissionDenied = error {
                 promise.fulfill()
             }
             else {
@@ -1236,8 +1320,8 @@ extension RapidTests {
     func testUnauthorizedDocumentFetch() {
         let promise = expectation(description: "Subscription update")
 
-        self.rapid.collection(named: "fakeCollectionName").document(withID: "1").readOnce(completion: { (error, _) in
-            if let error = error as? RapidError, case RapidError.permissionDenied = error {
+        self.rapid.collection(named: "fakeCollectionName").document(withID: "1").fetch(completion: { result in
+            if case .failure(let error) = result, case RapidError.permissionDenied = error {
                 promise.fulfill()
             }
             else {
@@ -1257,7 +1341,12 @@ extension RapidTests {
         
         runAfter(1) {
 
-            self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.equal(keyPath: "car.type", value: "Skoda")).readOnce { (_, documents) in
+            self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.equal(keyPath: "car.type", value: "Skoda")).fetch { result in
+                guard case .success(let documents) = result else {
+                    XCTFail("Error")
+                    return
+                }
+                
                 XCTAssertGreaterThan(documents.count, 0, "No documentss")
                 
                 for document in documents {
@@ -1282,7 +1371,12 @@ extension RapidTests {
         
         runAfter(1) {
             
-            self.rapid.collection(named: self.testCollectionName).order(by: RapidOrdering(keyPath: "car.model", ordering: .ascending)).readOnce { (_, documents) in
+            self.rapid.collection(named: self.testCollectionName).order(by: RapidOrdering(keyPath: "car.model", ordering: .ascending)).fetch { result in
+                guard case .success(let documents) = result else {
+                    XCTFail("Error")
+                    return
+                }
+                
                 XCTAssertGreaterThan(documents.count, 0, "No documents")
                 
                 var lastValue: String?

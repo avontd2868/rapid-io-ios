@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; };
-		C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C140F92B1E891C91002AB9C5 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C14A3EEA1ED70EEB0042597B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
 		C14A3EEB1ED70EEB0042597B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
 		C14A3EEE1ED70F310042597B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
 		C14A3EEF1ED70F310042597B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
+		C14A74571EE056D1001339DC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14A74561EE056D1001339DC /* Rapid.framework */; };
+		C14A74581EE056D1001339DC /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C14A74561EE056D1001339DC /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C14A745B1EE05705001339DC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14A745A1EE05705001339DC /* Rapid.framework */; };
+		C14A745C1EE05705001339DC /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C14A745A1EE05705001339DC /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C16B6C091ECA0BC90036C9D4 /* BEMAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */; };
 		C16B6C0A1ECA0BC90036C9D4 /* BEMCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C041ECA0BC90036C9D4 /* BEMCheckBox.m */; };
 		C16B6C0B1ECA0BC90036C9D4 /* BEMCheckBoxGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C061ECA0BC90036C9D4 /* BEMCheckBoxGroup.m */; };
@@ -36,71 +38,31 @@
 		C16B6C3E1ECA0E4F0036C9D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3B1ECA0E4F0036C9D4 /* Main.storyboard */; };
 		C16B6C401ECA0E7C0036C9D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
 		C16B6C411ECA0E9B0036C9D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
-		C16B6C461ECA0F9A0036C9D4 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C16B6BFD1ECA0A200036C9D4 /* Rapid.framework */; };
-		C16B6C471ECA0F9A0036C9D4 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C16B6BFD1ECA0A200036C9D4 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C1A1E82B1ECB51EE004FB5CA /* TaskWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A1E82A1ECB51EE004FB5CA /* TaskWindowController.swift */; };
 		C1F99EA81ECAEE56004994D5 /* TagsCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */; };
 		C1F99EAA1ECB2EC2004994D5 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C301ECA0E1B0036C9D4 /* ListViewController.swift */; };
 		C1F99EAE1ECB3F97004994D5 /* TaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F99EAD1ECB3F97004994D5 /* TaskViewController.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		C140F92A1E891C91002AB9C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C1D6E81F1E7856AD007589FC;
-			remoteInfo = Rapid;
-		};
-		C140F92C1E891C91002AB9C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C1D6E8281E7856AD007589FC;
-			remoteInfo = RapidTests;
-		};
-		C140F9301E891CA0002AB9C5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = C1D6E81E1E7856AD007589FC;
-			remoteInfo = Rapid;
-		};
-		C16B6BFC1ECA0A200036C9D4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C142DCD01EC9E0E2000B9617;
-			remoteInfo = "Rapid macOS";
-		};
-		C16B6C481ECA0F9A0036C9D4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = C142DCCF1EC9E0E2000B9617;
-			remoteInfo = "Rapid macOS";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
-		C16B6C4A1ECA0F9A0036C9D4 /* Embed Frameworks */ = {
+		C14A74591EE056D1001339DC /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C16B6C471ECA0F9A0036C9D4 /* Rapid.framework in Embed Frameworks */,
+				C14A74581EE056D1001339DC /* Rapid.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C1D6E8B21E785F6D007589FC /* Embed Frameworks */ = {
+		C14A745D1EE05705001339DC /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C140F92F1E891CA0002AB9C5 /* Rapid.framework in Embed Frameworks */,
+				C14A745C1EE05705001339DC /* Rapid.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -108,10 +70,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Rapid.xcodeproj; path = ../Rapid.xcodeproj; sourceTree = "<group>"; };
 		C14A3EE41ED6E1890042597B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C14A3EE91ED70EEB0042597B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C14A3EED1ED70F310042597B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		C14A74561EE056D1001339DC /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/Mac/Rapid.framework; sourceTree = "<group>"; };
+		C14A745A1EE05705001339DC /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
 		C16B6BEC1ECA0A200036C9D4 /* RapiDO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RapiDO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C16B6C011ECA0BC90036C9D4 /* BEMAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMAnimationManager.h; sourceTree = "<group>"; };
 		C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMAnimationManager.m; sourceTree = "<group>"; };
@@ -150,7 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C16B6C461ECA0F9A0036C9D4 /* Rapid.framework in Frameworks */,
+				C14A74571EE056D1001339DC /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,21 +121,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C140F92E1E891CA0002AB9C5 /* Rapid.framework in Frameworks */,
+				C14A745B1EE05705001339DC /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C140F9261E891C91002AB9C5 /* Products */ = {
+		C14A745E1EE05711001339DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C140F92B1E891C91002AB9C5 /* Rapid.framework */,
-				C140F92D1E891C91002AB9C5 /* RapidTests.xctest */,
-				C16B6BFD1ECA0A200036C9D4 /* Rapid.framework */,
+				C14A745A1EE05705001339DC /* Rapid.framework */,
+				C14A74561EE056D1001339DC /* Rapid.framework */,
 			);
-			name = Products;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C16B6BED1ECA0A200036C9D4 /* RapiDO macOS */ = {
@@ -226,7 +188,7 @@
 		C1D6E8691E785CFA007589FC = {
 			isa = PBXGroup;
 			children = (
-				C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */,
+				C14A745E1EE05711001339DC /* Frameworks */,
 				C1D6E8731E785CFA007589FC /* Products */,
 				C16B6BFF1ECA0B1C0036C9D4 /* RapiDO iOS */,
 				C16B6BED1ECA0A200036C9D4 /* RapiDO macOS */,
@@ -250,8 +212,8 @@
 				C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */,
 				C16B6C0D1ECA0BF10036C9D4 /* Constants.swift */,
 				C14A3EE91ED70EEB0042597B /* Extensions.swift */,
-				C16B6C141ECA0BF10036C9D4 /* Task.swift */,
 				C14A3EED1ED70F310042597B /* Helpers.swift */,
+				C16B6C141ECA0BF10036C9D4 /* Task.swift */,
 			);
 			path = "RapiDO shared";
 			sourceTree = "<group>";
@@ -266,12 +228,11 @@
 				C16B6BE81ECA0A200036C9D4 /* Sources */,
 				C16B6BE91ECA0A200036C9D4 /* Frameworks */,
 				C16B6BEA1ECA0A200036C9D4 /* Resources */,
-				C16B6C4A1ECA0F9A0036C9D4 /* Embed Frameworks */,
+				C14A74591EE056D1001339DC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C16B6C491ECA0F9A0036C9D4 /* PBXTargetDependency */,
 			);
 			name = "RapiDO macOS";
 			productName = "RapiDO macOS";
@@ -285,12 +246,11 @@
 				C1D6E86E1E785CFA007589FC /* Sources */,
 				C1D6E86F1E785CFA007589FC /* Frameworks */,
 				C1D6E8701E785CFA007589FC /* Resources */,
-				C1D6E8B21E785F6D007589FC /* Embed Frameworks */,
+				C14A745D1EE05705001339DC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C140F9311E891CA0002AB9C5 /* PBXTargetDependency */,
 			);
 			name = "RapiDO iOS";
 			productName = ExampleApp;
@@ -330,12 +290,6 @@
 			mainGroup = C1D6E8691E785CFA007589FC;
 			productRefGroup = C1D6E8731E785CFA007589FC /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = C140F9261E891C91002AB9C5 /* Products */;
-					ProjectRef = C140F9251E891C91002AB9C5 /* Rapid.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				C1D6E8711E785CFA007589FC /* RapiDO iOS */,
@@ -343,30 +297,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		C140F92B1E891C91002AB9C5 /* Rapid.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Rapid.framework;
-			remoteRef = C140F92A1E891C91002AB9C5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		C140F92D1E891C91002AB9C5 /* RapidTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = RapidTests.xctest;
-			remoteRef = C140F92C1E891C91002AB9C5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		C16B6BFD1ECA0A200036C9D4 /* Rapid.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Rapid.framework;
-			remoteRef = C16B6BFC1ECA0A200036C9D4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C16B6BEA1ECA0A200036C9D4 /* Resources */ = {
@@ -433,19 +363,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		C140F9311E891CA0002AB9C5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Rapid;
-			targetProxy = C140F9301E891CA0002AB9C5 /* PBXContainerItemProxy */;
-		};
-		C16B6C491ECA0F9A0036C9D4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Rapid macOS";
-			targetProxy = C16B6C481ECA0F9A0036C9D4 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		C16B6C391ECA0E4F0036C9D4 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -471,11 +388,14 @@
 		C16B6BF81ECA0A200036C9D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -490,11 +410,14 @@
 		C16B6BF91ECA0A200036C9D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -602,11 +525,10 @@
 		C1D6E8901E785CFB007589FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRINCIPAL_CLASS = UIApplication;
@@ -621,11 +543,10 @@
 		C1D6E8911E785CFB007589FC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRINCIPAL_CLASS = UIApplication;

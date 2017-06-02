@@ -89,10 +89,19 @@ fileprivate extension ListViewController {
             collection.filtered(by: combinedFilter)
         }
         
-        subscription = collection.order(by: ordering).subscribe() { (error, documents, insert, update, delete) in
-            let previousSet = self.tasks
-            self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
-            self.tableView.animateChanges(previousData: previousSet, data: self.tasks, new: insert, updated: update, deleted: delete)
+        subscription = collection.order(by: ordering).subscribeWithChanges { result in
+            switch result {
+            case .success(let changes):
+                let (documents, insert, update, delete) = changes
+                let previousSet = self.tasks
+                self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
+                self.tableView.animateChanges(previousData: previousSet, data: self.tasks, new: insert, updated: update, deleted: delete)
+                
+            case .failure:
+                self.tasks = []
+                self.tableView.reloadData()
+            }
+            
         }
     }
     

@@ -31,7 +31,7 @@ extension RapidQuery {
 }
 
 /// Subscription filter
-public class RapidFilter: RapidSubscriptionHashable, RapidQuery {
+open class RapidFilter: RapidSubscriptionHashable, RapidQuery {
     internal var subscriptionHash: String { return "" }
 }
 
@@ -182,7 +182,7 @@ public extension RapidFilter {
 /// Class that describes simple subscription filter
 ///
 /// Simple filter can contain only a name of a filtering parameter, its reference value and a relation to the value.
-public class RapidFilterSimple: RapidFilter {
+open class RapidFilterSimple: RapidFilter {
     
     /// Type of relation to a specified value
     public enum Relation {
@@ -267,7 +267,7 @@ public class RapidFilterSimple: RapidFilter {
 ///
 /// Compound filter consists of one or more filters that are combined together with one of logical operators.
 /// Compound filter with the logical NOT operator must contain only one operand.
-public class RapidFilterCompound: RapidFilter {
+open class RapidFilterCompound: RapidFilter {
     
     /// Type of logical operator
     public enum Operator {

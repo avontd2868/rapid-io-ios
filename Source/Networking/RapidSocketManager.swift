@@ -129,7 +129,7 @@ class RapidSocketManager {
     ///
     /// - Parameter subscription: Subscription object
     func subscribe(_ subscription: RapidSubscriptionInstance) {
-        subscription.registerUnsubscribeCallback { [weak self] (subscription) in
+        subscription.registerUnsubscribeHandler { [weak self] (subscription) in
             self?.websocketQueue.async {
                 self?.unsubscribe(subscription)
             }

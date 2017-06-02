@@ -25,14 +25,14 @@ class RapidCollectionSub: NSObject {
     /// Subscription paging
     let paging: RapidPaging?
     
-    /// Default subscription callback
-    let callback: RapidColSubCallback?
+    /// Subscription handler
+    let handler: RapidColSubHandler?
     
-    /// Subscription callback with lists of changes
-    let callbackWithChanges: RapidColSubCallbackWithChanges?
+    /// Subscription handler with lists of changes
+    let handlerWithChanges: RapidColSubHandlerWithChanges?
     
     /// Block of code to be called when unsubscribing
-    fileprivate var unsubscribeCallback: ((RapidSubscriptionInstance) -> Void)?
+    fileprivate var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
     
     /// Initialize collection subscription object
     ///
@@ -41,15 +41,15 @@ class RapidCollectionSub: NSObject {
     ///   - filter: Subscription filter
     ///   - ordering: Subscription ordering
     ///   - paging: Subscription paging
-    ///   - callback: Default subscription callback
-    ///   - callbackWithChanges: Subscription callback with lists of changes
-    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, callback: RapidColSubCallback?, callbackWithChanges: RapidColSubCallbackWithChanges?) {
+    ///   - handler: Subscription handler
+    ///   - handlerWithChanges: Subscription handler with lists of changes
+    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, handler: RapidColSubHandler?, handlerWithChanges: RapidColSubHandlerWithChanges?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
         self.paging = paging
-        self.callback = callback
-        self.callbackWithChanges = callbackWithChanges
+        self.handler = handler
+        self.handlerWithChanges = handlerWithChanges
     }
     
 }
@@ -78,25 +78,25 @@ extension RapidCollectionSub: RapidSubscriptionInstance {
     }
     
     func subscriptionFailed(withError error: RapidError) {
-        // Pass error to callbacks
+        // Pass error to handler
         DispatchQueue.main.async {
-            self.callback?(error, [])
-            self.callbackWithChanges?(error, [], [], [], [])
+            self.handler?(.failure(error: error))
+            self.handlerWithChanges?(.failure(error: error))
         }
     }
     
-    /// Assign a block of code that should be called on unsubscribing to `unsubscribeCallback`
+    /// Assign a block of code that should be called on unsubscribing to `unsubscribeHandler`
     ///
-    /// - Parameter callback: Block of code that should be called on unsubscribing
-    func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void) {
-        unsubscribeCallback = callback
+    /// - Parameter block: Block of code that should be called on unsubscribing
+    func registerUnsubscribeHandler(_ block: @escaping (RapidSubscriptionInstance) -> Void) {
+        unsubscribeHandler = block
     }
     
     func receivedUpdate(_ documents: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument]) {
-        // Pass changes to callbacks
+        // Pass changes to handler
         DispatchQueue.main.async {
-            self.callback?(nil, documents)
-            self.callbackWithChanges?(nil, documents, added, updated, removed)
+            self.handler?(.success(value: documents))
+            self.handlerWithChanges?(.success(value: (documents, added, updated, removed) ))
         }
     }
     
@@ -106,7 +106,7 @@ extension RapidCollectionSub: RapidSubscription {
     
     /// Unregister subscription
     func unsubscribe() {
-        unsubscribeCallback?(self)
+        unsubscribeHandler?(self)
     }
     
 }
@@ -124,29 +124,29 @@ class RapidDocumentSub: NSObject {
     /// Document ID
     let documentID: String
     
-    /// Subscription callback
-    let callback: RapidDocSubCallback?
+    /// Subscription handler
+    let handler: RapidDocSubHandler?
     
     /// Underlying collection subscription object
     fileprivate(set) var subscription: RapidCollectionSub!
     
     /// Block of code to be called when unsubscribing
-    fileprivate var unsubscribeCallback: ((RapidSubscriptionInstance) -> Void)?
+    fileprivate var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
     
     /// Initialize document subscription object
     ///
     /// - Parameters:
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
-    ///   - callback: Subscription callback
-    init(collectionID: String, documentID: String, callback: RapidDocSubCallback?) {
+    ///   - handler: Subscription handler
+    init(collectionID: String, documentID: String, handler: RapidDocSubHandler?) {
         self.collectionID = collectionID
         self.documentID = documentID
-        self.callback = callback
+        self.handler = handler
         
         super.init()
         
-        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, callback: nil, callbackWithChanges: nil)
+        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
     }
 }
 
@@ -173,20 +173,20 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
     }
     
     func subscriptionFailed(withError error: RapidError) {
-        // Pass error to callback
+        // Pass error to handler
         DispatchQueue.main.async {
-            self.callback?(error, RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
+            self.handler?(.failure(error: error))
         }
     }
     
-    func registerUnsubscribeCallback(_ callback: @escaping (RapidSubscriptionInstance) -> Void) {
-        unsubscribeCallback = callback
+    func registerUnsubscribeHandler(_ block: @escaping (RapidSubscriptionInstance) -> Void) {
+        unsubscribeHandler = block
     }
     
     func receivedUpdate(_ documents: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument]) {
-        // Pass changes to callback
+        // Pass changes to handler
         DispatchQueue.main.async {
-            self.callback?(nil, documents.last ?? RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID))
+            self.handler?(.success(value: documents.last ?? RapidDocument(removedDocId: self.documentID, collectionID: self.collectionID)))
         }
     }
     
@@ -195,6 +195,6 @@ extension RapidDocumentSub: RapidSubscriptionInstance {
 extension RapidDocumentSub: RapidSubscription {
     
     func unsubscribe() {
-        unsubscribeCallback?(self)
+        unsubscribeHandler?(self)
     }
 }

@@ -47,7 +47,7 @@ class RapidNetworkHandler {
     /// Network handler delegate
     weak var delegate: RapidNetworkHandlerDelegate?
     
-    /// Connection state changed callback
+    /// Connection state changed handler
     var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)?
     
     init(socketURL: URL) {

@@ -134,8 +134,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if defined(__has_feature) && __has_feature(modules)
 @import Foundation;
 @import ObjectiveC;
-@import Dispatch;
-@import Security;
 #endif
 
 #pragma clang diagnostic ignored "-Wproperty-attribute-mismatch"
@@ -145,7 +143,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 @end
 
 @class NSNull;
-@class RapidCollection;
+@class RapidCollectionRef;
 
 /// Class representing a connection to Rapid.io database
 SWIFT_CLASS("_TtC5Rapid5Rapid")
@@ -154,34 +152,28 @@ SWIFT_CLASS("_TtC5Rapid5Rapid")
 /// This value can be used in document merge (e.g. <code>["attribute": Rapid.nilValue]</code> would remove <code>attribute</code> from a document)
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) NSNull * _Nonnull nilValue;)
 + (NSNull * _Nonnull)nilValue SWIFT_WARN_UNUSED_RESULT;
+/// Placeholder for a server timestamp
+/// When Rapid.io tries to write a json to a database it replaces every occurance of <code>serverTimestamp</code> with Unix timestamp
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull serverTimestamp;)
++ (NSString * _Nonnull)serverTimestamp SWIFT_WARN_UNUSED_RESULT;
 /// API key that serves to connect to Rapid.io database
 @property (nonatomic, readonly, copy) NSString * _Nonnull apiKey;
 /// If <code>true</code> subscription values are stored locally to be available offline
 @property (nonatomic) BOOL isCacheEnabled;
 /// Initializes a Rapid instance
-/// \param withAPIKey API key that contains necessary information about a database to which you want to connect
+/// \param withApiKey API key that contains necessary information about a database to which you want to connect
 ///
 ///
 /// returns:
 /// New or previously initialized instance
-+ (Rapid * _Nullable)getInstanceWithAPIKey:(NSString * _Nonnull)apiKey SWIFT_WARN_UNUSED_RESULT;
-/// Authorize Rapid instance
-/// \param accessToken Authorization access token
-///
-/// \param completion Authorization completion handler
-///
-- (void)authorizeWithAccessToken:(NSString * _Nonnull)accessToken completion:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
-/// Deauthorize Rapid instance
-/// \param completion Deauthorization completion handler
-///
-- (void)deauthorizeWithCompletion:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
++ (Rapid * _Nullable)getInstanceWithApiKey:(NSString * _Nonnull)apiKey SWIFT_WARN_UNUSED_RESULT;
 /// Creates a new object representing Rapid collection
 /// \param named Collection identifier
 ///
 ///
 /// returns:
 /// New object representing Rapid collection
-- (RapidCollection * _Nonnull)collectionWithNamed:(NSString * _Nonnull)named SWIFT_WARN_UNUSED_RESULT;
+- (RapidCollectionRef * _Nonnull)collectionWithNamed:(NSString * _Nonnull)named SWIFT_WARN_UNUSED_RESULT;
 /// Disconnect from server
 - (void)goOffline;
 /// Restore previously configured connection
@@ -214,118 +206,65 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isCacheEnabled;)
 + (void)goOnline;
 /// Remove all subscriptions
 + (void)unsubscribeAll;
-/// Authorize Rapid instance
-/// \param accessToken Authorization access token
-///
-/// \param completion Authorization completion handler
-///
-+ (void)authorizeWithAccessToken:(NSString * _Nonnull)accessToken completion:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
-/// Deauthorize Rapid instance
-/// \param completion Deauthorization completion handler
-///
-+ (void)deauthorizeWithCompletion:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
 /// Configures shared Rapid instance
 /// Initializes an instance that can be lately accessed through singleton class functions
-/// \param withAPIKey API key that contains necessary information about a database to which you want to connect
+/// \param withApiKey API key that contains necessary information about a database to which you want to connect
 ///
-+ (void)configureWithAPIKey:(NSString * _Nonnull)key;
++ (void)configureWithApiKey:(NSString * _Nonnull)key;
 /// Creates a new object representing Rapid collection
 /// \param named Collection identifier
 ///
 ///
 /// returns:
 /// New object representing Rapid collection
-+ (RapidCollection * _Nonnull)collectionWithNamed:(NSString * _Nonnull)named SWIFT_WARN_UNUSED_RESULT;
++ (RapidCollectionRef * _Nonnull)collectionWithNamed:(NSString * _Nonnull)named SWIFT_WARN_UNUSED_RESULT;
 /// Deinitialize shared Rapid instance
 + (void)deinitialize;
 @end
 
-@class RapidDocument;
-@class RapidDocumentSnapshot;
+@class RapidDocumentRef;
 
 /// Class representing Rapid.io collection
-SWIFT_CLASS("_TtC5Rapid15RapidCollection")
-@interface RapidCollection : NSObject
+SWIFT_CLASS("_TtC5Rapid18RapidCollectionRef")
+@interface RapidCollectionRef : NSObject
 /// Collection identifier
 @property (nonatomic, readonly, copy) NSString * _Nonnull collectionID;
 /// Create an instance of a Rapid document in the collection with a new unique ID
 ///
 /// returns:
 /// Instance of <code>RapidDocument</code> in the collection with a new unique ID
-- (RapidDocument * _Nonnull)newDocument SWIFT_WARN_UNUSED_RESULT;
+- (RapidDocumentRef * _Nonnull)newDocument SWIFT_WARN_UNUSED_RESULT;
 /// Get an instance of a Rapid document in the collection with a specified ID
 /// \param id Document ID
 ///
 ///
 /// returns:
 /// Instance of a <code>RapidDocument</code> in the collection with a specified ID
-- (RapidDocument * _Nonnull)documentWithID:(NSString * _Nonnull)id SWIFT_WARN_UNUSED_RESULT;
-/// Fetch collection
-/// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
-/// \param completion Fetch callback which provides a client either with an error or with an array of documents
-///
-- (void)readOnceWithCompletion:(void (^ _Nonnull)(NSError * _Nullable, NSArray<RapidDocumentSnapshot *> * _Nonnull))completion;
+- (RapidDocumentRef * _Nonnull)documentWithID:(NSString * _Nonnull)id SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
 
-@interface RapidCollection (SWIFT_EXTENSION(Rapid))
-@end
-
-
-/// Class representing Rapid.io document
-SWIFT_CLASS("_TtC5Rapid13RapidDocument")
-@interface RapidDocument : NSObject
-/// ID of a collection to which the document belongs
-@property (nonatomic, readonly, copy) NSString * _Nonnull collectionID;
-/// Document ID
-@property (nonatomic, readonly, copy) NSString * _Nonnull documentID;
-/// Mutate the document
-/// All values in the document are replaced by values in the provided dictionary
-/// \param value Dictionary with new values that the document should contain
-///
-/// \param completion Mutation callback which provides a client either with an error or with a successfully mutated object
-///
-- (void)mutateWithValue:(NSDictionary * _Nonnull)value completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-- (void)concurrencySafeMutateWithValue:(NSDictionary * _Nonnull)value etag:(NSString * _Nullable)etag completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// Merge values in the document with new ones
-/// Values that are not mentioned in the provided dictionary remains as they are.
-/// Values that are mentioned in the provided dictionary are either replaced or added to the document.
-/// \param value Dictionary with new values that should be merged into the document
-///
-/// \param completion merge callback which provides a client either with an error or with a successfully merged values
-///
-- (void)mergeWithValue:(NSDictionary * _Nonnull)value completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-- (void)concurrencySafeMergeWithValue:(NSDictionary * _Nonnull)value etag:(NSString * _Nullable)etag completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// Delete the document
-/// <code>Delete</code> is equivalent to <code>Mutate</code> with a value equal to <code>nil</code>
-/// \param completion Delete callback which provides a client either with an error or with the document object how it looked before it was deleted
-///
-- (void)deleteWithCompletion:(void (^ _Nullable)(NSError * _Nullable))completion;
-- (void)concurrencySafeDeleteWithEtag:(NSString * _Nonnull)etag completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// Fetch document
-/// \param completion Fetch callback which provides a client either with an error or with an array of documents
-///
-- (void)readOnceWithCompletion:(void (^ _Nonnull)(NSError * _Nullable, RapidDocumentSnapshot * _Nonnull))completion;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-@end
-
-
-@interface RapidDocument (SWIFT_EXTENSION(Rapid))
+@interface RapidCollectionRef (SWIFT_EXTENSION(Rapid))
 @end
 
 @class NSCoder;
 
-/// Class representing Rapid.io document that is returned from a subscription callback
-SWIFT_CLASS("_TtC5Rapid21RapidDocumentSnapshot")
-@interface RapidDocumentSnapshot : NSObject <NSCoding>
+/// Class representing Rapid.io document that is returned from a subscription handler
+SWIFT_CLASS("_TtC5Rapid13RapidDocument")
+@interface RapidDocument : NSObject <NSCoding>
 /// Document ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull id;
+/// Collection ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull collectionID;
 /// Document body
 @property (nonatomic, readonly, copy) NSDictionary * _Nullable value;
 /// Etag identifier
 @property (nonatomic, readonly, copy) NSString * _Nullable etag;
+/// Time of a document creation
+@property (nonatomic, readonly, copy) NSDate * _Nullable createdAt;
+/// Time of a document modification
+@property (nonatomic, readonly, copy) NSDate * _Nullable modifiedAt;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
 - (void)encodeWithCoder:(NSCoder * _Nonnull)aCoder;
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
@@ -334,55 +273,22 @@ SWIFT_CLASS("_TtC5Rapid21RapidDocumentSnapshot")
 @end
 
 
-@interface NSTimer (SWIFT_EXTENSION(Rapid))
+/// Class representing Rapid.io document
+SWIFT_CLASS("_TtC5Rapid16RapidDocumentRef")
+@interface RapidDocumentRef : NSObject
+/// ID of a collection to which the document belongs
+@property (nonatomic, readonly, copy) NSString * _Nonnull collectionID;
+/// Document ID
+@property (nonatomic, readonly, copy) NSString * _Nonnull documentID;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
-@class NSError;
-@class NSStream;
 
-SWIFT_CLASS("_TtC5Rapid9WebSocket")
-@interface WebSocket : NSObject <NSStreamDelegate>
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull ErrorDomain;)
-+ (NSString * _Nonnull)ErrorDomain SWIFT_WARN_UNUSED_RESULT;
-@property (nonatomic, strong) dispatch_queue_t _Nonnull callbackQueue;
-@property (nonatomic, copy) void (^ _Nullable onConnect)(void);
-@property (nonatomic, copy) void (^ _Nullable onDisconnect)(NSError * _Nullable);
-@property (nonatomic, copy) void (^ _Nullable onText)(NSString * _Nonnull);
-@property (nonatomic, copy) void (^ _Nullable onData)(NSData * _Nonnull);
-@property (nonatomic, copy) void (^ _Nullable onPong)(NSData * _Nullable);
-@property (nonatomic, copy) NSDictionary<NSString *, NSString *> * _Nonnull headers;
-@property (nonatomic) BOOL voipEnabled;
-@property (nonatomic) BOOL disableSSLCertValidation;
-@property (nonatomic, copy) NSArray<NSNumber *> * _Nullable enabledSSLCipherSuites;
-@property (nonatomic, copy) NSString * _Nullable origin;
-@property (nonatomic) NSInteger timeout;
-@property (nonatomic, readonly) BOOL isConnected;
-@property (nonatomic, readonly, copy) NSURL * _Nonnull currentURL;
-/// Used for setting protocols.
-- (nonnull instancetype)initWithUrl:(NSURL * _Nonnull)url protocols:(NSArray<NSString *> * _Nullable)protocols OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithUrl:(NSURL * _Nonnull)url writeQueueQOS:(NSQualityOfService)writeQueueQOS protocols:(NSArray<NSString *> * _Nullable)protocols;
-/// Connect to the WebSocket server on a background thread.
-- (void)connect;
-/// Write a string to the websocket. This sends it as a text frame.
-/// If you supply a non-nil completion block, I will perform it when the write completes.
-/// \param string The string to write.
-///
-/// \param completion The (optional) completion handler.
-///
-- (void)writeWithString:(NSString * _Nonnull)string completion:(void (^ _Nullable)(void))completion;
-/// Write binary data to the websocket. This sends it as a binary frame.
-/// If you supply a non-nil completion block, I will perform it when the write completes.
-/// \param data The data to write.
-///
-/// \param completion The (optional) completion handler.
-///
-- (void)writeWithData:(NSData * _Nonnull)data completion:(void (^ _Nullable)(void))completion;
-/// Write a ping to the websocket. This sends it as a control frame.
-/// Yodel a   sound  to the planet.    This sends it as an astroid. http://youtu.be/Eu5ZJELRiJ8?t=42s
-- (void)writeWithPing:(NSData * _Nonnull)ping completion:(void (^ _Nullable)(void))completion;
-/// Delegate for the stream methods. Processes incoming bytes
-- (void)stream:(NSStream * _Nonnull)aStream handleEvent:(NSStreamEvent)eventCode;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@interface RapidDocumentRef (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface NSTimer (SWIFT_EXTENSION(Rapid))
 @end
 
 #pragma clang diagnostic pop

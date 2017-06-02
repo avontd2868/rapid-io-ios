@@ -24,22 +24,22 @@ import Foundation
 import CoreFoundation
 import Security
 
-public let WebsocketDidConnectNotification = "WebsocketDidConnectNotification"
-public let WebsocketDidDisconnectNotification = "WebsocketDidDisconnectNotification"
-public let WebsocketDisconnectionErrorKeyName = "WebsocketDisconnectionErrorKeyName"
+let WebsocketDidConnectNotification = "WebsocketDidConnectNotification"
+let WebsocketDidDisconnectNotification = "WebsocketDidDisconnectNotification"
+let WebsocketDisconnectionErrorKeyName = "WebsocketDisconnectionErrorKeyName"
 
-public protocol WebSocketDelegate: class {
+protocol WebSocketDelegate: class {
     func websocketDidConnect(socket: WebSocket)
     func websocketDidDisconnect(socket: WebSocket, error: NSError?)
     func websocketDidReceiveMessage(socket: WebSocket, text: String)
     func websocketDidReceiveData(socket: WebSocket, data: Data)
 }
 
-public protocol WebSocketPongDelegate: class {
+protocol WebSocketPongDelegate: class {
     func websocketDidReceivePong(socket: WebSocket, data: Data?)
 }
 
-open class WebSocket : NSObject, StreamDelegate {
+class WebSocket : NSObject, StreamDelegate {
     
     enum OpCode : UInt8 {
         case continueFrame = 0x0
@@ -52,7 +52,7 @@ open class WebSocket : NSObject, StreamDelegate {
         // B-F reserved.
     }
     
-    public enum CloseCode : UInt16 {
+     enum CloseCode : UInt16 {
         case normal                 = 1000
         case goingAway              = 1001
         case protocolError          = 1002
@@ -65,7 +65,7 @@ open class WebSocket : NSObject, StreamDelegate {
         case messageTooBig          = 1009
     }
 
-    public static let ErrorDomain = "WebSocket"
+     static let ErrorDomain = "WebSocket"
 
     enum InternalErrorCode: UInt16 {
         // 0-999 WebSocket status codes not used
@@ -73,7 +73,7 @@ open class WebSocket : NSObject, StreamDelegate {
     }
 
     // Where the callback is executed. It defaults to the main UI thread queue.
-    public var callbackQueue = DispatchQueue.main
+     var callbackQueue = DispatchQueue.main
 
     var optionalProtocols: [String]?
 
@@ -112,32 +112,32 @@ open class WebSocket : NSObject, StreamDelegate {
 
     /// Responds to callback about new messages coming in over the WebSocket
     /// and also connection/disconnect messages.
-    public weak var delegate: WebSocketDelegate?
+     weak var delegate: WebSocketDelegate?
 
     /// Receives a callback for each pong message recived.
-    public weak var pongDelegate: WebSocketPongDelegate?
+     weak var pongDelegate: WebSocketPongDelegate?
 
 
     // MARK: - Block based API.
 
-    public var onConnect: ((Void) -> Void)?
-    public var onDisconnect: ((NSError?) -> Void)?
-    public var onText: ((String) -> Void)?
-    public var onData: ((Data) -> Void)?
-    public var onPong: ((Data?) -> Void)?
+     var onConnect: ((Void) -> Void)?
+     var onDisconnect: ((NSError?) -> Void)?
+     var onText: ((String) -> Void)?
+     var onData: ((Data) -> Void)?
+     var onPong: ((Data?) -> Void)?
 
-    public var headers = [String: String]()
-    public var voipEnabled = false
-    public var disableSSLCertValidation = false
-    public var security: SSLTrustValidator?
-    public var enabledSSLCipherSuites: [SSLCipherSuite]?
-    public var origin: String?
-    public var timeout = 5
-    public var isConnected: Bool {
+     var headers = [String: String]()
+     var voipEnabled = false
+     var disableSSLCertValidation = false
+     var security: SSLTrustValidator?
+     var enabledSSLCipherSuites: [SSLCipherSuite]?
+     var origin: String?
+     var timeout = 5
+     var isConnected: Bool {
         return connected
     }
     
-    public var currentURL: URL { return url }
+     var currentURL: URL { return url }
 
     // MARK: - Private
 
@@ -165,7 +165,7 @@ open class WebSocket : NSObject, StreamDelegate {
     private static let sharedWorkQueue = DispatchQueue(label: "com.vluxe.starscream.websocket", attributes: [])
     
     /// Used for setting protocols.
-    public init(url: URL, protocols: [String]? = nil) {
+     init(url: URL, protocols: [String]? = nil) {
         self.url = url
         self.origin = url.absoluteString
         if let hostUrl = URL (string: "/", relativeTo: url) {
@@ -178,7 +178,7 @@ open class WebSocket : NSObject, StreamDelegate {
     }
     
     // Used for specifically setting the QOS for the write queue.
-    public convenience init(url: URL, writeQueueQOS: QualityOfService, protocols: [String]? = nil) {
+     convenience init(url: URL, writeQueueQOS: QualityOfService, protocols: [String]? = nil) {
         self.init(url: url, protocols: protocols)
         writeQueue.qualityOfService = writeQueueQOS
     }

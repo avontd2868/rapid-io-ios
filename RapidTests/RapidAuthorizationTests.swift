@@ -14,14 +14,14 @@ extension RapidTests {
     func testSubscribeWituhoutAuthorization() {
         let promise = expectation(description: "Permission denied")
         
-        rapid.collection(named: "test1").subscribe { (error, _) in
-            if let error = error as? RapidError, case .permissionDenied = error {
+        rapid.collection(named: "test1").subscribe(block: { result in
+            if case .failure(let error) = result, case .permissionDenied = error {
                 promise.fulfill()
             }
             else {
                 XCTFail("Did subscribe")
             }
-        }
+        })
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -31,14 +31,14 @@ extension RapidTests {
         
         XCTAssertEqual(rapid.authorization?.token, testAuthToken)
 
-        rapid.collection(named: testCollectionName).subscribe { (error, _) in
-            if error == nil {
+        rapid.collection(named: testCollectionName).subscribe(block: { result in
+            if case .success = result {
                 promise.fulfill()
             }
             else {
                 XCTFail("Did not subscribe")
             }
-        }
+        })
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -48,11 +48,11 @@ extension RapidTests {
         
         var initialValue = true
         
-        rapid.collection(named: testCollectionName).subscribe { (error, _) in
+        rapid.collection(named: testCollectionName).subscribe(block: { result in
             if initialValue {
                 initialValue = false
                 
-                if error == nil {
+                if case .success = result {
                     self.rapid.deauthorize()
                 }
                 else {
@@ -60,14 +60,14 @@ extension RapidTests {
                 }
             }
             else {
-                if let error = error as? RapidError, case .permissionDenied = error {
+                if case .failure(let error) = result, case .permissionDenied = error {
                     promise.fulfill()
                 }
                 else {
                     XCTFail("Still subscribed")
                 }
             }
-        }
+        })
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -75,8 +75,8 @@ extension RapidTests {
     func testInvalidAuthToken() {
         let promise = expectation(description: "Authorization")
 
-        rapid.authorize(withToken: "fakeToken") { (_, error) in
-            if let error = error as? RapidError, case RapidError.invalidAuthToken = error {
+        rapid.authorize(withToken: "fakeToken") { result in
+            if case .failure(let error) = result, case RapidError.invalidAuthToken = error {
                 promise.fulfill()
             }
             else {
@@ -101,8 +101,8 @@ extension RapidTests {
         
         let socketManager = RapidSocketManager(networkHandler: mockHandler)
         
-        let deauth = RapidDeauthRequest { (success, error) in
-            if !success, let error = error as? RapidError, case .permissionDenied = error {
+        let deauth = RapidDeauthRequest { result in
+            if case .failure(let error) = result, case .permissionDenied = error {
                 promise.fulfill()
             }
             else {

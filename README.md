@@ -1,4 +1,4 @@
-# Rapid iOS SDK
+# Rapid iOS and macOS SDK
 
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/Rapid.svg)](https://img.shields.io/cocoapods/v/Rapid.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
@@ -88,6 +88,10 @@ Run `carthage update` to build the framework and drag the built `Rapid.framework
 ### Manually
 
 If you prefer not to use either of the dependency managers, you can either clone whole project or download the latest [iOS framework](Framework/iOS/Rapid.framework.zip) or [macOS framework](Framework/Mac/Rapid.framework.zip) and integrate Rapid SDK into your project manually.
+
+## Docs
+
+You can find complete documentation and examples at Rapid.io [website](https://www.rapid.io/docs)
 
 ---
 

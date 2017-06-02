@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Rapid.logLevel = .debug
         Rapid.configure(withApiKey: Constants.apiKey)
         Rapid.isCacheEnabled = true
- 
+
         return true
     }
 

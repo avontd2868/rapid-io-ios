@@ -621,7 +621,12 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testLoadingSubscriptionFromCache"]) { _ in
             
             var initialValue = true
-            self.rapid.collection(named: self.testCollectionName).subscribe(completion: { (_, docs) in
+            self.rapid.collection(named: self.testCollectionName).subscribe(block: { result in
+                guard case .success(let docs) = result else {
+                    XCTFail("Error")
+                    return
+                }
+                
                 XCTAssertGreaterThan(docs.count, 0, "No documents")
                 
                 if initialValue {
@@ -634,7 +639,12 @@ extension RapidTests {
                     
                     self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "Description"], completion: { _ in
                         runAfter(1, closure: {
-                            let subscription = RapidCollectionSub(collectionID: self.testCollectionName, filter: nil, ordering: nil, paging: nil, callback: { (_, cachedDocuments) in
+                            let subscription = RapidCollectionSub(collectionID: self.testCollectionName, filter: nil, ordering: nil, paging: nil, handler: { result in
+                                guard case .success(let cachedDocuments) = result else {
+                                    XCTFail("Error")
+                                    return
+                                }
+                                
                                 if cachedDocuments == documents {
                                     XCTFail("Cache not updated")
                                 }
@@ -657,7 +667,7 @@ extension RapidTests {
                                     
                                     promise.fulfill()
                                 }
-                            }, callbackWithChanges: nil)
+                            }, handlerWithChanges: nil)
                             
                             socketManager.subscribe(subscription)
                         })
@@ -668,6 +678,48 @@ extension RapidTests {
         
         waitForExpectations(timeout: 10, handler: nil)
     }
+    
+    func testRemovingCachedValuesOnFailure() {
+        let promise = expectation(description: "Load cached data")
+        
+        rapid.isCacheEnabled = false
+        rapid.isCacheEnabled = true
+        
+        XCTAssertEqual(rapid.isCacheEnabled, true)
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testLoadingSubscriptionFromCache"]) { _ in
+            
+            var initialValue = true
+            var hash = ""
+            let sub = self.rapid.collection(named: self.testCollectionName).subscribe(block: { result in
+                if initialValue {
+                    initialValue = false
+                    
+                    guard case .success(let docs) = result else {
+                        XCTFail("Error")
+                        return
+                    }
+                    
+                    XCTAssertGreaterThan(docs.count, 0, "No documents")
+                    
+                    self.rapid.deauthorize()
+                }
+                else {
+                    self.rapid.handler.cache?.loadDataset(forKey: hash, secret: self.testAuthToken, completion: { objects in
+                        XCTAssertNotNil(objects, "No objects")
+                        XCTAssertEqual(objects?.count ?? -1, 0, "Wrong count of objects")
+                        
+                        promise.fulfill()
+                    })
+                }
+            })
+            
+            hash = sub.subscriptionHash
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+
 }
 
 extension RapidTests {
