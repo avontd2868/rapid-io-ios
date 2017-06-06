@@ -4,7 +4,7 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/cocoapods/p/Rapid.svg?style=flat)](https://img.shields.io/cocoapods/p/Rapid.svg)
 
-Rapid iOS SDK is an SDK written in Swift for accessing Rapid.io realtime database.
+Rapid.io iOS SDK is an SDK written in Swift for accessing Rapid.io realtime database.
 
 - [Features](#features)
 - [Requirements](#requirements)
@@ -48,7 +48,7 @@ $ gem install cocoapods
 
 > CocoaPods 1.1.0+ is required to build Rapid 1.0.0+.
 
-To integrate Rapid iOS SDK into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate Rapid.io iOS SDK into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
@@ -77,7 +77,7 @@ $ brew update
 $ brew install carthage
 ```
 
-To integrate Rapid iOS SDK into your Xcode project using Carthage, specify it in your `Cartfile`:
+To integrate Rapid.io iOS SDK into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
 github "Rapid-SDK/ios"
@@ -87,7 +87,7 @@ Run `carthage update` to build the framework and drag the built `Rapid.framework
 
 ### Manually
 
-If you prefer not to use either of the dependency managers, you can either clone whole project or download the latest [iOS framework](Framework/iOS/Rapid.framework.zip) or [macOS framework](Framework/Mac/Rapid.framework.zip) and integrate Rapid SDK into your project manually.
+If you prefer not to use either of the dependency managers, you can either clone whole project or download the latest [iOS framework](Framework/iOS/Rapid.framework.zip) or [macOS framework](Framework/Mac/Rapid.framework.zip) and integrate Rapid.io SDK into your project manually.
 
 ## Docs
 
@@ -97,12 +97,12 @@ You can find complete documentation and examples at Rapid.io [website](https://w
 
 ## Credits
 
-Rapid iOS SDK is owned and maintained by the [Rapid.io](http://www.rapid.io).
+Rapid.io iOS SDK is owned and maintained by the [Rapid.io](http://www.rapid.io).
 
 ### Security Disclosure
 
-If you believe you have identified a security vulnerability with Rapid iOS SDK, you should report it as soon as possible via email to security@rapid.io. Please do not post it to a public issue tracker.
+If you believe you have identified a security vulnerability with Rapid.io iOS and macOS SDK, you should report it as soon as possible via email to security@rapid.io. Please do not post it to a public issue tracker.
 
 ## License
 
-Rapid iOS SDK is released under the MIT license. See LICENSE for details.
+Rapid.io iOS SDK is released under the MIT license. See LICENSE for details.

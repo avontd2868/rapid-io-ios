@@ -21,6 +21,6 @@ struct Constants {
         assert(!(Bundle.main.infoDictionary?["RapidDemoIdentifier"] as? String ?? "").isEmpty, "Rapid Demo App Identifier not defined. Go to https://www.rapid.io/demo get your unique collection name and paste it to Info.plist with `RapidDemoIdentifier` key")
         
         let clientID = Bundle.main.infoDictionary?["RapidDemoIdentifier"] as! String
-        return "rapido-\(clientID)"
+        return clientID
     }
 }
