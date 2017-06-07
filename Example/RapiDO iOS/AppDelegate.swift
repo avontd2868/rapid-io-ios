@@ -9,8 +9,6 @@
 import UIKit
 import Rapid
 
-//typealias Rapid = DemoRapid
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

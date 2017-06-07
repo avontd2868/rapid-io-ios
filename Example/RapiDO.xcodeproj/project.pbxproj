@@ -13,8 +13,8 @@
 		C14A3EEF1ED70F310042597B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
 		C14A74571EE056D1001339DC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14A74561EE056D1001339DC /* Rapid.framework */; };
 		C14A74581EE056D1001339DC /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C14A74561EE056D1001339DC /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C14A745B1EE05705001339DC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14A745A1EE05705001339DC /* Rapid.framework */; };
-		C14A745C1EE05705001339DC /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C14A745A1EE05705001339DC /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C16068011EE84CE100B118D4 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C16068001EE84CE100B118D4 /* Rapid.framework */; };
+		C16068021EE84CE100B118D4 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C16068001EE84CE100B118D4 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C16B6C091ECA0BC90036C9D4 /* BEMAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */; };
 		C16B6C0A1ECA0BC90036C9D4 /* BEMCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C041ECA0BC90036C9D4 /* BEMCheckBox.m */; };
 		C16B6C0B1ECA0BC90036C9D4 /* BEMCheckBoxGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C061ECA0BC90036C9D4 /* BEMCheckBoxGroup.m */; };
@@ -62,7 +62,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C14A745C1EE05705001339DC /* Rapid.framework in Embed Frameworks */,
+				C16068021EE84CE100B118D4 /* Rapid.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,7 +74,7 @@
 		C14A3EE91ED70EEB0042597B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C14A3EED1ED70F310042597B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		C14A74561EE056D1001339DC /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/Mac/Rapid.framework; sourceTree = "<group>"; };
-		C14A745A1EE05705001339DC /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
+		C16068001EE84CE100B118D4 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
 		C16B6BEC1ECA0A200036C9D4 /* RapiDO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RapiDO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C16B6C011ECA0BC90036C9D4 /* BEMAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMAnimationManager.h; sourceTree = "<group>"; };
 		C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMAnimationManager.m; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C14A745B1EE05705001339DC /* Rapid.framework in Frameworks */,
+				C16068011EE84CE100B118D4 /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,7 +131,7 @@
 		C14A745E1EE05711001339DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C14A745A1EE05705001339DC /* Rapid.framework */,
+				C16068001EE84CE100B118D4 /* Rapid.framework */,
 				C14A74561EE056D1001339DC /* Rapid.framework */,
 			);
 			name = Frameworks;
@@ -395,6 +395,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/../Framework/Mac",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -417,6 +418,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/../Framework/Mac",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -528,7 +530,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"${PROJECT_DIR}/../Framework/iOS",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRINCIPAL_CLASS = UIApplication;
@@ -546,7 +551,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"${PROJECT_DIR}/../Framework/iOS",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRINCIPAL_CLASS = UIApplication;

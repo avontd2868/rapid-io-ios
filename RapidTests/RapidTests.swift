@@ -17,7 +17,7 @@ class RapidTests: XCTestCase {
     
     var rapid: Rapid!
     
-    let apiKey = "MTMuNjQuNzcuMjAyOjgwODA="
+    let apiKey = "ZGV2LXdzLXNlcnZpY2UucmFwaWQuaW8="
     let localApiKey = "bG9jYWxob3N0OjgwODA="
     let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
     let socketURL = URL(string: "ws://13.64.77.202:8080")!

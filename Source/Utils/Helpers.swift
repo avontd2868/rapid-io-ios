@@ -91,7 +91,7 @@ class Decoder {
         if let data = Data(base64Encoded: apiKey),
         let decodedString = String(data: data, encoding: .utf8),
         !decodedString.isEmpty,
-        let url = URL(string: "ws://\(decodedString)") {
+        let url = URL(string: "wss://\(decodedString)") {
             return url
         }
 
