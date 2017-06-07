@@ -28,13 +28,7 @@ public class RapidLogger {
     
     class func log(message: String, level: Level) {
         if level.rawValue <= self.level.rawValue {
-            #if DEBUG
-                NSLog("RapidSDK - \(message)")
-            #else
-                if level == .critical {
-                    NSLog("RapidSDK - \(message)")
-                }
-            #endif
+            NSLog("RapidSDK - \(message)")
         }
     }
     
