@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>RapidCollection Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/RapidCollection" class="dashAnchor"></a>
+    <a title="RapidCollection Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Rapid Docs</a> (57% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Rapid Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        RapidCollection Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Rapid.html">Rapid</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Rapid/ConnectionState.html">– ConnectionState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidCollection.html">RapidCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidDocument.html">RapidDocument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidDocumentSnapshot.html">RapidDocumentSnapshot</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidFilter.html">RapidFilter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidFilterCompound.html">RapidFilterCompound</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidFilterCompound/Operator.html">– Operator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidFilterSimple.html">RapidFilterSimple</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidFilterSimple/Relation.html">– Relation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidLogger.html">RapidLogger</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidLogger/Level.html">– Level</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SSLCert.html">SSLCert</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SSLSecurity.html">SSLSecurity</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/WebSocket.html">WebSocket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/WebSocket/CloseCode.html">– CloseCode</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Global Variables.html">Global Variables</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Global Variables.html#/s:v5Rapid31WebsocketDidConnectNotificationSS">WebsocketDidConnectNotification</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Global Variables.html#/s:v5Rapid34WebsocketDidDisconnectNotificationSS">WebsocketDidDisconnectNotification</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Global Variables.html#/s:v5Rapid34WebsocketDisconnectionErrorKeyNameSS">WebsocketDisconnectionErrorKeyName</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/RapidConOptResult.html">RapidConOptResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RapidError.html">RapidError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RapidError/InvalidDataReason.html">– InvalidDataReason</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RapidError/ConcurrencyWriteError.html">– ConcurrencyWriteError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:P5Rapid15RapidComparable">RapidComparable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/RapidQuery.html">RapidQuery</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/RapidSubscription.html">RapidSubscription</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/SSLTrustValidator.html">SSLTrustValidator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/WebSocketDelegate.html">WebSocketDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/WebSocketPongDelegate.html">WebSocketPongDelegate</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/RapidAuthorization.html">RapidAuthorization</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RapidOrdering.html">RapidOrdering</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RapidOrdering/Ordering.html">– Ordering</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RapidPaging.html">RapidPaging</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Typealiases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid21RapidColFetchCallback">RapidColFetchCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid19RapidColSubCallback">RapidColSubCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid30RapidColSubCallbackWithChanges">RapidColSubCallbackWithChanges</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid31RapidConcurrencyCompletionBlock">RapidConcurrencyCompletionBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid31RapidConcurrencyOptimisticBlock">RapidConcurrencyOptimisticBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid21RapidDeletionCallback">RapidDeletionCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid21RapidDocFetchCallback">RapidDocFetchCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid19RapidDocSubCallback">RapidDocSubCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid18RapidMergeCallback">RapidMergeCallback</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid21RapidMutationCallback">RapidMutationCallback</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>RapidCollection</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">RapidCollection</span><span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                </div>
+              </div>
+            <p>Class representing Rapid.io collection</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Rapid15RapidCollection12collectionIDSS"></a>
+                    <a name="//apple_ref/swift/Property/collectionID" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Rapid15RapidCollection12collectionIDSS">collectionID</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Collection identifier</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">collectionID</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Rapid15RapidCollection18subscriptionFilterGSqCS_11RapidFilter_"></a>
+                    <a name="//apple_ref/swift/Property/subscriptionFilter" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Rapid15RapidCollection18subscriptionFilterGSqCS_11RapidFilter_">subscriptionFilter</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Filters assigned to the collection instance</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">fileprivate</span><span class="p">(</span><span class="k">set</span><span class="p">)</span> <span class="k">var</span> <span class="nv">subscriptionFilter</span><span class="p">:</span> <span class="kt"><a href="../Classes/RapidFilter.html">RapidFilter</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Rapid15RapidCollection20subscriptionOrderingGSqGSaVS_13RapidOrdering__"></a>
+                    <a name="//apple_ref/swift/Property/subscriptionOrdering" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Rapid15RapidCollection20subscriptionOrderingGSqGSaVS_13RapidOrdering__">subscriptionOrdering</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Order descriptors assigned to the collection instance</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">fileprivate</span><span class="p">(</span><span class="k">set</span><span class="p">)</span> <span class="k">var</span> <span class="nv">subscriptionOrdering</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/RapidOrdering.html">RapidOrdering</a></span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Rapid15RapidCollection18subscriptionPagingGSqVS_11RapidPaging_"></a>
+                    <a name="//apple_ref/swift/Property/subscriptionPaging" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Rapid15RapidCollection18subscriptionPagingGSqVS_11RapidPaging_">subscriptionPaging</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Pagination information assigned to the collection instance</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">fileprivate</span><span class="p">(</span><span class="k">set</span><span class="p">)</span> <span class="k">var</span> <span class="nv">subscriptionPaging</span><span class="p">:</span> <span class="kt"><a href="../Structs/RapidPaging.html">RapidPaging</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection11newDocumentFT_CS_13RapidDocument"></a>
+                    <a name="//apple_ref/swift/Method/newDocument()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection11newDocumentFT_CS_13RapidDocument">newDocument()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create an instance of a Rapid document in the collection with a new unique ID</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">newDocument</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/RapidDocument.html">RapidDocument</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Instance of <code><a href="../Classes/RapidDocument.html">RapidDocument</a></code> in the collection with a new unique ID</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection8documentFT6withIDSS_CS_13RapidDocument"></a>
+                    <a name="//apple_ref/swift/Method/document(withID:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection8documentFT6withIDSS_CS_13RapidDocument">document(withID:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get an instance of a Rapid document in the collection with a specified ID</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">document</span><span class="p">(</span><span class="n">withID</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/RapidDocument.html">RapidDocument</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>id</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Document ID</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Instance of a <code><a href="../Classes/RapidDocument.html">RapidDocument</a></code> in the collection with a specified ID</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection6filterFT2byCS_11RapidFilter_S0_"></a>
+                    <a name="//apple_ref/swift/Method/filter(by:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection6filterFT2byCS_11RapidFilter_S0_">filter(by:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a new collection object with a subscription filtering option assigned</p>
+
+<p>When the collection already contains a filter the new filter is combined with the original one with logical AND</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">filter</span><span class="p">(</span><span class="n">by</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Classes/RapidFilter.html">RapidFilter</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidCollection</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>filter</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Filter object</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The collection with the filter assigned</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection8filteredFT2byCS_11RapidFilter_T_"></a>
+                    <a name="//apple_ref/swift/Method/filtered(by:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection8filteredFT2byCS_11RapidFilter_T_">filtered(by:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Assign a subscription filtering option to the collection</p>
+
+<p>When the collection already contains a filter the new filter is combined with the original one with logical AND</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">filtered</span><span class="p">(</span><span class="n">by</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Classes/RapidFilter.html">RapidFilter</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>filter</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Filter object</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection5orderFT2byVS_13RapidOrdering_S0_"></a>
+                    <a name="//apple_ref/swift/Method/order(by:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection5orderFT2byVS_13RapidOrdering_S0_">order(by:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a new collection object with a subscription ordering assigned</p>
+
+<p>An ordering with the array index 0 has the highest priority.
+When the collection already contains an ordering the new ordering is appended to the original one</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">order</span><span class="p">(</span><span class="n">by</span> <span class="nv">ordering</span><span class="p">:</span> <span class="kt"><a href="../Structs/RapidOrdering.html">RapidOrdering</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidCollection</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>ordering</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Ordering object</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The collection with the ordering assigned</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection7orderedFT2byVS_13RapidOrdering_T_"></a>
+                    <a name="//apple_ref/swift/Method/ordered(by:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection7orderedFT2byVS_13RapidOrdering_T_">ordered(by:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Assign subscription ordering to the collection</p>
+
+<p>An ordering with the array index 0 has the highest priority.
+When the collection already contains an ordering the new ordering is appended to the original one</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">ordered</span><span class="p">(</span><span class="n">by</span> <span class="nv">ordering</span><span class="p">:</span> <span class="kt"><a href="../Structs/RapidOrdering.html">RapidOrdering</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>ordering</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Ordering object</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/TODO:%20Ordering%20with%20multiple%20descriptors"></a>
+                <a name="//apple_ref/swift/Section/TODO: Ordering with multiple descriptors" class="dashAnchor"></a>
+                <a href="#/TODO:%20Ordering%20with%20multiple%20descriptors">
+                  <h3 class="section-name">TODO: Ordering with multiple descriptors</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection5limitFT2toSi4skipGSqSi__S0_"></a>
+                    <a name="//apple_ref/swift/Method/limit(to:skip:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection5limitFT2toSi4skipGSqSi__S0_">limit(to:skip:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a new collection object with a subscription limit options assigned</p>
+
+<p>When the collection already contains a limit the original limit is replaced by the new one</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">limit</span><span class="p">(</span><span class="n">to</span> <span class="nv">take</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">skip</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidCollection</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>take</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Maximum number of documents to be returned</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>skip</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Number of documents to be skipped</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The collection with the limit assigned</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection7limitedFT2toSi4skipGSqSi__T_"></a>
+                    <a name="//apple_ref/swift/Method/limited(to:skip:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection7limitedFT2toSi4skipGSqSi__T_">limited(to:skip:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Assing a subscription limit options to the collection</p>
+
+<p>When the collection already contains a limit the original limit is replaced by the new one</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">limited</span><span class="p">(</span><span class="n">to</span> <span class="nv">take</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">skip</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>take</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Maximum number of documents to be returned</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>skip</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Number of documents to be skipped</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection9subscribeFT10completionFTGSqPs5Error__GSaCS_21RapidDocumentSnapshot__T__PS_17RapidSubscription_"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection9subscribeFT10completionFTGSqPs5Error__GSaCS_21RapidDocumentSnapshot__T__PS_17RapidSubscription_">subscribe(completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Subscribe for listening to the collection changes</p>
+
+<p>Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">subscribe</span><span class="p">(</span><span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:5Rapid19RapidColSubCallback">RapidColSubCallback</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidSubscription.html">RapidSubscription</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Subscription callback which provides a client either with an error or with an array of documents</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Subscription object which can be used for unsubscribing</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection9subscribeFT21completionWithChangesFTGSqPs5Error__GSaCS_21RapidDocumentSnapshot_GSaS2__GSaS2__GSaS2___T__PS_17RapidSubscription_"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(completionWithChanges:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection9subscribeFT21completionWithChangesFTGSqPs5Error__GSaCS_21RapidDocumentSnapshot_GSaS2__GSaS2__GSaS2___T__PS_17RapidSubscription_">subscribe(completionWithChanges:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Subscribe for listening to the collection changes</p>
+
+<p>Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">subscribe</span><span class="p">(</span><span class="n">completionWithChanges</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:5Rapid30RapidColSubCallbackWithChanges">RapidColSubCallbackWithChanges</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidSubscription.html">RapidSubscription</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Subscription callback which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Subscription object which can be used for unsubscribing</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid15RapidCollection8readOnceFT10completionFTGSqPs5Error__GSaCS_21RapidDocumentSnapshot__T__T_"></a>
+                    <a name="//apple_ref/swift/Method/readOnce(completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid15RapidCollection8readOnceFT10completionFTGSqPs5Error__GSaCS_21RapidDocumentSnapshot__T__T_">readOnce(completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Fetch collection</p>
+
+<p>Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">readOnce</span><span class="p">(</span><span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:5Rapid21RapidColFetchCallback">RapidColFetchCallback</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Fetch callback which provides a client either with an error or with an array of documents</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="http://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-05-30)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

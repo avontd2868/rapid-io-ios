@@ -10,8 +10,10 @@
 ## Getting started
 
 - Get your unique collection name at Rapid.io [website](https://www.rapid.io/demo)
-- Clone or download [Rapid iOS and macOS SDK](https://github.com/Rapid-SDK/ios)
+- Clone or download [Rapid.io iOS and macOS SDK](https://github.com/Rapid-SDK/ios)
 - Go to `Example` folder and open `Info.plist` file
 - Copy your unique collection name and paste it next to a key called `RapidDemoIdentifier`
 
 And that's it! Now you can open `RapiDO.xcodeproj` in Xcode and run the project
+
+For testing realtime features you can visit [RapiDo for web](http://demo.rapid.io) where you can enter your unique collection name and access your collection from a different client

@@ -11,19 +11,7 @@ import Foundation
 class Validator {
     
     class func isValid(collectionName name: String) -> Bool {
-        var components = name.components(separatedBy: "-")
-        
-        guard components.count > 0 else {
-            return false
-        }
-        
-        let first = components.removeFirst()
-        
-        if first != "rapido" {
-            return false
-        }
-        
-        let uuid = NSUUID(uuidString: components.joined(separator: "-"))
+        let uuid = NSUUID(uuidString: name)
         
         return uuid != nil
     }
