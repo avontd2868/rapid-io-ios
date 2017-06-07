@@ -1,42 +1,47 @@
-# Rapid iOS and macOS SDK
+<p align="center">
+  <img alt="logo" src="https://raw.githubusercontent.com/Rapid-SDK/android/master/extras/logo.png" />
+</p>
+<hr/>
+
+
+<p align="center">
+  <strong>iOS and macOS client for <a href="https://rapid.io">Rapid.io</a></strong> realtime database 
+</p>
+<h3 align="center">
+	<a href="https://rapid.io">
+	  Website
+	</a>
+	<span> | </span>
+	<a href="https://rapid.io/docs">
+	  Documentation
+	</a>
+	<span> | </span>
+	<a href="https://rapid.io/docs/api-reference-ios">
+	  Reference
+	</a>
+</h3>
 
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/Rapid.svg)](https://img.shields.io/cocoapods/v/Rapid.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/cocoapods/p/Rapid.svg?style=flat)](https://img.shields.io/cocoapods/p/Rapid.svg)
 
-Rapid.io iOS SDK is an SDK written in Swift for accessing Rapid.io realtime database.
 
-- [Features](#features)
-- [Requirements](#requirements)
-- [Migration Guides](#migration-guides)
-- [Communication](#communication)
-- [Installation](#installation)
-- [Credits](#credits)
-- [License](#license)
+# What
+Rapid.io is a cloud-hosted service that allows app developers to build realtime user interfaces without having to worry about the underlying infrastructure. It works as a non-relational data store accessible from a client-side code.
 
-## Features
 
-- [x] Connect to Rapid.io database
-- [x] Subscribe to changes
-- [x] Mutate database
-- [x] Authenticate
-- [X] Optimistic concurrency
-- [ ] Complete Documentation
+# Why
+Clients can create, update, delete and subscribe to a set of data and receive updates in realtime.
 
-## Requirements
+
+# How
+
+### Requirements
 
 - iOS 8.0+
 - macOS 10.10+
 - Xcode 8.1+
 - Swift 3.0+
-
-## Communication
-
-- If you **found a bug**, open an issue.
-- If you **have a feature request**, open an issue.
-- If you **want to contribute**, submit a pull request.
-
-## Installation
 
 ### CocoaPods
 
@@ -89,20 +94,8 @@ Run `carthage update` to build the framework and drag the built `Rapid.framework
 
 If you prefer not to use either of the dependency managers, you can either clone whole project or download the latest [iOS framework](Framework/iOS/Rapid.framework.zip) or [macOS framework](Framework/Mac/Rapid.framework.zip) and integrate Rapid.io SDK into your project manually.
 
-## Docs
-
-You can find complete documentation and examples at Rapid.io [website](https://www.rapid.io/docs)
-
----
-
-## Credits
-
-Rapid.io iOS SDK is owned and maintained by the [Rapid.io](http://www.rapid.io).
-
-### Security Disclosure
-
-If you believe you have identified a security vulnerability with Rapid.io iOS and macOS SDK, you should report it as soon as possible via email to security@rapid.io. Please do not post it to a public issue tracker.
+## Caught a bug? 
+Open an issue.
 
 ## License
-
-Rapid.io iOS SDK is released under the MIT license. See LICENSE for details.
+[The MIT License](/LICENSE.md)
