@@ -98,4 +98,4 @@ If you prefer not to use either of the dependency managers, you can either clone
 Open an issue.
 
 ## License
-[The MIT License](/LICENSE.md)
+[The MIT License](/LICENSE)
