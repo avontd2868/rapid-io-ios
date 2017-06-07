@@ -176,7 +176,7 @@ open class RapidCollectionRef: NSObject {
     open func subscribe(block: @escaping RapidColSubHandler) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: block, handlerWithChanges: nil)
         
-        socketManager.subscribe(subscription)
+        socketManager.subscribe(toCollection: subscription)
         
         return subscription
     }
@@ -191,7 +191,7 @@ open class RapidCollectionRef: NSObject {
     open func subscribeWithChanges(block: @escaping RapidColSubHandlerWithChanges) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: nil, handlerWithChanges: block)
         
-        socketManager.subscribe(subscription)
+        socketManager.subscribe(toCollection: subscription)
         
         return subscription
     }

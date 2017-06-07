@@ -38,8 +38,8 @@ class RapidSocketManager {
     /// Dictionary of events that have been already sent to the server and a response is awaited. Events are identified by an event ID.
     fileprivate var pendingRequests: [String: (request: Request, timestamp: TimeInterval)] = [:]
     
-    /// Dictionary of registered subscriptions. Either active or those that are waiting for acknowledgement from the server. Subscriptions are identified by a subscriptioon ID
-    fileprivate var activeSubscriptions: [String: RapidSubscriptionHandler] = [:]
+    /// Dictionary of registered subscriptions. Either active or those that are waiting for acknowledgement from the server. Subscriptions are identified by a subscriptioon hash
+    fileprivate var activeSubscriptions: [String: RapidSubscriptionManager] = [:]
     
     fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
     
@@ -109,6 +109,12 @@ class RapidSocketManager {
         }
     }
     
+    func publish(publishRequest: RapidChannelPublish) {
+        websocketQueue.async { [weak self] in
+            self?.post(event: publishRequest)
+        }
+    }
+    
     func execute<T: RapidExecution>(execution: T) {
         websocketQueue.async { [weak self] in
             self?.pendingExectuionRequests[execution.identifier] = execution
@@ -125,10 +131,10 @@ class RapidSocketManager {
         }
     }
     
-    /// Send register subscription event
+    /// Send register collection subscription event
     ///
     /// - Parameter subscription: Subscription object
-    func subscribe(_ subscription: RapidSubscriptionInstance) {
+    func subscribe(toCollection subscription: RapidColSubInstance) {
         subscription.registerUnsubscribeHandler { [weak self] (subscription) in
             self?.websocketQueue.async {
                 self?.unsubscribe(subscription)
@@ -138,7 +144,7 @@ class RapidSocketManager {
         websocketQueue.async { [weak self] in
 
             // If a subscription that listens to the same set of data has been already registered just register the new listener locally
-            if let activeSubscription = self?.activeSubscription(withHash: subscription.subscriptionHash) {
+            if let activeSubscription = self?.activeSubscription(withHash: subscription.subscriptionHash) as? RapidColSubManager {
                 activeSubscription.registerSubscription(subscription: subscription)
             }
             else {
@@ -146,7 +152,38 @@ class RapidSocketManager {
                 let subscriptionID = Generator.uniqueID
                 
                 // Create a handler for the subscription
-                let subscriptionHandler = RapidSubscriptionHandler(withSubscriptionID: subscriptionID, subscription: subscription, delegate: self)
+                let subscriptionHandler = RapidColSubManager(withSubscriptionID: subscriptionID, subscription: subscription, delegate: self)
+                
+                // Add handler to the dictionary of registered subscriptions
+                self?.activeSubscriptions[subscriptionID] = subscriptionHandler
+                
+                self?.post(event: subscriptionHandler)
+            }
+        }
+    }
+    
+    /// Send register channel subscription event
+    ///
+    /// - Parameter subscription: Subscription object
+    func subscribe(toChannel subscription: RapidChanSubInstance) {
+        subscription.registerUnsubscribeHandler { [weak self] (subscription) in
+            self?.websocketQueue.async {
+                self?.unsubscribe(subscription)
+            }
+        }
+        
+        websocketQueue.async { [weak self] in
+            
+            // If a subscription that listens to the same set of data has been already registered just register the new listener locally
+            if let activeSubscription = self?.activeSubscription(withHash: subscription.subscriptionHash) as? RapidChanSubManager {
+                activeSubscription.registerSubscription(subscription: subscription)
+            }
+            else {
+                // Create an unique ID that identifies the subscription
+                let subscriptionID = Generator.uniqueID
+                
+                // Create a handler for the subscription
+                let subscriptionHandler = RapidChanSubManager(withSubscriptionID: subscriptionID, subscription: subscription, delegate: self)
                 
                 // Add handler to the dictionary of registered subscriptions
                 self?.activeSubscriptions[subscriptionID] = subscriptionHandler
@@ -159,8 +196,8 @@ class RapidSocketManager {
     /// Remove all subscriptions
     func unsubscribeAll() {
         websocketQueue.async { [weak self] in
-            for (_, subscripiton) in self?.activeSubscriptions ?? [:] {
-                let handler = RapidUnsubscriptionHandler(subscription: subscripiton)
+            for (_, subscription) in self?.activeSubscriptions ?? [:] {
+                let handler = RapidUnsubscriptionManager(subscription: subscription)
                 self?.unsubscribe(handler)
             }
         }
@@ -172,7 +209,7 @@ class RapidSocketManager {
     ///
     /// - Parameter hash: Subscription hash
     /// - Returns: Subscription handler that takes care about subscriptions with specified hash
-    func activeSubscription(withHash hash: String) -> RapidSubscriptionHandler? {
+    func activeSubscription(withHash hash: String) -> RapidSubscriptionManager? {
         for (_, subscription) in activeSubscriptions where subscription.subscriptionHash == hash {
             return subscription
         }
@@ -237,7 +274,7 @@ fileprivate extension RapidSocketManager {
                 .filter({ (subscription) -> Bool in
                     
                 let toBeSent = currentQueue.contains(where: { (request) -> Bool in
-                    if let request = request as? RapidSubscriptionHandler {
+                    if let request = request as? RapidSubscriptionManager {
                         return request.subscriptionID == subscription.subscriptionID
                     }
 
@@ -245,7 +282,7 @@ fileprivate extension RapidSocketManager {
                 })
                 
                 let toBeAcknowledged = pendingRequests.values.contains(where: { (request, _) -> Bool in
-                    if let request = request as? RapidSubscriptionHandler {
+                    if let request = request as? RapidSubscriptionManager {
                         return request.subscriptionID == subscription.subscriptionID
                     }
 
@@ -347,14 +384,14 @@ fileprivate extension RapidSocketManager {
     /// Unregister subscription
     ///
     /// - Parameter handler: Unsubscription handler
-    func unsubscribe(_ handler: RapidUnsubscriptionHandler) {
+    func unsubscribe(_ handler: RapidUnsubscriptionManager) {
         RapidLogger.log(message: "Unsubscribe \(handler.subscription.subscriptionHash)", level: .info)
         
         activeSubscriptions[handler.subscription.subscriptionID] = nil
         
         // If the subscription is still in queue just remove it
         // Otherwise, send usubscription request
-        if let subscriptionIndex = eventQueue.flatMap({ $0 as? RapidSubscriptionHandler }).index(where: { $0.subscriptionID == handler.subscription.subscriptionID }) {
+        if let subscriptionIndex = eventQueue.flatMap({ $0 as? RapidSubscriptionManager }).index(where: { $0.subscriptionID == handler.subscription.subscriptionID }) {
             eventQueue.remove(at: subscriptionIndex)
         }
         else {
@@ -443,7 +480,7 @@ fileprivate extension RapidSocketManager {
             tuple?.request.eventFailed(withError: message)
             
             // If subscription registration failed remove if from the list of active subscriptions
-            if let subscription = tuple?.request as? RapidSubscriptionHandler {
+            if let subscription = tuple?.request as? RapidSubscriptionManager {
                 activeSubscriptions[subscription.subscriptionID] = nil
             }
             // If fetch failed remove it from the list of pending fetches
@@ -464,8 +501,9 @@ fileprivate extension RapidSocketManager {
         
         // Subscription event
         case let message as RapidSubscriptionBatch:
-            let subscription = activeSubscriptions[message.subscriptionID]
-            subscription?.receivedSubscriptionEvent(message)
+            if let subscription = activeSubscriptions[message.subscriptionID] as? RapidColSubManager {
+                subscription.receivedSubscriptionEvent(message)
+            }
             
         // Subscription cancel
         case let message as RapidSubscriptionCancel:
@@ -480,6 +518,12 @@ fileprivate extension RapidSocketManager {
             let fetch = pendingFetches[message.fetchID]
             fetch?.receivedData(message.documents)
             pendingFetches[message.fetchID] = nil
+            
+        // Channel message
+        case let message as RapidChannelMessage:
+            if let subscription = activeSubscriptions[message.subscriptionID] as? RapidChanSubManager {
+                subscription.receivedMessage(message)
+            }
         
         default:
             RapidLogger.developerLog(message: "Unrecognized response")
@@ -494,13 +538,13 @@ fileprivate extension RapidSocketManager {
 }
 
 // MARK: Subscription handler delegate
-extension RapidSocketManager: RapidSubscriptionHandlerDelegate {
+extension RapidSocketManager: RapidSubscriptionManagerDelegate {
     
     var authorization: RapidAuthorization? {
         return auth
     }
     
-    func unsubscribe(handler: RapidUnsubscriptionHandler) {
+    func unsubscribe(handler: RapidUnsubscriptionManager) {
         websocketQueue.async { [weak self] in
             self?.unsubscribe(handler)
         }

@@ -124,6 +124,16 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    class func serialize(publish: RapidChannelPublish, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Publish.ChannelID.name] = try Validator.validate(identifier: publish.channelID)
+        json[Publish.Body.name] = try Validator.validate(document: publish.value)
+        
+        let resultDict: [AnyHashable: Any] = [Publish.name: json]
+        return try resultDict.jsonString()
+    }
+    
     /// Serialize a collection fetch into JSON string
     ///
     /// - Parameters:
@@ -162,13 +172,13 @@ class RapidSerialization {
             throw RapidError.invalidData(reason: .invalidLimit)
         }
         
-        json[Subscription.CollectionID.name] = try Validator.validate(identifier: subscription.collectionID)
-        json[Subscription.Filter.name] = try serialize(filter: subscription.filter)
-        json[Subscription.Ordering.name] = try serialize(ordering: subscription.ordering)
-        json[Subscription.Limit.name] = subscription.paging?.take
-        json[Subscription.Skip.name] = subscription.paging?.skip
+        json[CollectionSubscription.CollectionID.name] = try Validator.validate(identifier: subscription.collectionID)
+        json[CollectionSubscription.Filter.name] = try serialize(filter: subscription.filter)
+        json[CollectionSubscription.Ordering.name] = try serialize(ordering: subscription.ordering)
+        json[CollectionSubscription.Limit.name] = subscription.paging?.take
+        json[CollectionSubscription.Skip.name] = subscription.paging?.skip
         
-        let resultDict: [AnyHashable: Any] = [Subscription.name: json]
+        let resultDict: [AnyHashable: Any] = [CollectionSubscription.name: json]
         return try resultDict.jsonString()
     }
     
@@ -304,15 +314,39 @@ class RapidSerialization {
     ///   - identifiers: Identifiers that are associated with the unsubscription event
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(unsubscription: RapidUnsubscriptionHandler, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+    class func serialize(unsubscription: RapidColSubManager, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
-        json[Unsubscribe.SubscriptionID.name] = unsubscription.subscription.subscriptionID
+        json[UnsubscribeCollection.SubscriptionID.name] = unsubscription.subscriptionID
         
-        let resultDict: [AnyHashable: Any] = [Unsubscribe.name: json]
+        let resultDict: [AnyHashable: Any] = [UnsubscribeCollection.name: json]
         return try resultDict.jsonString()
     }
     
+    class func serialize(subscription: RapidChannelSub, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        switch subscription.channelID {
+        case .name(let name):
+            json[ChannelSubscription.ChannelID.name] = try Validator.validate(identifier: name)
+            
+        case .prefix(let prefix):
+            json[ChannelSubscription.ChannelID.name] = [ChannelSubscription.ChannelID.Prefix.name: try Validator.validate(identifier: prefix)]
+        }
+        
+        let resultDict: [AnyHashable: Any] = [ChannelSubscription.name: json]
+        return try resultDict.jsonString()
+    }
+
+    class func serialize(unsubscription: RapidChanSubManager, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[UnsubscribeChannel.SubscriptionID.name] = unsubscription.subscriptionID
+        
+        let resultDict: [AnyHashable: Any] = [UnsubscribeChannel.name: json]
+        return try resultDict.jsonString()
+    }
+
     /// Serialize an event acknowledgement into JSON string
     ///
     /// - Parameters:
@@ -432,6 +466,9 @@ fileprivate extension RapidSerialization {
         }
         else if let res = json[FetchValue.name] as? [AnyHashable: Any] {
             return RapidFetchResponse(withJSON: res)
+        }
+        else if let mes = json[ChannelMessage.name] as? [AnyHashable: Any] {
+            return RapidChannelMessage(withJSON: mes)
         }
 
         return nil
@@ -560,6 +597,18 @@ extension RapidSerialization {
         }
     }
     
+    struct Publish {
+        static let name = "pub"
+        
+        struct ChannelID {
+            static let name = "chan-id"
+        }
+        
+        struct Body {
+            static let name = "body"
+        }
+    }
+    
     struct Fetch {
         static let name = "ftc"
         
@@ -588,7 +637,7 @@ extension RapidSerialization {
         }
     }
     
-    struct Subscription {
+    struct CollectionSubscription {
         static let name = "sub"
         
         struct SubscriptionID {
@@ -613,6 +662,22 @@ extension RapidSerialization {
         
         struct Skip {
             static let name = "skip"
+        }
+    }
+    
+    struct ChannelSubscription {
+        static let name = "sub-ch"
+        
+        struct SubscriptionID {
+            static let name = "sub-id"
+        }
+        
+        struct ChannelID {
+            static let name = "chan-id"
+            
+            struct Prefix {
+                static let name = "pref"
+            }
         }
     }
     
@@ -703,8 +768,32 @@ extension RapidSerialization {
         }
     }
     
-    struct Unsubscribe {
+    struct ChannelMessage {
+        static let name = "mes"
+        
+        struct SubscriptionID {
+            static let name = "sub-id"
+        }
+        
+        struct ChannelID {
+            static let name = "chan-id"
+        }
+        
+        struct Body {
+            static let name = "body"
+        }
+    }
+    
+    struct UnsubscribeCollection {
         static let name = "uns"
+        
+        struct SubscriptionID {
+            static let name = "sub-id"
+        }
+    }
+    
+    struct UnsubscribeChannel {
+        static let name = "uns-ch"
         
         struct SubscriptionID {
             static let name = "sub-id"

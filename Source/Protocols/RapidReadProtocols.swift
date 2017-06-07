@@ -9,14 +9,30 @@
 import Foundation
 
 protocol RapidSubscriptionHashable {
+    /// Hash identifying the subscription
     var subscriptionHash: String { get }
 }
 
 /// Protocol describing subscription objects
 protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionHashable, RapidSubscription {
-    /// Hash identifying the subscription
-    var subscriptionHash: String { get }
     
+    /// Subscription failed to be registered
+    ///
+    /// - Parameter error: Failure reason
+    func subscriptionFailed(withError error: RapidError)
+    
+    /// Pass a block of code that should be called when the subscription should be unregistered
+    ///
+    /// - Parameter block: Block of code that should be called when the subscription should be unregistered
+    func registerUnsubscribeHandler(_ block: @escaping (RapidSubscriptionInstance) -> Void)
+}
+
+protocol RapidChanSubInstance: RapidSubscriptionInstance {
+
+    func receivedMessage(_ message: RapidChannelMessage)
+}
+
+protocol RapidColSubInstance: RapidSubscriptionInstance {
     /// Maximum number of documents in subscription
     var subscriptionTake: Int? { get }
     
@@ -30,16 +46,6 @@ protocol RapidSubscriptionInstance: class, RapidSerializable, RapidSubscriptionH
     ///   - updated: Documents that have been modified since last call
     ///   - removed: Documents that have been removed since last call
     func receivedUpdate(_ documents: [RapidDocument], _ added: [RapidDocument], _ updated: [RapidDocument], _ removed: [RapidDocument])
-    
-    /// Subscription failed to be registered
-    ///
-    /// - Parameter error: Failure reason
-    func subscriptionFailed(withError error: RapidError)
-    
-    /// Pass a block of code that should be called when the subscription should be unregistered
-    ///
-    /// - Parameter block: Block of code that should be called when the subscription should be unregistered
-    func registerUnsubscribeHandler(_ block: @escaping (RapidSubscriptionInstance) -> Void)
 }
 
 protocol RapidFetchInstance: class, RapidSerializable, RapidTimeoutRequest, RapidSubscriptionHashable {
@@ -55,6 +61,66 @@ extension RapidFetchInstance {
     
     func eventFailed(withError error: RapidErrorInstance) {
         fetchFailed(withError: error.error)
+    }
+
+}
+
+enum RapidSubscriptionState {
+    case unsubscribed
+    case registering
+    case subscribed
+    case unsubscribing
+}
+
+/// Subscription handler delegate
+protocol RapidSubscriptionManagerDelegate: class {
+    /// Dedicated queue for task management
+    var websocketQueue: OperationQueue { get }
+    
+    /// Dedicated queue for parsing
+    var parseQueue: OperationQueue { get }
+    
+    /// Cache handler
+    var cacheHandler: RapidCacheHandler? { get }
+    
+    var authorization: RapidAuthorization? { get }
+    
+    /// Method for unregistering a subscription
+    ///
+    /// - Parameter handler: Unsubscription handler
+    func unsubscribe(handler: RapidUnsubscriptionManager)
+}
+
+protocol RapidSubscriptionManager: class, RapidSubscriptionHashable, RapidSerializable, RapidClientRequest {
+    
+    /// Subscription state
+    var state: RapidSubscriptionState { get set }
+    
+    var delegate: RapidSubscriptionManagerDelegate? { get set }
+    
+    var subscriptionID: String { get }
+    
+    func serializeForUnsubscription(withIdentifiers identifiers: [AnyHashable: Any]) throws -> String
+}
+
+extension RapidSubscriptionManager {
+    
+    /// Unsubscribe handler
+    ///
+    /// - Parameter handler: Previously creaated unsubscription handler
+    func retryUnsubscription(withHandler handler: RapidUnsubscriptionManager) {
+        delegate?.websocketQueue.async { [weak self] in
+            if self?.state == .unsubscribing {
+                self?.delegate?.unsubscribe(handler: handler)
+            }
+        }
+    }
+    
+    /// Inform handler about being unsubscribed
+    func didUnsubscribe() {
+        delegate?.websocketQueue.async { [weak self] in
+            self?.state = .unsubscribed
+        }
     }
 
 }

@@ -41,7 +41,7 @@ extension RapidTests {
                 })
             
             if let instance = subscription as? RapidSubscriptionInstance {
-                XCTAssertEqual(instance.subscriptionHash, "\(self.testCollectionName)#name-cnt-sty##")
+                XCTAssertEqual(instance.subscriptionHash, "collection#\(self.testCollectionName)#name-cnt-sty##")
             }
             else {
                 XCTFail("No hash")
@@ -81,7 +81,7 @@ extension RapidTests {
                 })
             
             if let instance = subscription as? RapidSubscriptionInstance {
-                XCTAssertEqual(instance.subscriptionHash, "\(self.testCollectionName)#name-pref-tt##")
+                XCTAssertEqual(instance.subscriptionHash, "collection#\(self.testCollectionName)#name-pref-tt##")
             }
             else {
                 XCTFail("No hash")
@@ -122,7 +122,7 @@ extension RapidTests {
                 })
             
             if let instance = subscription as? RapidSubscriptionInstance {
-                XCTAssertEqual(instance.subscriptionHash, "\(self.testCollectionName)#name-suf-tt##")
+                XCTAssertEqual(instance.subscriptionHash, "collection#\(self.testCollectionName)#name-suf-tt##")
             }
             else {
                 XCTFail("No hash")
@@ -162,7 +162,7 @@ extension RapidTests {
                 })
             
             if let instance = subscription as? RapidSubscriptionInstance {
-                XCTAssertEqual(instance.subscriptionHash, "\(self.testCollectionName)#tags-arr-cnt-2##")
+                XCTAssertEqual(instance.subscriptionHash, "collection#\(self.testCollectionName)#tags-arr-cnt-2##")
             }
             else {
                 XCTFail("No hash")

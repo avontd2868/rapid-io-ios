@@ -239,3 +239,79 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         return dict.description
     }
 }
+
+func == (lhs: RapidDocumentOperation, rhs: RapidDocumentOperation) -> Bool {
+    return lhs.document.id == rhs.document.id
+}
+
+/// Struct describing what happened with a document since previous subscription update
+struct RapidDocumentOperation: Hashable {
+    enum Operation {
+        case add
+        case update
+        case remove
+        case none
+    }
+    
+    let document: RapidDocument
+    let operation: Operation
+    
+    var hashValue: Int {
+        return document.id.hashValue
+    }
+}
+
+/// Wrapper for a set of `RapidDocumentOperation`
+///
+/// Set updates are treated specially because operations have different priority
+struct RapidDocumentOperationSet: Sequence {
+    
+    fileprivate var set = Set<RapidDocumentOperation>()
+    
+    /// Inserts or updates the given element into the set
+    ///
+    /// - Parameter operation: An element to insert into the set.
+    mutating func insertOrUpdate(_ operation: RapidDocumentOperation) {
+        if let index = set.index(of: operation) {
+            let previousOperation = set[index]
+            
+            switch (previousOperation.operation, operation.operation) {
+            case (.none, .add), (.none, .update), (.none, .remove), (.update, .remove):
+                set.update(with: operation)
+                
+            case (.add, .add), (.add, .update), (.update, .add), (.update, .update), (.remove, .update), (.remove, .remove), (.add, .none), (.update, .none), (.remove, .none), (.none, .none):
+                break
+                
+            case (.add, .remove):
+                set.remove(at: index)
+                
+            case (.remove, .add):
+                set.update(with: RapidDocumentOperation(document: operation.document, operation: .update))
+            }
+        }
+        else {
+            set.insert(operation)
+        }
+    }
+    
+    /// Inserts the given element into the set unconditionally
+    ///
+    /// - Parameter operation: An element to insert into the set
+    mutating func update(_ operation: RapidDocumentOperation) {
+        set.update(with: operation)
+    }
+    
+    /// Adds the elements of the given array to the set
+    ///
+    /// - Parameter other: An array of document operations
+    mutating func formUnion(_ other: [RapidDocumentOperation]) {
+        set.formUnion(other)
+    }
+    
+    /// Returns an iterator over the elements of this sequence
+    ///
+    /// - Returns: Iterator
+    func makeIterator() -> SetIterator<RapidDocumentOperation> {
+        return set.makeIterator()
+    }
+}

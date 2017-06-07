@@ -176,7 +176,7 @@ open class RapidDocumentRef: NSObject {
     open func subscribe(block: @escaping RapidDocSubHandler) -> RapidSubscription {
         let subscription = RapidDocumentSub(collectionID: collectionID, documentID: documentID, handler: block)
         
-        socketManager.subscribe(subscription)
+        socketManager.subscribe(toCollection: subscription)
         
         return subscription
     }

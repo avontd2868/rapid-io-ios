@@ -104,6 +104,7 @@ class RapidSubscriptionBatch: RapidServerEvent {
     
 }
 
+/// Wrapper for a fetch response
 class RapidFetchResponse: RapidServerEvent {
     
     let eventIDsToAcknowledge: [String]

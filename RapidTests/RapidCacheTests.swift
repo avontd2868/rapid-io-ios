@@ -669,7 +669,7 @@ extension RapidTests {
                                 }
                             }, handlerWithChanges: nil)
                             
-                            socketManager.subscribe(subscription)
+                            socketManager.subscribe(toCollection: subscription)
                         })
                     })
                 }

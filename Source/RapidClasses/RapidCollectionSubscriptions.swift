@@ -62,11 +62,11 @@ extension RapidCollectionSub: RapidSerializable {
 
 }
 
-extension RapidCollectionSub: RapidSubscriptionInstance {
+extension RapidCollectionSub: RapidColSubInstance {
     
     /// Subscription identifier
     var subscriptionHash: String {
-        return "\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
+        return "collection#\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
     }
     
     var subscriptionTake: Int? {
@@ -158,7 +158,7 @@ extension RapidDocumentSub: RapidSerializable {
     
 }
 
-extension RapidDocumentSub: RapidSubscriptionInstance {
+extension RapidDocumentSub: RapidColSubInstance {
     
     var subscriptionHash: String {
         return subscription.subscriptionHash

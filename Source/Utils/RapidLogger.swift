@@ -23,7 +23,7 @@ public class RapidLogger {
         case debug
     }
     
-    static let developerLogging = false
+    static let developerLogging = true
     static var level: Level = .critical
     
     class func log(message: String, level: Level) {

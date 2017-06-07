@@ -162,8 +162,16 @@ open class Rapid: NSObject {
     /// - parameter named:     Collection identifier
     ///
     /// - returns: New object representing Rapid collection
-    open func collection(named: String) -> RapidCollectionRef {
-        return RapidCollectionRef(id: named, handler: handler)
+    open func collection(named name: String) -> RapidCollectionRef {
+        return RapidCollectionRef(id: name, handler: handler)
+    }
+    
+    open func channel(named name: String) -> RapidChannelRef {
+        return RapidChannelRef(identifier: .name(name), handler: handler)
+    }
+    
+    open func channels(nameStartingWith prefix: String) -> RapidChannelRef {
+        return RapidChannelRef(identifier: .prefix(prefix), handler: handler)
     }
     
     /// Disconnect from server
@@ -305,6 +313,14 @@ public extension Rapid {
     /// - returns: New object representing Rapid collection
     class func collection(named: String) -> RapidCollectionRef {
         return try! shared().collection(named: named)
+    }
+    
+    class func channel(named name: String) -> RapidChannelRef {
+        return try! shared().channel(named: name)
+    }
+    
+    class func channels(nameStartingWith prefix: String) -> RapidChannelRef {
+        return try! shared().channels(nameStartingWith: prefix)
     }
     
     /// Deinitialize shared Rapid instance
