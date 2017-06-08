@@ -14,7 +14,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		srgSyZqWrWcHv8IxT9auGB+nw0c=
+		g3A4zdb7kOAugMhCjAzOIMZc7RM=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm.swiftdoc</key>
 		<data>
@@ -22,7 +22,7 @@
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm.swiftmodule</key>
 		<data>
-		M2Z4ILE+DCNX51nZX/imK+jdx1M=
+		pU5Dwbgr2ziogUL0vq/ZsdVrMko=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		F8+VnWIiq+8e/hb5zSvFWAlRxfw=
+		kDX0kFZctgR+SRg2suSfDFAySmU=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -76,11 +76,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			M2Z4ILE+DCNX51nZX/imK+jdx1M=
+			pU5Dwbgr2ziogUL0vq/ZsdVrMko=
 			</data>
 			<key>hash2</key>
 			<data>
-			5NtruKvKk706Cby+6rnjunqVj6K0qi/ZfGG9agBBz4M=
+			1MFiEQn77geg+anL0jsEYo3nEuupUILnuY8BuCHOR8s=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftdoc</key>
@@ -98,11 +98,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			F8+VnWIiq+8e/hb5zSvFWAlRxfw=
+			kDX0kFZctgR+SRg2suSfDFAySmU=
 			</data>
 			<key>hash2</key>
 			<data>
-			dBHEdaWQSW7bAxs69JU4sd64V/PV6rNSygpHiMKyLWk=
+			kXGTur/VLBQmkp40zCbpsDbpgGCrOMs1aqCMeT6Bngw=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

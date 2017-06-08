@@ -280,7 +280,8 @@ class WebSocket : NSObject, StreamDelegate {
         if let origin = origin {
             addHeader(urlRequest, key: headerOriginName, val: origin)
         }
-        addHeader(urlRequest, key: headerWSHostName, val: "\(url.host!):\(port!)")
+        let host = url.host! + (url.port == nil ? "" : ":\(url.port!)")
+        addHeader(urlRequest, key: headerWSHostName, val: host)
         for (key, value) in headers {
             addHeader(urlRequest, key: key, val: value)
         }
