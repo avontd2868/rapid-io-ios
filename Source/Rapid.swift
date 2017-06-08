@@ -167,11 +167,11 @@ open class Rapid: NSObject {
     }
     
     open func channel(named name: String) -> RapidChannelRef {
-        return RapidChannelRef(identifier: .name(name), handler: handler)
+        return RapidChannelRef(name: name, handler: handler)
     }
     
-    open func channels(nameStartingWith prefix: String) -> RapidChannelRef {
-        return RapidChannelRef(identifier: .prefix(prefix), handler: handler)
+    open func channels(nameStartingWith prefix: String) -> RapidChannelsRef {
+        return RapidChannelsRef(prefix: prefix, handler: handler)
     }
     
     /// Disconnect from server
@@ -319,7 +319,7 @@ public extension Rapid {
         return try! shared().channel(named: name)
     }
     
-    class func channels(nameStartingWith prefix: String) -> RapidChannelRef {
+    class func channels(nameStartingWith prefix: String) -> RapidChannelsRef {
         return try! shared().channels(nameStartingWith: prefix)
     }
     

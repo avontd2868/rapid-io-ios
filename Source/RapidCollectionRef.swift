@@ -18,16 +18,12 @@ public typealias RapidColSubHandlerWithChanges = (_ result: RapidResult<(documen
 public typealias RapidColFetchCompletion = RapidColSubHandler
 
 /// Class representing Rapid.io collection
-open class RapidCollectionRef: NSObject {
+open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     
-    fileprivate weak var handler: RapidHandler?
+    internal weak var handler: RapidHandler?
     
-    fileprivate var socketManager: RapidSocketManager {
-        return try! getSocketManager()
-    }
-    
-    /// Collection identifier
-    public let collectionID: String
+    /// Collection name
+    public let collectionName: String
     
     /// Filters assigned to the collection instance
     public fileprivate(set) var subscriptionFilter: RapidFilter?
@@ -39,7 +35,7 @@ open class RapidCollectionRef: NSObject {
     public fileprivate(set) var subscriptionPaging: RapidPaging?
 
     init(id: String, handler: RapidHandler!, filter: RapidFilter? = nil, ordering: [RapidOrdering]? = nil, paging: RapidPaging? = nil) {
-        self.collectionID = id
+        self.collectionName = id
         self.handler = handler
         self.subscriptionFilter = filter
         self.subscriptionOrdering = ordering
@@ -68,7 +64,7 @@ open class RapidCollectionRef: NSObject {
     /// - Parameter filter: Filter object
     /// - Returns: The collection with the filter assigned
     open func filter(by filter: RapidFilter) -> RapidCollectionRef {
-        let collection = RapidCollectionRef(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.filtered(by: filter)
         return collection
     }
@@ -96,7 +92,7 @@ open class RapidCollectionRef: NSObject {
     /// - Parameter ordering: Ordering object
     /// - Returns: The collection with the ordering assigned
     open func order(by ordering: RapidOrdering) -> RapidCollectionRef {
-        let collection = RapidCollectionRef(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
     }
@@ -124,7 +120,7 @@ open class RapidCollectionRef: NSObject {
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
     func order(by ordering: [RapidOrdering]) -> RapidCollectionRef {
-        let collection = RapidCollectionRef(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
     }
@@ -150,7 +146,7 @@ open class RapidCollectionRef: NSObject {
     ///   - skip: Number of documents to be skipped
     /// - Returns: The collection with the limit assigned
     open func limit(to take: Int, skip: Int? = nil) -> RapidCollectionRef {
-        let collection = RapidCollectionRef(id: collectionID, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.limited(to: take, skip: skip)
         return collection
     }
@@ -174,7 +170,7 @@ open class RapidCollectionRef: NSObject {
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     open func subscribe(block: @escaping RapidColSubHandler) -> RapidSubscription {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: block, handlerWithChanges: nil)
+        let subscription = RapidCollectionSub(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: block, handlerWithChanges: nil)
         
         socketManager.subscribe(toCollection: subscription)
         
@@ -189,7 +185,7 @@ open class RapidCollectionRef: NSObject {
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     open func subscribeWithChanges(block: @escaping RapidColSubHandlerWithChanges) -> RapidSubscription {
-        let subscription = RapidCollectionSub(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: nil, handlerWithChanges: block)
+        let subscription = RapidCollectionSub(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: nil, handlerWithChanges: block)
         
         socketManager.subscribe(toCollection: subscription)
         
@@ -202,7 +198,7 @@ open class RapidCollectionRef: NSObject {
     ///
     /// - Parameter completion: Fetch completion handler which provides a client either with an error or with an array of documents
     open func fetch(completion: @escaping RapidColFetchCompletion) {
-        let fetch = RapidCollectionFetch(collectionID: collectionID, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, completion: completion)
+        let fetch = RapidCollectionFetch(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, completion: completion)
         
         socketManager.fetch(fetch)
     }
@@ -212,16 +208,7 @@ extension RapidCollectionRef {
     
     func document(id: String) throws -> RapidDocumentRef {
         if let handler = handler {
-            return RapidDocumentRef(id: id, inCollection: collectionID, handler: handler)
-        }
-
-        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
-        throw RapidInternalError.rapidInstanceNotInitialized
-    }
-    
-    func getSocketManager() throws -> RapidSocketManager {
-        if let manager = handler?.socketManager {
-            return manager
+            return RapidDocumentRef(id: id, inCollection: collectionName, handler: handler)
         }
 
         RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)

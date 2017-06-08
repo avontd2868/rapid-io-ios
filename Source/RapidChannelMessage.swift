@@ -8,12 +8,16 @@
 
 import Foundation
 
+/// Class representing Rapid.io channel message that is returned from a subscription handler
 open class RapidChannelMessage: RapidServerEvent {
     
     internal var eventIDsToAcknowledge: [String]
-    let subscriptionID: String
+    internal let subscriptionID: String
     
-    public let channelID: String
+    /// Channel name
+    public let channelName: String
+    
+    /// Message dictionary
     public let message: [AnyHashable: Any]
     
     init?(withJSON dict: [AnyHashable: Any]) {
@@ -35,7 +39,7 @@ open class RapidChannelMessage: RapidServerEvent {
         
         self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subscriptionID
-        self.channelID = channelID
+        self.channelName = channelID
         self.message = message
     }
     

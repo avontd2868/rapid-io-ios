@@ -25,12 +25,12 @@ class RapidTests: XCTestCase {
     let testCollectionName = "iosUnitTests"
     let testChannelName = "iosUnitTestsChannel"
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6Imlvcy4qIiwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.e6k8nnCC-WIFornRaBgaI9Uy2YW4uxlZ1FJMzUqj42A"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6Il5pb3MuKiIsInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOiJeaW9zLioiLCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.B8zW06If0ctzIQnAPHlQ3XwYZ_aqT04ip7E_xunnq0k"
     
     override func setUp() {
         super.setUp()
         
-        rapid = Rapid(apiKey: localApiKey)!
+        rapid = Rapid(apiKey: apiKey)!
         
         rapid.authorize(withToken: testAuthToken)
     }
@@ -241,7 +241,7 @@ class RapidTests: XCTestCase {
         let document = RapidDocument(existingDocJson: doc, collectionID: "1")
         
         XCTAssertEqual(document?.id, "1", "Wrong Document")
-        XCTAssertEqual(document?.collectionID, "1", "Wrong Document")
+        XCTAssertEqual(document?.collectionName, "1", "Wrong Document")
         XCTAssertEqual(document?.etag, "1234", "Wrong Document")
         XCTAssertEqual(document?.value?["name"] as? String, "testDocumentsInitialization", "Wrong document")
     }

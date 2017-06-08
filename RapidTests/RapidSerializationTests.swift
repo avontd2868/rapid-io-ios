@@ -294,7 +294,7 @@ extension RapidTests {
         let collection = self.rapid.collection(named: "users")
             .filter(by: RapidFilterSimple(keyPath: "text", relation: .equal, value: "texty text"))
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -320,7 +320,7 @@ extension RapidTests {
             .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
             .order(by: [RapidOrdering(keyPath: "second_nem", ordering: .descending)])
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -368,7 +368,7 @@ extension RapidTests {
                 ])
             .limit(to: 50, skip: 10)
         
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let json: [AnyHashable: Any] = [
             "sub": [
@@ -557,7 +557,7 @@ extension RapidTests {
                 ])
             .limit(to: 50, skip: 10)
 
-        let sub = RapidCollectionSub(collectionID: collection.collectionID, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
+        let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         let hash = "collection#\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a|o-sentDate-d#t50s10"
         
@@ -597,9 +597,9 @@ extension RapidTests {
                         ])
                     ]))
         
-        let sub1 = RapidCollectionSub(collectionID: collection1.collectionID, filter: collection1.subscriptionFilter, ordering: collection1.subscriptionOrdering, paging: collection1.subscriptionPaging, handler: nil, handlerWithChanges: nil)
+        let sub1 = RapidCollectionSub(collectionID: collection1.collectionName, filter: collection1.subscriptionFilter, ordering: collection1.subscriptionOrdering, paging: collection1.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let sub2 = RapidCollectionSub(collectionID: collection2.collectionID, filter: collection2.subscriptionFilter, ordering: collection2.subscriptionOrdering, paging: collection2.subscriptionPaging, handler: nil, handlerWithChanges: nil)
+        let sub2 = RapidCollectionSub(collectionID: collection2.collectionName, filter: collection2.subscriptionFilter, ordering: collection2.subscriptionOrdering, paging: collection2.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
         XCTAssertEqual(sub1.subscriptionHash, sub2.subscriptionHash)
 
@@ -641,6 +641,18 @@ extension RapidTests {
         XCTAssertNil(ca1, "Not nil")
         XCTAssertNil(ca2, "Not nil")
         XCTAssertNil(ca3, "Not nil")
+    }
+    
+    func testChannelMessage() {
+        let mes1 = RapidChannelMessage(withJSON: [:])
+        let mes2 = RapidChannelMessage(withJSON: ["evt-id": "kldjflk"])
+        let mes3 = RapidChannelMessage(withJSON: ["evt-id": "kldjflk", "sub-id": "fkdsjlf"])
+        let mes4 = RapidChannelMessage(withJSON: ["evt-id": "kldjflk", "sub-id": "fkdsjlf", "chan-id": "jdkfsj"])
+        
+        XCTAssertNil(mes1, "Not nil")
+        XCTAssertNil(mes2, "Not nil")
+        XCTAssertNil(mes3, "Not nil")
+        XCTAssertNil(mes4, "Not nil")
     }
     
     func testLimitExceeded() {

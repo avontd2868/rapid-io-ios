@@ -17,7 +17,7 @@ import Foundation
 ///   - rhs: Right operand
 /// - Returns: `true` if operands are equal
 func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
-    if lhs.id == rhs.id && lhs.collectionID == rhs.collectionID && lhs.etag == rhs.etag {
+    if lhs.id == rhs.id && lhs.collectionName == rhs.collectionName && lhs.etag == rhs.etag {
         if let lValue = lhs.value, let rValue = rhs.value {
             return NSDictionary(dictionary: lValue).isEqual(to: rValue)
         }
@@ -37,14 +37,14 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     }
     
     var groupID: String {
-        return collectionID
+        return collectionName
     }
     
     /// Document ID
     public let id: String
     
     /// Collection ID
-    public let collectionID: String
+    public let collectionName: String
     
     /// Document body
     public let value: [AnyHashable: Any]?
@@ -95,7 +95,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         let sortKeys = dict[RapidSerialization.Document.SortKeys.name] as? [String]
         
         self.id = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.value = body
         self.etag = etag
         self.createdAt = Date(timeIntervalSince1970: createdAt)
@@ -117,7 +117,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         let sortKeys = dict[RapidSerialization.Document.SortKeys.name] as? [String]
         
         self.id = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.value = body
         self.etag = nil
         self.createdAt = nil
@@ -128,7 +128,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     init(removedDocId id: String, collectionID: String) {
         self.id = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.value = nil
         self.etag = nil
         self.createdAt = nil
@@ -139,7 +139,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     init?(document: RapidDocument, newValue: [AnyHashable: Any]) {
         self.id = document.id
-        self.collectionID = document.collectionID
+        self.collectionName = document.collectionName
         self.etag = document.etag
         self.createdAt = document.createdAt
         self.modifiedAt = document.modifiedAt
@@ -166,7 +166,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         }
         
         self.id = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.sortKeys = sortKeys
         self.sortValue = sortValue
         do {
@@ -200,7 +200,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     public func encode(with aCoder: NSCoder) {
         aCoder.encode(id, forKey: "id")
-        aCoder.encode(collectionID, forKey: "collectionID")
+        aCoder.encode(collectionName, forKey: "collectionID")
         aCoder.encode(etag, forKey: "etag")
         aCoder.encode(sortKeys, forKey: "sortKeys")
         aCoder.encode(sortValue, forKey: "sortValue")
@@ -224,7 +224,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         var dict: [AnyHashable: Any] = [
             "id": id,
             "etag": String(describing: etag),
-            "collectionID": collectionID,
+            "collectionID": collectionName,
             "value": String(describing: value)
             ]
         

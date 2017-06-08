@@ -8,17 +8,19 @@
 
 import Foundation
 
+/// Request for publishing message to a channel
 class RapidChannelPublish: NSObject {
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
     
+    /// Message dictionary
     let value: [AnyHashable: Any]
     
     /// Channel ID
     let channelID: String
     
-    /// Merge completion
+    /// Publish completion
     let completion: RapidPublishCompletion?
     
     /// Timeout delegate
@@ -26,13 +28,12 @@ class RapidChannelPublish: NSObject {
     
     internal var requestTimeoutTimer: Timer?
     
-    /// Initialize merge request
+    /// Initialize publish request
     ///
     /// - Parameters:
-    ///   - collectionID: Collection ID
-    ///   - documentID: Document ID
-    ///   - value: JSON with values to be merged
-    ///   - completion: Merge completion
+    ///   - channelID: Channel ID
+    ///   - value: JSON with message to be published
+    ///   - completion: Publish completion
     init(channelID: String, value: [AnyHashable: Any], completion: RapidPublishCompletion?) {
         self.value = value
         self.channelID = channelID

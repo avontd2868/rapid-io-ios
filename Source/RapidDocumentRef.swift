@@ -44,22 +44,19 @@ public enum RapidExecutionResult {
 }
 
 /// Class representing Rapid.io document
-open class RapidDocumentRef: NSObject {
+open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
     
-    fileprivate weak var handler: RapidHandler?
-    fileprivate var socketManager: RapidSocketManager {
-        return try! getSocketManager()
-    }
+    internal weak var handler: RapidHandler?
     
-    /// ID of a collection to which the document belongs
-    public let collectionID: String
+    /// Name of a collection to which the document belongs
+    public let collectionName: String
     
     /// Document ID
     public let documentID: String
     
     init(id: String, inCollection collectionID: String, handler: RapidHandler!) {
         self.documentID = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.handler = handler
     }
     
@@ -71,7 +68,7 @@ open class RapidDocumentRef: NSObject {
     ///   - value: Dictionary with new values that the document should contain
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     open func mutate(value: [AnyHashable: Any], completion: RapidMutationCompletion? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: handler, completion: completion)
+        let mutation = RapidDocumentMutation(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         socketManager.mutate(mutationRequest: mutation)
     }
     
@@ -86,7 +83,7 @@ open class RapidDocumentRef: NSObject {
     ///   - etag: `RapidDocument` etag
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     open func mutate(value: [AnyHashable: Any], etag: String?, completion: RapidMutationCompletion? = nil) {
-        let mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: handler, completion: completion)
+        let mutation = RapidDocumentMutation(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         mutation.etag = etag ?? Rapid.nilValue
         socketManager.mutate(mutationRequest: mutation)
     }
@@ -107,7 +104,7 @@ open class RapidDocumentRef: NSObject {
     ///   - block: Block of code that receives current document content updates it and decides what to do next
     ///   - completion: Execuction completion handler which provides a client with an error if any error occurs
     open func execute(block: @escaping RapidExecutionBlock, completion: RapidExecutionCompletion? = nil) {
-        let concurrencyMutation = RapidDocumentExecution(collectionID: collectionID, documentID: documentID, delegate: socketManager, block: block, completion: completion)
+        let concurrencyMutation = RapidDocumentExecution(collectionID: collectionName, documentID: documentID, delegate: socketManager, block: block, completion: completion)
         concurrencyMutation.cacheHandler = handler
         socketManager.execute(execution: concurrencyMutation)
     }
@@ -122,7 +119,7 @@ open class RapidDocumentRef: NSObject {
     ///   - value: Dictionary with new values that should be merged with the document content
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     open func merge(value: [AnyHashable: Any], completion: RapidMergeCompletion? = nil) {
-        let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: handler, completion: completion)
+        let merge = RapidDocumentMerge(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         socketManager.mutate(mutationRequest: merge)
     }
     
@@ -141,7 +138,7 @@ open class RapidDocumentRef: NSObject {
     ///   - etag: `RapidDocument` etag
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     open func merge(value: [AnyHashable: Any], etag: String?, completion: RapidMergeCompletion? = nil) {
-        let merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: handler, completion: completion)
+        let merge = RapidDocumentMerge(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         merge.etag = etag ?? Rapid.nilValue
         socketManager.mutate(mutationRequest: merge)
     }
@@ -150,7 +147,7 @@ open class RapidDocumentRef: NSObject {
     ///
     /// - Parameter completion: Deletion completion handler which provides a client with an error if any error occurs
     open func delete(completion: RapidDeletionCompletion? = nil) {
-        let deletion = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: handler, completion: completion)
+        let deletion = RapidDocumentDelete(collectionID: collectionName, documentID: documentID, cache: handler, completion: completion)
         socketManager.mutate(mutationRequest: deletion)
     }
     
@@ -163,7 +160,7 @@ open class RapidDocumentRef: NSObject {
     ///   - etag: `RapidDocument` etag
     ///   - completion: Deletion completion handler which provides a client with an error if any error occurs
     open func delete(etag: String, completion: RapidDeletionCompletion? = nil) {
-        let deletion = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: handler, completion: completion)
+        let deletion = RapidDocumentDelete(collectionID: collectionName, documentID: documentID, cache: handler, completion: completion)
         deletion.etag = etag
         socketManager.mutate(mutationRequest: deletion)
     }
@@ -174,7 +171,7 @@ open class RapidDocumentRef: NSObject {
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     open func subscribe(block: @escaping RapidDocSubHandler) -> RapidSubscription {
-        let subscription = RapidDocumentSub(collectionID: collectionID, documentID: documentID, handler: block)
+        let subscription = RapidDocumentSub(collectionID: collectionName, documentID: documentID, handler: block)
         
         socketManager.subscribe(toCollection: subscription)
         
@@ -185,21 +182,9 @@ open class RapidDocumentRef: NSObject {
     ///
     /// - Parameter completion: Fetch completion handler which provides a client either with an error or with an array of documents
     open func fetch(completion: @escaping RapidDocFetchCompletion) {
-        let fetch = RapidDocumentFetch(collectionID: collectionID, documentID: documentID, cache: handler, completion: completion)
+        let fetch = RapidDocumentFetch(collectionID: collectionName, documentID: documentID, cache: handler, completion: completion)
         
         socketManager.fetch(fetch)
     }
     
-}
-
-extension RapidDocumentRef {
-    
-    func getSocketManager() throws -> RapidSocketManager {
-        if let manager = handler?.socketManager {
-            return manager
-        }
-
-        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
-        throw RapidInternalError.rapidInstanceNotInitialized
-    }
 }

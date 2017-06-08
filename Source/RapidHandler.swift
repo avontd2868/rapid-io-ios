@@ -45,6 +45,28 @@ protocol RapidCacheHandler: class {
     func removeObject(withGroupID groupID: String, objectID: String)
 }
 
+/// Protocol describing instance that should have reference to socket manager
+protocol RapidInstanceWithSocketManager {
+    weak var handler: RapidHandler? { get }
+}
+
+extension RapidInstanceWithSocketManager {
+    
+    internal var socketManager: RapidSocketManager {
+        return try! getSocketManager()
+    }
+    
+    internal func getSocketManager() throws -> RapidSocketManager {
+        if let manager = handler?.socketManager {
+            return manager
+        }
+        
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
+        throw RapidInternalError.rapidInstanceNotInitialized
+    }
+    
+}
+
 /// General dependency object containing managers
 class RapidHandler: NSObject {
     

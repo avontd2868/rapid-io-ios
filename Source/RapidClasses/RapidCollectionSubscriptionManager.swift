@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Class that handles all subscriptions which listen to the same dataset
+/// Class that handles all collection subscriptions which listen to the same dataset
 class RapidColSubManager: NSObject, RapidSubscriptionManager {
     
     /// Hash that identifies subscriptions handled by the class
@@ -101,6 +101,11 @@ extension RapidColSubManager: RapidSerializable {
         }
     }
     
+    /// JSON message for unsubscribing request
+    ///
+    /// - Parameter identifiers: Custom identifiers
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     func serializeForUnsubscription(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(unsubscription: self, withIdentifiers: identifiers)
     }
@@ -363,7 +368,7 @@ fileprivate extension RapidColSubManager {
     ///
     /// - Parameter instance: Subscription object
     func unsubscribe(instance: RapidSubscriptionInstance) {
-        // If there is only one subscription object unsubscribe alse the handler
+        // If there is only one subscription object unsubscribe the handler
         // Otherwise just remove the subscription object from array of registered subscription objects
         if subscriptions.count == 1 {
             state = .unsubscribing

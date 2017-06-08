@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Class that handles all channel subscriptions which listen to the same channel
 class RapidChanSubManager: NSObject, RapidSubscriptionManager {
     
     /// Hash that identifies subscriptions handled by the class
@@ -32,10 +33,9 @@ class RapidChanSubManager: NSObject, RapidSubscriptionManager {
     /// Handler initializer
     ///
     /// - Parameters:
-    ///   - subscriptionID: Subscription ID
+    ///   - subscriptionID: Subscription identifier
     ///   - subscription: Subscription object
-    ///   - dispatchQueue: `SocketManager` dedicated thread for parsing
-    ///   - unsubscribeHandler: Block of code which must be called to unregister the subscription
+    ///   - delegate: Handler delegate
     init(withSubscriptionID subscriptionID: String, subscription: RapidChanSubInstance, delegate: RapidSubscriptionManagerDelegate?) {
         self.subscriptionID = subscriptionID
         self.delegate = delegate
@@ -72,6 +72,11 @@ extension RapidChanSubManager: RapidSerializable {
         }
     }
     
+    /// JSON message for unsubscribing request
+    ///
+    /// - Parameter identifiers: Custom identifiers
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     func serializeForUnsubscription(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(unsubscription: self, withIdentifiers: identifiers)
     }
@@ -92,7 +97,7 @@ fileprivate extension RapidChanSubManager {
     }
 
     func unsubscribe(instance: RapidSubscriptionInstance) {
-        // If there is only one subscription object unsubscribe alse the handler
+        // If there is only one subscription object unsubscribe the handler
         // Otherwise just remove the subscription object from array of registered subscription objects
         if subscriptions.count == 1 {
             state = .unsubscribing

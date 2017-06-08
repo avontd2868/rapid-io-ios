@@ -72,7 +72,7 @@ enum RapidSubscriptionState {
     case unsubscribing
 }
 
-/// Subscription handler delegate
+/// Subscription manager delegate
 protocol RapidSubscriptionManagerDelegate: class {
     /// Dedicated queue for task management
     var websocketQueue: OperationQueue { get }
@@ -91,15 +91,23 @@ protocol RapidSubscriptionManagerDelegate: class {
     func unsubscribe(handler: RapidUnsubscriptionManager)
 }
 
+/// Subscription manager that handles events for subscriptions with a same subscription hash
 protocol RapidSubscriptionManager: class, RapidSubscriptionHashable, RapidSerializable, RapidClientRequest {
     
     /// Subscription state
     var state: RapidSubscriptionState { get set }
     
+    /// Subscription manager delegate
     var delegate: RapidSubscriptionManagerDelegate? { get set }
     
+    /// Subscription identifier
     var subscriptionID: String { get }
     
+    /// JSON message for unsubscribing request
+    ///
+    /// - Parameter identifiers: Custom identifiers
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     func serializeForUnsubscription(withIdentifiers identifiers: [AnyHashable: Any]) throws -> String
 }
 

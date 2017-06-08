@@ -62,6 +62,8 @@
 		C16067FC1EE836F400B118D4 /* RapidChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16067FB1EE836F400B118D4 /* RapidChannelTests.swift */; };
 		C16067FE1EE8388500B118D4 /* RapidChannelPublish.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16067FD1EE8388500B118D4 /* RapidChannelPublish.swift */; };
 		C16067FF1EE8388500B118D4 /* RapidChannelPublish.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16067FD1EE8388500B118D4 /* RapidChannelPublish.swift */; };
+		C16068151EE9A4DF00B118D4 /* RapidProtocolConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16068141EE9A4DF00B118D4 /* RapidProtocolConstants.swift */; };
+		C16068161EE9A4DF00B118D4 /* RapidProtocolConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16068141EE9A4DF00B118D4 /* RapidProtocolConstants.swift */; };
 		C169DB411E952FA8007983EA /* RapidMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB401E952FA8007983EA /* RapidMutationTests.swift */; };
 		C169DB441E95384D007983EA /* RapidSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB431E95384D007983EA /* RapidSerializationTests.swift */; };
 		C169DB491E978D1B007983EA /* RapidAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */; };
@@ -122,6 +124,7 @@
 		C16067F61EE81CC000B118D4 /* RapidChannelMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidChannelMessage.swift; sourceTree = "<group>"; };
 		C16067FB1EE836F400B118D4 /* RapidChannelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidChannelTests.swift; sourceTree = "<group>"; };
 		C16067FD1EE8388500B118D4 /* RapidChannelPublish.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidChannelPublish.swift; sourceTree = "<group>"; };
+		C16068141EE9A4DF00B118D4 /* RapidProtocolConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidProtocolConstants.swift; sourceTree = "<group>"; };
 		C169DB401E952FA8007983EA /* RapidMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidMutationTests.swift; sourceTree = "<group>"; };
 		C169DB431E95384D007983EA /* RapidSerializationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSerializationTests.swift; sourceTree = "<group>"; };
 		C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidAuthorizationTests.swift; sourceTree = "<group>"; };
@@ -189,6 +192,7 @@
 				C16067ED1EE8027800B118D4 /* RapidChannelSubscriptions.swift */,
 				C16067FD1EE8388500B118D4 /* RapidChannelPublish.swift */,
 				C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */,
+				C16068141EE9A4DF00B118D4 /* RapidProtocolConstants.swift */,
 				C1D6E9A41E7BE3C0007589FC /* RapidServerEvents.swift */,
 				C12692211E82D27A002577B2 /* RapidSubscriptionEvent.swift */,
 				C126921F1E82BC37002577B2 /* RapidCollectionSubscriptionManager.swift */,
@@ -525,6 +529,7 @@
 				C142DCE31EC9E1B8000B9617 /* Extensions.swift in Sources */,
 				C142DCE51EC9E1BD000B9617 /* Helpers.swift in Sources */,
 				C16067EC1EE800DB00B118D4 /* RapidChannelRef.swift in Sources */,
+				C16068161EE9A4DF00B118D4 /* RapidProtocolConstants.swift in Sources */,
 				C142DCE71EC9E1C2000B9617 /* RapidCollectionSubscriptions.swift in Sources */,
 				C142DCF01EC9E1DA000B9617 /* RapidRequest.swift in Sources */,
 				C142DCE11EC9E1B3000B9617 /* RapidLogger.swift in Sources */,
@@ -568,6 +573,7 @@
 				C1D6E8A81E785D72007589FC /* Rapid.swift in Sources */,
 				C1D6E9AB1E7BF7F4007589FC /* RapidHandler.swift in Sources */,
 				C16067EB1EE800DB00B118D4 /* RapidChannelRef.swift in Sources */,
+				C16068151EE9A4DF00B118D4 /* RapidProtocolConstants.swift in Sources */,
 				C1D6E9A51E7BE3C0007589FC /* RapidServerEvents.swift in Sources */,
 				C1281A4A1E8AA9020054AF73 /* RapidMutations.swift in Sources */,
 				C1D6E99C1E7AE523007589FC /* RapidMutationProtocols.swift in Sources */,
