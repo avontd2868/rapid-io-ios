@@ -8,111 +8,8 @@
 
 import Foundation
 
-fileprivate func == (lhs: RapidDocumentOperation, rhs: RapidDocumentOperation) -> Bool {
-    return lhs.document.id == rhs.document.id
-}
-
-/// Struct describing what happened with a document since previous subscription update
-fileprivate struct RapidDocumentOperation: Hashable {
-    enum Operation {
-        case add
-        case update
-        case remove
-        case none
-    }
-    
-    let document: RapidDocument
-    let operation: Operation
-    
-    var hashValue: Int {
-        return document.id.hashValue
-    }
-}
-
-/// Wrapper for a set of `RapidDocumentOperation`
-///
-/// Set updates are treated specially because operations have different priority
-fileprivate struct RapidDocumentOperationSet: Sequence {
-    
-    fileprivate var set = Set<RapidDocumentOperation>()
-    
-    /// Inserts or updates the given element into the set
-    ///
-    /// - Parameter operation: An element to insert into the set.
-    mutating func insertOrUpdate(_ operation: RapidDocumentOperation) {
-        if let index = set.index(of: operation) {
-            let previousOperation = set[index]
-            
-            switch (previousOperation.operation, operation.operation) {
-            case (.none, .add), (.none, .update), (.none, .remove), (.update, .remove):
-                set.update(with: operation)
-                
-            case (.add, .add), (.add, .update), (.update, .add), (.update, .update), (.remove, .update), (.remove, .remove), (.add, .none), (.update, .none), (.remove, .none), (.none, .none):
-                break
-                
-            case (.add, .remove):
-                set.remove(at: index)
-                
-            case (.remove, .add):
-                set.update(with: RapidDocumentOperation(document: operation.document, operation: .update))
-            }
-        }
-        else {
-            set.insert(operation)
-        }
-    }
-    
-    /// Inserts the given element into the set unconditionally
-    ///
-    /// - Parameter operation: An element to insert into the set
-    mutating func update(_ operation: RapidDocumentOperation) {
-        set.update(with: operation)
-    }
-    
-    /// Adds the elements of the given array to the set
-    ///
-    /// - Parameter other: An array of document operations
-    mutating func formUnion(_ other: [RapidDocumentOperation]) {
-        set.formUnion(other)
-    }
-    
-    /// Returns an iterator over the elements of this sequence
-    ///
-    /// - Returns: Iterator
-    func makeIterator() -> SetIterator<RapidDocumentOperation> {
-        return set.makeIterator()
-    }
-}
-
-/// Subscription handler delegate
-protocol RapidSubscriptionHandlerDelegate: class {
-    /// Dedicated queue for task management
-    var websocketQueue: OperationQueue { get }
-    
-    /// Dedicated queue for parsing
-    var parseQueue: OperationQueue { get }
-    
-    /// Cache handler
-    var cacheHandler: RapidCacheHandler? { get }
-    
-    var authorization: RapidAuthorization? { get }
-    
-    /// Method for unregistering a subscription
-    ///
-    /// - Parameter handler: Unsubscription handler
-    func unsubscribe(handler: RapidUnsubscriptionHandler)
-}
-
-/// Class that handles all subscriptions which listen to the same dataset
-class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
-    
-    /// Subscripstion state
-    enum State {
-        case unsubscribed
-        case registering
-        case subscribed
-        case unsubscribing
-    }
+/// Class that handles all collection subscriptions which listen to the same dataset
+class RapidColSubManager: NSObject, RapidSubscriptionManager {
     
     /// Hash that identifies subscriptions handled by the class
     ///
@@ -133,10 +30,10 @@ class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
     let subscriptionID: String
     
     /// Handler delegate
-    fileprivate weak var delegate: RapidSubscriptionHandlerDelegate?
+    internal weak var delegate: RapidSubscriptionManagerDelegate?
     
     /// Array of subscription objects
-    fileprivate var subscriptions: [RapidSubscriptionInstance] = []
+    fileprivate var subscriptions: [RapidColSubInstance] = []
     
     /// Last known value of the dataset
     fileprivate var value: [RapidDocument]? {
@@ -152,7 +49,7 @@ class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
     }
     
     /// Subscription state
-    fileprivate var state: State = .unsubscribed
+    internal var state: RapidSubscriptionState = .unsubscribed
     
     /// Handler initializer
     ///
@@ -161,7 +58,7 @@ class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
     ///   - subscription: Subscription object
     ///   - dispatchQueue: `SocketManager` dedicated thread for parsing
     ///   - unsubscribeHandler: Block of code which must be called to unregister the subscription
-    init(withSubscriptionID subscriptionID: String, subscription: RapidSubscriptionInstance, delegate: RapidSubscriptionHandlerDelegate?) {
+    init(withSubscriptionID subscriptionID: String, subscription: RapidColSubInstance, delegate: RapidSubscriptionManagerDelegate?) {
         self.subscriptionID = subscriptionID
         self.delegate = delegate
         
@@ -176,7 +73,7 @@ class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
     /// Add another subscription object to the handler
     ///
     /// - Parameter subscription: New subscription object
-    func registerSubscription(subscription: RapidSubscriptionInstance) {
+    func registerSubscription(subscription: RapidColSubInstance) {
         delegate?.websocketQueue.async {
             self.appendSubscription(subscription)
             
@@ -186,33 +83,16 @@ class RapidSubscriptionHandler: NSObject, RapidSubscriptionHashable {
             }
         }
     }
-    
-    /// Unsubscribe handler
-    ///
-    /// - Parameter handler: Previously creaated unsubscription handler
-    func retryUnsubscription(withHandler handler: RapidUnsubscriptionHandler) {
-        delegate?.websocketQueue.async { [weak self] in
-            if self?.state == .unsubscribing {
-                self?.delegate?.unsubscribe(handler: handler)
-            }
-        }
-    }
-    
-    /// Inform handler about being unsubscribed
-    func didUnsubscribe() {
-        delegate?.websocketQueue.async { [weak self] in
-            self?.state = .unsubscribed
-        }
-    }
+
 }
 
-extension RapidSubscriptionHandler: RapidSerializable {
+extension RapidColSubManager: RapidSerializable {
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         if let subscription = subscriptions.first {
             var idef = identifiers
             
-            idef[RapidSerialization.Subscription.SubscriptionID.name] = subscriptionID
+            idef[RapidSerialization.CollectionSubscription.SubscriptionID.name] = subscriptionID
             
             return try subscription.serialize(withIdentifiers: idef)
         }
@@ -220,9 +100,18 @@ extension RapidSubscriptionHandler: RapidSerializable {
             throw RapidError.invalidData(reason: .serializationFailure)
         }
     }
+    
+    /// JSON message for unsubscribing request
+    ///
+    /// - Parameter identifiers: Custom identifiers
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    func serializeForUnsubscription(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(unsubscription: self, withIdentifiers: identifiers)
+    }
 }
 
-fileprivate extension RapidSubscriptionHandler {
+fileprivate extension RapidColSubManager {
     
     /// Load cached data if there are any
     func loadCachedData() {
@@ -239,7 +128,7 @@ fileprivate extension RapidSubscriptionHandler {
     /// Add a new subscription object
     ///
     /// - Parameter subscription: New subscription object
-    func appendSubscription(_ subscription: RapidSubscriptionInstance) {
+    func appendSubscription(_ subscription: RapidColSubInstance) {
         subscription.registerUnsubscribeHandler { [weak self] instance in
             self?.delegate?.websocketQueue.async {
                 self?.unsubscribe(instance: instance)
@@ -479,11 +368,11 @@ fileprivate extension RapidSubscriptionHandler {
     ///
     /// - Parameter instance: Subscription object
     func unsubscribe(instance: RapidSubscriptionInstance) {
-        // If there is only one subscription object unsubscribe alse the handler
+        // If there is only one subscription object unsubscribe the handler
         // Otherwise just remove the subscription object from array of registered subscription objects
         if subscriptions.count == 1 {
             state = .unsubscribing
-            delegate?.unsubscribe(handler: RapidUnsubscriptionHandler(subscription: self))
+            delegate?.unsubscribe(handler: RapidUnsubscriptionManager(subscription: self))
         }
         else if let index = subscriptions.index(where: { $0 === instance }) {
             subscriptions.remove(at: index)
@@ -491,7 +380,7 @@ fileprivate extension RapidSubscriptionHandler {
     }
 }
 
-extension RapidSubscriptionHandler: RapidClientRequest {
+extension RapidColSubManager: RapidClientRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
         delegate?.websocketQueue.async {
@@ -516,36 +405,5 @@ extension RapidSubscriptionHandler: RapidClientRequest {
         delegate?.parseQueue.async {
             self.receivedNewValue(update)
         }
-    }
-}
-
-// MARK: Unsubscription handler
-
-// Wrapper for `RapidSubscriptionHandler` that handles unsubscription
-class RapidUnsubscriptionHandler: NSObject {
-    
-    let subscription: RapidSubscriptionHandler
-    
-    init(subscription: RapidSubscriptionHandler) {
-        self.subscription = subscription
-    }
-    
-}
-
-extension RapidUnsubscriptionHandler: RapidSerializable {
-    
-    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(unsubscription: self, withIdentifiers: identifiers)
-    }
-}
-
-extension RapidUnsubscriptionHandler: RapidClientRequest {
-    
-    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
-        subscription.didUnsubscribe()
-    }
-    
-    func eventFailed(withError error: RapidErrorInstance) {
-        subscription.retryUnsubscription(withHandler: self)
     }
 }

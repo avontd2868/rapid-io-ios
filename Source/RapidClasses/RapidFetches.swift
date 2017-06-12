@@ -72,7 +72,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
     
     /// Subscription identifier
     var subscriptionHash: String {
-        return "\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
+        return "collection#\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
     }
 
     func receivedData(_ documents: [RapidDocument]) {
