@@ -334,9 +334,8 @@ extension RapidTests {
     func testInsert() {
         let promise = expectation(description: "Subscription insert")
 
-        mutate(documentID: "1", value: nil)
+        mutate(documentID: "1", value: nil) { _ in
         
-        runAfter(1) { 
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
@@ -364,9 +363,8 @@ extension RapidTests {
     func testUpdate() {
         let promise = expectation(description: "Subscription update")
 
-        mutate(documentID: "1", value: ["name": "testUpdate"])
+        mutate(documentID: "1", value: ["name": "testUpdate"]) { _ in
         
-        runAfter(1) { 
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
@@ -394,9 +392,8 @@ extension RapidTests {
     func testDelete() {
         let promise = expectation(description: "Subscription delete")
 
-        mutate(documentID: "1", value: ["name": "testDelete"])
+        mutate(documentID: "1", value: ["name": "testDelete"]) { _ in
         
-        runAfter(1) { 
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
@@ -1246,9 +1243,8 @@ extension RapidTests {
         
         rapid.isCacheEnabled = true
 
-        mutate(documentID: "1", value: ["name": "testUpdate"])
-        
-        runAfter(1) {
+        mutate(documentID: "1", value: ["name": "testUpdate"]) { _ in
+
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribe { result in
                 guard case .success(let documents) = result else {
@@ -1408,17 +1404,17 @@ extension RapidTests {
 }
 
 // MARK: Helper methods
-fileprivate extension RapidTests {
+extension RapidTests {
     
-    func mutate(documentID: String?, value: [AnyHashable: Any]?) {
+    func mutate(documentID: String?, value: [AnyHashable: Any]?, completion: RapidMutationCompletion? = nil) {
         if let id = documentID, let value = value {
-            self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value)
+            self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value, completion: completion)
         }
         else if let id = documentID {
-            self.rapid.collection(named: testCollectionName).document(withID: id).delete()
+            self.rapid.collection(named: testCollectionName).document(withID: id).delete(completion: completion)
         }
         else {
-            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value ?? [:])
+            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value ?? [:], completion: completion)
         }
     }
     

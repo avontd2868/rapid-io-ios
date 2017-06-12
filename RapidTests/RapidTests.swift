@@ -20,12 +20,12 @@ class RapidTests: XCTestCase {
     let apiKey = "ZGV2LXdzLXNlcnZpY2UucmFwaWQuaW8="
     let localApiKey = "bG9jYWxob3N0OjgwODA="
     let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
-    let socketURL = URL(string: "ws://13.64.77.202:8080")!
+    let socketURL = URL(string: "wss://dev-ws-service.rapid.io")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
     let testChannelName = "iosUnitTestsChannel"
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6Il5pb3MuKiIsInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOiJeaW9zLioiLCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.B8zW06If0ctzIQnAPHlQ3XwYZ_aqT04ip7E_xunnq0k"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6Il5pb3MuKiIsInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOiJeaW9zLioiLCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.1LT-TPjjGDS2whVdcJVrdpfUNZUhVqQU992z34AfgJU"
     
     override func setUp() {
         super.setUp()
@@ -306,7 +306,7 @@ class RapidTests: XCTestCase {
         
         let promise = expectation(description: "Nop request")
         
-        let mockHandler = MockNetworkHandler(socketURL: self.socketURL, writeCallback: { (handler, event, eventID) in
+        let mockHandler = MockNetworkHandler(socketURL: socketURL, writeCallback: { (handler, event, eventID) in
             if event is RapidEmptyRequest && (try? event.serialize(withIdentifiers: [:])) != nil {
                 promise.fulfill()
             }

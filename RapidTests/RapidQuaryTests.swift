@@ -134,13 +134,12 @@ extension RapidTests {
     
     func testArrayContainsFilter() {
         let promise = expectation(description: "Contains")
-        
+
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1", "tags": [1,2,3]])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2", "tags": [1,3]])
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3", "tags": [1,3]])
-        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4", "tags": [1,2,3]])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4", "tags": [1,2,3]]) { _ in
         
-        runAfter(1) {
             let subscription = self.rapid.collection(named: self.testCollectionName)
                 .filter(by: RapidFilter.arrayContains(keyPath: "tags", value: 2))
                 .subscribe(block: { result in
