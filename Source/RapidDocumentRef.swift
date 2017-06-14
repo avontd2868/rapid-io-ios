@@ -24,7 +24,7 @@ public typealias RapidDeletionCompletion = RapidMutationCompletion
 public typealias RapidMergeCompletion = RapidMutationCompletion
 
 /// Block of code which is called on optimistic concurrency write
-public typealias RapidExecutionBlock = (_ currentValue: [AnyHashable: Any]?) -> RapidExecutionResult
+public typealias RapidExecutionBlock = (_ current: RapidDocument) -> RapidExecutionResult
 
 /// Execution completion handler which informs a client about the operation result
 public typealias RapidExecutionCompletion = RapidMutationCompletion
