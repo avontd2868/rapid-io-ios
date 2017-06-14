@@ -34,7 +34,7 @@ extension RapidTests {
     func testSubscribeToChannels() {
         let promise = expectation(description: "Subscribe to channel")
         
-        rapid.channels(nameStartingWith: testChannelName).subscribe { result in
+        rapid.channels(nameStartsWith: testChannelName).subscribe { result in
             if case .success(let message) = result {
                 XCTAssertEqual(message.message["message"] as? String, "test", "Wrong message")
                 XCTAssertEqual(message.channelName, "\(self.testChannelName)test", "Wrong message")
