@@ -356,6 +356,7 @@
 				C1D6E99D1E7AE7A5007589FC /* Swiftlint */,
 				C1D6E99E1E7AEBF8007589FC /* Highlight TODO and FIXME */,
 				C1D6E8BA1E796333007589FC /* Build Framework */,
+				C16D64321EF12C3A009865D5 /* Generate docs */,
 			);
 			buildRules = (
 			);
@@ -453,6 +454,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		C16D64321EF12C3A009865D5 /* Generate docs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate docs";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nif which jazzy >/dev/null; then\njazzy -c -o \"${SRCROOT}/docs\"\nelse\necho \"warning: Jazzy not installed\"\nfi\nfi";
+		};
 		C1D6E8BA1E796333007589FC /* Build Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

@@ -168,12 +168,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// New or previously initialized instance
 + (Rapid * _Nullable)getInstanceWithApiKey:(NSString * _Nonnull)apiKey SWIFT_WARN_UNUSED_RESULT;
 /// Creates a new object representing Rapid collection
-/// \param named Collection identifier
+/// \param named Collection name
 ///
 ///
 /// returns:
 /// New object representing Rapid collection
-- (RapidCollectionRef * _Nonnull)collectionWithNamed:(NSString * _Nonnull)named SWIFT_WARN_UNUSED_RESULT;
+- (RapidCollectionRef * _Nonnull)collectionWithNamed:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
 /// Disconnect from server
 - (void)goOffline;
 /// Restore previously configured connection
@@ -212,7 +212,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isCacheEnabled;)
 ///
 + (void)configureWithApiKey:(NSString * _Nonnull)key;
 /// Creates a new object representing Rapid collection
-/// \param named Collection identifier
+/// \param named Collection name
 ///
 ///
 /// returns:
@@ -227,8 +227,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isCacheEnabled;)
 /// Class representing Rapid.io collection
 SWIFT_CLASS("_TtC5Rapid18RapidCollectionRef")
 @interface RapidCollectionRef : NSObject
-/// Collection identifier
-@property (nonatomic, readonly, copy) NSString * _Nonnull collectionID;
+/// Collection name
+@property (nonatomic, readonly, copy) NSString * _Nonnull collectionName;
 /// Create an instance of a Rapid document in the collection with a new unique ID
 ///
 /// returns:
@@ -256,7 +256,7 @@ SWIFT_CLASS("_TtC5Rapid13RapidDocument")
 /// Document ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull id;
 /// Collection ID
-@property (nonatomic, readonly, copy) NSString * _Nonnull collectionID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull collectionName;
 /// Document body
 @property (nonatomic, readonly, copy) NSDictionary * _Nullable value;
 /// Etag identifier
@@ -276,15 +276,11 @@ SWIFT_CLASS("_TtC5Rapid13RapidDocument")
 /// Class representing Rapid.io document
 SWIFT_CLASS("_TtC5Rapid16RapidDocumentRef")
 @interface RapidDocumentRef : NSObject
-/// ID of a collection to which the document belongs
-@property (nonatomic, readonly, copy) NSString * _Nonnull collectionID;
+/// Name of a collection to which the document belongs
+@property (nonatomic, readonly, copy) NSString * _Nonnull collectionName;
 /// Document ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull documentID;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
-@end
-
-
-@interface RapidDocumentRef (SWIFT_EXTENSION(Rapid))
 @end
 
 

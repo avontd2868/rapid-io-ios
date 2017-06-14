@@ -13,7 +13,7 @@
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Rapid Docs</a> (71% documented)</p>
+        <p><a href="index.html">Rapid Docs</a> (73% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -34,6 +34,15 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/Rapid/ConnectionState.html">– ConnectionState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RapidChannelMessage.html">RapidChannelMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RapidChannelRef.html">RapidChannelRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RapidChannelsRef.html">RapidChannelsRef</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/RapidCollectionRef.html">RapidCollectionRef</a>
@@ -91,6 +100,9 @@
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="Protocols/RapidChannelRefProtocol.html">RapidChannelRefProtocol</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols.html#/s:P5Rapid15RapidComparable">RapidComparable</a>
               </li>
               <li class="nav-group-task">
@@ -125,6 +137,9 @@
                 <a href="Typealiases.html#/s:5Rapid16RapidAuthHandler">RapidAuthHandler</a>
               </li>
               <li class="nav-group-task">
+                <a href="Typealiases.html#/s:5Rapid19RapidChanSubHandler">RapidChanSubHandler</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Typealiases.html#/s:5Rapid23RapidColFetchCompletion">RapidColFetchCompletion</a>
               </li>
               <li class="nav-group-task">
@@ -156,6 +171,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Typealiases.html#/s:5Rapid23RapidMutationCompletion">RapidMutationCompletion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:5Rapid22RapidPublishCompletion">RapidPublishCompletion</a>
               </li>
             </ul>
           </li>
@@ -317,7 +335,7 @@ Compound filter with the logical NOT operator must contain only one operand.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidCollectionRef</span><span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidCollectionRef</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">RapidInstanceWithSocketManager</span></code></pre>
 
                         </div>
                       </div>
@@ -363,6 +381,66 @@ Compound filter with the logical NOT operator must contain only one operand.</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:C5Rapid15RapidChannelRef"></a>
+                    <a name="//apple_ref/swift/Class/RapidChannelRef" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C5Rapid15RapidChannelRef">RapidChannelRef</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to a single channel identified by its full channel name</p>
+
+                        <a href="Classes/RapidChannelRef.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidChannelRef</span><span class="p">:</span> <span class="kt">RapidInstanceWithSocketManager</span><span class="p">,</span> <span class="kt"><a href="Protocols/RapidChannelRefProtocol.html">RapidChannelRefProtocol</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C5Rapid16RapidChannelsRef"></a>
+                    <a name="//apple_ref/swift/Class/RapidChannelsRef" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C5Rapid16RapidChannelsRef">RapidChannelsRef</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to multiple channels identified by their channel name prefix</p>
+
+                        <a href="Classes/RapidChannelsRef.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidChannelsRef</span><span class="p">:</span> <span class="kt">RapidInstanceWithSocketManager</span><span class="p">,</span> <span class="kt"><a href="Protocols/RapidChannelRefProtocol.html">RapidChannelRefProtocol</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:C5Rapid11RapidLogger"></a>
                     <a name="//apple_ref/swift/Class/RapidLogger" class="dashAnchor"></a>
                     <a class="token" href="#/s:C5Rapid11RapidLogger">RapidLogger</a>
@@ -376,6 +454,38 @@ Compound filter with the logical NOT operator must contain only one operand.</p>
                         <p>Undocumented</p>
 
                         <a href="Classes/RapidLogger.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C5Rapid19RapidChannelMessage"></a>
+                    <a name="//apple_ref/swift/Class/RapidChannelMessage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C5Rapid19RapidChannelMessage">RapidChannelMessage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Class representing Rapid.io channel message that is returned from a subscription handler</p>
+
+                        <a href="Classes/RapidChannelMessage.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidChannelMessage</span><span class="p">:</span> <span class="kt">RapidServerEvent</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -405,7 +515,7 @@ Compound filter with the logical NOT operator must contain only one operand.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidDocumentRef</span><span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidDocumentRef</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">RapidInstanceWithSocketManager</span></code></pre>
 
                         </div>
                       </div>
@@ -417,7 +527,7 @@ Compound filter with the logical NOT operator must contain only one operand.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="http://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-06-02)</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-06-14)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

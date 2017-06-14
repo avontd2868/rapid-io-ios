@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>SSLTrustValidator Protocol Reference</title>
+    <title>RapidChannelRefProtocol Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,18 +10,18 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Protocol/SSLTrustValidator" class="dashAnchor"></a>
-    <a title="SSLTrustValidator Protocol Reference"></a>
+    <a name="//apple_ref/swift/Protocol/RapidChannelRefProtocol" class="dashAnchor"></a>
+    <a title="RapidChannelRefProtocol Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Rapid Docs</a> (57% documented)</p>
+        <p><a href="../index.html">Rapid Docs</a> (73% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
         <a href="../index.html">Rapid Reference</a>
         <img id="carat" src="../img/carat.png" />
-        SSLTrustValidator Protocol Reference
+        RapidChannelRefProtocol Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -37,13 +37,22 @@
                 <a href="../Classes/Rapid/ConnectionState.html">– ConnectionState</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/RapidCollection.html">RapidCollection</a>
+                <a href="../Classes/RapidChannelMessage.html">RapidChannelMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidChannelRef.html">RapidChannelRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidChannelsRef.html">RapidChannelsRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidCollectionRef.html">RapidCollectionRef</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/RapidDocument.html">RapidDocument</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/RapidDocumentSnapshot.html">RapidDocumentSnapshot</a>
+                <a href="../Classes/RapidDocumentRef.html">RapidDocumentRef</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/RapidFilter.html">RapidFilter</a>
@@ -66,40 +75,11 @@
               <li class="nav-group-task">
                 <a href="../Classes/RapidLogger/Level.html">– Level</a>
               </li>
-              <li class="nav-group-task">
-                <a href="../Classes/SSLCert.html">SSLCert</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/SSLSecurity.html">SSLSecurity</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/WebSocket.html">WebSocket</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/WebSocket/CloseCode.html">– CloseCode</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Global Variables.html">Global Variables</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Global Variables.html#/s:v5Rapid31WebsocketDidConnectNotificationSS">WebsocketDidConnectNotification</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Global Variables.html#/s:v5Rapid34WebsocketDidDisconnectNotificationSS">WebsocketDidDisconnectNotification</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Global Variables.html#/s:v5Rapid34WebsocketDisconnectionErrorKeyNameSS">WebsocketDisconnectionErrorKeyName</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="../Enums.html">Enums</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Enums/RapidConOptResult.html">RapidConOptResult</a>
-              </li>
               <li class="nav-group-task">
                 <a href="../Enums/RapidError.html">RapidError</a>
               </li>
@@ -107,13 +87,22 @@
                 <a href="../Enums/RapidError/InvalidDataReason.html">– InvalidDataReason</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/RapidError/ConcurrencyWriteError.html">– ConcurrencyWriteError</a>
+                <a href="../Enums/RapidError/ExecutionError.html">– ExecutionError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RapidExecutionResult.html">RapidExecutionResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RapidResult.html">RapidResult</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/RapidChannelRefProtocol.html">RapidChannelRefProtocol</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Protocols.html#/s:P5Rapid15RapidComparable">RapidComparable</a>
               </li>
@@ -122,15 +111,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/RapidSubscription.html">RapidSubscription</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/SSLTrustValidator.html">SSLTrustValidator</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/WebSocketDelegate.html">WebSocketDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/WebSocketPongDelegate.html">WebSocketPongDelegate</a>
               </li>
             </ul>
           </li>
@@ -155,34 +135,46 @@
             <a href="../Typealiases.html">Typealiases</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid21RapidColFetchCallback">RapidColFetchCallback</a>
+                <a href="../Typealiases.html#/s:5Rapid16RapidAuthHandler">RapidAuthHandler</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid19RapidColSubCallback">RapidColSubCallback</a>
+                <a href="../Typealiases.html#/s:5Rapid19RapidChanSubHandler">RapidChanSubHandler</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid30RapidColSubCallbackWithChanges">RapidColSubCallbackWithChanges</a>
+                <a href="../Typealiases.html#/s:5Rapid23RapidColFetchCompletion">RapidColFetchCompletion</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid31RapidConcurrencyCompletionBlock">RapidConcurrencyCompletionBlock</a>
+                <a href="../Typealiases.html#/s:5Rapid18RapidColSubHandler">RapidColSubHandler</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid31RapidConcurrencyOptimisticBlock">RapidConcurrencyOptimisticBlock</a>
+                <a href="../Typealiases.html#/s:5Rapid29RapidColSubHandlerWithChanges">RapidColSubHandlerWithChanges</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid21RapidDeletionCallback">RapidDeletionCallback</a>
+                <a href="../Typealiases.html#/s:5Rapid23RapidDeletionCompletion">RapidDeletionCompletion</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid21RapidDocFetchCallback">RapidDocFetchCallback</a>
+                <a href="../Typealiases.html#/s:5Rapid17RapidDeuthHandler">RapidDeuthHandler</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid19RapidDocSubCallback">RapidDocSubCallback</a>
+                <a href="../Typealiases.html#/s:5Rapid23RapidDocFetchCompletion">RapidDocFetchCompletion</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid18RapidMergeCallback">RapidMergeCallback</a>
+                <a href="../Typealiases.html#/s:5Rapid18RapidDocSubHandler">RapidDocSubHandler</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:5Rapid21RapidMutationCallback">RapidMutationCallback</a>
+                <a href="../Typealiases.html#/s:5Rapid19RapidExecutionBlock">RapidExecutionBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid24RapidExecutionCompletion">RapidExecutionCompletion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid20RapidMergeCompletion">RapidMergeCompletion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid23RapidMutationCompletion">RapidMutationCompletion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Rapid22RapidPublishCompletion">RapidPublishCompletion</a>
               </li>
             </ul>
           </li>
@@ -191,8 +183,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>SSLTrustValidator</h1>
-            <p>Undocumented</p>
+            <h1>RapidChannelRefProtocol</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RapidChannelRefProtocol</span></code></pre>
+
+                </div>
+              </div>
+            <p>Common protocol for channel references</p>
 
           </section>
           <section class="section task-group-section">
@@ -201,9 +199,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FP5Rapid17SSLTrustValidator7isValidFTCSo8SecTrust6domainGSqSS__Sb"></a>
-                    <a name="//apple_ref/swift/Method/isValid(_:domain:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FP5Rapid17SSLTrustValidator7isValidFTCSo8SecTrust6domainGSqSS__Sb">isValid(_:domain:)</a>
+                    <a name="/s:FP5Rapid23RapidChannelRefProtocol9subscribeFT5blockFGOS_11RapidResultCS_19RapidChannelMessage_T__PS_17RapidSubscription_"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(block:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FP5Rapid23RapidChannelRefProtocol9subscribeFT5blockFGOS_11RapidResultCS_19RapidChannelMessage_T__PS_17RapidSubscription_">subscribe(block:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -214,6 +212,14 @@
                         <p>Undocumented</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RapidChannelRefProtocol</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
@@ -222,7 +228,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="http://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-05-30)</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-06-14)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
