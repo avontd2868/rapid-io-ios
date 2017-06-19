@@ -5,6 +5,7 @@
 //  Created by Jan Schwarz on 16/04/2017.
 //  Copyright © 2017 Rapid.io. All rights reserved.
 //
+import Foundation
 
 protocol RapidCachableObject: NSCoding {
     var objectID: String { get }
