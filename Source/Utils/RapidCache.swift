@@ -716,7 +716,7 @@ fileprivate extension RapidCache {
         var sortedValues = cacheInfo
             .values
             .reduce([(String, TimeInterval)](), { temp, dict in
-                let tuples = dict.map({ (key, value) in (key, value) })
+                let tuples = dict.map({ tuple in tuple })
                 return temp + tuples
             })
             .sorted(by: { $0.1 < $1.1 })

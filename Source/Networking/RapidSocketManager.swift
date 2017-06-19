@@ -281,8 +281,9 @@ fileprivate extension RapidSocketManager {
                     return false
                 })
                 
-                let toBeAcknowledged = pendingRequests.values.contains(where: { (request, _) -> Bool in
-                    if let request = request as? RapidSubscriptionManager {
+                    let toBeAcknowledged = pendingRequests.values.contains(where: { tuple -> Bool in
+                        
+                        if let request = tuple.request as? RapidSubscriptionManager {
                         return request.subscriptionID == subscription.subscriptionID
                     }
 
