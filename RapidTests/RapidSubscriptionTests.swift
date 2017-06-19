@@ -1283,9 +1283,8 @@ extension RapidTests {
         
         rapid.isCacheEnabled = true
         
-        mutate(documentID: "1", value: ["name": "testUpdate"])
+        mutate(documentID: "1", value: ["name": "testUpdate"]) { result in
         
-        runAfter(1) {
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
                 guard case .success(let document) = result else {
                     XCTFail("Error")
@@ -1335,10 +1334,8 @@ extension RapidTests {
         
         rapid.isCacheEnabled = true
         
-        mutate(documentID: "1", value: ["car": ["type": "Skoda", "model": "Octavia"]])
+        mutate(documentID: "1", value: ["car": ["type": "Skoda", "model": "Octavia"]]) { result in
         
-        runAfter(1) {
-
             self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.equal(keyPath: "car.type", value: "Skoda")).fetch { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")

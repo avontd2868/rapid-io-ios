@@ -667,6 +667,6 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 3, handler: nil)
     }
 }

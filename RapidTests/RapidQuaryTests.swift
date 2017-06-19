@@ -17,9 +17,8 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "testy2"])
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
-        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "testy4"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "testy4"]) { _ in
         
-        runAfter(1) { 
             let subscription = self.rapid.collection(named: self.testCollectionName)
                 .filter(by: RapidFilter.contains(keyPath: "name", subString: "sty"))
                 .subscribe(block: { result in
@@ -53,13 +52,12 @@ extension RapidTests {
     
     func testStartsWithFilter() {
         let promise = expectation(description: "Contains")
-        
+
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "ttest1"])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
-        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "ttest4"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "ttest4"]) { _ in
         
-        runAfter(1) {
             let subscription = self.rapid.collection(named: self.testCollectionName)
                 .filter(by: RapidFilter.startsWith(keyPath: "name", prefix: "tt"))
                 .subscribe(block: { result in
@@ -88,7 +86,7 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testEndsWithFilter() {
@@ -97,9 +95,8 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2tt"])
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3tt"])
-        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"]) { _ in
         
-        runAfter(1) {
             let subscription = self.rapid.collection(named: self.testCollectionName)
                 .filter(by: RapidFilter.endsWith(keyPath: "name", suffix: "tt"))
                 .subscribe(block: { result in

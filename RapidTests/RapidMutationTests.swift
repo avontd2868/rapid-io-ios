@@ -93,9 +93,8 @@ extension RapidTests {
     func testMerge() {
         let promise = expectation(description: "Merge document")
 
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"])
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"]) { result in
         
-        runAfter(1) { 
             var initial = true
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { result in
                 if initial {
@@ -178,9 +177,8 @@ extension RapidTests {
     func testMergeSafeWithEtag() {
         let promise = expectation(description: "Merge document")
         
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"])
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"]) { result in
         
-        runAfter(1) {
             var initial = true
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { result in
                 if case .success(let doc) = result {

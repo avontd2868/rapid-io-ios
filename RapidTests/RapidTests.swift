@@ -25,7 +25,7 @@ class RapidTests: XCTestCase {
     let testCollectionName = "iosUnitTests"
     let testChannelName = "iosUnitTestsChannel"
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6Il5pb3MuKiIsInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOiJeaW9zLioiLCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.1LT-TPjjGDS2whVdcJVrdpfUNZUhVqQU992z34AfgJU"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwid3JpdGUiOnRydWV9LHsiY29sbGVjdGlvbiI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.MdQbdW958yzRQk46qj7_bY92A60pxtSkDgy9yJV7Vd8"
     
     override func setUp() {
         super.setUp()
