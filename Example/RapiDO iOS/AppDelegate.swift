@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {        
         Rapid.timeout = 10
-        Rapid.logLevel = .info
+        Rapid.logLevel = .debug
         Rapid.configure(withApiKey: Constants.apiKey)
         Rapid.isCacheEnabled = true
 

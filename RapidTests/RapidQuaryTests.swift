@@ -165,7 +165,7 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 18, handler: nil)
     }
     
     func testOrderingAsc() {
@@ -174,26 +174,27 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
-        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"]) { _ in
         
-        rapid.collection(named: testCollectionName)
-            .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
-            .subscribe(block: { result in
-                guard case .success(let documents) = result else {
-                    XCTFail("Error")
-                    return
-                }
-                
-                XCTAssertGreaterThan(documents.count, 1, "No documents")
-                
-                var lastName = ""
-                for document in documents {
-                    XCTAssertGreaterThanOrEqual(document.value?["name"] as? String ?? "", lastName, "Wrong order")
-                    lastName = document.value?["name"] as? String ?? ""
-                }
-                
-                promise.fulfill()
-            })
+            self.rapid.collection(named: self.testCollectionName)
+                .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
+                .subscribe(block: { result in
+                    guard case .success(let documents) = result else {
+                        XCTFail("Error")
+                        return
+                    }
+                    
+                    XCTAssertGreaterThan(documents.count, 1, "No documents")
+                    
+                    var lastName = ""
+                    for document in documents {
+                        XCTAssertGreaterThanOrEqual(document.value?["name"] as? String ?? "", lastName, "Wrong order")
+                        lastName = document.value?["name"] as? String ?? ""
+                    }
+                    
+                    promise.fulfill()
+                })
+        }
         
         waitForExpectations(timeout: 8, handler: nil)
     }
@@ -269,16 +270,16 @@ extension RapidTests {
     
     func testOrderingUpdates() {
         let promise = expectation(description: "Ordering")
+        
+        var updateNumber = 0
+        var numberOfDocuments = 0
 
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
         rapid.collection(named: testCollectionName).document(withID: "4").delete()
-        rapid.collection(named: testCollectionName).document(withID: "5").mutate(value: ["name": "test5"])
+        rapid.collection(named: testCollectionName).document(withID: "5").mutate(value: ["name": "test5"]) { _ in
 
-        var updateNumber = 0
-        var numberOfDocuments = 0
-        runAfter(1) { 
             self.rapid.collection(named: self.testCollectionName)
                 .order(by: RapidOrdering(keyPath: "name", ordering: .descending))
                 .subscribe(block: { result in

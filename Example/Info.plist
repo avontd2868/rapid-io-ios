@@ -21,7 +21,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>RapidDemoIdentifier</key>
-	<string></string>
+	<string>85c46391-2234-e738-dc03-7b178d0ec4f0</string>
 	<key>RapidApiKey</key>
 	<string>ZGVtby13cy1zZXJ2aWNlLnJhcGlkLmlv</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -33,6 +33,7 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -50,5 +51,7 @@
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>$(PRINCIPAL_CLASS)</string>
+	<key>UIUserInterfaceStyle</key>
+	<string>Automatic</string>
 </dict>
 </plist>

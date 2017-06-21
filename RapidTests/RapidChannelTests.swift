@@ -54,7 +54,7 @@ extension RapidTests {
     
     func testUnauthorizedPublish() {
         let promise = expectation(description: "Subscribe to channel")
-        
+
         self.rapid.channel(named: "fake\(self.testChannelName)").publish(message: ["message": "test"]) { result in
             if case .failure(let error) = result, case .permissionDenied = error {
                 promise.fulfill()
