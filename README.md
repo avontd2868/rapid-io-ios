@@ -5,7 +5,7 @@
 
 
 <p align="center">
-  <strong>iOS, macOS and tvOS client for <a href="https://rapid.io">Rapid.io</a></strong> realtime database 
+  <strong>iOS, macOS and tvOS client for <a href="https://rapid.io">rapid.io</a></strong> realtime database 
 </p>
 <h3 align="center">
 	<a href="https://rapid.io">

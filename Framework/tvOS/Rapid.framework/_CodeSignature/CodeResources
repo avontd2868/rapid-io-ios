@@ -14,15 +14,15 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		dX4JRpxQYsVuJiOjK8g+af8nBR8=
+		h/KXTZM1U6QIiKTZscIMGTBZqr4=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		Xzz0p6YBpW0JvqZc7s2UeWUvzzo=
+		J5GE3nwqLe3y0OjPBJQ0sBGdcag=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		d7pUV5kRmMIsrBfg8FKCPYh/JyQ=
+		Va0ZL11sH5v5i0mrAbTmtlc0BEQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -57,22 +57,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Xzz0p6YBpW0JvqZc7s2UeWUvzzo=
+			J5GE3nwqLe3y0OjPBJQ0sBGdcag=
 			</data>
 			<key>hash2</key>
 			<data>
-			Ixn5tGB+PXGIWfmeRew3BFcH9OftTGpKSiTFOJaaX1U=
+			Pv7J3sMuVcBPnK8RA0O1+K37ICaQp2b7++7StSrvDhk=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			d7pUV5kRmMIsrBfg8FKCPYh/JyQ=
+			Va0ZL11sH5v5i0mrAbTmtlc0BEQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			wIpKsRjsXTZfAZdZhj4Sc+AjeG7yj8teDw9TxT171/Q=
+			C2HyzYN8k4HmAWfElcPXE6L4z3QxAJRAWd4EgnD91Kc=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
