@@ -5,7 +5,7 @@
 
 
 <p align="center">
-  <strong>iOS and macOS client for <a href="https://rapid.io">Rapid.io</a></strong> realtime database 
+  <strong>iOS, macOS and tvOS client for <a href="https://rapid.io">Rapid.io</a></strong> realtime database 
 </p>
 <h3 align="center">
 	<a href="https://rapid.io">
@@ -40,6 +40,7 @@ Clients can create, update, delete and subscribe to a set of data and receive up
 
 - iOS 8.0+
 - macOS 10.10+
+- tvOS 9.0+
 - Xcode 8.1+
 - Swift 3.0+
 
@@ -53,7 +54,7 @@ $ gem install cocoapods
 
 > CocoaPods 1.1.0+ is required to build Rapid 1.0.0+.
 
-To integrate Rapid.io iOS SDK into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate rapid.io iOS SDK into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
@@ -82,17 +83,17 @@ $ brew update
 $ brew install carthage
 ```
 
-To integrate Rapid.io iOS SDK into your Xcode project using Carthage, specify it in your `Cartfile`:
+To integrate rapid.io SDK into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "Rapid-SDK/ios"
+github "rapid-io/ios"
 ```
 
 Run `carthage update` to build the framework and drag the built `Rapid.framework` into your Xcode project.
 
 ### Manually
 
-If you prefer not to use either of the dependency managers, you can either clone whole project or download the latest [iOS framework](Framework/iOS/Rapid.framework.zip) or [macOS framework](Framework/Mac/Rapid.framework.zip) and integrate Rapid.io SDK into your project manually.
+If you prefer not to use either of the dependency managers, you can either clone whole project or download the latest [iOS framework](Framework/iOS/Rapid.framework.zip), [macOS framework](Framework/Mac/Rapid.framework.zip) or [tvOS framework](Framework/tvOS/Rapid.framework.zip) and integrate rapid.io SDK into your project manually.
 
 ## Caught a bug? 
 Open an issue.
