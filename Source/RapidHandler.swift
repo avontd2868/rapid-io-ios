@@ -15,7 +15,7 @@ protocol RapidCacheHandler: class {
     /// - Parameters:
     ///   - subscription: Subscription handler object
     ///   - completion: Completion handler. If there are any cached data for the subscription they are passed to the completion handler parameter
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping (_ dataset: [RapidCachableObject]?) -> Void)
+    func loadSubscriptionValue(forSubscription subscription: RapidColSubManager, completion: @escaping (_ dataset: [RapidCachableObject]?) -> Void)
     
     /// Store data associated with a given subscription
     ///
@@ -43,6 +43,28 @@ protocol RapidCacheHandler: class {
     ///   - groupID: `RapidCachableObject` group ID
     ///   - objectID: `RapidCachableObject` object ID
     func removeObject(withGroupID groupID: String, objectID: String)
+}
+
+/// Protocol describing instance that should have reference to socket manager
+protocol RapidInstanceWithSocketManager {
+    weak var handler: RapidHandler? { get }
+}
+
+extension RapidInstanceWithSocketManager {
+    
+    internal var socketManager: RapidSocketManager {
+        return try! getSocketManager()
+    }
+    
+    internal func getSocketManager() throws -> RapidSocketManager {
+        if let manager = handler?.socketManager {
+            return manager
+        }
+        
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
+        throw RapidInternalError.rapidInstanceNotInitialized
+    }
+    
 }
 
 /// General dependency object containing managers
@@ -108,7 +130,7 @@ class RapidHandler: NSObject {
 
 extension RapidHandler: RapidCacheHandler {
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping ([RapidCachableObject]?) -> Void) {
+    func loadSubscriptionValue(forSubscription subscription: RapidColSubManager, completion: @escaping ([RapidCachableObject]?) -> Void) {
         cache?.loadDataset(forKey: subscription.subscriptionHash, secret: socketManager.auth?.token, completion: completion)
     }
 

@@ -159,11 +159,27 @@ open class Rapid: NSObject {
     
     /// Creates a new object representing Rapid collection
     ///
-    /// - parameter named:     Collection identifier
+    /// - parameter named: Collection name
     ///
     /// - returns: New object representing Rapid collection
-    open func collection(named: String) -> RapidCollectionRef {
-        return RapidCollectionRef(id: named, handler: handler)
+    open func collection(named name: String) -> RapidCollectionRef {
+        return RapidCollectionRef(id: name, handler: handler)
+    }
+    
+    /// Creates a new object representing Rapid channel
+    ///
+    /// - Parameter name: Channel name
+    /// - Returns: New object representing Rapid channel
+    open func channel(named name: String) -> RapidChannelRef {
+        return RapidChannelRef(name: name, handler: handler)
+    }
+    
+    /// Creates a new object representing multiple Rapid channels identified by a name prefix
+    ///
+    /// - Parameter prefix: Channel name prefix
+    /// - Returns: New object representing multiple Rapid channels
+    open func channels(nameStartsWith prefix: String) -> RapidChannelsRef {
+        return RapidChannelsRef(prefix: prefix, handler: handler)
     }
     
     /// Disconnect from server
@@ -300,11 +316,27 @@ public extension Rapid {
     
     /// Creates a new object representing Rapid collection
     ///
-    /// - parameter named:     Collection identifier
+    /// - parameter named: Collection name
     ///
     /// - returns: New object representing Rapid collection
     class func collection(named: String) -> RapidCollectionRef {
         return try! shared().collection(named: named)
+    }
+    
+    /// Creates a new object representing Rapid channel
+    ///
+    /// - Parameter name: Channel name
+    /// - Returns: New object representing Rapid channel
+    class func channel(named name: String) -> RapidChannelRef {
+        return try! shared().channel(named: name)
+    }
+    
+    /// Creates a new object representing multiple Rapid channels identified by a name prefix
+    ///
+    /// - Parameter prefix: Channel name prefix
+    /// - Returns: New object representing multiple Rapid channels
+    class func channels(nameStartsWith prefix: String) -> RapidChannelsRef {
+        return try! shared().channels(nameStartsWith: prefix)
     }
     
     /// Deinitialize shared Rapid instance

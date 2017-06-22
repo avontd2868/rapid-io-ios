@@ -124,6 +124,23 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize a publish request into JSON string
+    ///
+    /// - Parameters:
+    ///   - publish: Publish request
+    ///   - identifiers: Identifiers that are associated with the merge event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(publish: RapidChannelPublish, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[Publish.ChannelID.name] = try Validator.validate(identifier: publish.channelID)
+        json[Publish.Body.name] = try Validator.validate(document: publish.value)
+        
+        let resultDict: [AnyHashable: Any] = [Publish.name: json]
+        return try resultDict.jsonString()
+    }
+    
     /// Serialize a collection fetch into JSON string
     ///
     /// - Parameters:
@@ -162,13 +179,13 @@ class RapidSerialization {
             throw RapidError.invalidData(reason: .invalidLimit)
         }
         
-        json[Subscription.CollectionID.name] = try Validator.validate(identifier: subscription.collectionID)
-        json[Subscription.Filter.name] = try serialize(filter: subscription.filter)
-        json[Subscription.Ordering.name] = try serialize(ordering: subscription.ordering)
-        json[Subscription.Limit.name] = subscription.paging?.take
-        json[Subscription.Skip.name] = subscription.paging?.skip
+        json[CollectionSubscription.CollectionID.name] = try Validator.validate(identifier: subscription.collectionID)
+        json[CollectionSubscription.Filter.name] = try serialize(filter: subscription.filter)
+        json[CollectionSubscription.Ordering.name] = try serialize(ordering: subscription.ordering)
+        json[CollectionSubscription.Limit.name] = subscription.paging?.take
+        json[CollectionSubscription.Skip.name] = subscription.paging?.skip
         
-        let resultDict: [AnyHashable: Any] = [Subscription.name: json]
+        let resultDict: [AnyHashable: Any] = [CollectionSubscription.name: json]
         return try resultDict.jsonString()
     }
     
@@ -304,15 +321,53 @@ class RapidSerialization {
     ///   - identifiers: Identifiers that are associated with the unsubscription event
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(unsubscription: RapidUnsubscriptionHandler, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+    class func serialize(unsubscription: RapidColSubManager, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
-        json[Unsubscribe.SubscriptionID.name] = unsubscription.subscription.subscriptionID
+        json[UnsubscribeCollection.SubscriptionID.name] = unsubscription.subscriptionID
         
-        let resultDict: [AnyHashable: Any] = [Unsubscribe.name: json]
+        let resultDict: [AnyHashable: Any] = [UnsubscribeCollection.name: json]
         return try resultDict.jsonString()
     }
     
+    /// Serialize an subscription request into JSON string
+    ///
+    /// - Parameters:
+    ///   - subscription: Subscription request
+    ///   - identifiers: Identifiers that are associated with the unsubscription event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(subscription: RapidChannelSub, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        switch subscription.channelID {
+        case .name(let name):
+            json[ChannelSubscription.ChannelID.name] = try Validator.validate(identifier: name)
+            
+        case .prefix(let prefix):
+            json[ChannelSubscription.ChannelID.name] = [ChannelSubscription.ChannelID.Prefix.name: try Validator.validate(identifier: prefix)]
+        }
+        
+        let resultDict: [AnyHashable: Any] = [ChannelSubscription.name: json]
+        return try resultDict.jsonString()
+    }
+
+    /// Serialize an unsubscription request into JSON string
+    ///
+    /// - Parameters:
+    ///   - unsubscription: Unsubscription object
+    ///   - identifiers: Identifiers that are associated with the unsubscription event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(unsubscription: RapidChanSubManager, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[UnsubscribeChannel.SubscriptionID.name] = unsubscription.subscriptionID
+        
+        let resultDict: [AnyHashable: Any] = [UnsubscribeChannel.name: json]
+        return try resultDict.jsonString()
+    }
+
     /// Serialize an event acknowledgement into JSON string
     ///
     /// - Parameters:
@@ -389,6 +444,13 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize an authorization request into JSON string
+    ///
+    /// - Parameters:
+    ///   - authRequest: Authorization request
+    ///   - identifiers: Identifiers that are associated with the connection request event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(authRequest: RapidAuthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
@@ -398,6 +460,13 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
+    /// Serialize an deauthorization request into JSON string
+    ///
+    /// - Parameters:
+    ///   - authRequest: Deauthorization request
+    ///   - identifiers: Identifiers that are associated with the connection request event
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(authRequest: RapidDeauthRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         let resultDict = [Deauthorization.name: identifiers]
         return try resultDict.jsonString()
@@ -433,329 +502,11 @@ fileprivate extension RapidSerialization {
         else if let res = json[FetchValue.name] as? [AnyHashable: Any] {
             return RapidFetchResponse(withJSON: res)
         }
+        else if let mes = json[ChannelMessage.name] as? [AnyHashable: Any] {
+            return RapidChannelMessage(withJSON: mes)
+        }
 
         return nil
     }
     
-}
-
-// MARK: Name constants
-
-//swiftlint:disable nesting
-extension RapidSerialization {
-    
-    struct Batch {
-        static let name = "batch"
-    }
-    
-    struct EventID {
-        static let name = "evt-id"
-    }
-    
-    struct Acknowledgement {
-        static let name = "ack"
-    }
-    
-    struct Error {
-        static let name = "err"
-        
-        struct ErrorType {
-            static let name = "err-type"
-            
-            struct Internal {
-                static let name = "internal-error"
-            }
-            
-            struct PermissionDenied {
-                static let name = "permission-denied"
-            }
-            
-            struct ConnectionTerminated {
-                static let name = "connection-terminated"
-            }
-            
-            struct InvalidAuthToken {
-                static let name = "invalid-auth-token"
-            }
-            
-            struct ClientSide {
-                static let name = "client-error"
-            }
-            
-            struct WriteConflict {
-                static let name = "etag-conflict"
-            }
-        }
-        
-        struct ErrorMessage {
-            static let name = "err-msg"
-        }
-    }
-    
-    struct Mutation {
-        static let name = "mut"
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct Document {
-            static let name = "doc"
-            
-            struct DocumentID {
-                static let name = "id"
-            }
-            
-            struct Etag {
-                static let name = "etag"
-            }
-            
-            struct Body {
-                static let name = "body"
-            }
-        }
-    }
-    
-    struct Merge {
-        static let name = "mer"
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct Document {
-            static let name = "doc"
-            
-            struct DocumentID {
-                static let name = "id"
-            }
-            
-            struct Etag {
-                static let name = "etag"
-            }
-            
-            struct Body {
-                static let name = "body"
-            }
-        }
-    }
-    
-    struct Delete {
-        static let name = "del"
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct Document {
-            static let name = "doc"
-            
-            struct DocumentID {
-                static let name = "id"
-            }
-            
-            struct Etag {
-                static let name = "etag"
-            }
-        }
-    }
-    
-    struct Fetch {
-        static let name = "ftc"
-        
-        struct FetchID {
-            static let name = "ftc-id"
-        }
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct Filter {
-            static let name = "filter"
-        }
-        
-        struct Ordering {
-            static let name = "order"
-        }
-        
-        struct Limit {
-            static let name = "limit"
-        }
-        
-        struct Skip {
-            static let name = "skip"
-        }
-    }
-    
-    struct Subscription {
-        static let name = "sub"
-        
-        struct SubscriptionID {
-            static let name = "sub-id"
-        }
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct Filter {
-            static let name = "filter"
-        }
-        
-        struct Ordering {
-            static let name = "order"
-        }
-        
-        struct Limit {
-            static let name = "limit"
-        }
-        
-        struct Skip {
-            static let name = "skip"
-        }
-    }
-    
-    struct FetchValue {
-        static let name = "res"
-        
-        struct FetchID {
-            static let name = "ftc-id"
-        }
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct Documents {
-            static let name = "docs"
-        }
-    }
-    
-    struct SubscriptionValue {
-        static let name = "val"
-        
-        struct SubscriptionID {
-            static let name = "sub-id"
-        }
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct Documents {
-            static let name = "docs"
-        }
-    }
-    
-    struct SubscriptionUpdate {
-        static let name = "upd"
-        
-        struct SubscriptionID {
-            static let name = "sub-id"
-        }
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct Document {
-            static let name = "doc"
-        }
-    }
-    
-    struct SubscriptionDocRemoved {
-        static let name = "rm"
-    }
-    
-    struct Document {
-        
-        struct DocumentID {
-            static let name = "id"
-        }
-        
-        struct Modified {
-            static let name = "ts"
-        }
-        
-        struct SortValue {
-            static let name = "crt"
-        }
-        
-        struct CreatedAt {
-            static let name = "crt-ts"
-        }
-        
-        struct ModifiedAt {
-            static let name = "mod-ts"
-        }
-        
-        struct Body {
-            static let name = "body"
-        }
-        
-        struct Etag {
-            static let name = "etag"
-        }
-        
-        struct SortKeys {
-            static let name = "skey"
-        }
-    }
-    
-    struct Unsubscribe {
-        static let name = "uns"
-        
-        struct SubscriptionID {
-            static let name = "sub-id"
-        }
-    }
-    
-    struct Connect {
-        static let name = "con"
-        
-        struct ConnectionID {
-            static let name = "con-id"
-        }
-    }
-    
-    struct Reconnect {
-        static let name = "rec"
-        
-        struct ConnectionID {
-            static let name = "con-id"
-        }
-    }
-    
-    struct Disconnect {
-        static let name = "dis"
-    }
-    
-    struct NoOperation {
-        static let name = "nop"
-    }
-    
-    struct Authorization {
-        static let name = "auth"
-        
-        struct Token {
-            static let name = "token"
-        }
-    }
-    
-    struct Deauthorization {
-        static let name = "deauth"
-    }
-    
-    struct Cancel {
-        static let name = "ca"
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
-        
-        struct SubscriptionID {
-            static let name = "sub-id"
-        }
-    }
 }

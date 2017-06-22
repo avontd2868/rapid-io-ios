@@ -76,7 +76,7 @@ class RapidDocumentExecution: RapidExecution {
     fileprivate func resolveValue(forDocument document: RapidDocument) {
         DispatchQueue.main.async { [weak self] in
             // Get developer action
-            guard let result = self?.executionBlock(document.value) else {
+            guard let result = self?.executionBlock(document) else {
                 return
             }
             

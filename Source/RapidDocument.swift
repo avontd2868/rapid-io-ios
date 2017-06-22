@@ -17,7 +17,7 @@ import Foundation
 ///   - rhs: Right operand
 /// - Returns: `true` if operands are equal
 func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
-    if lhs.id == rhs.id && lhs.collectionID == rhs.collectionID && lhs.etag == rhs.etag {
+    if lhs.id == rhs.id && lhs.collectionName == rhs.collectionName && lhs.etag == rhs.etag {
         if let lValue = lhs.value, let rValue = rhs.value {
             return NSDictionary(dictionary: lValue).isEqual(to: rValue)
         }
@@ -37,14 +37,14 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     }
     
     var groupID: String {
-        return collectionID
+        return collectionName
     }
     
     /// Document ID
     public let id: String
     
     /// Collection ID
-    public let collectionID: String
+    public let collectionName: String
     
     /// Document body
     public let value: [AnyHashable: Any]?
@@ -95,7 +95,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         let sortKeys = dict[RapidSerialization.Document.SortKeys.name] as? [String]
         
         self.id = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.value = body
         self.etag = etag
         self.createdAt = Date(timeIntervalSince1970: createdAt)
@@ -117,7 +117,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         let sortKeys = dict[RapidSerialization.Document.SortKeys.name] as? [String]
         
         self.id = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.value = body
         self.etag = nil
         self.createdAt = nil
@@ -128,7 +128,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     init(removedDocId id: String, collectionID: String) {
         self.id = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.value = nil
         self.etag = nil
         self.createdAt = nil
@@ -139,7 +139,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     init?(document: RapidDocument, newValue: [AnyHashable: Any]) {
         self.id = document.id
-        self.collectionID = document.collectionID
+        self.collectionName = document.collectionName
         self.etag = document.etag
         self.createdAt = document.createdAt
         self.modifiedAt = document.modifiedAt
@@ -166,7 +166,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         }
         
         self.id = id
-        self.collectionID = collectionID
+        self.collectionName = collectionID
         self.sortKeys = sortKeys
         self.sortValue = sortValue
         do {
@@ -200,7 +200,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     
     public func encode(with aCoder: NSCoder) {
         aCoder.encode(id, forKey: "id")
-        aCoder.encode(collectionID, forKey: "collectionID")
+        aCoder.encode(collectionName, forKey: "collectionID")
         aCoder.encode(etag, forKey: "etag")
         aCoder.encode(sortKeys, forKey: "sortKeys")
         aCoder.encode(sortValue, forKey: "sortValue")
@@ -224,7 +224,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         var dict: [AnyHashable: Any] = [
             "id": id,
             "etag": String(describing: etag),
-            "collectionID": collectionID,
+            "collectionID": collectionName,
             "value": String(describing: value)
             ]
         
@@ -237,5 +237,81 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         }
         
         return dict.description
+    }
+}
+
+func == (lhs: RapidDocumentOperation, rhs: RapidDocumentOperation) -> Bool {
+    return lhs.document.id == rhs.document.id
+}
+
+/// Struct describing what happened with a document since previous subscription update
+struct RapidDocumentOperation: Hashable {
+    enum Operation {
+        case add
+        case update
+        case remove
+        case none
+    }
+    
+    let document: RapidDocument
+    let operation: Operation
+    
+    var hashValue: Int {
+        return document.id.hashValue
+    }
+}
+
+/// Wrapper for a set of `RapidDocumentOperation`
+///
+/// Set updates are treated specially because operations have different priority
+struct RapidDocumentOperationSet: Sequence {
+    
+    fileprivate var set = Set<RapidDocumentOperation>()
+    
+    /// Inserts or updates the given element into the set
+    ///
+    /// - Parameter operation: An element to insert into the set.
+    mutating func insertOrUpdate(_ operation: RapidDocumentOperation) {
+        if let index = set.index(of: operation) {
+            let previousOperation = set[index]
+            
+            switch (previousOperation.operation, operation.operation) {
+            case (.none, .add), (.none, .update), (.none, .remove), (.update, .remove):
+                set.update(with: operation)
+                
+            case (.add, .add), (.add, .update), (.update, .add), (.update, .update), (.remove, .update), (.remove, .remove), (.add, .none), (.update, .none), (.remove, .none), (.none, .none):
+                break
+                
+            case (.add, .remove):
+                set.remove(at: index)
+                
+            case (.remove, .add):
+                set.update(with: RapidDocumentOperation(document: operation.document, operation: .update))
+            }
+        }
+        else {
+            set.insert(operation)
+        }
+    }
+    
+    /// Inserts the given element into the set unconditionally
+    ///
+    /// - Parameter operation: An element to insert into the set
+    mutating func update(_ operation: RapidDocumentOperation) {
+        set.update(with: operation)
+    }
+    
+    /// Adds the elements of the given array to the set
+    ///
+    /// - Parameter other: An array of document operations
+    mutating func formUnion(_ other: [RapidDocumentOperation]) {
+        set.formUnion(other)
+    }
+    
+    /// Returns an iterator over the elements of this sequence
+    ///
+    /// - Returns: Iterator
+    func makeIterator() -> SetIterator<RapidDocumentOperation> {
+        return set.makeIterator()
     }
 }

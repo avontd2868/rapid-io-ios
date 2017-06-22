@@ -10,6 +10,10 @@ import Foundation
 import Rapid
 #if os(OSX)
 import AppKit
+#elseif os(tvOS)
+import UIKit
+#elseif os(iOS)
+import UIKit
 #endif
 
 enum Priority: Int {
@@ -40,7 +44,20 @@ enum Tag: String {
     
     static let allValues: [Tag] = [.home, .work, .other]
     
-    #if os(iOS)
+    #if os(OSX)
+    var color: NSColor {
+        switch self {
+        case .home:
+            return NSColor(red: 116/255.0, green: 204/255.0, blue: 244/255.0, alpha: 1)
+            
+        case .work:
+            return NSColor(red: 237/255.0, green: 80/255.0, blue: 114/255.0, alpha: 1)
+            
+        case .other:
+            return NSColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
+        }
+    }
+    #elseif os(iOS)
     var color: UIColor {
         switch self {
         case .home:
@@ -53,17 +70,17 @@ enum Tag: String {
             return UIColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
         }
     }
-    #elseif os(OSX)
-    var color: NSColor {
+    #elseif os(tvOS)
+    var color: UIColor {
         switch self {
         case .home:
-            return NSColor(red: 116/255.0, green: 204/255.0, blue: 244/255.0, alpha: 1)
+            return UIColor(red: 116/255.0, green: 204/255.0, blue: 244/255.0, alpha: 1)
             
         case .work:
-            return NSColor(red: 237/255.0, green: 80/255.0, blue: 114/255.0, alpha: 1)
+            return UIColor(red: 237/255.0, green: 80/255.0, blue: 114/255.0, alpha: 1)
             
         case .other:
-            return NSColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
+            return UIColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
         }
     }
     #endif

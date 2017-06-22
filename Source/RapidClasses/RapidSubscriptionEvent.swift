@@ -21,7 +21,7 @@ class RapidSubscriptionBatch: RapidServerEvent {
     init(withSubscriptionID id: String, collection: [RapidDocument]) {
         self.eventIDsToAcknowledge = [Rapid.uniqueID]
         self.subscriptionID = id
-        self.collectionID = collection.first?.collectionID ?? ""
+        self.collectionID = collection.first?.collectionName ?? ""
         self.collection = collection
         self.updates = []
     }
@@ -104,6 +104,7 @@ class RapidSubscriptionBatch: RapidServerEvent {
     
 }
 
+/// Wrapper for a fetch response
 class RapidFetchResponse: RapidServerEvent {
     
     let eventIDsToAcknowledge: [String]

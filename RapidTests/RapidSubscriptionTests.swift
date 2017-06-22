@@ -186,7 +186,9 @@ extension RapidTests {
         let handler1 = self.rapid.handler.socketManager.activeSubscription(withHash: sub1.subscriptionHash)
         let handler2 = self.rapid.handler.socketManager.activeSubscription(withHash: sub2.subscriptionHash)
         
-        XCTAssertEqual(handler1, handler2, "Different handlers for same subscription")
+        if handler1 !== handler2 {
+            XCTFail("Different handlers for same subscription")
+        }
     }
 
     func testSubscriptionInitialResponse() {
@@ -228,7 +230,7 @@ extension RapidTests {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { _ in
         }
         
-        var activeSubscriptions = [RapidSubscriptionHandler]()
+        var activeSubscriptions = [RapidSubscriptionManager]()
         
         let promise = expectation(description: "Unsubscription retry")
         
@@ -243,7 +245,7 @@ extension RapidTests {
             }
         }
         
-        let handler = RapidSubscriptionHandler(withSubscriptionID: Rapid.uniqueID, subscription: subscription, delegate: subscriptionDelegate)
+        let handler = RapidColSubManager(withSubscriptionID: Rapid.uniqueID, subscription: subscription, delegate: subscriptionDelegate)
         activeSubscriptions.append(handler)
         
         subscription.unsubscribe()
@@ -266,11 +268,11 @@ extension RapidTests {
         socketManager.authorize(authRequest: RapidAuthRequest(token: testAuthToken))
         let fakeSocketManager = RapidSocketManager(networkHandler: fakeNetworkHandler)
         
-        socketManager.subscribe(sub2)
-        socketManager.subscribe(sub1)
+        socketManager.subscribe(toCollection: sub2)
+        socketManager.subscribe(toCollection: sub1)
         
-        fakeSocketManager.subscribe(sub3)
-        fakeSocketManager.subscribe(sub4)
+        fakeSocketManager.subscribe(toCollection: sub3)
+        fakeSocketManager.subscribe(toCollection: sub4)
 
         sub1.unsubscribe()
         sub4.unsubscribe()
@@ -332,9 +334,8 @@ extension RapidTests {
     func testInsert() {
         let promise = expectation(description: "Subscription insert")
 
-        mutate(documentID: "1", value: nil)
+        mutate(documentID: "1", value: nil) { _ in
         
-        runAfter(1) { 
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
@@ -362,9 +363,8 @@ extension RapidTests {
     func testUpdate() {
         let promise = expectation(description: "Subscription update")
 
-        mutate(documentID: "1", value: ["name": "testUpdate"])
+        mutate(documentID: "1", value: ["name": "testUpdate"]) { _ in
         
-        runAfter(1) { 
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
@@ -392,9 +392,8 @@ extension RapidTests {
     func testDelete() {
         let promise = expectation(description: "Subscription delete")
 
-        mutate(documentID: "1", value: ["name": "testDelete"])
+        mutate(documentID: "1", value: ["name": "testDelete"]) { _ in
         
-        runAfter(1) { 
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
@@ -478,7 +477,7 @@ extension RapidTests {
         }
         
         let delegate = MockSubHandlerDelegate(unsubscriptionHandler: { _ in })
-        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
+        let handler = RapidColSubManager(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
         
         if let valResponse = RapidSerialization.parse(json: subValue)?.first as? RapidSubscriptionBatch,
             let updateResponse = RapidSerialization.parse(json: subValue)?.first as? RapidSubscriptionBatch {
@@ -678,7 +677,7 @@ extension RapidTests {
         }
         
         let delegate = MockSubHandlerDelegate(unsubscriptionHandler: { _ in })
-        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
+        let handler = RapidColSubManager(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
         
         if let valResponse = RapidSerialization.parse(json: initialValue)?.first as? RapidSubscriptionBatch,
             let updateResponse = RapidSerialization.parse(json: batch)?.first as? RapidSubscriptionBatch {
@@ -870,7 +869,7 @@ extension RapidTests {
         }
         
         let delegate = MockSubHandlerDelegate(unsubscriptionHandler: { _ in })
-        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
+        let handler = RapidColSubManager(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
         
         if let valResponse = RapidSerialization.parse(json: initialValue)?.first as? RapidSubscriptionBatch,
             let updateResponse = RapidSerialization.parse(json: batch)?.first as? RapidSubscriptionBatch {
@@ -1004,7 +1003,7 @@ extension RapidTests {
         }
         
         let delegate = MockSubHandlerDelegate(unsubscriptionHandler: { _ in })
-        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
+        let handler = RapidColSubManager(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
         
         if let valResponse = RapidSerialization.parse(json: initialValue)?.first as? RapidSubscriptionBatch,
             let updateResponse = RapidSerialization.parse(json: batch)?.first as? RapidSubscriptionBatch {
@@ -1059,7 +1058,7 @@ extension RapidTests {
         }
         
         let delegate = MockSubHandlerDelegate(unsubscriptionHandler: { _ in })
-        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
+        let handler = RapidColSubManager(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
         
         if let updateResponse = RapidSerialization.parse(json: subValue)?.first as? RapidSubscriptionBatch {
             
@@ -1106,7 +1105,7 @@ extension RapidTests {
         }
         
         let delegate = MockSubHandlerDelegate(unsubscriptionHandler: { _ in })
-        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
+        let handler = RapidColSubManager(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
         
         if let updateResponse = RapidSerialization.parse(json: subValue)?.first as? RapidSubscriptionBatch {
             
@@ -1224,7 +1223,7 @@ extension RapidTests {
         }
 
         let delegate = MockSubHandlerDelegate(unsubscriptionHandler: { _ in })
-        let handler = RapidSubscriptionHandler(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
+        let handler = RapidColSubManager(withSubscriptionID: subID, subscription: subscription, delegate: delegate)
         
         if let valResponse = RapidSerialization.parse(json: initialValue)?.first as? RapidSubscriptionBatch,
             let updateResponse = RapidSerialization.parse(json: update)?.first as? RapidSubscriptionBatch {
@@ -1244,9 +1243,8 @@ extension RapidTests {
         
         rapid.isCacheEnabled = true
 
-        mutate(documentID: "1", value: ["name": "testUpdate"])
-        
-        runAfter(1) {
+        mutate(documentID: "1", value: ["name": "testUpdate"]) { _ in
+
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribe { result in
                 guard case .success(let documents) = result else {
@@ -1285,9 +1283,8 @@ extension RapidTests {
         
         rapid.isCacheEnabled = true
         
-        mutate(documentID: "1", value: ["name": "testUpdate"])
+        mutate(documentID: "1", value: ["name": "testUpdate"]) { result in
         
-        runAfter(1) {
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
                 guard case .success(let document) = result else {
                     XCTFail("Error")
@@ -1337,10 +1334,8 @@ extension RapidTests {
         
         rapid.isCacheEnabled = true
         
-        mutate(documentID: "1", value: ["car": ["type": "Skoda", "model": "Octavia"]])
+        mutate(documentID: "1", value: ["car": ["type": "Skoda", "model": "Octavia"]]) { result in
         
-        runAfter(1) {
-
             self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.equal(keyPath: "car.type", value: "Skoda")).fetch { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
@@ -1406,36 +1401,36 @@ extension RapidTests {
 }
 
 // MARK: Helper methods
-fileprivate extension RapidTests {
+extension RapidTests {
     
-    func mutate(documentID: String?, value: [AnyHashable: Any]?) {
+    func mutate(documentID: String?, value: [AnyHashable: Any]?, completion: RapidMutationCompletion? = nil) {
         if let id = documentID, let value = value {
-            self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value)
+            self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value, completion: completion)
         }
         else if let id = documentID {
-            self.rapid.collection(named: testCollectionName).document(withID: id).delete()
+            self.rapid.collection(named: testCollectionName).document(withID: id).delete(completion: completion)
         }
         else {
-            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value ?? [:])
+            self.rapid.collection(named: testCollectionName).newDocument().mutate(value: value ?? [:], completion: completion)
         }
     }
     
 }
 
 // MARK: Mock subscription handler delegate
-class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandler {
+class MockSubHandlerDelegate: RapidSubscriptionManagerDelegate, RapidCacheHandler {
     
     let websocketQueue: OperationQueue
     let parseQueue: OperationQueue
     var cache: RapidCache?
-    let unsubscriptionHandler: (_ handler: RapidUnsubscriptionHandler) -> Void
+    let unsubscriptionHandler: (_ handler: RapidUnsubscriptionManager) -> Void
     var authorization: RapidAuthorization?
     
     var cacheHandler: RapidCacheHandler? {
         return self
     }
     
-    init(authorization: RapidAuthorization? = nil, unsubscriptionHandler: @escaping (_ handler: RapidUnsubscriptionHandler) -> Void) {
+    init(authorization: RapidAuthorization? = nil, unsubscriptionHandler: @escaping (_ handler: RapidUnsubscriptionManager) -> Void) {
         self.websocketQueue = OperationQueue()
         websocketQueue.name = "Websocket queue"
         websocketQueue.maxConcurrentOperationCount = 1
@@ -1448,11 +1443,11 @@ class MockSubHandlerDelegate: RapidSubscriptionHandlerDelegate, RapidCacheHandle
         self.authorization = authorization
     }
     
-    func unsubscribe(handler: RapidUnsubscriptionHandler) {
+    func unsubscribe(handler: RapidUnsubscriptionManager) {
         self.unsubscriptionHandler(handler)
     }
     
-    func loadSubscriptionValue(forSubscription subscription: RapidSubscriptionHandler, completion: @escaping ([RapidCachableObject]?) -> Void) {
+    func loadSubscriptionValue(forSubscription subscription: RapidColSubManager, completion: @escaping ([RapidCachableObject]?) -> Void) {
         cache?.loadDataset(forKey: subscription.subscriptionHash, secret: authorization?.token, completion: completion)
     }
     

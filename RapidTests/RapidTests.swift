@@ -20,15 +20,16 @@ class RapidTests: XCTestCase {
     let apiKey = "ZGV2LXdzLXNlcnZpY2UucmFwaWQuaW8="
     let localApiKey = "bG9jYWxob3N0OjgwODA="
     let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
-    let socketURL = URL(string: "ws://13.64.77.202:8080")!
+    let socketURL = URL(string: "wss://dev-ws-service.rapid.io")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     let testCollectionName = "iosUnitTests"
+    let testChannelName = "iosUnitTestsChannel"
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6Imlvcy4qIiwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.e6k8nnCC-WIFornRaBgaI9Uy2YW4uxlZ1FJMzUqj42A"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6eyJwYXR0ZXJuIjoiXmlvcy4qIn0sInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOnsicGF0dGVybiI6Il5pb3MuKiJ9LCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.8fZjAjt4mRq7yUfWWQ4paw93-2ZiKMVM1Y4gstkyULs"
     
     override func setUp() {
         super.setUp()
-        
+
         rapid = Rapid(apiKey: apiKey)!
         
         rapid.authorize(withToken: testAuthToken)
@@ -240,7 +241,7 @@ class RapidTests: XCTestCase {
         let document = RapidDocument(existingDocJson: doc, collectionID: "1")
         
         XCTAssertEqual(document?.id, "1", "Wrong Document")
-        XCTAssertEqual(document?.collectionID, "1", "Wrong Document")
+        XCTAssertEqual(document?.collectionName, "1", "Wrong Document")
         XCTAssertEqual(document?.etag, "1234", "Wrong Document")
         XCTAssertEqual(document?.value?["name"] as? String, "testDocumentsInitialization", "Wrong document")
     }
@@ -305,7 +306,7 @@ class RapidTests: XCTestCase {
         
         let promise = expectation(description: "Nop request")
         
-        let mockHandler = MockNetworkHandler(socketURL: self.socketURL, writeCallback: { (handler, event, eventID) in
+        let mockHandler = MockNetworkHandler(socketURL: socketURL, writeCallback: { (handler, event, eventID) in
             if event is RapidEmptyRequest && (try? event.serialize(withIdentifiers: [:])) != nil {
                 promise.fulfill()
             }
@@ -371,7 +372,7 @@ class RapidTests: XCTestCase {
                     conReq = true
                 }
             }
-            else if event is RapidSubscriptionHandler {
+            else if event is RapidSubscriptionManager {
                 if conReq && !subReq {
                     subReq = true
                 }
@@ -417,8 +418,8 @@ class RapidTests: XCTestCase {
         let manager = RapidSocketManager(networkHandler: mockHandler)
         
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
-        manager.subscribe(subscription)
-        manager.subscribe(RapidDocumentSub(collectionID: testCollectionName, documentID: "1", handler: nil))
+        manager.subscribe(toCollection: subscription)
+        manager.subscribe(toCollection: RapidDocumentSub(collectionID: testCollectionName, documentID: "1", handler: nil))
         manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: testCollectionName, documentID: "2", value: [:], cache: nil, completion: nil))
         manager.mutate(mutationRequest: RapidDocumentMerge(collectionID: testCollectionName, documentID: "3", value: [:], cache: nil, completion: nil))
         manager.sendEmptyRequest()
@@ -441,12 +442,12 @@ class RapidTests: XCTestCase {
         let mutatationDocumentID = "2"
         var acknowledgeAll = false
         
-        var lastSubscription: RapidSubscriptionHandler?
+        var lastSubscription: RapidSubscriptionManager?
         var lastMutation: RapidDocumentMutation?
         
         let mockHandler = MockNetworkHandler(socketURL: self.fakeSocketURL, writeCallback: { (handler, event, eventID) in
             if acknowledgeAll {
-                if let subscription = event as? RapidSubscriptionHandler {
+                if let subscription = event as? RapidSubscriptionManager {
                     switch subscription.subscriptionHash {
                     case subscription1.subscriptionHash:
                         XCTAssertNil(lastSubscription, "wrong order")
@@ -487,7 +488,7 @@ class RapidTests: XCTestCase {
                 }
             }
             else {
-                if let subscription = event as? RapidSubscriptionHandler {
+                if let subscription = event as? RapidSubscriptionManager {
                     if subscription.subscriptionHash != subHash {
                         handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                     }
@@ -510,14 +511,14 @@ class RapidTests: XCTestCase {
         let manager = RapidSocketManager(networkHandler: mockHandler)
         
         runAfter(0.5) { 
-            manager.subscribe(subscription1)
+            manager.subscribe(toCollection: subscription1)
             manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], cache: nil, completion: nil))
-            manager.subscribe(subscription2)
+            manager.subscribe(toCollection: subscription2)
             manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], cache: nil, completion: nil))
             manager.goOffline()
             runAfter(0.5, closure: {
                 manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], cache: nil, completion: nil))
-                manager.subscribe(subscription3)
+                manager.subscribe(toCollection: subscription3)
                 shouldConnect = false
                 manager.goOnline()
                 runAfter(0.5, closure: {

@@ -93,9 +93,8 @@ extension RapidTests {
     func testMerge() {
         let promise = expectation(description: "Merge document")
 
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"])
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"]) { result in
         
-        runAfter(1) { 
             var initial = true
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { result in
                 if initial {
@@ -152,11 +151,11 @@ extension RapidTests {
         let document = self.rapid.collection(named: testCollectionName).newDocument()
         
         document.execute(block: { current -> RapidExecutionResult in
-            XCTAssertNil(current, "Document exists")
+            XCTAssertNil(current.value, "Document exists")
             return .write(value: ["name": "delete"])
         }) { (_) in
-            document.execute(block: { value -> RapidExecutionResult in
-                if let dict = value, dict["name"] as? String == "delete" {
+            document.execute(block: { doc -> RapidExecutionResult in
+                if let dict = doc.value, dict["name"] as? String == "delete" {
                     return .delete
                 }
                 else {
@@ -178,9 +177,8 @@ extension RapidTests {
     func testMergeSafeWithEtag() {
         let promise = expectation(description: "Merge document")
         
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"])
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"]) { result in
         
-        runAfter(1) {
             var initial = true
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe { result in
                 if case .success(let doc) = result {
@@ -212,8 +210,8 @@ extension RapidTests {
         
         runAfter(1) {
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").execute(
-                block: { (value) -> RapidExecutionResult in
-                    var newValue = value ?? [:]
+                block: { doc -> RapidExecutionResult in
+                    var newValue = doc.value ?? [:]
                     
                     newValue["desc"] = "desc"
                     newValue["bla"] = 6
@@ -347,8 +345,8 @@ extension RapidTests {
             
             for i in 0..<numberOfIterations {
                 self.rapid.collection(named: self.testCollectionName).document(withID: "1").execute(
-                    block: { (value) -> RapidExecutionResult in
-                        let count = value?["counter"] as? Int ?? 0
+                    block: { doc -> RapidExecutionResult in
+                        let count = doc.value?["counter"] as? Int ?? 0
                         return .write(value: ["counter": count+1])
                 },
                     completion: { error in
