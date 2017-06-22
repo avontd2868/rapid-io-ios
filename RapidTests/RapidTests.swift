@@ -25,11 +25,11 @@ class RapidTests: XCTestCase {
     let testCollectionName = "iosUnitTests"
     let testChannelName = "iosUnitTestsChannel"
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6Il5pb3MuKiIsInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOiJeaW9zLioiLCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.1LT-TPjjGDS2whVdcJVrdpfUNZUhVqQU992z34AfgJU"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6eyJwYXR0ZXJuIjoiXmlvcy4qIn0sInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOnsicGF0dGVybiI6Il5pb3MuKiJ9LCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.8fZjAjt4mRq7yUfWWQ4paw93-2ZiKMVM1Y4gstkyULs"
     
     override func setUp() {
         super.setUp()
-        
+
         rapid = Rapid(apiKey: apiKey)!
         
         rapid.authorize(withToken: testAuthToken)
