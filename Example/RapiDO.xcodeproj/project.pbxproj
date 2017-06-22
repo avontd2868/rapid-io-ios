@@ -7,6 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C1321F0C1EF941F400B2BEEB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C0D1ECA0BF10036C9D4 /* Constants.swift */; };
+		C1321F0D1EF941F900B2BEEB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
+		C1321F0E1EF941FC00B2BEEB /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
+		C1321F0F1EF9420100B2BEEB /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C141ECA0BF10036C9D4 /* Task.swift */; };
+		C1321F111EF9430B00B2BEEB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C13EABCA1EF9175000264F4E /* Main.storyboard */; };
+		C1321F1B1EF94A8F00B2BEEB /* BEMAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */; };
+		C1321F1C1EF94A9A00B2BEEB /* BEMCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C041ECA0BC90036C9D4 /* BEMCheckBox.m */; };
+		C1321F1D1EF94AA300B2BEEB /* BEMCheckBoxGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C061ECA0BC90036C9D4 /* BEMCheckBoxGroup.m */; };
+		C1321F1E1EF94AAA00B2BEEB /* BEMPathManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C081ECA0BC90036C9D4 /* BEMPathManager.m */; };
+		C1321F251EF94C2000B2BEEB /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1321F201EF94C2000B2BEEB /* FilterViewController.swift */; };
+		C1321F261EF94C2000B2BEEB /* OrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1321F211EF94C2000B2BEEB /* OrderViewController.swift */; };
+		C1321F271EF94C2000B2BEEB /* TagsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1321F221EF94C2000B2BEEB /* TagsTableView.swift */; };
+		C1321F281EF94C2000B2BEEB /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1321F231EF94C2000B2BEEB /* TaskCell.swift */; };
+		C1321F291EF94C2000B2BEEB /* TaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1321F241EF94C2000B2BEEB /* TaskViewController.swift */; };
+		C13EABC71EF9175000264F4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13EABC61EF9175000264F4E /* AppDelegate.swift */; };
+		C13EABC91EF9175000264F4E /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13EABC81EF9175000264F4E /* ListViewController.swift */; };
+		C13EABD41EF917DF00264F4E /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C13EABD31EF917DF00264F4E /* Rapid.framework */; };
+		C13EABD51EF917DF00264F4E /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C13EABD31EF917DF00264F4E /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C13EABD71EF925C400264F4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
 		C14A3EEA1ED70EEB0042597B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
 		C14A3EEB1ED70EEB0042597B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
 		C14A3EEE1ED70F310042597B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
@@ -45,6 +64,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		C13EABD61EF917DF00264F4E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C13EABD51EF917DF00264F4E /* Rapid.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C14A74591EE056D1001339DC /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -70,6 +100,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C1321F201EF94C2000B2BEEB /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		C1321F211EF94C2000B2BEEB /* OrderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderViewController.swift; sourceTree = "<group>"; };
+		C1321F221EF94C2000B2BEEB /* TagsTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsTableView.swift; sourceTree = "<group>"; };
+		C1321F231EF94C2000B2BEEB /* TaskCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
+		C1321F241EF94C2000B2BEEB /* TaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskViewController.swift; sourceTree = "<group>"; };
+		C13EABC41EF9175000264F4E /* RapiDO tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiDO tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C13EABC61EF9175000264F4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C13EABC81EF9175000264F4E /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		C13EABCB1EF9175000264F4E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C13EABD31EF917DF00264F4E /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/tvOS/Rapid.framework; sourceTree = "<group>"; };
 		C14A3EE41ED6E1890042597B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C14A3EE91ED70EEB0042597B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C14A3EED1ED70F310042597B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -85,7 +125,7 @@
 		C16B6C071ECA0BC90036C9D4 /* BEMPathManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMPathManager.h; sourceTree = "<group>"; };
 		C16B6C081ECA0BC90036C9D4 /* BEMPathManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMPathManager.m; sourceTree = "<group>"; };
 		C16B6C0D1ECA0BF10036C9D4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		C16B6C0E1ECA0BF10036C9D4 /* RapiDO-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RapiDO-Bridging-Header.h"; sourceTree = "<group>"; };
+		C16B6C0E1ECA0BF10036C9D4 /* RapiDO-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "RapiDO-Bridging-Header.h"; path = "RapiDO iOS/RapiDO-Bridging-Header.h"; sourceTree = "<group>"; };
 		C16B6C0F1ECA0BF10036C9D4 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		C16B6C111ECA0BF10036C9D4 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		C16B6C121ECA0BF10036C9D4 /* OrderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderViewController.swift; sourceTree = "<group>"; };
@@ -109,6 +149,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C13EABC11EF9175000264F4E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C13EABD41EF917DF00264F4E /* Rapid.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C16B6BE91ECA0A200036C9D4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,9 +176,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C13EABC51EF9175000264F4E /* RapiDO tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				C1321F201EF94C2000B2BEEB /* FilterViewController.swift */,
+				C1321F211EF94C2000B2BEEB /* OrderViewController.swift */,
+				C1321F221EF94C2000B2BEEB /* TagsTableView.swift */,
+				C1321F231EF94C2000B2BEEB /* TaskCell.swift */,
+				C1321F241EF94C2000B2BEEB /* TaskViewController.swift */,
+				C13EABC61EF9175000264F4E /* AppDelegate.swift */,
+				C13EABC81EF9175000264F4E /* ListViewController.swift */,
+				C13EABCA1EF9175000264F4E /* Main.storyboard */,
+			);
+			path = "RapiDO tvOS";
+			sourceTree = "<group>";
+		};
 		C14A745E1EE05711001339DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C13EABD31EF917DF00264F4E /* Rapid.framework */,
 				C16068001EE84CE100B118D4 /* Rapid.framework */,
 				C14A74561EE056D1001339DC /* Rapid.framework */,
 			);
@@ -154,14 +218,12 @@
 		C16B6BFF1ECA0B1C0036C9D4 /* RapiDO iOS */ = {
 			isa = PBXGroup;
 			children = (
-				C16B6C001ECA0BB90036C9D4 /* Checkbox */,
 				C16B6C231ECA0CDE0036C9D4 /* AppDelegate.swift */,
 				C16B6C0F1ECA0BF10036C9D4 /* FilterViewController.swift */,
 				C16B6C391ECA0E4F0036C9D4 /* LaunchScreen.storyboard */,
 				C16B6C111ECA0BF10036C9D4 /* ListViewController.swift */,
 				C16B6C3B1ECA0E4F0036C9D4 /* Main.storyboard */,
 				C16B6C121ECA0BF10036C9D4 /* OrderViewController.swift */,
-				C16B6C0E1ECA0BF10036C9D4 /* RapiDO-Bridging-Header.h */,
 				C16B6C131ECA0BF10036C9D4 /* TagsTableView.swift */,
 				C16B6C151ECA0BF10036C9D4 /* TaskCell.swift */,
 				C16B6C161ECA0BF10036C9D4 /* UITableViewExtension.swift */,
@@ -182,7 +244,8 @@
 				C16B6C071ECA0BC90036C9D4 /* BEMPathManager.h */,
 				C16B6C081ECA0BC90036C9D4 /* BEMPathManager.m */,
 			);
-			path = Checkbox;
+			name = Checkbox;
+			path = "RapiDO iOS/Checkbox";
 			sourceTree = "<group>";
 		};
 		C1D6E8691E785CFA007589FC = {
@@ -190,8 +253,11 @@
 			children = (
 				C14A745E1EE05711001339DC /* Frameworks */,
 				C1D6E8731E785CFA007589FC /* Products */,
+				C16B6C001ECA0BB90036C9D4 /* Checkbox */,
+				C16B6C0E1ECA0BF10036C9D4 /* RapiDO-Bridging-Header.h */,
 				C16B6BFF1ECA0B1C0036C9D4 /* RapiDO iOS */,
 				C16B6BED1ECA0A200036C9D4 /* RapiDO macOS */,
+				C13EABC51EF9175000264F4E /* RapiDO tvOS */,
 				C1D6E8741E785CFA007589FC /* RapiDO shared */,
 				C14A3EE41ED6E1890042597B /* Info.plist */,
 			);
@@ -202,6 +268,7 @@
 			children = (
 				C1D6E8721E785CFA007589FC /* RapiDO iOS.app */,
 				C16B6BEC1ECA0A200036C9D4 /* RapiDO.app */,
+				C13EABC41EF9175000264F4E /* RapiDO tvOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -221,6 +288,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C13EABC31EF9175000264F4E /* RapiDO tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C13EABD21EF9175000264F4E /* Build configuration list for PBXNativeTarget "RapiDO tvOS" */;
+			buildPhases = (
+				C13EABC01EF9175000264F4E /* Sources */,
+				C13EABC11EF9175000264F4E /* Frameworks */,
+				C13EABC21EF9175000264F4E /* Resources */,
+				C13EABD61EF917DF00264F4E /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RapiDO tvOS";
+			productName = "RapiDO tvOS";
+			productReference = C13EABC41EF9175000264F4E /* RapiDO tvOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 		C16B6BEB1ECA0A200036C9D4 /* RapiDO macOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C16B6BFE1ECA0A200036C9D4 /* Build configuration list for PBXNativeTarget "RapiDO macOS" */;
@@ -267,6 +352,11 @@
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = Rapid.io;
 				TargetAttributes = {
+					C13EABC31EF9175000264F4E = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = EAVQTDVRT7;
+						ProvisioningStyle = Automatic;
+					};
 					C16B6BEB1ECA0A200036C9D4 = {
 						CreatedOnToolsVersion = 8.3.2;
 						ProvisioningStyle = Automatic;
@@ -294,11 +384,21 @@
 			targets = (
 				C1D6E8711E785CFA007589FC /* RapiDO iOS */,
 				C16B6BEB1ECA0A200036C9D4 /* RapiDO macOS */,
+				C13EABC31EF9175000264F4E /* RapiDO tvOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C13EABC21EF9175000264F4E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C13EABD71EF925C400264F4E /* Assets.xcassets in Resources */,
+				C1321F111EF9430B00B2BEEB /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C16B6BEA1ECA0A200036C9D4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -321,6 +421,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C13EABC01EF9175000264F4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1321F1B1EF94A8F00B2BEEB /* BEMAnimationManager.m in Sources */,
+				C1321F1C1EF94A9A00B2BEEB /* BEMCheckBox.m in Sources */,
+				C13EABC91EF9175000264F4E /* ListViewController.swift in Sources */,
+				C13EABC71EF9175000264F4E /* AppDelegate.swift in Sources */,
+				C1321F1E1EF94AAA00B2BEEB /* BEMPathManager.m in Sources */,
+				C1321F271EF94C2000B2BEEB /* TagsTableView.swift in Sources */,
+				C1321F251EF94C2000B2BEEB /* FilterViewController.swift in Sources */,
+				C1321F1D1EF94AA300B2BEEB /* BEMCheckBoxGroup.m in Sources */,
+				C1321F281EF94C2000B2BEEB /* TaskCell.swift in Sources */,
+				C1321F0C1EF941F400B2BEEB /* Constants.swift in Sources */,
+				C1321F291EF94C2000B2BEEB /* TaskViewController.swift in Sources */,
+				C1321F0E1EF941FC00B2BEEB /* Helpers.swift in Sources */,
+				C1321F0F1EF9420100B2BEEB /* Task.swift in Sources */,
+				C1321F0D1EF941F900B2BEEB /* Extensions.swift in Sources */,
+				C1321F261EF94C2000B2BEEB /* OrderViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C16B6BE81ECA0A200036C9D4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -364,6 +486,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		C13EABCA1EF9175000264F4E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C13EABCB1EF9175000264F4E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
 		C16B6C391ECA0E4F0036C9D4 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -385,6 +515,46 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		C13EABD01EF9175000264F4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Brand Assets";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				DEVELOPMENT_TEAM = EAVQTDVRT7;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Framework/tvOS";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.rapid.RapiDO-tvOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO iOS/RapiDO-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Debug;
+		};
+		C13EABD11EF9175000264F4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Brand Assets";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				DEVELOPMENT_TEAM = EAVQTDVRT7;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Framework/tvOS";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.rapid.RapiDO-tvOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO iOS/RapiDO-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Release;
+		};
 		C16B6BF81ECA0A200036C9D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -568,6 +738,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C13EABD21EF9175000264F4E /* Build configuration list for PBXNativeTarget "RapiDO tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C13EABD01EF9175000264F4E /* Debug */,
+				C13EABD11EF9175000264F4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C16B6BFE1ECA0A200036C9D4 /* Build configuration list for PBXNativeTarget "RapiDO macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

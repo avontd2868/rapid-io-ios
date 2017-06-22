@@ -33,11 +33,9 @@ public class RapidLogger {
     }
     
     class func developerLog(message: String) {
-        #if RAPIDDEBUG
-            if developerLogging && level == .debug {
-                print("RapidSDK - \(message)")
-            }
-        #endif
+        if developerLogging && level == .debug {
+            print("RapidSDK - \(message)")
+        }
     }
 
 }
