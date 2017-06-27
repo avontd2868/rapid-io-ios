@@ -39,11 +39,14 @@ class FilterViewController: UIViewController {
     @IBAction func done(_ sender: Any) {
         var operands = [RapidFilter]()
         
+        // Segmented control selected index equal to 1 means "show all tasks regardless completion state", so no filter is needed
+        // Otherwise, create filter for either completed or incompleted tasks
         if segmentedControl.selectedSegmentIndex != 1 {
             let completed = segmentedControl.selectedSegmentIndex == 0
             operands.append(RapidFilter.equal(keyPath: Task.completedAttributeName, value: completed))
         }
         
+        // Create filter for selected tags
         let selectedTags = tagsTableView.selectedTags
         if selectedTags.count > 0 {
             var tagFilters = [RapidFilter]()
@@ -52,9 +55,11 @@ class FilterViewController: UIViewController {
                 tagFilters.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: tag.rawValue))
             }
             
+            // Combine single tag filters with logical "OR" operator
             operands.append(RapidFilter.or(tagFilters))
         }
         
+        // If there are any filters combine them with logical "AND"
         let filter: RapidFilter?
         if operands.count > 0 {
             filter = RapidFilter.and(operands)

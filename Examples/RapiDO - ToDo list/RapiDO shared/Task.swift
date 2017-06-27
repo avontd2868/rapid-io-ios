@@ -129,18 +129,24 @@ struct Task {
     }
     
     func updateCompleted(_ completed: Bool) {
+        // Update just one attribute on an existing task
+        // Merge an existing task with a dictionary containing attributes that should be updated
         Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).merge(value: [Task.completedAttributeName: completed])
     }
     
     func update(withValue value: [AnyHashable: Any]) {
+        // Update whole task, overwrite the existing one
         Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).mutate(value: value)
     }
     
     func delete() {
+        // Delete a task
         Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).delete()
     }
     
     static func create(withValue value: [AnyHashable: Any]) {
+        // Create a task
+        // Get a reference to a new document with a random unique identifier and mutate it with a new value
         Rapid.collection(named: Constants.collectionName).newDocument().mutate(value: value)
     }
 }

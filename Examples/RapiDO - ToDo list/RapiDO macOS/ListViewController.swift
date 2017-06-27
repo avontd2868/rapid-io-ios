@@ -65,12 +65,15 @@ class ListViewController: NSViewController {
         if let item = completionPopUp.selectedItem {
             let index = completionPopUp.index(of: item)
             
+            // Popup selected index equal to 0 means "show all tasks regardless completion state", so no filter is needed
+            // Otherwise, create filter for either completed or incompleted tasks
             if index > 0 {
                 let completed = index == 2
                 operands.append(RapidFilter.equal(keyPath: Task.completedAttributeName, value: completed))
             }
         }
         
+        // Create filter for selected tags
         var tags = [RapidFilter]()
         if homeCheckBox.state > 0 {
             tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.home.rawValue))
@@ -81,10 +84,12 @@ class ListViewController: NSViewController {
         if otherCheckBox.state > 0 {
             tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.other.rawValue))
         }
+        // Combine single tag filters with logical "OR" operator
         if !tags.isEmpty {
             operands.append(RapidFilter.or(tags))
         }
         
+        // If there are any filters combine them with logical "AND"
         if operands.isEmpty {
             filter = nil
         }
@@ -123,27 +128,38 @@ fileprivate extension ListViewController {
     }
     
     func setupRapid() {
+        // Set timeout for requests
         Rapid.timeout = 10
+        // Set log level
         Rapid.logLevel = .debug
+        // Configure shared singleton with API key
         Rapid.configure(withApiKey: Constants.apiKey)
+        // Enable data cache
         Rapid.isCacheEnabled = true
     }
     
     func subscribe() {
+        // If there is a previous subscription then unsubscribe from it
         subscription?.unsubscribe()
+        
         tasks.removeAll()
         tableView.reloadData()
         
+        // Get Rapid.io collection reference with a given name
         let collection = Rapid.collection(withName: Constants.collectionName)
         
+        // If a filter is set, modify the collection reference with it
         if let filter = filter {
             collection.filtered(by: filter)
         }
         
+        // If a ordering is set, modify the collection reference with it
         if let order = ordering {
             collection.ordered(by: order)
         }
         
+        // Subscribe to the collection
+        // Store a subscribtion reference to be able to unsubscribe from it
         subscription = collection.subscribe() { result in
             switch result {
             case .success(let documents):
@@ -231,6 +247,7 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
     }
     
     func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
+        // If there is no sort descriptor, remove current ordering
         guard let descriptor = tableView.sortDescriptors.first else {
             ordering = nil
             subscribe()
@@ -241,8 +258,10 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
             return
         }
         
+        // Get an ordering type
         let order = descriptor.ascending ? RapidOrdering.Ordering.ascending : .descending
         
+        // Create an ordering
         switch column {
         case .completed:
             ordering = RapidOrdering(keyPath: Task.completedAttributeName, ordering: order)

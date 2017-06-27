@@ -122,7 +122,7 @@
 		C16B6C071ECA0BC90036C9D4 /* BEMPathManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMPathManager.h; sourceTree = "<group>"; };
 		C16B6C081ECA0BC90036C9D4 /* BEMPathManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMPathManager.m; sourceTree = "<group>"; };
 		C16B6C0D1ECA0BF10036C9D4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		C16B6C0E1ECA0BF10036C9D4 /* RapiDO-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "RapiDO-Bridging-Header.h"; path = "RapiDO iOS/RapiDO-Bridging-Header.h"; sourceTree = "<group>"; };
+		C16B6C0E1ECA0BF10036C9D4 /* RapiDO-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RapiDO-Bridging-Header.h"; sourceTree = "<group>"; };
 		C16B6C0F1ECA0BF10036C9D4 /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		C16B6C111ECA0BF10036C9D4 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		C16B6C121ECA0BF10036C9D4 /* OrderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderViewController.swift; sourceTree = "<group>"; };
@@ -179,14 +179,14 @@
 		C13EABC51EF9175000264F4E /* RapiDO tvOS */ = {
 			isa = PBXGroup;
 			children = (
+				C13EABC61EF9175000264F4E /* AppDelegate.swift */,
 				C1321F201EF94C2000B2BEEB /* FilterViewController.swift */,
+				C13EABC81EF9175000264F4E /* ListViewController.swift */,
+				C13EABCA1EF9175000264F4E /* Main.storyboard */,
 				C1321F211EF94C2000B2BEEB /* OrderViewController.swift */,
 				C1321F221EF94C2000B2BEEB /* TagsTableView.swift */,
 				C1321F231EF94C2000B2BEEB /* TaskCell.swift */,
 				C1321F241EF94C2000B2BEEB /* TaskViewController.swift */,
-				C13EABC61EF9175000264F4E /* AppDelegate.swift */,
-				C13EABC81EF9175000264F4E /* ListViewController.swift */,
-				C13EABCA1EF9175000264F4E /* Main.storyboard */,
 			);
 			path = "RapiDO tvOS";
 			sourceTree = "<group>";
@@ -244,21 +244,19 @@
 				C16B6C071ECA0BC90036C9D4 /* BEMPathManager.h */,
 				C16B6C081ECA0BC90036C9D4 /* BEMPathManager.m */,
 			);
-			name = Checkbox;
-			path = "RapiDO iOS/Checkbox";
+			path = Checkbox;
 			sourceTree = "<group>";
 		};
 		C1D6E8691E785CFA007589FC = {
 			isa = PBXGroup;
 			children = (
+				C16B6C001ECA0BB90036C9D4 /* Checkbox */,
 				C14A745E1EE05711001339DC /* Frameworks */,
 				C1D6E8731E785CFA007589FC /* Products */,
-				C16B6C001ECA0BB90036C9D4 /* Checkbox */,
-				C16B6C0E1ECA0BF10036C9D4 /* RapiDO-Bridging-Header.h */,
 				C16B6BFF1ECA0B1C0036C9D4 /* RapiDO iOS */,
 				C16B6BED1ECA0A200036C9D4 /* RapiDO macOS */,
-				C13EABC51EF9175000264F4E /* RapiDO tvOS */,
 				C1D6E8741E785CFA007589FC /* RapiDO shared */,
+				C13EABC51EF9175000264F4E /* RapiDO tvOS */,
 				C14A3EE41ED6E1890042597B /* Info.plist */,
 			);
 			sourceTree = "<group>";
@@ -280,6 +278,7 @@
 				C16B6C0D1ECA0BF10036C9D4 /* Constants.swift */,
 				C14A3EE91ED70EEB0042597B /* Extensions.swift */,
 				C14A3EED1ED70F310042597B /* Helpers.swift */,
+				C16B6C0E1ECA0BF10036C9D4 /* RapiDO-Bridging-Header.h */,
 				C16B6C141ECA0BF10036C9D4 /* Task.swift */,
 			);
 			path = "RapiDO shared";
@@ -492,6 +491,7 @@
 				C13EABCB1EF9175000264F4E /* Base */,
 			);
 			name = Main.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 		C16B6C391ECA0E4F0036C9D4 /* LaunchScreen.storyboard */ = {
@@ -528,7 +528,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.rapid.RapiDO-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO iOS/RapiDO-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO shared/RapiDO-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 10.2;
@@ -548,7 +548,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.rapid.RapiDO-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO iOS/RapiDO-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO shared/RapiDO-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 10.2;
@@ -709,7 +709,7 @@
 				PRINCIPAL_CLASS = UIApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapido;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO iOS/RapiDO-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO shared/RapiDO-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -730,7 +730,7 @@
 				PRINCIPAL_CLASS = UIApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapido;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO iOS/RapiDO-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiDO shared/RapiDO-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

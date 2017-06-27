@@ -72,8 +72,11 @@ class OrderViewController: UIViewController {
     // MARK: Actions
     
     @IBAction func done(_ sender: Any) {
+        // Get an attribute according to which a collection should be ordered
         let keyPath = OrderingAttribute.allValues[attributePicker.selectedRow(inComponent: 0)].attributeName
+        // Get an ordering type
         let type: RapidOrdering.Ordering = segmentedControl.selectedSegmentIndex == 0 ? .ascending : .descending
+        // Create Rapid.io ordering instance
         let ordering = RapidOrdering(keyPath: keyPath, ordering: type)
         
         delegate?.orderViewControllerDidFinish(self, withOrdering: ordering)
@@ -86,6 +89,7 @@ class OrderViewController: UIViewController {
 
 fileprivate extension OrderViewController {
     
+    // Setup UI according to a given ordering
     func setupUI() {
         attributePicker.delegate = self
         attributePicker.dataSource = self

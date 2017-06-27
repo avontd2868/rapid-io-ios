@@ -62,25 +62,36 @@ fileprivate extension ListViewController {
         filterButton.action = #selector(self.showFilterModal(_:))
     }
     
+    /// Subscribe to a collection
     func subscribe() {
+        // If there is a previous subscription then unsubscribe from it
         subscription?.unsubscribe()
+        
         tasks.removeAll()
         tableView.reloadData()
         
+        // Get Rapid.io collection reference with a given name
         let collection = Rapid.collection(withName: Constants.collectionName)
         
+        // If a filter is set, modify the collection reference with it
         if let filter = filter {
+            // If the search bar text is not empty, filter also by the text
             if let text = searchBar.text, !text.isEmpty {
+                // The search bar text can be in a title or in a description
+                // Combine two "CONTAINS" filters with logical "OR"
                 let combinedFilter = RapidFilter.or([
                     RapidFilter.contains(keyPath: Task.titleAttributeName, subString: text),
                     RapidFilter.contains(keyPath: Task.descriptionAttributeName, subString: text)
                     ])
+                // And then, combine the search bar text filter with a filter from the filter modal
                 collection.filtered(by: RapidFilter.and([filter, combinedFilter]))
             }
             else {
+                // Associate the collection reference with the filter
                 collection.filtered(by: filter)
             }
         }
+        // If the searchBar text is not empty, filter by the text
         else if let text = searchBar.text, !text.isEmpty {
             let combinedFilter = RapidFilter.or([
                 RapidFilter.contains(keyPath: Task.titleAttributeName, subString: text),
@@ -89,6 +100,9 @@ fileprivate extension ListViewController {
             collection.filtered(by: combinedFilter)
         }
         
+        // Order the collection by a given ordering
+        // Subscribe to the collection
+        // Store a subscribtion reference to be able to unsubscribe from it
         subscription = collection.order(by: ordering).subscribeWithChanges { result in
             switch result {
             case .success(let changes):

@@ -73,6 +73,7 @@ class TaskViewController: NSViewController {
         }
         let tags = selectedTags.map({$0.rawValue})
         
+        // Create task dictionary
         let dict: [AnyHashable: Any] = [
             Task.titleAttributeName: title,
             Task.descriptionAttributeName: description,
@@ -83,9 +84,11 @@ class TaskViewController: NSViewController {
         ]
         
         if let task = task {
+            // Update an existing task
             task.update(withValue: dict)
         }
         else {
+            // Create a new task
             Task.create(withValue: dict)
         }
         

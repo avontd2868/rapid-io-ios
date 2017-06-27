@@ -57,20 +57,27 @@ fileprivate extension ListViewController {
     }
     
     func subscribe() {
+        // If there is a previous subscription then unsubscribe from it
         subscription?.unsubscribe()
+        
         tasks.removeAll()
         tableView.reloadData()
         
+        // Get Rapid.io collection reference with a given name
         let collection = Rapid.collection(withName: Constants.collectionName)
         
+        // If a filter is set, modify the collection reference with it
         if let filter = filter {
             collection.filtered(by: filter)
         }
         
-        subscription = collection.order(by: ordering).subscribeWithChanges { result in
+        // Order the collection by a given ordering
+        // Subscribe to the collection
+        // Store a subscribtion reference to be able to unsubscribe from it
+        subscription = collection.order(by: ordering).subscribe { result in
             switch result {
-            case .success(let changes):
-                self.tasks = changes.documents.flatMap({ Task(withSnapshot: $0) })
+            case .success(let documents):
+                self.tasks = documents.flatMap({ Task(withSnapshot: $0) })
                 self.tableView.reloadData()
                 
             case .failure:

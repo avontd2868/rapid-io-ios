@@ -14,10 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {        
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        // Set timeout for requests
         Rapid.timeout = 10
+        // Set log level
         Rapid.logLevel = .debug
+        // Configure shared singleton with API key
         Rapid.configure(withApiKey: Constants.apiKey)
+        // Enable data cache
         Rapid.isCacheEnabled = true
 
         return true
@@ -29,7 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        Rapid.goOffline()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -37,7 +40,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        Rapid.goOnline()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

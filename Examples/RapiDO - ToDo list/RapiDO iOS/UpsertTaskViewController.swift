@@ -64,6 +64,7 @@ class UpsertTaskViewController: UIViewController {
         
         let tags = tagsTableView.selectedTags.map({$0.rawValue})
         
+        // Create task dictionary
         let task: [AnyHashable: Any] = [
             Task.titleAttributeName: title,
             Task.descriptionAttributeName: description,
@@ -74,9 +75,11 @@ class UpsertTaskViewController: UIViewController {
         ]
         
         if let existingTask = self.task {
+            // Update an existing task
             existingTask.update(withValue: task)
         }
         else {
+            // Create a new task
             Task.create(withValue: task)
         }
         
