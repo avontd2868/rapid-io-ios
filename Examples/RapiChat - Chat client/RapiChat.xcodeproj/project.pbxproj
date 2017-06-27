@@ -53,9 +53,9 @@
 		C1DFC1CA1F0281B90077A495 /* RapiChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RapiChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DFC1D21F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C1DFC1D41F0281B90077A495 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C1DFC1D41F0281B90077A495 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1DFC1D71F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		C1DFC1D91F0281B90077A495 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C1DFC1D91F0281B90077A495 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = RapiChat/Info.plist; sourceTree = "<group>"; };
 		C1DFC1E01F0287400077A495 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C1DFC1E21F02874B0077A495 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		C1DFC1ED1F028F7E0077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
@@ -103,11 +103,12 @@
 		C1DFC1C11F0281B90077A495 = {
 			isa = PBXGroup;
 			children = (
-				C1DFC2381F02BB3A0077A495 /* TimeUtils */,
 				C1DFC1E41F028EAE0077A495 /* Frameworks */,
-				C1DFC1DF1F0287230077A495 /* RapiChat shared */,
-				C1DFC1CC1F0281B90077A495 /* RapiChat IOS */,
 				C1DFC1CB1F0281B90077A495 /* Products */,
+				C1DFC1CC1F0281B90077A495 /* RapiChat IOS */,
+				C1DFC1DF1F0287230077A495 /* RapiChat shared */,
+				C1DFC2381F02BB3A0077A495 /* TimeUtils */,
+				C1DFC1D91F0281B90077A495 /* Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -123,33 +124,34 @@
 			isa = PBXGroup;
 			children = (
 				C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */,
-				C1DFC1D11F0281B90077A495 /* Main.storyboard */,
-				C1DFC1D41F0281B90077A495 /* Assets.xcassets */,
-				C1DFC1D61F0281B90077A495 /* LaunchScreen.storyboard */,
-				C1DFC1D91F0281B90077A495 /* Info.plist */,
-				C1DFC1FD1F029DC50077A495 /* ChannelsViewController.swift */,
 				C1DFC1FF1F029EA30077A495 /* ChannelCell.swift */,
-				C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */,
+				C1DFC1FD1F029DC50077A495 /* ChannelsViewController.swift */,
+				C1DFC1D61F0281B90077A495 /* LaunchScreen.storyboard */,
+				C1DFC1D11F0281B90077A495 /* Main.storyboard */,
 				C1DFC2341F02AF0D0077A495 /* MessageCell.swift */,
+				C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */,
+				C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */,
 				C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */,
 			);
 			name = "RapiChat IOS";
-			path = RapiChat;
+			path = "RapiChat IOS";
 			sourceTree = "<group>";
 		};
 		C1DFC1DF1F0287230077A495 /* RapiChat shared */ = {
 			isa = PBXGroup;
 			children = (
-				C1DFC1F51F0293940077A495 /* RapidSubscriberProtocol.swift */,
-				C1DFC1F31F02933A0077A495 /* RapidManager.swift */,
-				C1DFC1E01F0287400077A495 /* Message.swift */,
+				C1DFC1D41F0281B90077A495 /* Assets.xcassets */,
 				C1DFC1E21F02874B0077A495 /* Channel.swift */,
 				C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */,
-				C1DFC1FB1F029B950077A495 /* MessagesManager.swift */,
 				C1DFC1F71F0294790077A495 /* Constants.swift */,
 				C1DFC1F91F0298310077A495 /* Helpers.swift */,
+				C1DFC1E01F0287400077A495 /* Message.swift */,
+				C1DFC1FB1F029B950077A495 /* MessagesManager.swift */,
+				C1DFC1F31F02933A0077A495 /* RapidManager.swift */,
+				C1DFC1F51F0293940077A495 /* RapidSubscriberProtocol.swift */,
 			);
 			name = "RapiChat shared";
+			path = "RapiChat shared";
 			sourceTree = "<group>";
 		};
 		C1DFC1E41F028EAE0077A495 /* Frameworks */ = {
@@ -163,8 +165,6 @@
 		C1DFC2381F02BB3A0077A495 /* TimeUtils */ = {
 			isa = PBXGroup;
 			children = (
-				C1DFC23A1F02BB610077A495 /* DateTools.bundle */,
-				C1DFC23B1F02BB610077A495 /* DateTools.h */,
 				C1DFC23C1F02BB610077A495 /* DTConstants.h */,
 				C1DFC23D1F02BB610077A495 /* DTError.h */,
 				C1DFC23E1F02BB610077A495 /* DTError.m */,
@@ -176,11 +176,13 @@
 				C1DFC2441F02BB610077A495 /* DTTimePeriodCollection.m */,
 				C1DFC2451F02BB610077A495 /* DTTimePeriodGroup.h */,
 				C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */,
+				C1DFC23A1F02BB610077A495 /* DateTools.bundle */,
+				C1DFC23B1F02BB610077A495 /* DateTools.h */,
 				C1DFC2471F02BB610077A495 /* NSDate+DateTools.h */,
 				C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */,
-				C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */,
 			);
 			name = TimeUtils;
+			path = TimeUtils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -290,6 +292,7 @@
 				C1DFC1D21F0281B90077A495 /* Base */,
 			);
 			name = Main.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 		C1DFC1D61F0281B90077A495 /* LaunchScreen.storyboard */ = {
@@ -298,6 +301,7 @@
 				C1DFC1D71F0281B90077A495 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
