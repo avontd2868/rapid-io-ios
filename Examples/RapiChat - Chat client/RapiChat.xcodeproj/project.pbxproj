@@ -1,0 +1,456 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C1DFC1CE1F0281B90077A495 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */; };
+		C1DFC1D31F0281B90077A495 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC1D11F0281B90077A495 /* Main.storyboard */; };
+		C1DFC1D51F0281B90077A495 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC1D41F0281B90077A495 /* Assets.xcassets */; };
+		C1DFC1D81F0281B90077A495 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC1D61F0281B90077A495 /* LaunchScreen.storyboard */; };
+		C1DFC1E11F0287400077A495 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1E01F0287400077A495 /* Message.swift */; };
+		C1DFC1E31F02874B0077A495 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1E21F02874B0077A495 /* Channel.swift */; };
+		C1DFC1EF1F028F890077A495 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1ED1F028F7E0077A495 /* Rapid.framework */; };
+		C1DFC1F01F028F890077A495 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1ED1F028F7E0077A495 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1DFC1F21F0292E10077A495 /* ChannelsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */; };
+		C1DFC1F41F02933A0077A495 /* RapidManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F31F02933A0077A495 /* RapidManager.swift */; };
+		C1DFC1F61F0293940077A495 /* RapidSubscriberProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F51F0293940077A495 /* RapidSubscriberProtocol.swift */; };
+		C1DFC1F81F0294790077A495 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F71F0294790077A495 /* Constants.swift */; };
+		C1DFC1FA1F0298310077A495 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F91F0298310077A495 /* Helpers.swift */; };
+		C1DFC1FC1F029B950077A495 /* MessagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1FB1F029B950077A495 /* MessagesManager.swift */; };
+		C1DFC1FE1F029DC50077A495 /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1FD1F029DC50077A495 /* ChannelsViewController.swift */; };
+		C1DFC2001F029EA30077A495 /* ChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1FF1F029EA30077A495 /* ChannelCell.swift */; };
+		C1DFC2331F02AB4D0077A495 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */; };
+		C1DFC2351F02AF0D0077A495 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2341F02AF0D0077A495 /* MessageCell.swift */; };
+		C1DFC2371F02AFE80077A495 /* UIViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */; };
+		C1DFC2491F02BB610077A495 /* DateTools.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC23A1F02BB610077A495 /* DateTools.bundle */; };
+		C1DFC24A1F02BB610077A495 /* DTError.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC23E1F02BB610077A495 /* DTError.m */; };
+		C1DFC24B1F02BB610077A495 /* DTTimePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2401F02BB610077A495 /* DTTimePeriod.m */; };
+		C1DFC24C1F02BB610077A495 /* DTTimePeriodChain.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2421F02BB610077A495 /* DTTimePeriodChain.m */; };
+		C1DFC24D1F02BB610077A495 /* DTTimePeriodCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2441F02BB610077A495 /* DTTimePeriodCollection.m */; };
+		C1DFC24E1F02BB610077A495 /* DTTimePeriodGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */; };
+		C1DFC24F1F02BB610077A495 /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C1DFC1EC1F028EF30077A495 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C1DFC1F01F028F890077A495 /* Rapid.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		C1DFC1CA1F0281B90077A495 /* RapiChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RapiChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C1DFC1D21F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C1DFC1D41F0281B90077A495 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C1DFC1D71F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C1DFC1D91F0281B90077A495 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C1DFC1E01F0287400077A495 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		C1DFC1E21F02874B0077A495 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		C1DFC1ED1F028F7E0077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
+		C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelsManager.swift; sourceTree = "<group>"; };
+		C1DFC1F31F02933A0077A495 /* RapidManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidManager.swift; sourceTree = "<group>"; };
+		C1DFC1F51F0293940077A495 /* RapidSubscriberProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriberProtocol.swift; sourceTree = "<group>"; };
+		C1DFC1F71F0294790077A495 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		C1DFC1F91F0298310077A495 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		C1DFC1FB1F029B950077A495 /* MessagesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesManager.swift; sourceTree = "<group>"; };
+		C1DFC1FD1F029DC50077A495 /* ChannelsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
+		C1DFC1FF1F029EA30077A495 /* ChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCell.swift; sourceTree = "<group>"; };
+		C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
+		C1DFC2341F02AF0D0077A495 /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
+		C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Keyboard.swift"; sourceTree = "<group>"; };
+		C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RapiChat-Bridging-Header.h"; sourceTree = "<group>"; };
+		C1DFC23A1F02BB610077A495 /* DateTools.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DateTools.bundle; sourceTree = "<group>"; };
+		C1DFC23B1F02BB610077A495 /* DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateTools.h; sourceTree = "<group>"; };
+		C1DFC23C1F02BB610077A495 /* DTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTConstants.h; sourceTree = "<group>"; };
+		C1DFC23D1F02BB610077A495 /* DTError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTError.h; sourceTree = "<group>"; };
+		C1DFC23E1F02BB610077A495 /* DTError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTError.m; sourceTree = "<group>"; };
+		C1DFC23F1F02BB610077A495 /* DTTimePeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTTimePeriod.h; sourceTree = "<group>"; };
+		C1DFC2401F02BB610077A495 /* DTTimePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriod.m; sourceTree = "<group>"; };
+		C1DFC2411F02BB610077A495 /* DTTimePeriodChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTTimePeriodChain.h; sourceTree = "<group>"; };
+		C1DFC2421F02BB610077A495 /* DTTimePeriodChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodChain.m; sourceTree = "<group>"; };
+		C1DFC2431F02BB610077A495 /* DTTimePeriodCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTTimePeriodCollection.h; sourceTree = "<group>"; };
+		C1DFC2441F02BB610077A495 /* DTTimePeriodCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodCollection.m; sourceTree = "<group>"; };
+		C1DFC2451F02BB610077A495 /* DTTimePeriodGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTTimePeriodGroup.h; sourceTree = "<group>"; };
+		C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodGroup.m; sourceTree = "<group>"; };
+		C1DFC2471F02BB610077A495 /* NSDate+DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateTools.h"; sourceTree = "<group>"; };
+		C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateTools.m"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C1DFC1C71F0281B90077A495 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1DFC1EF1F028F890077A495 /* Rapid.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C1DFC1C11F0281B90077A495 = {
+			isa = PBXGroup;
+			children = (
+				C1DFC2381F02BB3A0077A495 /* TimeUtils */,
+				C1DFC1E41F028EAE0077A495 /* Frameworks */,
+				C1DFC1DF1F0287230077A495 /* RapiChat shared */,
+				C1DFC1CC1F0281B90077A495 /* RapiChat IOS */,
+				C1DFC1CB1F0281B90077A495 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C1DFC1CB1F0281B90077A495 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C1DFC1CA1F0281B90077A495 /* RapiChat.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C1DFC1CC1F0281B90077A495 /* RapiChat IOS */ = {
+			isa = PBXGroup;
+			children = (
+				C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */,
+				C1DFC1D11F0281B90077A495 /* Main.storyboard */,
+				C1DFC1D41F0281B90077A495 /* Assets.xcassets */,
+				C1DFC1D61F0281B90077A495 /* LaunchScreen.storyboard */,
+				C1DFC1D91F0281B90077A495 /* Info.plist */,
+				C1DFC1FD1F029DC50077A495 /* ChannelsViewController.swift */,
+				C1DFC1FF1F029EA30077A495 /* ChannelCell.swift */,
+				C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */,
+				C1DFC2341F02AF0D0077A495 /* MessageCell.swift */,
+				C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */,
+			);
+			name = "RapiChat IOS";
+			path = RapiChat;
+			sourceTree = "<group>";
+		};
+		C1DFC1DF1F0287230077A495 /* RapiChat shared */ = {
+			isa = PBXGroup;
+			children = (
+				C1DFC1F51F0293940077A495 /* RapidSubscriberProtocol.swift */,
+				C1DFC1F31F02933A0077A495 /* RapidManager.swift */,
+				C1DFC1E01F0287400077A495 /* Message.swift */,
+				C1DFC1E21F02874B0077A495 /* Channel.swift */,
+				C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */,
+				C1DFC1FB1F029B950077A495 /* MessagesManager.swift */,
+				C1DFC1F71F0294790077A495 /* Constants.swift */,
+				C1DFC1F91F0298310077A495 /* Helpers.swift */,
+			);
+			name = "RapiChat shared";
+			sourceTree = "<group>";
+		};
+		C1DFC1E41F028EAE0077A495 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C1DFC1ED1F028F7E0077A495 /* Rapid.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C1DFC2381F02BB3A0077A495 /* TimeUtils */ = {
+			isa = PBXGroup;
+			children = (
+				C1DFC23A1F02BB610077A495 /* DateTools.bundle */,
+				C1DFC23B1F02BB610077A495 /* DateTools.h */,
+				C1DFC23C1F02BB610077A495 /* DTConstants.h */,
+				C1DFC23D1F02BB610077A495 /* DTError.h */,
+				C1DFC23E1F02BB610077A495 /* DTError.m */,
+				C1DFC23F1F02BB610077A495 /* DTTimePeriod.h */,
+				C1DFC2401F02BB610077A495 /* DTTimePeriod.m */,
+				C1DFC2411F02BB610077A495 /* DTTimePeriodChain.h */,
+				C1DFC2421F02BB610077A495 /* DTTimePeriodChain.m */,
+				C1DFC2431F02BB610077A495 /* DTTimePeriodCollection.h */,
+				C1DFC2441F02BB610077A495 /* DTTimePeriodCollection.m */,
+				C1DFC2451F02BB610077A495 /* DTTimePeriodGroup.h */,
+				C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */,
+				C1DFC2471F02BB610077A495 /* NSDate+DateTools.h */,
+				C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */,
+				C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */,
+			);
+			name = TimeUtils;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C1DFC1C91F0281B90077A495 /* RapiChat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1DFC1DC1F0281B90077A495 /* Build configuration list for PBXNativeTarget "RapiChat" */;
+			buildPhases = (
+				C1DFC1C61F0281B90077A495 /* Sources */,
+				C1DFC1C71F0281B90077A495 /* Frameworks */,
+				C1DFC1C81F0281B90077A495 /* Resources */,
+				C1DFC1EC1F028EF30077A495 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RapiChat;
+			productName = RapiChat;
+			productReference = C1DFC1CA1F0281B90077A495 /* RapiChat.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C1DFC1C21F0281B90077A495 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = Rapid.io;
+				TargetAttributes = {
+					C1DFC1C91F0281B90077A495 = {
+						CreatedOnToolsVersion = 8.3.3;
+						LastSwiftMigration = 0830;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = C1DFC1C51F0281B90077A495 /* Build configuration list for PBXProject "RapiChat" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C1DFC1C11F0281B90077A495;
+			productRefGroup = C1DFC1CB1F0281B90077A495 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C1DFC1C91F0281B90077A495 /* RapiChat */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C1DFC1C81F0281B90077A495 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1DFC1D81F0281B90077A495 /* LaunchScreen.storyboard in Resources */,
+				C1DFC1D51F0281B90077A495 /* Assets.xcassets in Resources */,
+				C1DFC1D31F0281B90077A495 /* Main.storyboard in Resources */,
+				C1DFC2491F02BB610077A495 /* DateTools.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C1DFC1C61F0281B90077A495 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1DFC24A1F02BB610077A495 /* DTError.m in Sources */,
+				C1DFC1FE1F029DC50077A495 /* ChannelsViewController.swift in Sources */,
+				C1DFC1F41F02933A0077A495 /* RapidManager.swift in Sources */,
+				C1DFC24B1F02BB610077A495 /* DTTimePeriod.m in Sources */,
+				C1DFC1F61F0293940077A495 /* RapidSubscriberProtocol.swift in Sources */,
+				C1DFC2001F029EA30077A495 /* ChannelCell.swift in Sources */,
+				C1DFC24C1F02BB610077A495 /* DTTimePeriodChain.m in Sources */,
+				C1DFC24D1F02BB610077A495 /* DTTimePeriodCollection.m in Sources */,
+				C1DFC1E11F0287400077A495 /* Message.swift in Sources */,
+				C1DFC2331F02AB4D0077A495 /* MessagesViewController.swift in Sources */,
+				C1DFC2351F02AF0D0077A495 /* MessageCell.swift in Sources */,
+				C1DFC2371F02AFE80077A495 /* UIViewController+Keyboard.swift in Sources */,
+				C1DFC1F81F0294790077A495 /* Constants.swift in Sources */,
+				C1DFC24E1F02BB610077A495 /* DTTimePeriodGroup.m in Sources */,
+				C1DFC1FA1F0298310077A495 /* Helpers.swift in Sources */,
+				C1DFC1F21F0292E10077A495 /* ChannelsManager.swift in Sources */,
+				C1DFC1E31F02874B0077A495 /* Channel.swift in Sources */,
+				C1DFC1CE1F0281B90077A495 /* AppDelegate.swift in Sources */,
+				C1DFC24F1F02BB610077A495 /* NSDate+DateTools.m in Sources */,
+				C1DFC1FC1F029B950077A495 /* MessagesManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		C1DFC1D11F0281B90077A495 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C1DFC1D21F0281B90077A495 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		C1DFC1D61F0281B90077A495 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C1DFC1D71F0281B90077A495 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C1DFC1DA1F0281B90077A495 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C1DFC1DB1F0281B90077A495 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C1DFC1DD1F0281B90077A495 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = "${PROJECT_DIR}/../../Framework/iOS";
+				INFOPLIST_FILE = RapiChat/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRINCIPAL_CLASS = UIApplication;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapiChat;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		C1DFC1DE1F0281B90077A495 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = "${PROJECT_DIR}/../../Framework/iOS";
+				INFOPLIST_FILE = RapiChat/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRINCIPAL_CLASS = UIApplication;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapiChat;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C1DFC1C51F0281B90077A495 /* Build configuration list for PBXProject "RapiChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1DFC1DA1F0281B90077A495 /* Debug */,
+				C1DFC1DB1F0281B90077A495 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C1DFC1DC1F0281B90077A495 /* Build configuration list for PBXNativeTarget "RapiChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1DFC1DD1F0281B90077A495 /* Debug */,
+				C1DFC1DE1F0281B90077A495 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C1DFC1C21F0281B90077A495 /* Project object */;
+}
