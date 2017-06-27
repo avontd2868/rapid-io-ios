@@ -23,17 +23,11 @@
 		C1321F291EF94C2000B2BEEB /* TaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1321F241EF94C2000B2BEEB /* TaskViewController.swift */; };
 		C13EABC71EF9175000264F4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13EABC61EF9175000264F4E /* AppDelegate.swift */; };
 		C13EABC91EF9175000264F4E /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13EABC81EF9175000264F4E /* ListViewController.swift */; };
-		C13EABD41EF917DF00264F4E /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C13EABD31EF917DF00264F4E /* Rapid.framework */; };
-		C13EABD51EF917DF00264F4E /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C13EABD31EF917DF00264F4E /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C13EABD71EF925C400264F4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
 		C14A3EEA1ED70EEB0042597B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
 		C14A3EEB1ED70EEB0042597B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EE91ED70EEB0042597B /* Extensions.swift */; };
 		C14A3EEE1ED70F310042597B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
 		C14A3EEF1ED70F310042597B /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A3EED1ED70F310042597B /* Helpers.swift */; };
-		C14A74571EE056D1001339DC /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C14A74561EE056D1001339DC /* Rapid.framework */; };
-		C14A74581EE056D1001339DC /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C14A74561EE056D1001339DC /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C16068011EE84CE100B118D4 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C16068001EE84CE100B118D4 /* Rapid.framework */; };
-		C16068021EE84CE100B118D4 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C16068001EE84CE100B118D4 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C16B6C091ECA0BC90036C9D4 /* BEMAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */; };
 		C16B6C0A1ECA0BC90036C9D4 /* BEMCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C041ECA0BC90036C9D4 /* BEMCheckBox.m */; };
 		C16B6C0B1ECA0BC90036C9D4 /* BEMCheckBoxGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C061ECA0BC90036C9D4 /* BEMCheckBoxGroup.m */; };
@@ -58,6 +52,12 @@
 		C16B6C401ECA0E7C0036C9D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
 		C16B6C411ECA0E9B0036C9D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
 		C1A1E82B1ECB51EE004FB5CA /* TaskWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A1E82A1ECB51EE004FB5CA /* TaskWindowController.swift */; };
+		C1DFC1BB1F0247290077A495 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1B51F0246E30077A495 /* Rapid.framework */; };
+		C1DFC1BC1F0247290077A495 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1B51F0246E30077A495 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1DFC1BD1F0247350077A495 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1B71F0246F30077A495 /* Rapid.framework */; };
+		C1DFC1BE1F0247350077A495 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1B71F0246F30077A495 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1DFC1BF1F0247410077A495 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1B91F02470F0077A495 /* Rapid.framework */; };
+		C1DFC1C01F0247410077A495 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1B91F02470F0077A495 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C1F99EA81ECAEE56004994D5 /* TagsCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */; };
 		C1F99EAA1ECB2EC2004994D5 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C301ECA0E1B0036C9D4 /* ListViewController.swift */; };
 		C1F99EAE1ECB3F97004994D5 /* TaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F99EAD1ECB3F97004994D5 /* TaskViewController.swift */; };
@@ -70,7 +70,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C13EABD51EF917DF00264F4E /* Rapid.framework in Embed Frameworks */,
+				C1DFC1C01F0247410077A495 /* Rapid.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -81,7 +81,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C14A74581EE056D1001339DC /* Rapid.framework in Embed Frameworks */,
+				C1DFC1BE1F0247350077A495 /* Rapid.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,7 +92,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C16068021EE84CE100B118D4 /* Rapid.framework in Embed Frameworks */,
+				C1DFC1BC1F0247290077A495 /* Rapid.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -109,12 +109,9 @@
 		C13EABC61EF9175000264F4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C13EABC81EF9175000264F4E /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		C13EABCB1EF9175000264F4E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C13EABD31EF917DF00264F4E /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/tvOS/Rapid.framework; sourceTree = "<group>"; };
 		C14A3EE41ED6E1890042597B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C14A3EE91ED70EEB0042597B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C14A3EED1ED70F310042597B /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		C14A74561EE056D1001339DC /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/Mac/Rapid.framework; sourceTree = "<group>"; };
-		C16068001EE84CE100B118D4 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
 		C16B6BEC1ECA0A200036C9D4 /* RapiDO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RapiDO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C16B6C011ECA0BC90036C9D4 /* BEMAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMAnimationManager.h; sourceTree = "<group>"; };
 		C16B6C021ECA0BC90036C9D4 /* BEMAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMAnimationManager.m; sourceTree = "<group>"; };
@@ -144,6 +141,9 @@
 		C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1A1E82A1ECB51EE004FB5CA /* TaskWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskWindowController.swift; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* RapiDO iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiDO iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1DFC1B51F0246E30077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
+		C1DFC1B71F0246F30077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/Mac/Rapid.framework; sourceTree = "<group>"; };
+		C1DFC1B91F02470F0077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/tvOS/Rapid.framework; sourceTree = "<group>"; };
 		C1F99EA71ECAEE56004994D5 /* TagsCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsCellView.swift; sourceTree = "<group>"; };
 		C1F99EAD1ECB3F97004994D5 /* TaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,7 +153,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C13EABD41EF917DF00264F4E /* Rapid.framework in Frameworks */,
+				C1DFC1BF1F0247410077A495 /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,7 +161,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C14A74571EE056D1001339DC /* Rapid.framework in Frameworks */,
+				C1DFC1BD1F0247350077A495 /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,7 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C16068011EE84CE100B118D4 /* Rapid.framework in Frameworks */,
+				C1DFC1BB1F0247290077A495 /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,9 +194,9 @@
 		C14A745E1EE05711001339DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C13EABD31EF917DF00264F4E /* Rapid.framework */,
-				C16068001EE84CE100B118D4 /* Rapid.framework */,
-				C14A74561EE056D1001339DC /* Rapid.framework */,
+				C1DFC1B51F0246E30077A495 /* Rapid.framework */,
+				C1DFC1B71F0246F30077A495 /* Rapid.framework */,
+				C1DFC1B91F02470F0077A495 /* Rapid.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -522,7 +522,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				DEVELOPMENT_TEAM = EAVQTDVRT7;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Framework/tvOS";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../../Framework/tvOS";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.rapid.RapiDO-tvOS";
@@ -542,7 +542,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				DEVELOPMENT_TEAM = EAVQTDVRT7;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Framework/tvOS";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../../Framework/tvOS";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.rapid.RapiDO-tvOS";
@@ -565,7 +565,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/../Framework/Mac",
+					"$(PROJECT_DIR)/../../Framework/Mac",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -588,7 +588,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/../Framework/Mac",
+					"$(PROJECT_DIR)/../../Framework/Mac",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -701,7 +701,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
 				FRAMEWORK_SEARCH_PATHS = (
-					"${PROJECT_DIR}/../Framework/iOS",
+					"${PROJECT_DIR}/../../Framework/iOS",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
@@ -722,7 +722,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B4866X7S79;
 				FRAMEWORK_SEARCH_PATHS = (
-					"${PROJECT_DIR}/../Framework/iOS",
+					"${PROJECT_DIR}/../../Framework/iOS",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Info.plist";
