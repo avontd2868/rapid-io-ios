@@ -1,0 +1,139 @@
+//
+//  ChannelsViewController.swift
+//  RapiChat
+//
+//  Created by Jan on 28/06/2017.
+//  Copyright © 2017 Rapid.io. All rights reserved.
+//
+
+import Cocoa
+import Rapid
+
+class ChannelsViewController: NSViewController {
+
+    @IBOutlet weak var headerView: NSView!
+    @IBOutlet weak var headerTitle: NSTextField!
+    @IBOutlet weak var tableView: NSTableView!
+    @IBOutlet weak var activityIndicator: NSProgressIndicator!
+
+    fileprivate var channelsManager: ChannelsManager!
+    fileprivate var username: String?
+    fileprivate var selectedIndex: Int?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        setupRapid()
+        setupController()
+    }
+    
+}
+
+fileprivate extension ChannelsViewController {
+    
+    func setupRapid() {
+        // Set timeout for requests
+        Rapid.timeout = 10
+        // Set log level
+        Rapid.logLevel = .debug
+        // Configure shared singleton with API key
+        Rapid.configure(withApiKey: Constants.apiKey)
+        // Enable data cache
+        Rapid.isCacheEnabled = true
+    }
+    
+    func setupController() {
+        channelsManager = ChannelsManager(withDelegate: self)
+        
+        UserDefaultsManager.generateUsername { [weak self] username in
+            self?.username = username
+            self?.configureView()
+        }
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.gridColor = .appSeparator
+        tableView.selectionHighlightStyle = .none
+        
+        configureView()
+    }
+    
+    func configureView() {
+        headerView.wantsLayer = true
+        headerView.layer?.backgroundColor = NSColor.appRed.cgColor
+        headerTitle.textColor = .white
+        
+        if let username = username {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            let normalText = [NSForegroundColorAttributeName: NSColor.white, NSFontAttributeName: NSFont.systemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
+            let hightlightedText = [NSForegroundColorAttributeName: NSColor.white, NSFontAttributeName: NSFont.boldSystemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
+            headerTitle.attributedStringValue = "Your username is\n\(username)".highlight(string: username, textAttributes: normalText, highlightedAttributes: hightlightedText)
+        }
+        
+        if channelsManager.channels == nil || username == nil {
+            activityIndicator.startAnimation(self)
+            tableView.isHidden = true
+        }
+        else {
+            activityIndicator.stopAnimation(self)
+            tableView.isHidden = false
+        }
+    }
+    
+    func presentChannel(_ channel: Channel) {
+        
+    }
+}
+
+extension ChannelsViewController: ChannelsManagerDelegate {
+    
+    func channelsChanged(_ manager: ChannelsManager) {
+        tableView.reloadData()
+        
+        configureView()
+    }
+}
+
+extension ChannelsViewController: NSTableViewDataSource, NSTableViewDelegate {
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return channelsManager.channels?.count ?? 0
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        
+        guard let channel = channelsManager.channels?[row] else {
+            return nil
+        }
+        
+        let view = tableView.make(withIdentifier: "ChannelCellID", owner: nil)
+        
+        if let cell = view as? ChannelCell {
+            cell.configure(withChannel: channel, selected: tableView.selectedRow == row)
+        }
+        
+        return view
+    }
+    
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        let row = tableView.selectedRow
+        
+        if let index = selectedIndex {
+            tableView.reloadData(forRowIndexes: IndexSet(integer: index), columnIndexes: IndexSet(integer: 0))
+            selectedIndex = nil
+        }
+        
+        guard row >= 0 else {
+            return
+        }
+        
+        selectedIndex = row
+        tableView.reloadData(forRowIndexes: IndexSet(integer: row), columnIndexes: IndexSet(integer: 0))
+        
+        if let channel = channelsManager.channels?[row] {
+            presentChannel(channel)
+        }
+    }
+    
+}

@@ -12,7 +12,7 @@
         <!--Channels-->
         <scene sceneID="8yd-Bk-RIO">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="dPK-zg-CpT" customClass="ChannelsViewController" customModule="RapiChat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="dPK-zg-CpT" customClass="ChannelsViewController" customModule="RapiChat_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="w9e-HM-EM3"/>
                         <viewControllerLayoutGuide type="bottom" id="uwn-Ij-m5T"/>
@@ -44,7 +44,7 @@
                                     </constraints>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ChannelCell" rowHeight="80" id="vft-jZ-tYF" customClass="ChannelCell" customModule="RapiChat" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ChannelCell" rowHeight="80" id="vft-jZ-tYF" customClass="ChannelCell" customModule="RapiChat_iOS" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="99.5" width="375" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vft-jZ-tYF" id="Ugb-GW-yDN">
@@ -130,7 +130,7 @@
         <!--Messages View Controller-->
         <scene sceneID="mLb-b9-314">
             <objects>
-                <viewController storyboardIdentifier="MessagesViewController" automaticallyAdjustsScrollViewInsets="NO" id="hUD-Fk-zbH" customClass="MessagesViewController" customModule="RapiChat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MessagesViewController" automaticallyAdjustsScrollViewInsets="NO" id="hUD-Fk-zbH" customClass="MessagesViewController" customModule="RapiChat_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="BBv-Kp-gIz"/>
                         <viewControllerLayoutGuide type="bottom" id="mtz-jW-kue"/>
@@ -143,7 +143,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="597"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MessageCell" rowHeight="80" id="DZ7-wA-z3q" customClass="MessageCell" customModule="RapiChat" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MessageCell" rowHeight="80" id="DZ7-wA-z3q" customClass="MessageCell" customModule="RapiChat_iOS" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DZ7-wA-z3q" id="HLG-kp-KQA">
@@ -271,7 +271,7 @@
         <!--App Navigation Controller-->
         <scene sceneID="OrY-8S-wzZ">
             <objects>
-                <navigationController id="GHN-ac-bxC" customClass="AppNavigationController" customModule="RapiChat" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController id="GHN-ac-bxC" customClass="AppNavigationController" customModule="RapiChat_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="gab-ra-Jw1">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

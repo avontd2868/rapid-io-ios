@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Application-->
+        <scene sceneID="JPo-4y-FX3">
+            <objects>
+                <application id="hnw-xV-0zn" sceneMemberID="viewController">
+                    <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
+                        <items>
+                            <menuItem title="RapiChat macOS" id="1Xt-HY-uBw">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="RapiChat macOS" systemMenu="apple" id="uQy-DD-JDr">
+                                    <items>
+                                        <menuItem title="About RapiChat macOS" id="5kV-Vb-QxS">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="orderFrontStandardAboutPanel:" target="Ady-hI-5gd" id="Exp-CZ-Vem"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
+                                        <menuItem title="Services" id="NMo-om-nkz">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
+                                        <menuItem title="Hide RapiChat macOS" keyEquivalent="h" id="Olw-nP-bQN">
+                                            <connections>
+                                                <action selector="hide:" target="Ady-hI-5gd" id="PnN-Uc-m68"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Hide Others" keyEquivalent="h" id="Vdr-fp-XzO">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="hideOtherApplications:" target="Ady-hI-5gd" id="VT4-aY-XCT"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Show All" id="Kd2-mp-pUS">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="unhideAllApplications:" target="Ady-hI-5gd" id="Dhg-Le-xox"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
+                                        <menuItem title="Quit RapiChat macOS" keyEquivalent="q" id="4sb-4s-VLi">
+                                            <connections>
+                                                <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Window" id="aUF-d1-5bR">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
+                                    <items>
+                                        <menuItem title="Minimize" keyEquivalent="m" id="OY7-WF-poV">
+                                            <connections>
+                                                <action selector="performMiniaturize:" target="Ady-hI-5gd" id="VwT-WD-YPe"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Zoom" id="R4o-n2-Eq4">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="performZoom:" target="Ady-hI-5gd" id="DIl-cC-cCs"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="eu3-7i-yIM"/>
+                                        <menuItem title="Bring All to Front" id="LE2-aR-0XJ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="arrangeInFront:" target="Ady-hI-5gd" id="DRN-fu-gQh"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Help" id="wpr-3q-Mcd">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
+                                    <items>
+                                        <menuItem title="RapiChat macOS Help" keyEquivalent="?" id="FKE-Sm-Kum">
+                                            <connections>
+                                                <action selector="showHelp:" target="Ady-hI-5gd" id="y7X-2Q-9no"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                        </items>
+                    </menu>
+                    <connections>
+                        <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
+                    </connections>
+                </application>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="RapiChat_macOS" customModuleProvider="target"/>
+                <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="75" y="0.0"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="R2V-B0-nI4">
+            <objects>
+                <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
+                    <window key="window" title="RapiChat" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <rect key="contentRect" x="196" y="240" width="1000" height="680"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                    </window>
+                    <connections>
+                        <segue destination="RAS-Kw-ovC" kind="relationship" relationship="window.shadowedContentViewController" id="LbP-KX-t9C"/>
+                    </connections>
+                </windowController>
+                <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="75" y="250"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="Ra9-3y-I2B">
+            <objects>
+                <splitViewController id="RAS-Kw-ovC" sceneMemberID="viewController">
+                    <splitViewItems>
+                        <splitViewItem id="Ow1-iZ-Rxh"/>
+                        <splitViewItem id="kPz-4D-Usv"/>
+                    </splitViewItems>
+                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="nra-HM-rwl">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </splitView>
+                    <connections>
+                        <segue destination="d9l-bJ-QD1" kind="relationship" relationship="splitItems" id="4ZE-bn-zH6"/>
+                        <segue destination="MRL-xS-nLS" kind="relationship" relationship="splitItems" id="gl5-Bz-Kna"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="CLF-fm-6SY" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-221" y="890"/>
+        </scene>
+        <!--Channels View Controller-->
+        <scene sceneID="zdw-Q4-8Ra">
+            <objects>
+                <viewController id="d9l-bJ-QD1" customClass="ChannelsViewController" customModule="RapiChat_macOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="uOP-U9-DB4">
+                        <rect key="frame" x="0.0" y="0.0" width="250" height="605"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="igi-HX-wfa">
+                                <rect key="frame" x="109" y="287" width="32" height="32"/>
+                            </progressIndicator>
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="62" horizontalPageScroll="10" verticalLineScroll="62" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j48-9E-zrE">
+                                <rect key="frame" x="0.0" y="0.0" width="250" height="572"/>
+                                <clipView key="contentView" id="2ch-ox-Yrb">
+                                    <rect key="frame" x="1" y="0.0" width="248" height="571"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="60" headerView="5W7-ha-A91" viewBased="YES" id="KZN-WH-PKi">
+                                            <rect key="frame" x="0.0" y="0.0" width="248" height="548"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <size key="intercellSpacing" width="3" height="2"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                            <tableColumns>
+                                                <tableColumn editable="NO" width="245" minWidth="245" maxWidth="245" id="vHU-ae-17X">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Channels">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="6SY-Zk-w44">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                    <prototypeCellViews>
+                                                        <tableCellView identifier="ChannelCellID" id="dZm-O2-Y9p" customClass="ChannelCell" customModule="RapiChat_macOS" customModuleProvider="target">
+                                                            <rect key="frame" x="1" y="1" width="245" height="50"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uzr-Ty-8GO">
+                                                                    <rect key="frame" x="13" y="25" width="37" height="17"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Label" id="XyZ-o6-jq2">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="749" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w3n-rI-sEt">
+                                                                    <rect key="frame" x="195" y="25" width="37" height="17"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Label" id="zR3-OT-PNg">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ztp-6g-Z7Q">
+                                                                    <rect key="frame" x="13" y="0.0" width="219" height="17"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Label" id="91A-Kc-c83">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstAttribute="trailing" secondItem="w3n-rI-sEt" secondAttribute="trailing" constant="15" id="2tR-4G-cr6"/>
+                                                                <constraint firstItem="w3n-rI-sEt" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="uzr-Ty-8GO" secondAttribute="trailing" constant="10" id="2wl-XI-37J"/>
+                                                                <constraint firstAttribute="bottom" secondItem="Ztp-6g-Z7Q" secondAttribute="bottom" id="4bT-pr-6nF"/>
+                                                                <constraint firstItem="w3n-rI-sEt" firstAttribute="baseline" secondItem="uzr-Ty-8GO" secondAttribute="baseline" id="7N6-ix-KG2"/>
+                                                                <constraint firstItem="w3n-rI-sEt" firstAttribute="trailing" secondItem="Ztp-6g-Z7Q" secondAttribute="trailing" id="9a9-DQ-5KS"/>
+                                                                <constraint firstItem="uzr-Ty-8GO" firstAttribute="leading" secondItem="dZm-O2-Y9p" secondAttribute="leading" constant="15" id="IEw-RZ-dA7"/>
+                                                                <constraint firstItem="Ztp-6g-Z7Q" firstAttribute="leading" secondItem="uzr-Ty-8GO" secondAttribute="leading" id="crt-y7-kza"/>
+                                                                <constraint firstItem="uzr-Ty-8GO" firstAttribute="top" secondItem="dZm-O2-Y9p" secondAttribute="top" constant="8" id="dyo-gB-iVp"/>
+                                                                <constraint firstItem="Ztp-6g-Z7Q" firstAttribute="top" secondItem="uzr-Ty-8GO" secondAttribute="bottom" constant="8" id="s4N-b8-NFS"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="messageTextLabel" destination="Ztp-6g-Z7Q" id="AtK-gq-yfm"/>
+                                                                <outlet property="nameLabel" destination="uzr-Ty-8GO" id="WzC-lj-hsE"/>
+                                                                <outlet property="timeLabel" destination="w3n-rI-sEt" id="ox5-fd-KTk"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                    </prototypeCellViews>
+                                                </tableColumn>
+                                            </tableColumns>
+                                        </tableView>
+                                    </subviews>
+                                </clipView>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="WSJ-cZ-F9o"/>
+                                    <constraint firstAttribute="width" constant="250" id="yIt-YJ-9YX"/>
+                                </constraints>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="JGD-Zk-xaC">
+                                    <rect key="frame" x="1" y="588" width="148" height="16"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="rxm-kX-yzW">
+                                    <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <tableHeaderView key="headerView" id="5W7-ha-A91">
+                                    <rect key="frame" x="0.0" y="0.0" width="248" height="23"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableHeaderView>
+                            </scrollView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="V9e-3C-thy">
+                                <rect key="frame" x="0.0" y="572" width="250" height="33"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IOd-Ok-Iei">
+                                        <rect key="frame" x="13" y="8" width="224" height="17"/>
+                                        <textFieldCell key="cell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" alignment="center" title="Really long username" id="dVs-LC-yJ6">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="IOd-Ok-Iei" firstAttribute="leading" secondItem="V9e-3C-thy" secondAttribute="leading" constant="15" id="QOg-BP-xEj"/>
+                                    <constraint firstItem="IOd-Ok-Iei" firstAttribute="top" secondItem="V9e-3C-thy" secondAttribute="top" constant="8" id="X4y-1Y-bTb"/>
+                                    <constraint firstAttribute="trailing" secondItem="IOd-Ok-Iei" secondAttribute="trailing" constant="15" id="xeY-Cl-8Z9"/>
+                                    <constraint firstAttribute="bottom" secondItem="IOd-Ok-Iei" secondAttribute="bottom" constant="8" id="zHn-OX-Ay4"/>
+                                </constraints>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="V9e-3C-thy" firstAttribute="leading" secondItem="uOP-U9-DB4" secondAttribute="leading" id="5V7-Mh-nvY"/>
+                            <constraint firstAttribute="trailing" secondItem="V9e-3C-thy" secondAttribute="trailing" id="7ux-qx-pBL"/>
+                            <constraint firstItem="igi-HX-wfa" firstAttribute="centerX" secondItem="uOP-U9-DB4" secondAttribute="centerX" id="9Vc-Bj-Cod"/>
+                            <constraint firstAttribute="trailing" secondItem="j48-9E-zrE" secondAttribute="trailing" id="GlN-9m-UUD"/>
+                            <constraint firstItem="j48-9E-zrE" firstAttribute="leading" secondItem="uOP-U9-DB4" secondAttribute="leading" id="Ubu-8R-aUt"/>
+                            <constraint firstItem="igi-HX-wfa" firstAttribute="centerY" secondItem="uOP-U9-DB4" secondAttribute="centerY" id="eeC-U7-MQG"/>
+                            <constraint firstAttribute="bottom" secondItem="j48-9E-zrE" secondAttribute="bottom" id="n4F-Tx-Ist"/>
+                            <constraint firstItem="j48-9E-zrE" firstAttribute="top" secondItem="V9e-3C-thy" secondAttribute="bottom" id="t7S-jx-nxH"/>
+                            <constraint firstItem="V9e-3C-thy" firstAttribute="top" secondItem="uOP-U9-DB4" secondAttribute="top" id="tt3-lc-oYZ"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="activityIndicator" destination="igi-HX-wfa" id="miC-2t-QYI"/>
+                        <outlet property="headerTitle" destination="IOd-Ok-Iei" id="3wo-ot-eov"/>
+                        <outlet property="headerView" destination="V9e-3C-thy" id="ebj-wx-yg7"/>
+                        <outlet property="tableView" destination="KZN-WH-PKi" id="dLq-Lf-AdK"/>
+                    </connections>
+                </viewController>
+                <customObject id="Z3O-7A-1dl" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="218" y="1042.5"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="xzZ-SQ-gge">
+            <objects>
+                <viewController id="MRL-xS-nLS" sceneMemberID="viewController">
+                    <view key="view" id="EZw-LV-UC3">
+                        <rect key="frame" x="0.0" y="0.0" width="756" height="605"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="Klu-Pn-laQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="740" y="1042.5"/>
+        </scene>
+    </scenes>
+</document>
