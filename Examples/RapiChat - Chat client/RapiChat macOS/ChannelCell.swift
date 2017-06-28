@@ -13,6 +13,14 @@ class ChannelCell: NSTableCellView {
     @IBOutlet weak var nameLabel: NSTextField!
     @IBOutlet weak var timeLabel: NSTextField!
     @IBOutlet weak var messageTextLabel: NSTextField!
+    @IBOutlet weak var unreadView: NSView! {
+        didSet {
+            unreadView.wantsLayer = true
+            unreadView.layer?.backgroundColor = NSColor.appRed.cgColor
+            unreadView.layer?.cornerRadius = 7.5
+        }
+    }
+    @IBOutlet weak var nameLeading: NSLayoutConstraint!
     
     fileprivate let nameFont = NSFont.boldSystemFont(ofSize: 16)
     fileprivate let nameFontUnread = NSFont.boldSystemFont(ofSize: 16)
@@ -37,12 +45,15 @@ class ChannelCell: NSTableCellView {
         nameLabel.font = channel.unread ? nameFontUnread : nameFont
         messageTextLabel.font = channel.unread ? textFontUnread : textFont
         timeLabel.font = channel.unread ? dateFontUnread : dateFont
+        unreadView.isHidden = !channel.unread
+        nameLeading.constant = channel.unread ? 30 : 15
+        
         nameLabel.textColor = selected ? NSColor.white : .textColor
         messageTextLabel.textColor = selected ? NSColor.white : .textColor
         timeLabel.textColor = selected ? NSColor.white : .textColor
         
         wantsLayer = true
-        layer?.backgroundColor = selected ? NSColor.appRed.withAlphaComponent(0.5).cgColor : NSColor.clear.cgColor
+        layer?.backgroundColor = selected ? NSColor.appRed.cgColor : NSColor.clear.cgColor
     }
     
 }

@@ -60,14 +60,13 @@ fileprivate extension ChannelsViewController {
     
     func configureView() {
         headerView.wantsLayer = true
-        headerView.layer?.backgroundColor = NSColor.appRed.cgColor
-        headerTitle.textColor = .white
+        headerView.layer?.backgroundColor = NSColor.white.cgColor
         
         if let username = username {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let normalText = [NSForegroundColorAttributeName: NSColor.white, NSFontAttributeName: NSFont.systemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
-            let hightlightedText = [NSForegroundColorAttributeName: NSColor.white, NSFontAttributeName: NSFont.boldSystemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
+            let normalText = [NSForegroundColorAttributeName: NSColor.appText, NSFontAttributeName: NSFont.systemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
+            let hightlightedText = [NSForegroundColorAttributeName: NSColor.appText, NSFontAttributeName: NSFont.boldSystemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
             headerTitle.attributedStringValue = "Your username is\n\(username)".highlight(string: username, textAttributes: normalText, highlightedAttributes: hightlightedText)
         }
         
@@ -82,7 +81,7 @@ fileprivate extension ChannelsViewController {
     }
     
     func presentChannel(_ channel: Channel) {
-        
+        NotificationCenter.default.post(name: Notification.Name("ChannelSelectedNotification"), object: channel)
     }
 }
 
