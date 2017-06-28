@@ -10,14 +10,16 @@ import Foundation
 
 struct UserDefaultsManager {
     
-    static func generateUsername(completion: (_ username: String) -> Void) {
+    static func generateUsername(completion: @escaping (_ username: String) -> Void) {
         if let name = UserDefaults.standard.string(forKey: "RapiChatUsername") {
             completion(name)
         }
         else {
-            UserDefaults.standard.set("Jan", forKey: "RapiChatUsername")
-            UserDefaults.standard.synchronize()
-            completion("Jan")
+            RandomNameGenerator.randomName(completion: { username in
+                UserDefaults.standard.set(username, forKey: "RapiChatUsername")
+                UserDefaults.standard.synchronize()
+                completion(username)
+            })
         }
     }
     
@@ -34,5 +36,35 @@ struct UserDefaultsManager {
         readIDs[channelID] = messageID
         UserDefaults.standard.set(readIDs, forKey: "RapiChatReadMessages")
         UserDefaults.standard.synchronize()
+    }
+}
+
+struct RandomNameGenerator {
+    
+    static var task: URLSessionDataTask?
+    
+    static func randomName(completion: @escaping (_ username: String) -> Void) {
+        var request = URLRequest(url: URL(string: "https://randomuser.me/api/")!)
+        request.httpMethod = "GET"
+        task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+            if let data = data,
+                let dict = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [AnyHashable: Any],
+                let results = dict?["results"] as? [[AnyHashable: Any]],
+                let person = results.first,
+                let name = person["name"] as? [AnyHashable: Any],
+                let first = name["first"] as? String,
+                let last = name["last"] as? String {
+                
+                DispatchQueue.main.async {
+                    completion("\(first) \(last)")
+                }
+            }
+            else {
+                DispatchQueue.main.async {
+                    completion("john smith")
+                }
+            }
+        }
+        task?.resume()
     }
 }

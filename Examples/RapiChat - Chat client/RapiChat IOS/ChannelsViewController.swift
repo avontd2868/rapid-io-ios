@@ -8,11 +8,15 @@
 
 import UIKit
 
-class ChannelsViewController: UITableViewController {
+class ChannelsViewController: UIViewController {
     
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var headerView: UIView!
+    @IBOutlet weak var headerTitle: UILabel!
     
     fileprivate var channelsManager: ChannelsManager!
+    fileprivate var username: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,15 +37,35 @@ fileprivate extension ChannelsViewController {
     func setupController() {
         channelsManager = ChannelsManager(withDelegate: self)
         
-        setupUI()
+        UserDefaultsManager.generateUsername { [weak self] username in
+            self?.username = username
+            self?.configureView()
+        }
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorColor = .appSeparator
+        
+        configureView()
     }
     
-    func setupUI() {
-        if channelsManager.channels == nil {
+    func configureView() {
+        headerView.backgroundColor = .appRed
+        headerTitle.textColor = .white
+        
+        if let username = username {
+            let normalText = [NSForegroundColorAttributeName: UIColor.white, NSFontAttributeName: UIFont.systemFont(ofSize: 13)]
+            let hightlightedText = [NSForegroundColorAttributeName: UIColor.white, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 13)]
+            headerTitle.attributedText = "Your username is \(username)".highlight(string: username, textAttributes: normalText, highlightedAttributes: hightlightedText)
+        }
+        
+        if channelsManager.channels == nil || username == nil {
             activityIndicator.startAnimating()
+            tableView.isHidden = true
         }
         else {
             activityIndicator.stopAnimating()
+            tableView.isHidden = false
         }
     }
     
@@ -49,6 +73,7 @@ fileprivate extension ChannelsViewController {
         let controller = self.storyboard?.instantiateViewController(withIdentifier: "MessagesViewController") as! MessagesViewController
         
         controller.channel = channel
+        controller.username = username
         
         navigationController?.pushViewController(controller, animated: true)
     }
@@ -59,22 +84,22 @@ extension ChannelsViewController: ChannelsManagerDelegate {
     func channelsChanged(_ manager: ChannelsManager) {
         tableView.reloadData()
         
-        setupUI()
+        configureView()
     }
 }
 
 // MARK: - Table view data source
-extension ChannelsViewController {
+extension ChannelsViewController: UITableViewDelegate, UITableViewDataSource {
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return channelsManager.channels?.count ?? 0
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChannelCell", for: indexPath) as! ChannelCell
         
         if let channel = channelsManager.channels?[indexPath.row] {
@@ -84,7 +109,7 @@ extension ChannelsViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if let channel = channelsManager.channels?[indexPath.row] {

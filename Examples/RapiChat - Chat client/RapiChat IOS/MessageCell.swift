@@ -10,9 +10,23 @@ import UIKit
 
 class MessageCell: UITableViewCell {
 
-    @IBOutlet weak var senderLabel: UILabel!
-    @IBOutlet weak var timeLabel: UILabel!
-    @IBOutlet weak var messageTextLabel: UILabel!
+    @IBOutlet weak var senderLabel: UILabel! {
+        didSet {
+            senderLabel.font = UIFont.systemFont(ofSize: 15)
+        }
+    }
+    @IBOutlet weak var timeLabel: UILabel! {
+        didSet {
+            timeLabel.font = UIFont.systemFont(ofSize: 13)
+            timeLabel.textColor = .appText
+        }
+    }
+    @IBOutlet weak var messageTextLabel: UILabel! {
+        didSet {
+            messageTextLabel.font = UIFont.systemFont(ofSize: 16)
+            messageTextLabel.textColor = .appText
+        }
+    }
     
     lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -29,12 +43,14 @@ class MessageCell: UITableViewCell {
         else {
             dateFormatter.dateStyle = .short
             
-            dateFormatter.timeStyle = .none
+            dateFormatter.timeStyle = .short
         }
     }
     
-    func configure(withMessage message: Message) {
+    func configure(withMessage message: Message, myUsername: String) {
+        senderLabel.textColor = message.sender == myUsername ? UIColor.appRed : .appBlue
         senderLabel.text = message.sender
+        
         messageTextLabel.text = message.text
         
         updateDateFormatterStyleWithDate(message.sentDate)

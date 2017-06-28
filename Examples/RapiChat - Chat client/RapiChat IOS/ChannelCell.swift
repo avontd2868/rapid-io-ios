@@ -10,16 +10,39 @@ import UIKit
 
 class ChannelCell: UITableViewCell {
     
-    @IBOutlet var nameLabel: UILabel!
-    @IBOutlet var lastMessageTextLabel: UILabel!
-    @IBOutlet var lastMessageDateLabel: UILabel!
+    @IBOutlet var nameLabel: UILabel! {
+        didSet {
+            nameLabel.textColor = .black
+        }
+    }
+    @IBOutlet var lastMessageTextLabel: UILabel! {
+        didSet {
+            lastMessageTextLabel.textColor = .appText
+        }
+    }
+    @IBOutlet var lastMessageDateLabel: UILabel! {
+        didSet {
+            lastMessageDateLabel.textColor = .appText
+        }
+    }
+    @IBOutlet weak var highlightView: UIView! {
+        didSet {
+            highlightView.backgroundColor = .appRed
+        }
+    }
     
-    fileprivate let nameFont = UIFont.systemFont(ofSize: 17)
-    fileprivate let nameFontUnread = UIFont.boldSystemFont(ofSize: 17)
-    fileprivate let textFont = UIFont.systemFont(ofSize: 15)
-    fileprivate let textFontUnread = UIFont.boldSystemFont(ofSize: 15)
-    fileprivate let dateFont = UIFont.systemFont(ofSize: 13)
-    fileprivate let dateFontUnread = UIFont.boldSystemFont(ofSize: 13)
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        
+        backgroundColor = highlighted ? UIColor.appRed.withAlphaComponent(0.1) : .clear
+    }
+    
+    fileprivate let nameFont = UIFont.systemFont(ofSize: 18, weight: UIFontWeightMedium)
+    fileprivate let nameFontUnread = UIFont.boldSystemFont(ofSize: 18)
+    fileprivate let textFont = UIFont.systemFont(ofSize: 14)
+    fileprivate let textFontUnread = UIFont.boldSystemFont(ofSize: 14)
+    fileprivate let dateFont = UIFont.systemFont(ofSize: 12)
+    fileprivate let dateFontUnread = UIFont.boldSystemFont(ofSize: 12)
 
     func configure(withChannel channel: Channel) {
         nameLabel.text = channel.name
@@ -37,6 +60,6 @@ class ChannelCell: UITableViewCell {
         nameLabel.font = channel.unread ? nameFontUnread : nameFont
         lastMessageTextLabel.font = channel.unread ? textFontUnread : textFont
         lastMessageDateLabel.font = channel.unread ? dateFontUnread : dateFont
-        backgroundColor = channel.unread ? .lightGray : .white
+        highlightView.isHidden = !channel.unread
     }
 }

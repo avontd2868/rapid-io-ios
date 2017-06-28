@@ -33,6 +33,8 @@
 		C1DFC24D1F02BB610077A495 /* DTTimePeriodCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2441F02BB610077A495 /* DTTimePeriodCollection.m */; };
 		C1DFC24E1F02BB610077A495 /* DTTimePeriodGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */; };
 		C1DFC24F1F02BB610077A495 /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */; };
+		C1DFC2511F03A3E10077A495 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */; };
+		C1DFC2531F03A5780077A495 /* AppNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2521F03A5780077A495 /* AppNavigationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,7 +55,7 @@
 		C1DFC1CA1F0281B90077A495 /* RapiChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RapiChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DFC1D21F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C1DFC1D41F0281B90077A495 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
+		C1DFC1D41F0281B90077A495 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1DFC1D71F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C1DFC1D91F0281B90077A495 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = RapiChat/Info.plist; sourceTree = "<group>"; };
 		C1DFC1E01F0287400077A495 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -86,6 +88,8 @@
 		C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodGroup.m; sourceTree = "<group>"; };
 		C1DFC2471F02BB610077A495 /* NSDate+DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateTools.h"; sourceTree = "<group>"; };
 		C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateTools.m"; sourceTree = "<group>"; };
+		C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
+		C1DFC2521F03A5780077A495 /* AppNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNavigationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,8 +136,8 @@
 				C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */,
 				C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */,
 				C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */,
+				C1DFC2521F03A5780077A495 /* AppNavigationController.swift */,
 			);
-			name = "RapiChat IOS";
 			path = "RapiChat IOS";
 			sourceTree = "<group>";
 		};
@@ -149,8 +153,8 @@
 				C1DFC1FB1F029B950077A495 /* MessagesManager.swift */,
 				C1DFC1F31F02933A0077A495 /* RapidManager.swift */,
 				C1DFC1F51F0293940077A495 /* RapidSubscriberProtocol.swift */,
+				C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */,
 			);
-			name = "RapiChat shared";
 			path = "RapiChat shared";
 			sourceTree = "<group>";
 		};
@@ -181,7 +185,6 @@
 				C1DFC2471F02BB610077A495 /* NSDate+DateTools.h */,
 				C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */,
 			);
-			name = TimeUtils;
 			path = TimeUtils;
 			sourceTree = "<group>";
 		};
@@ -218,6 +221,7 @@
 				TargetAttributes = {
 					C1DFC1C91F0281B90077A495 = {
 						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = B4866X7S79;
 						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 					};
@@ -267,7 +271,9 @@
 				C1DFC1F61F0293940077A495 /* RapidSubscriberProtocol.swift in Sources */,
 				C1DFC2001F029EA30077A495 /* ChannelCell.swift in Sources */,
 				C1DFC24C1F02BB610077A495 /* DTTimePeriodChain.m in Sources */,
+				C1DFC2531F03A5780077A495 /* AppNavigationController.swift in Sources */,
 				C1DFC24D1F02BB610077A495 /* DTTimePeriodCollection.m in Sources */,
+				C1DFC2511F03A3E10077A495 /* UIKitExtensions.swift in Sources */,
 				C1DFC1E11F0287400077A495 /* Message.swift in Sources */,
 				C1DFC2331F02AB4D0077A495 /* MessagesViewController.swift in Sources */,
 				C1DFC2351F02AF0D0077A495 /* MessageCell.swift in Sources */,
@@ -405,13 +411,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = B4866X7S79;
 				FRAMEWORK_SEARCH_PATHS = "${PROJECT_DIR}/../../Framework/iOS";
 				INFOPLIST_FILE = RapiChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRINCIPAL_CLASS = UIApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapiChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat iOS/RapiChat-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -422,13 +429,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = B4866X7S79;
 				FRAMEWORK_SEARCH_PATHS = "${PROJECT_DIR}/../../Framework/iOS";
 				INFOPLIST_FILE = RapiChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRINCIPAL_CLASS = UIApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapiChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat iOS/RapiChat-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

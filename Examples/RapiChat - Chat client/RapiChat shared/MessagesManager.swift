@@ -36,9 +36,13 @@ class MessagesManager: NSObject, RapidSubscriber {
     }
     
     func sendMessage(_ text: String) {
-        UserDefaultsManager.generateUsername { username in
+        UserDefaultsManager.generateUsername { [weak self] username in
+            guard let strongSelf = self else {
+                return
+            }
+            
             var message: [AnyHashable: Any] = [
-                Message.channelID: channelID,
+                Message.channelID: strongSelf.channelID,
                 Message.sender: username,
                 Message.sentDate: Rapid.serverTimestamp,
                 Message.text: text
@@ -49,7 +53,7 @@ class MessagesManager: NSObject, RapidSubscriber {
                 
             messageRef.mutate(value: message)
             
-            Rapid.collection(named: Constants.channelsCollection).document(withID: channelID).execute(block: { document -> RapidExecutionResult in
+            Rapid.collection(named: Constants.channelsCollection).document(withID: strongSelf.channelID).execute(block: { document -> RapidExecutionResult in
                 var value = document.value ?? [:]
                 
                 message[Channel.lastMessageID] = messageRef.documentID
