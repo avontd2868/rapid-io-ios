@@ -94,6 +94,7 @@
 		AD4BFC8E1F041AAC00C26F94 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		C1A2DBAA1F04067E00C5B00B /* ChannelCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCellView.swift; sourceTree = "<group>"; };
 		C1A2DBAC1F04EBD200C5B00B /* MessageCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
+		C1A2DBAF1F0520AB00C5B00B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1DFC1CA1F0281B90077A495 /* RapiChat iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiChat iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DFC1D21F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -129,13 +130,12 @@
 		C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodGroup.m; sourceTree = "<group>"; };
 		C1DFC2471F02BB610077A495 /* NSDate+DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateTools.h"; sourceTree = "<group>"; };
 		C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateTools.m"; sourceTree = "<group>"; };
-		C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIKitExtensions.swift; path = "../RapiChat shared/UIKitExtensions.swift"; sourceTree = "<group>"; };
+		C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		C1DFC2521F03A5780077A495 /* AppNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNavigationController.swift; sourceTree = "<group>"; };
 		C1DFC2581F03F2A60077A495 /* RapiChat macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiChat macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DFC25A1F03F2A60077A495 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DFC25C1F03F2A60077A495 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C1DFC2611F03F2A60077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C1DFC2671F03F38B0077A495 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = TimeUtils/Info.plist; sourceTree = "<group>"; };
 		C1DFC2681F03F4180077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/Mac/Rapid.framework; sourceTree = "<group>"; };
 		C1DFC2701F03F4A60077A495 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C1DFC2831F03FB370077A495 /* ChannelsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
@@ -165,13 +165,13 @@
 		C1DFC1C11F0281B90077A495 = {
 			isa = PBXGroup;
 			children = (
-				C1DFC2591F03F2A60077A495 /* RapiChat macOS */,
+				C1A2DBAF1F0520AB00C5B00B /* Info.plist */,
 				C1DFC1E41F028EAE0077A495 /* Frameworks */,
 				C1DFC1CB1F0281B90077A495 /* Products */,
 				C1DFC1CC1F0281B90077A495 /* RapiChat IOS */,
+				C1DFC2591F03F2A60077A495 /* RapiChat macOS */,
 				C1DFC1DF1F0287230077A495 /* RapiChat shared */,
 				C1DFC2381F02BB3A0077A495 /* TimeUtils */,
-				C1DFC2671F03F38B0077A495 /* Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -187,17 +187,16 @@
 		C1DFC1CC1F0281B90077A495 /* RapiChat IOS */ = {
 			isa = PBXGroup;
 			children = (
-				C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */,
 				C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */,
+				C1DFC2521F03A5780077A495 /* AppNavigationController.swift */,
 				C1DFC1FF1F029EA30077A495 /* ChannelCell.swift */,
 				C1DFC1FD1F029DC50077A495 /* ChannelsViewController.swift */,
 				C1DFC1D61F0281B90077A495 /* LaunchScreen.storyboard */,
 				C1DFC1D11F0281B90077A495 /* Main.storyboard */,
 				C1DFC2341F02AF0D0077A495 /* MessageCell.swift */,
 				C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */,
-				C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */,
+				C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */,
 				C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */,
-				C1DFC2521F03A5780077A495 /* AppNavigationController.swift */,
 			);
 			path = "RapiChat IOS";
 			sourceTree = "<group>";
@@ -209,12 +208,13 @@
 				C1DFC1E21F02874B0077A495 /* Channel.swift */,
 				C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */,
 				C1DFC1F71F0294790077A495 /* Constants.swift */,
+				C1DFC2701F03F4A60077A495 /* Extensions.swift */,
 				C1DFC1F91F0298310077A495 /* Helpers.swift */,
 				C1DFC1E01F0287400077A495 /* Message.swift */,
 				C1DFC1FB1F029B950077A495 /* MessagesManager.swift */,
+				C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */,
 				C1DFC1F31F02933A0077A495 /* RapidManager.swift */,
 				C1DFC1F51F0293940077A495 /* RapidSubscriberProtocol.swift */,
-				C1DFC2701F03F4A60077A495 /* Extensions.swift */,
 			);
 			path = "RapiChat shared";
 			sourceTree = "<group>";
@@ -254,13 +254,13 @@
 			isa = PBXGroup;
 			children = (
 				C1DFC25A1F03F2A60077A495 /* AppDelegate.swift */,
-				C1DFC25C1F03F2A60077A495 /* ViewController.swift */,
-				C1DFC2601F03F2A60077A495 /* Main.storyboard */,
-				C1DFC2831F03FB370077A495 /* ChannelsViewController.swift */,
 				C1A2DBAA1F04067E00C5B00B /* ChannelCellView.swift */,
-				AD4BFC8E1F041AAC00C26F94 /* MessagesViewController.swift */,
-				C1A2DBAC1F04EBD200C5B00B /* MessageCellView.swift */,
+				C1DFC2831F03FB370077A495 /* ChannelsViewController.swift */,
 				C1DFC2851F03FE430077A495 /* CocoaExtensions.swift */,
+				C1DFC2601F03F2A60077A495 /* Main.storyboard */,
+				C1A2DBAC1F04EBD200C5B00B /* MessageCellView.swift */,
+				AD4BFC8E1F041AAC00C26F94 /* MessagesViewController.swift */,
+				C1DFC25C1F03F2A60077A495 /* ViewController.swift */,
 			);
 			path = "RapiChat macOS";
 			sourceTree = "<group>";
@@ -456,6 +456,7 @@
 				C1DFC2611F03F2A60077A495 /* Base */,
 			);
 			name = Main.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -566,7 +567,7 @@
 				PRINCIPAL_CLASS = UIApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapichat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat iOS/RapiChat-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat shared/RapiChat-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -584,7 +585,7 @@
 				PRINCIPAL_CLASS = UIApplication;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapichat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat iOS/RapiChat-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat shared/RapiChat-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -603,7 +604,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapichat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat iOS/RapiChat-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat shared/RapiChat-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -622,7 +623,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.rapichat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat iOS/RapiChat-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RapiChat shared/RapiChat-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

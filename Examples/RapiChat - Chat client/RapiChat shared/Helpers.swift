@@ -68,3 +68,20 @@ struct RandomNameGenerator {
         task?.resume()
     }
 }
+
+class Validator {
+    
+    class func isValid(collectionName name: String) -> Bool {
+        var components = name.components(separatedBy: "-")
+        
+        guard components.count > 2 else {
+            return false
+        }
+        
+        let first = components.remove(at: 0)
+        
+        let uuid = NSUUID(uuidString: components.joined(separator: "-"))
+        
+        return (first == "channels" || first == "messages") && uuid != nil
+    }
+}

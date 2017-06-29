@@ -41,6 +41,7 @@ class MessagesManager: NSObject, RapidSubscriber {
                 return
             }
             
+            // Compose a dictionary with a message
             var message: [AnyHashable: Any] = [
                 Message.channelID: strongSelf.channelID,
                 Message.sender: username,
@@ -48,12 +49,16 @@ class MessagesManager: NSObject, RapidSubscriber {
                 Message.text: text
             ]
             
-            let messageRef = Rapid.collection(named: Constants.messagesCollection)
+            // Get a new rapid.io document reference from the messages collection
+            let messageRef = Rapid.collection(withName: Constants.messagesCollection)
                 .newDocument()
-                
+            
+            // Write the message to database
             messageRef.mutate(value: message)
             
-            Rapid.collection(named: Constants.channelsCollection).document(withID: strongSelf.channelID).execute(block: { document -> RapidExecutionResult in
+            // Save the message to the channel as a last message, but only if the message is newer than a current last message
+            // Use the execute function which guarantees optimistic concurrency mutations
+            Rapid.collection(withName: Constants.channelsCollection).document(withID: strongSelf.channelID).execute(block: { document -> RapidExecutionResult in
                 var value = document.value ?? [:]
                 
                 message[Channel.lastMessageID] = messageRef.documentID
