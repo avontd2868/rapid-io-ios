@@ -8,6 +8,13 @@
 
 import Cocoa
 
+class PlaceholderTextField: NSTextField {
+    
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        return nil
+    }
+}
+
 class MessagesViewController: NSViewController {
     
     @IBOutlet weak var headerView: NSView!
@@ -15,7 +22,7 @@ class MessagesViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var accessoryView: NSView!
     @IBOutlet weak var textView: NSTextView!
-    @IBOutlet weak var placeholderLabel: NSTextField!
+    @IBOutlet weak var placeholderLabel: PlaceholderTextField!
     @IBOutlet weak var sendButton: NSButton!
     @IBOutlet weak var activityIndicator: NSProgressIndicator!
     @IBOutlet weak var accessoryViewHeight: NSLayoutConstraint!
@@ -37,13 +44,27 @@ class MessagesViewController: NSViewController {
         setupController()
     }
     
+    override func viewDidAppear() {
+        super.viewWillAppear()
+        
+        configureActivityIndicator()
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
+    @IBAction func sendMessage(_ sender: Any) {
+        manager?.sendMessage(textView.string ?? "")
+        textView.string = ""
+    }
+
     func channelSelected(_ notification: Notification) {
         if let channel = notification.object as? Channel {
             self.channel = channel
+        }
+        if let username = notification.userInfo?["username"] as? String {
+            self.username = username
         }
     }
 }
@@ -67,8 +88,21 @@ fileprivate extension MessagesViewController {
         headerView.layer?.backgroundColor = NSColor.white.cgColor
         headerTitle.font = NSFont.boldSystemFont(ofSize: 15)
         
+        accessoryView.wantsLayer = true
+        accessoryView.layer?.backgroundColor = NSColor.white.cgColor
+        
         tableView.gridColor = .appSeparator
         tableView.selectionHighlightStyle = .none
+        
+        textView.font = NSFont.systemFont(ofSize: 15)
+        textView.textColor = .appText
+        
+        activityIndicator.isIndeterminate = true
+        activityIndicator.usesThreadedAnimation = true
+        
+        placeholderLabel.stringValue = "Write your message"
+        placeholderLabel.font = NSFont.systemFont(ofSize: 15)
+        placeholderLabel.textColor = NSColor.appText.withAlphaComponent(0.7)
         
         sendButton.attributedTitle = NSAttributedString(string: "SEND", attributes: [NSForegroundColorAttributeName: NSColor.appRed, NSFontAttributeName: NSFont.boldSystemFont(ofSize: 15)])
         
@@ -86,10 +120,12 @@ fileprivate extension MessagesViewController {
     
     func configureActivityIndicator() {
         if manager?.messages == nil {
-            activityIndicator.startAnimation(self)
+            activityIndicator.isHidden = false
+            activityIndicator.startAnimation(nil)
         }
         else {
-            activityIndicator.stopAnimation(self)
+            activityIndicator.isHidden = true
+            activityIndicator.stopAnimation(nil)
         }
     }
     
@@ -101,17 +137,17 @@ fileprivate extension MessagesViewController {
     }
     
     func configureTextViewPlacholder(withText text: String?) {
-        //placeholderLabel.isHidden = (textView.string?.characters.count ?? 0) > 0
+        placeholderLabel.isHidden = !(text?.isEmpty ?? true)
     }
     
     func configureInputBarHeight(withText text: String?) {
-        let maxHeigth: CGFloat = 300
+        let maxHeigth: CGFloat = 115
         
-        let newTextViewSize = textView.fittingSize
+        let newTextViewSize = textView.string?.sizeWithFont(textView.font!, constraintWidth: textView.frame.width - 10) ?? CGSize.zero
         
-        let newInputBarHeight = newTextViewSize.height + 16
+        let newInputBarHeight = newTextViewSize.height + 20
         
-        let newHeight = max(min(newInputBarHeight, floor(maxHeigth)), 50)
+        let newHeight = max(min(newInputBarHeight, floor(maxHeigth)), 30)
         
         if newHeight != accessoryViewHeight.constant {
             accessoryViewHeight.constant = newHeight
@@ -141,7 +177,12 @@ extension MessagesViewController: MessagesManagerDelegate {
         
         if manager.channelID == channel?.name {
             UserDefaultsManager.readMessage(withID: manager.messages?.last?.id ?? "", inChannel: manager.channelID)
+            let previous = channel?.unread ?? false
             channel?.updateRead()
+            let current = channel?.unread ?? false
+            if previous != current {
+                NotificationCenter.default.post(name: Notification.Name("ReadMessagesUpdated"), object: nil)
+            }
         }
         
         configureView()
@@ -163,11 +204,21 @@ extension MessagesViewController: NSTableViewDataSource, NSTableViewDelegate {
         
         let view = tableView.make(withIdentifier: "MessageCellID", owner: nil)
         
-        if let cell = view as? NSTableCellView {
-            cell.textField?.stringValue = "\(message.sender): \(message.text)"
+        if let cell = view as? MessageCellView {
+            cell.configure(withMessage: message, myUsername: username)
         }
         
         return view
+    }
+    
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        guard let message = manager?.messages?[row] else {
+            return 55
+        }
+        
+        let size = message.text.sizeWithFont(MessageCellView.textFont, constraintWidth: tableView.frame.width - 170)
+        
+        return max(55, size.height + 38)
     }
     
 }

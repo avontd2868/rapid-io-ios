@@ -9,7 +9,7 @@
 import Foundation
 
 extension String {
-    
+
     func highlight(string: String, textAttributes: [String: Any], highlightedAttributes: [String: Any]) -> NSAttributedString {
         let attributedTitle = NSMutableAttributedString(string: self, attributes: textAttributes)
         

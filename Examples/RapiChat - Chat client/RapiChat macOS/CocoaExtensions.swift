@@ -39,3 +39,17 @@ extension NSColor {
     static let appSeparator = NSColor("#EEEBF3")
 
 }
+
+extension String {
+    
+    func sizeWithFont(_ font: NSFont, constraintWidth: CGFloat = CGFloat(MAXFLOAT), constraintHeight: CGFloat = CGFloat(MAXFLOAT)) -> CGSize {
+        let attributes = [NSFontAttributeName: font]
+        var rect = (self as NSString).boundingRect(with: CGSize(width: constraintWidth, height: constraintHeight), options:.usesLineFragmentOrigin, attributes:attributes, context:nil)
+        
+        rect.size.height = CGFloat(ceilf(Float(rect.height)))
+        rect.size.width = CGFloat(ceilf(Float(rect.width)))
+        
+        return rect.size
+    }
+    
+}

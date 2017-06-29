@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AD4BFC8F1F041AAC00C26F94 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4BFC8E1F041AAC00C26F94 /* MessagesViewController.swift */; };
-		C1A2DBAB1F04067E00C5B00B /* ChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2DBAA1F04067E00C5B00B /* ChannelCell.swift */; };
+		C1A2DBAB1F04067E00C5B00B /* ChannelCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2DBAA1F04067E00C5B00B /* ChannelCellView.swift */; };
+		C1A2DBAD1F04EBD200C5B00B /* MessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2DBAC1F04EBD200C5B00B /* MessageCellView.swift */; };
 		C1DFC1CE1F0281B90077A495 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */; };
 		C1DFC1D31F0281B90077A495 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC1D11F0281B90077A495 /* Main.storyboard */; };
 		C1DFC1D51F0281B90077A495 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC1D41F0281B90077A495 /* Assets.xcassets */; };
@@ -91,7 +92,8 @@
 
 /* Begin PBXFileReference section */
 		AD4BFC8E1F041AAC00C26F94 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
-		C1A2DBAA1F04067E00C5B00B /* ChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCell.swift; sourceTree = "<group>"; };
+		C1A2DBAA1F04067E00C5B00B /* ChannelCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCellView.swift; sourceTree = "<group>"; };
+		C1A2DBAC1F04EBD200C5B00B /* MessageCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
 		C1DFC1CA1F0281B90077A495 /* RapiChat iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiChat iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DFC1D21F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -255,8 +257,9 @@
 				C1DFC25C1F03F2A60077A495 /* ViewController.swift */,
 				C1DFC2601F03F2A60077A495 /* Main.storyboard */,
 				C1DFC2831F03FB370077A495 /* ChannelsViewController.swift */,
-				C1A2DBAA1F04067E00C5B00B /* ChannelCell.swift */,
+				C1A2DBAA1F04067E00C5B00B /* ChannelCellView.swift */,
 				AD4BFC8E1F041AAC00C26F94 /* MessagesViewController.swift */,
+				C1A2DBAC1F04EBD200C5B00B /* MessageCellView.swift */,
 				C1DFC2851F03FE430077A495 /* CocoaExtensions.swift */,
 			);
 			path = "RapiChat macOS";
@@ -401,6 +404,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1A2DBAD1F04EBD200C5B00B /* MessageCellView.swift in Sources */,
 				C1DFC2861F03FE430077A495 /* CocoaExtensions.swift in Sources */,
 				C1DFC2841F03FB370077A495 /* ChannelsViewController.swift in Sources */,
 				C1DFC27A1F03F5050077A495 /* RapidManager.swift in Sources */,
@@ -410,7 +414,7 @@
 				C1DFC27B1F03F5080077A495 /* RapidSubscriberProtocol.swift in Sources */,
 				C1DFC2801F03F5520077A495 /* DTTimePeriodGroup.m in Sources */,
 				C1DFC2721F03F4A60077A495 /* Extensions.swift in Sources */,
-				C1A2DBAB1F04067E00C5B00B /* ChannelCell.swift in Sources */,
+				C1A2DBAB1F04067E00C5B00B /* ChannelCellView.swift in Sources */,
 				C1DFC27C1F03F5400077A495 /* DTError.m in Sources */,
 				C1DFC27F1F03F54E0077A495 /* DTTimePeriodCollection.m in Sources */,
 				C1DFC2751F03F4EE0077A495 /* ChannelsManager.swift in Sources */,

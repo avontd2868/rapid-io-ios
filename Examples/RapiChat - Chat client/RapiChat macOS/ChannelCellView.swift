@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class ChannelCell: NSTableCellView {
+class ChannelCellView: NSTableCellView {
 
     @IBOutlet weak var nameLabel: NSTextField!
     @IBOutlet weak var timeLabel: NSTextField!

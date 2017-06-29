@@ -23,8 +23,14 @@ class ChannelsViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadTable), name: Notification.Name("ReadMessagesUpdated"), object: nil)
+        
         setupRapid()
         setupController()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
 }
@@ -78,19 +84,30 @@ fileprivate extension ChannelsViewController {
             activityIndicator.stopAnimation(self)
             tableView.isHidden = false
         }
+        
+        if let index = selectedIndex {
+            tableView.selectRowIndexes(IndexSet(integer: index), byExtendingSelection: false)
+        }
+        else if username != nil && (channelsManager.channels?.count ?? 0) > 0 {
+            tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+        }
+    }
+    
+    @objc func reloadTable() {
+        tableView.reloadData()
+        
+        configureView()
     }
     
     func presentChannel(_ channel: Channel) {
-        NotificationCenter.default.post(name: Notification.Name("ChannelSelectedNotification"), object: channel)
+        NotificationCenter.default.post(name: Notification.Name("ChannelSelectedNotification"), object: channel, userInfo: ["username": username ?? ""])
     }
 }
 
 extension ChannelsViewController: ChannelsManagerDelegate {
     
     func channelsChanged(_ manager: ChannelsManager) {
-        tableView.reloadData()
-        
-        configureView()
+        reloadTable()
     }
 }
 
@@ -108,7 +125,7 @@ extension ChannelsViewController: NSTableViewDataSource, NSTableViewDelegate {
         
         let view = tableView.make(withIdentifier: "ChannelCellID", owner: nil)
         
-        if let cell = view as? ChannelCell {
+        if let cell = view as? ChannelCellView {
             cell.configure(withChannel: channel, selected: tableView.selectedRow == row)
         }
         
@@ -118,13 +135,14 @@ extension ChannelsViewController: NSTableViewDataSource, NSTableViewDelegate {
     func tableViewSelectionDidChange(_ notification: Notification) {
         let row = tableView.selectedRow
         
+        guard row >= 0 else {
+            tableView.selectRowIndexes(IndexSet(integer: selectedIndex ?? 0), byExtendingSelection: false)
+            return
+        }
+        
         if let index = selectedIndex {
             tableView.reloadData(forRowIndexes: IndexSet(integer: index), columnIndexes: IndexSet(integer: 0))
             selectedIndex = nil
-        }
-        
-        guard row >= 0 else {
-            return
         }
         
         selectedIndex = row
