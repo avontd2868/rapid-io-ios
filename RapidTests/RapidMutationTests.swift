@@ -374,5 +374,35 @@ extension RapidTests {
         waitForExpectations(timeout: TimeInterval(numberOfIterations), handler: { error in print(iterations.sorted())})
     }
     
-
+    func testMultipleDocumentMutations() {
+        let promise = expectation(description: "Mutate document")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["counter": 0]) { _ in
+            let numberOfMutations = 1000
+            var value: Int?
+            
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(block: { result in
+                if case .success(let document) = result, let counter = document.value?["counter"] as? Int {
+                    if let value = value {
+                        XCTAssertLessThan(value, counter, "Wrong order")
+                    }
+                    value = counter
+                    print(counter)
+                    if counter == numberOfMutations {
+                        promise.fulfill()
+                    }
+                }
+                else {
+                    XCTFail("Subscription failed")
+                }
+            })
+            
+            for i in 1...numberOfMutations {
+                self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["counter": i])
+            }
+        }
+        
+        waitForExpectations(timeout: 600, handler: nil)
+    }
+    
 }

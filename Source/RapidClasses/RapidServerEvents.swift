@@ -92,3 +92,26 @@ class RapidSubscriptionCancel: RapidServerEvent {
         self.collectionID = colID
     }
 }
+
+// MARK: Server timestamp
+
+/// Server timestamp event object
+/// `RapidServerTimestamp` is a response for a server timestamp request
+class RapidServerTimestamp: RapidServerEvent {
+    
+    let eventIDsToAcknowledge: [String]
+    let timestamp: TimeInterval
+
+    init?(withJSON json: [AnyHashable: Any]) {
+        guard let eventID = json[RapidSerialization.EventID.name] as? String else {
+            return nil
+        }
+        
+        guard let timestamp = json[RapidSerialization.Timestamp.Timestamp.name] as? TimeInterval else {
+            return nil
+        }
+        
+        self.eventIDsToAcknowledge = [eventID]
+        self.timestamp = timestamp/1000
+    }
+}

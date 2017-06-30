@@ -377,4 +377,16 @@ extension RapidSerialization {
             static let name = "sub-id"
         }
     }
+    
+    struct RequestTimestamp {
+        static let name = "req-ts"
+    }
+    
+    struct Timestamp {
+        static let name = "ts"
+        
+        struct Timestamp {
+            static let name = "timestamp"
+        }
+    }
 }

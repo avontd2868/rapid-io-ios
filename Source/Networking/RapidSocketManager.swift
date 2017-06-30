@@ -45,6 +45,8 @@ class RapidSocketManager {
     
     fileprivate var pendingExectuionRequests: [String: RapidExecution] = [:]
     
+    fileprivate var pendingTimeRequests: [RapidTimeOffset] = []
+    
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
     
@@ -128,6 +130,14 @@ class RapidSocketManager {
             self?.pendingFetches[fetch.fetchID] = fetch
             
             self?.post(event: fetch)
+        }
+    }
+    
+    func requestTimestamp(_ request: RapidTimeOffset) {
+        websocketQueue.async { [weak self] in
+            self?.pendingTimeRequests.append(request)
+            
+            self?.post(event: request)
         }
     }
     
@@ -523,6 +533,13 @@ fileprivate extension RapidSocketManager {
         case let message as RapidChannelMessage:
             if let subscription = activeSubscriptions[message.subscriptionID] as? RapidChanSubManager {
                 subscription.receivedMessage(message)
+            }
+            
+        // Server timestamp
+        case let message as RapidServerTimestamp:
+            if pendingTimeRequests.count > 0 {
+                let request = pendingTimeRequests.removeFirst()
+                request.receivedTimestamp(message)
             }
         
         default:

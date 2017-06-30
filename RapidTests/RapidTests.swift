@@ -321,6 +321,19 @@ class RapidTests: XCTestCase {
         waitForExpectations(timeout: 6, handler: nil)
     }
     
+    func testServerOffset() {
+        let promise = expectation(description: "Server timestamp")
+        
+        rapid.serverTimeOffset { result in
+            if case .success(let offset) = result {
+                XCTAssertLessThan(abs(offset), 10, "Offset too large")
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+    
     func testConnectionRequestTimeout() {
         Rapid.timeout = nil
         Rapid.defaultTimeout = 2
