@@ -378,7 +378,7 @@ extension RapidTests {
         let promise = expectation(description: "Mutate document")
         
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["counter": 0]) { _ in
-            let numberOfMutations = 1000
+            let numberOfMutations = 200
             var value: Int?
             
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(block: { result in
@@ -402,7 +402,7 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 600, handler: nil)
+        waitForExpectations(timeout: 20, handler: nil)
     }
     
 }
