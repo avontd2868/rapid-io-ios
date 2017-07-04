@@ -19,7 +19,7 @@ class CheckBoxCellView: NSTableCellView {
     weak var delegate: CheckBoxCellViewDelegate?
     
     @IBAction func valueChanged(_ sender: Any) {
-        delegate?.checkBoxCellChangedValue(self, value: checkBox.state > 0)
+        delegate?.checkBoxCellChangedValue(self, value: checkBox.state.rawValue > 0)
     }
     
 }

@@ -71,8 +71,8 @@ fileprivate extension ChannelsViewController {
         if let username = username {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let normalText = [NSForegroundColorAttributeName: NSColor.appText, NSFontAttributeName: NSFont.systemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
-            let hightlightedText = [NSForegroundColorAttributeName: NSColor.appText, NSFontAttributeName: NSFont.boldSystemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
+            let normalText = [NSAttributedStringKey.foregroundColor: NSColor.appText, NSAttributedStringKey.font: NSFont.systemFont(ofSize: 13), NSAttributedStringKey.paragraphStyle: paragraphStyle]
+            let hightlightedText = [NSAttributedStringKey.foregroundColor: NSColor.appText, NSAttributedStringKey.font: NSFont.boldSystemFont(ofSize: 13), NSAttributedStringKey.paragraphStyle: paragraphStyle]
             headerTitle.attributedStringValue = "Your username is\n\(username)".highlight(string: username, textAttributes: normalText, highlightedAttributes: hightlightedText)
         }
         
@@ -123,7 +123,7 @@ extension ChannelsViewController: NSTableViewDataSource, NSTableViewDelegate {
             return nil
         }
         
-        let view = tableView.make(withIdentifier: "ChannelCellID", owner: nil)
+        let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ChannelCellID"), owner: nil)
         
         if let cell = view as? ChannelCellView {
             cell.configure(withChannel: channel, selected: tableView.selectedRow == row)

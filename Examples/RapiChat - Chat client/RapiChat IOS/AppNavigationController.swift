@@ -53,7 +53,7 @@ class AppNavigationController: UINavigationController {
     class func setupNavigationBar(_ bar: UINavigationBar) {
         bar.barTintColor = .white
         bar.isTranslucent = false
-        bar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.appText, NSFontAttributeName: UIFont.systemFont(ofSize: 20)]
+        bar.titleTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: UIColor.appText, NSAttributedStringKey.font.rawValue: UIFont.systemFont(ofSize: 20)]
         bar.tintColor = UIColor.appRed
         bar.shadowImage = UIImage.imageWithColor(.appSeparator)
         bar.setBackgroundImage(UIImage(), for: .default)

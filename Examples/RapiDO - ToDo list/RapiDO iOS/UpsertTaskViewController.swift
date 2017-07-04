@@ -86,11 +86,11 @@ class UpsertTaskViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func cancel(_ sender: AnyObject) {
+    @objc func cancel(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
     }
     
-    func hideKeyboard(_ sender: AnyObject) {
+    @objc func hideKeyboard(_ sender: AnyObject) {
         view.endEditing(true)
     }
 }

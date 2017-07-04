@@ -52,8 +52,8 @@ class TaskViewController: NSViewController {
         }
         
         let description: Any
-        if let text = descTextView.string, !text.isEmpty {
-            description = text
+        if !descTextView.string.isEmpty {
+            description = descTextView.string
         }
         else {
             description = NSNull()
@@ -62,13 +62,13 @@ class TaskViewController: NSViewController {
         let priority = Priority.allValues[priorityPopUp.index(of: priorityPopUp.selectedItem!)].rawValue
         
         var selectedTags = [Tag]()
-        if homeCheckBox.state > 0 {
+        if homeCheckBox.state.rawValue > 0 {
             selectedTags.append(.home)
         }
-        if workCheckBox.state > 0 {
+        if workCheckBox.state.rawValue > 0 {
             selectedTags.append(.work)
         }
-        if otherCheckBox.state > 0 {
+        if otherCheckBox.state.rawValue > 0 {
             selectedTags.append(.other)
         }
         let tags = selectedTags.map({$0.rawValue})
@@ -111,12 +111,12 @@ fileprivate extension TaskViewController {
     func setupUI() {
         if let task = task {
             titleTextField.stringValue = task.title
-            descTextView.string = task.description
+            descTextView.string = task.description!
             priorityPopUp.selectItem(at: task.priority.rawValue)
             
-            homeCheckBox.state = task.tags.contains(.home) ? 1 : 0
-            workCheckBox.state = task.tags.contains(.work) ? 1 : 0
-            otherCheckBox.state = task.tags.contains(.other) ? 1 : 0
+            homeCheckBox.state = NSControl.StateValue(rawValue: task.tags.contains(.home) ? 1 : 0)
+            workCheckBox.state = NSControl.StateValue(rawValue: task.tags.contains(.work) ? 1 : 0)
+            otherCheckBox.state = NSControl.StateValue(rawValue: task.tags.contains(.other) ? 1 : 0)
             
             saveButton.title = "Save"
             deleteButton.isHidden = false

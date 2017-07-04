@@ -22,8 +22,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @IBAction func newDocument(_ sender: Any) {
-        let storyboard = NSStoryboard(name: "Main", bundle: nil)
-        let window = storyboard.instantiateController(withIdentifier: "AddTaskWindow") as! NSWindowController
+        let storyboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
+        let window = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "AddTaskWindow")) as! NSWindowController
         window.showWindow(self)
         if let window = window.window {
             newTaskWindows.append(window)
@@ -31,8 +31,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func updateTask(_ task: Task) {
-        let storyboard = NSStoryboard(name: "Main", bundle: nil)
-        let window = storyboard.instantiateController(withIdentifier: "AddTaskWindow") as! NSWindowController
+        let storyboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
+        let window = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "AddTaskWindow")) as! NSWindowController
         (window.contentViewController as? TaskViewController)?.task = task
         window.showWindow(self)
         if let window = window.window {
@@ -46,7 +46,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     class func windowClosed(_ window: NSWindow) {
-        let delegate = NSApplication.shared().delegate as? AppDelegate
+        let delegate = NSApplication.shared.delegate as? AppDelegate
         if let index = delegate?.newTaskWindows.index(of: window) {
             delegate?.newTaskWindows.remove(at: index)
         }

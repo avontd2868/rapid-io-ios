@@ -81,7 +81,7 @@ class TaskViewController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func cancel(_ sender: AnyObject) {
+    @objc func cancel(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
     }
     

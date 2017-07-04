@@ -11,7 +11,7 @@ import Rapid
 
 extension String {
 
-    func highlight(string: String, textAttributes: [String: Any], highlightedAttributes: [String: Any]) -> NSAttributedString {
+    func highlight(string: String, textAttributes: [NSAttributedStringKey: Any], highlightedAttributes: [NSAttributedStringKey: Any]) -> NSAttributedString {
         let attributedTitle = NSMutableAttributedString(string: self, attributes: textAttributes)
         
         if let range = self.range(of: string), let nsrange = NSRangeFromRange(range) {

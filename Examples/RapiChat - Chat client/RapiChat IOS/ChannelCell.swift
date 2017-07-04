@@ -37,7 +37,7 @@ class ChannelCell: UITableViewCell {
         backgroundColor = highlighted ? UIColor.appRed.withAlphaComponent(0.1) : .clear
     }
     
-    fileprivate let nameFont = UIFont.systemFont(ofSize: 18, weight: UIFontWeightMedium)
+    fileprivate let nameFont = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.medium)
     fileprivate let nameFontUnread = UIFont.boldSystemFont(ofSize: 18)
     fileprivate let textFont = UIFont.systemFont(ofSize: 14)
     fileprivate let textFontUnread = UIFont.boldSystemFont(ofSize: 14)

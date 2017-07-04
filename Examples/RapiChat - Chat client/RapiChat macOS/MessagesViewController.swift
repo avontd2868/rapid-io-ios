@@ -59,7 +59,7 @@ class MessagesViewController: NSViewController {
         textView.string = ""
     }
 
-    func channelSelected(_ notification: Notification) {
+    @objc func channelSelected(_ notification: Notification) {
         if let channel = notification.object as? Channel {
             self.channel = channel
         }
@@ -104,7 +104,7 @@ fileprivate extension MessagesViewController {
         placeholderLabel.font = NSFont.systemFont(ofSize: 15)
         placeholderLabel.textColor = NSColor.appText.withAlphaComponent(0.7)
         
-        sendButton.attributedTitle = NSAttributedString(string: "SEND", attributes: [NSForegroundColorAttributeName: NSColor.appRed, NSFontAttributeName: NSFont.boldSystemFont(ofSize: 15)])
+        sendButton.attributedTitle = NSAttributedString(string: "SEND", attributes: [NSAttributedStringKey.foregroundColor: NSColor.appRed, NSAttributedStringKey.font: NSFont.boldSystemFont(ofSize: 15)])
         
         configureView()
     }
@@ -143,7 +143,7 @@ fileprivate extension MessagesViewController {
     func configureInputBarHeight(withText text: String?) {
         let maxHeigth: CGFloat = 115
         
-        let newTextViewSize = textView.string?.sizeWithFont(textView.font!, constraintWidth: textView.frame.width - 10) ?? CGSize.zero
+        let newTextViewSize = textView.string.sizeWithFont(textView.font!, constraintWidth: textView.frame.width - 10) ?? CGSize.zero
         
         let newInputBarHeight = newTextViewSize.height + 20
         
@@ -202,7 +202,7 @@ extension MessagesViewController: NSTableViewDataSource, NSTableViewDelegate {
             return nil
         }
         
-        let view = tableView.make(withIdentifier: "MessageCellID", owner: nil)
+        let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "MessageCellID"), owner: nil)
         
         if let cell = view as? MessageCellView {
             cell.configure(withMessage: message, myUsername: username)

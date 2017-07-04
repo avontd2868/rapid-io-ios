@@ -54,8 +54,8 @@ fileprivate extension ChannelsViewController {
         headerTitle.textColor = .white
         
         if let username = username {
-            let normalText = [NSForegroundColorAttributeName: UIColor.white, NSFontAttributeName: UIFont.systemFont(ofSize: 13)]
-            let hightlightedText = [NSForegroundColorAttributeName: UIColor.white, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 13)]
+            let normalText = [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13)]
+            let hightlightedText = [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 13)]
             headerTitle.attributedText = "Your username is \(username)".highlight(string: username, textAttributes: normalText, highlightedAttributes: hightlightedText)
         }
         

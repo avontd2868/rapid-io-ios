@@ -35,11 +35,11 @@ class ListViewController: UIViewController {
         presentNewTaskController()
     }
     
-    func showOrderModal(_ sender: Any) {
+    @objc func showOrderModal(_ sender: Any) {
         presentOrderModal()
     }
     
-    func showFilterModal(_ sender: Any) {
+    @objc func showFilterModal(_ sender: Any) {
         presentFilterModal()
     }
 }
@@ -50,6 +50,7 @@ fileprivate extension ListViewController {
         searchBar = UISearchBar()
         searchBar.delegate = self
         searchBar.enablesReturnKeyAutomatically = false
+        searchBar.barTintColor = .white
         navigationItem.titleView = searchBar
         
         tableView.dataSource = self
