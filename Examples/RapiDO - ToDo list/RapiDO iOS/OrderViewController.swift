@@ -61,7 +61,29 @@ class OrderViewController: UIViewController {
     var ordering: RapidOrdering?
 
     @IBOutlet weak var attributePicker: UIPickerView!
-    @IBOutlet weak var segmentedControl: UISegmentedControl!
+    @IBOutlet weak var segmentedControl: UISegmentedControl! {
+        didSet {
+            segmentedControl.tintColor = .appRed
+        }
+    }
+    @IBOutlet weak var doneButton: UIButton! {
+        didSet {
+            doneButton.setTitleColor(.white, for: .normal)
+            doneButton.backgroundColor = .appRed
+            doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        }
+    }
+    @IBOutlet weak var cancelButton: UIButton! {
+        didSet {
+            cancelButton.setTitleColor(.appRed, for: .normal)
+            cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        }
+    }
+    @IBOutlet weak var separatorView: UIView! {
+        didSet {
+            separatorView.backgroundColor = .appRed
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -118,7 +140,7 @@ extension OrderViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         return OrderingAttribute.allValues.count
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return OrderingAttribute.allValues[row].title
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        return NSAttributedString(string: OrderingAttribute.allValues[row].title, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13), NSAttributedStringKey.foregroundColor: UIColor.appText])
     }
 }
