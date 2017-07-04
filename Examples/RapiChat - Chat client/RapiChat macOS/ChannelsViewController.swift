@@ -38,14 +38,14 @@ class ChannelsViewController: NSViewController {
 fileprivate extension ChannelsViewController {
     
     func setupRapid() {
-        // Set timeout for requests
-        Rapid.timeout = 10
         // Set log level
         Rapid.logLevel = .debug
         // Configure shared singleton with API key
         Rapid.configure(withApiKey: Constants.apiKey)
         // Enable data cache
         Rapid.isCacheEnabled = true
+        // Set timeout for requests
+        Rapid.timeout = 10
     }
     
     func setupController() {
