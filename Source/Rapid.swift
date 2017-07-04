@@ -23,6 +23,8 @@ public typealias RapidAuthHandler = (_ result: RapidResult<RapidAuthorization>) 
 /// Authorization completion handler
 public typealias RapidDeuthHandler = (_ result: RapidResult<Any?>) -> Void
 
+public typealias RapidTimeOffsetHandler = (_ offset: RapidResult<TimeInterval>) -> Void
+
 /// Result for completion handlers
 ///
 /// - success: Request was proceeded without any error
@@ -57,11 +59,19 @@ open class Rapid: NSObject {
     /// When Rapid.io tries to write a json to a database it replaces every occurance of `serverTimestamp` with Unix timestamp
     public static let serverTimestamp = "__TIMESTAMP__"
     
-    /// Optional timeout is seconds for Rapid requests. If timeout is nil requests never end up with timeout error
-    public static var timeout: TimeInterval?
-    
     /// API key that serves to connect to Rapid.io database
     public let apiKey: String
+    
+    /// Optional timeout in seconds for Rapid requests. If timeout is nil requests never end up with timeout error
+    public var timeout: TimeInterval? {
+        get {
+            return handler.timeout
+        }
+        
+        set {
+            handler.timeout = newValue
+        }
+    }
     
     /// If `true` subscription values are stored locally to be available offline
     public var isCacheEnabled: Bool {
@@ -200,6 +210,20 @@ open class Rapid: NSObject {
     open func unsubscribeAll() {
         handler.socketManager.unsubscribeAll()
     }
+    
+    /// Get a difference between local device time and server time
+    ///
+    /// When server time is 1.1.2017 7:18:19 AM and device time is 1.1.2017 7:18:20
+    /// the offset is positive 1
+    ///
+    /// Offset's accuracy can be affected by network latency, so it is useful primarily for discovering large (> 1 second) discrepancies in clock time
+    ///
+    /// - Parameter completion: Completion handler which returns the offset
+    open func serverTimeOffset(completion: @escaping RapidTimeOffsetHandler) {
+        let request = RapidTimeOffset(completion: completion)
+        
+        handler.socketManager.requestTimestamp(request)
+    }
 }
 
 // MARK: Singleton methods
@@ -241,6 +265,19 @@ public extension Rapid {
             RapidLogger.level = newValue
         }
         
+    }
+    
+    /// Optional timeout in seconds for Rapid requests. If timeout is nil requests never end up with timeout error
+    class var timeout: TimeInterval? {
+        get {
+            let instance = try! shared()
+            return instance.timeout
+        }
+        
+        set {
+            let instance = try! shared()
+            instance.timeout = newValue
+        }
     }
     
     /// If `true` subscription values are stored locally to be available offline
@@ -287,6 +324,18 @@ public extension Rapid {
     /// Remove all subscriptions
     class func unsubscribeAll() {
         try! shared().unsubscribeAll()
+    }
+    
+    /// Get a difference between local device time and server time
+    ///
+    /// When server time is 1.1.2017 7:18:19 AM and device time is 1.1.2017 7:18:20
+    /// the offset is positive 1
+    ///
+    /// Offset's accuracy can be affected by network latency, so it is useful primarily for discovering large (> 1 second) discrepancies in clock time
+    ///
+    /// - Parameter completion: Completion handler which returns the offset
+    class func serverTimeOffset(completion: @escaping RapidTimeOffsetHandler) {
+        try! shared().serverTimeOffset(completion: completion)
     }
     
     /// Authorize Rapid instance

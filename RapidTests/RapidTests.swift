@@ -31,12 +31,11 @@ class RapidTests: XCTestCase {
         super.setUp()
 
         rapid = Rapid(apiKey: apiKey)!
-        
+        rapid.timeout = 10
         rapid.authorize(withToken: testAuthToken)
     }
     
     override func tearDown() {
-        Rapid.timeout = 10
         Rapid.defaultTimeout = 300
         Rapid.heartbeatInterval = 30
         rapid.isCacheEnabled = false
@@ -321,8 +320,20 @@ class RapidTests: XCTestCase {
         waitForExpectations(timeout: 6, handler: nil)
     }
     
+    func testServerOffset() {
+        let promise = expectation(description: "Server timestamp")
+        
+        rapid.serverTimeOffset { result in
+            if case .success(let offset) = result {
+                XCTAssertLessThan(abs(offset), 10, "Offset too large")
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+    
     func testConnectionRequestTimeout() {
-        Rapid.timeout = nil
         Rapid.defaultTimeout = 2
         
         let promise = expectation(description: "Events request")

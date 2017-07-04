@@ -368,6 +368,17 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
 
+    /// Serialize a server timestamp request into JSON string
+    ///
+    /// - Parameters:
+    ///   - acknowledgement: Acknowledgement object
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(timeRequest: RapidTimeOffset, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        let resultDict = [RequestTimestamp.name: identifiers]
+        return try resultDict.jsonString()
+    }
+    
     /// Serialize an event acknowledgement into JSON string
     ///
     /// - Parameters:
@@ -504,6 +515,9 @@ fileprivate extension RapidSerialization {
         }
         else if let mes = json[ChannelMessage.name] as? [AnyHashable: Any] {
             return RapidChannelMessage(withJSON: mes)
+        }
+        else if let ts = json[Timestamp.name] as? [AnyHashable: Any] {
+            return RapidServerTimestamp(withJSON: ts)
         }
 
         return nil

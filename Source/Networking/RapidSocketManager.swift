@@ -19,6 +19,9 @@ class RapidSocketManager {
     
     weak var cacheHandler: RapidCacheHandler?
     
+    /// Optional timeout for timeoutable requests
+    var timeout: TimeInterval?
+    
     /// State of a websocket connection
     fileprivate var state: Rapid.ConnectionState = .disconnected
     
@@ -44,6 +47,8 @@ class RapidSocketManager {
     fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
     
     fileprivate var pendingExectuionRequests: [String: RapidExecution] = [:]
+    
+    fileprivate var pendingTimeRequests: [RapidTimeOffset] = []
     
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
@@ -128,6 +133,14 @@ class RapidSocketManager {
             self?.pendingFetches[fetch.fetchID] = fetch
             
             self?.post(event: fetch)
+        }
+    }
+    
+    func requestTimestamp(_ request: RapidTimeOffset) {
+        websocketQueue.async { [weak self] in
+            self?.pendingTimeRequests.append(request)
+            
+            self?.post(event: request)
         }
     }
     
@@ -408,7 +421,7 @@ fileprivate extension RapidSocketManager {
         // Inform a timoutable request that it should start a timeout count down
         // User events can be timeouted only if user sets `Rapid.timeout`
         // System events work always with timeout and they use either a custom `Rapid.timeout` if set or a default `Rapid.defaultTimeout`
-        if let timeoutRequest = event as? RapidTimeoutRequest, let timeout = Rapid.timeout {
+        if let timeoutRequest = event as? RapidTimeoutRequest, let timeout = timeout {
             timeoutRequest.requestSent(withTimeout: timeout, delegate: self)
         }
         else if let timeoutRequest = event as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
@@ -524,6 +537,13 @@ fileprivate extension RapidSocketManager {
         case let message as RapidChannelMessage:
             if let subscription = activeSubscriptions[message.subscriptionID] as? RapidChanSubManager {
                 subscription.receivedMessage(message)
+            }
+            
+        // Server timestamp
+        case let message as RapidServerTimestamp:
+            if pendingTimeRequests.count > 0 {
+                let request = pendingTimeRequests.removeFirst()
+                request.receivedTimestamp(message)
             }
         
         default:
