@@ -8,26 +8,6 @@
 
 import UIKit
 
-extension UIImage {
-    
-    class func imageWithColor(_ color: UIColor, size: CGSize = CGSize(width:1, height: 1)) -> UIImage {
-        
-        let rect = CGRect(x: 0.0, y:  0.0, width:  size.width, height:  size.height)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()
-        
-        context?.setFillColor(color.cgColor)
-        context?.fillEllipse(in: rect)
-        
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image!
-        
-    }
-
-}
-
 class TagsTableView: UITableView {
     
     fileprivate var selectedRows = Set<Int>()
@@ -81,14 +61,10 @@ extension TagsTableView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TagsTableViewCell
         
         let tag = Tag.allValues[indexPath.row]
-        
-        cell.selectionStyle = .none
-        cell.textLabel?.text = tag.title
-        cell.imageView?.image = UIImage.imageWithColor(tag.color, size: CGSize(width: 15, height: 15))
-        cell.accessoryType = selectedRows.contains(indexPath.row) ? .checkmark : .none
+        cell.configure(withTag: tag, selected: selectedRows.contains(indexPath.row))
         
         return cell
     }
@@ -102,20 +78,22 @@ extension TagsTableView: UITableViewDataSource, UITableViewDelegate {
 fileprivate extension TagsTableView {
     
     func setupUI() {
-        register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        register(TagsTableViewCell.self, forCellReuseIdentifier: "Cell")
         delegate = self
         dataSource = self
+        separatorColor = .appSeparator
+        rowHeight = 60
         
         isScrollEnabled = false
-        separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
     }
     
     func toggleCell(atIndexPath indexPath: IndexPath) {
-        guard let cell = cellForRow(at: indexPath) else {
+        guard let cell = cellForRow(at: indexPath) as? TagsTableViewCell else {
             return
         }
         
-        setCellSelected(cell.accessoryType == .none, atIndexPath: indexPath)
+        setCellSelected(!cell.checkBox.on, atIndexPath: indexPath)
     }
     
     func setCellSelected(_ selected: Bool, atIndexPath indexPath: IndexPath) {
@@ -126,9 +104,73 @@ fileprivate extension TagsTableView {
             selectedRows.remove(indexPath.row)
         }
         
-        if let cell = cellForRow(at: indexPath) {
-            cell.accessoryType = selected ? .checkmark : .none
+        if let cell = cellForRow(at: indexPath) as? TagsTableViewCell {
+            cell.checkBoxSelected(selected)
         }
     }
 
+}
+
+class TagsTableViewCell: UITableViewCell {
+    
+    var checkBox: BEMCheckBox! {
+        didSet {
+             checkBox.isUserInteractionEnabled = false
+        }
+    }
+    var titleLabel: UILabel! {
+        didSet {
+            titleLabel.textColor = .appText
+            titleLabel.font = UIFont.systemFont(ofSize: 15)
+        }
+    }
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        setupUI()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        setupUI()
+    }
+    
+    func configure(withTag tag: Tag, selected: Bool) {
+        titleLabel.text = tag.title
+        
+        checkBox.setOn(selected, animated: false)
+        checkBox.tintColor = tag.color.withAlphaComponent(0.5)
+        checkBox.onFillColor = tag.color
+        checkBox.onTintColor = tag.color
+        checkBox.onCheckColor = .white
+    }
+    
+    func checkBoxSelected(_ selected: Bool) {
+        checkBox.setOn(selected, animated: true)
+    }
+    
+    fileprivate func setupUI() {
+        selectionStyle = .none
+        
+        titleLabel = UILabel()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(titleLabel)
+        
+        checkBox = BEMCheckBox()
+        checkBox.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(checkBox)
+        
+        let titleLeading = NSLayoutConstraint(item: titleLabel, attribute: .left, relatedBy: .equal, toItem: contentView, attribute: .left, multiplier: 1, constant: 20)
+        let titleTrailing = NSLayoutConstraint(item: titleLabel, attribute: .right, relatedBy: .greaterThanOrEqual, toItem: checkBox, attribute: .left, multiplier: 1, constant: 10)
+        let titleCenter = NSLayoutConstraint(item: titleLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0)
+        
+        let checkBoxTrailing = NSLayoutConstraint(item: contentView, attribute: .right, relatedBy: .equal, toItem: checkBox, attribute: .right, multiplier: 1, constant: 20)
+        let checkBoxCenter = NSLayoutConstraint(item: checkBox, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0)
+        let checkBoxWidth = NSLayoutConstraint(item: checkBox, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 30)
+        let checkBoxHeight = NSLayoutConstraint(item: checkBox, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 30)
+        
+        contentView.addConstraints([titleLeading, titleTrailing, titleCenter, checkBoxWidth, checkBoxHeight, checkBoxCenter, checkBoxTrailing])
+    }
 }

@@ -19,8 +19,30 @@ class FilterViewController: UIViewController {
     weak var delegate: FilterViewControllerDelegate?
     var filter: RapidFilter?
     
-    @IBOutlet weak var segmentedControl: UISegmentedControl!
+    @IBOutlet weak var segmentedControl: UISegmentedControl! {
+        didSet {
+            segmentedControl.tintColor = .appRed
+        }
+    }
     @IBOutlet weak var tagsTableView: TagsTableView!
+    @IBOutlet weak var doneButton: UIButton! {
+        didSet {
+            doneButton.setTitleColor(.white, for: .normal)
+            doneButton.backgroundColor = .appRed
+            doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        }
+    }
+    @IBOutlet weak var cancelButton: UIButton! {
+        didSet {
+            cancelButton.setTitleColor(.appRed, for: .normal)
+            cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        }
+    }
+    @IBOutlet weak var separatorView: UIView! {
+        didSet {
+            separatorView.backgroundColor = .appRed
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -61,13 +61,13 @@ enum Tag: String {
     var color: UIColor {
         switch self {
         case .home:
-            return UIColor(red: 116/255.0, green: 204/255.0, blue: 244/255.0, alpha: 1)
+            return .appBlue
     
         case .work:
-            return UIColor(red: 237/255.0, green: 80/255.0, blue: 114/255.0, alpha: 1)
+            return .appRed
     
         case .other:
-            return UIColor(red: 191/255.0, green: 245/255.0, blue: 171/255.0, alpha: 1)
+            return .appGreen
         }
     }
     #elseif os(tvOS)

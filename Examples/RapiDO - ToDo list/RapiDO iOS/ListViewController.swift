@@ -50,10 +50,15 @@ fileprivate extension ListViewController {
         searchBar = UISearchBar()
         searchBar.delegate = self
         searchBar.enablesReturnKeyAutomatically = false
+        searchBar.tintColor = .appRed
         navigationItem.titleView = searchBar
         
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.separatorColor = .appSeparator
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        tableView.estimatedRowHeight = 100
+        tableView.rowHeight = UITableViewAutomaticDimension
         
         orderButton.target = self
         orderButton.action = #selector(self.showOrderModal(_:))
@@ -120,7 +125,7 @@ fileprivate extension ListViewController {
     }
     
     func presentNewTaskController() {
-        let controller = self.storyboard!.instantiateViewController(withIdentifier: "UpsertTaskViewController")
+        let controller = self.storyboard!.instantiateViewController(withIdentifier: "TaskViewController")
         
         present(controller, animated: true, completion: nil)
     }
@@ -148,9 +153,9 @@ fileprivate extension ListViewController {
     }
     
     func presentEditTask(_ task: Task) {
-        let controller = self.storyboard?.instantiateViewController(withIdentifier: "UpsertTaskViewController") as! UINavigationController
+        let controller = self.storyboard?.instantiateViewController(withIdentifier: "TaskViewController") as! UINavigationController
         
-        (controller.viewControllers.first as? UpsertTaskViewController)?.task = task
+        (controller.viewControllers.first as? TaskViewController)?.task = task
         
         present(controller, animated: true, completion: nil)
     }

@@ -40,7 +40,7 @@
 		C16B6C1E1ECA0BF10036C9D4 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C141ECA0BF10036C9D4 /* Task.swift */; };
 		C16B6C1F1ECA0BF10036C9D4 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C151ECA0BF10036C9D4 /* TaskCell.swift */; };
 		C16B6C201ECA0BF10036C9D4 /* UITableViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C161ECA0BF10036C9D4 /* UITableViewExtension.swift */; };
-		C16B6C211ECA0BF10036C9D4 /* UpsertTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C171ECA0BF10036C9D4 /* UpsertTaskViewController.swift */; };
+		C16B6C211ECA0BF10036C9D4 /* TaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C171ECA0BF10036C9D4 /* TaskViewController.swift */; };
 		C16B6C241ECA0CDE0036C9D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C231ECA0CDE0036C9D4 /* AppDelegate.swift */; };
 		C16B6C281ECA0D380036C9D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C0D1ECA0BF10036C9D4 /* Constants.swift */; };
 		C16B6C291ECA0D510036C9D4 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16B6C141ECA0BF10036C9D4 /* Task.swift */; };
@@ -51,6 +51,8 @@
 		C16B6C3E1ECA0E4F0036C9D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3B1ECA0E4F0036C9D4 /* Main.storyboard */; };
 		C16B6C401ECA0E7C0036C9D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
 		C16B6C411ECA0E9B0036C9D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */; };
+		C18D88CE1F0BB30500BBFDF2 /* AppNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18D88CD1F0BB30500BBFDF2 /* AppNavigationController.swift */; };
+		C18D88D01F0BB31A00BBFDF2 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18D88CF1F0BB31A00BBFDF2 /* UIKitExtensions.swift */; };
 		C1A1E82B1ECB51EE004FB5CA /* TaskWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A1E82A1ECB51EE004FB5CA /* TaskWindowController.swift */; };
 		C1DFC1BB1F0247290077A495 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1B51F0246E30077A495 /* Rapid.framework */; };
 		C1DFC1BC1F0247290077A495 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1B51F0246E30077A495 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -130,7 +132,7 @@
 		C16B6C141ECA0BF10036C9D4 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		C16B6C151ECA0BF10036C9D4 /* TaskCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
 		C16B6C161ECA0BF10036C9D4 /* UITableViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewExtension.swift; sourceTree = "<group>"; };
-		C16B6C171ECA0BF10036C9D4 /* UpsertTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpsertTaskViewController.swift; sourceTree = "<group>"; };
+		C16B6C171ECA0BF10036C9D4 /* TaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskViewController.swift; sourceTree = "<group>"; };
 		C16B6C231ECA0CDE0036C9D4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C16B6C2D1ECA0E1B0036C9D4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C16B6C2E1ECA0E1B0036C9D4 /* CheckBoxCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxCellView.swift; sourceTree = "<group>"; };
@@ -139,6 +141,8 @@
 		C16B6C3A1ECA0E4F0036C9D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C16B6C3C1ECA0E4F0036C9D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C16B6C3F1ECA0E7C0036C9D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C18D88CD1F0BB30500BBFDF2 /* AppNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNavigationController.swift; sourceTree = "<group>"; };
+		C18D88CF1F0BB31A00BBFDF2 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		C1A1E82A1ECB51EE004FB5CA /* TaskWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskWindowController.swift; sourceTree = "<group>"; };
 		C1D6E8721E785CFA007589FC /* RapiDO iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiDO iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DFC1B51F0246E30077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
@@ -218,6 +222,7 @@
 		C16B6BFF1ECA0B1C0036C9D4 /* RapiDO iOS */ = {
 			isa = PBXGroup;
 			children = (
+				C18D88CD1F0BB30500BBFDF2 /* AppNavigationController.swift */,
 				C16B6C231ECA0CDE0036C9D4 /* AppDelegate.swift */,
 				C16B6C0F1ECA0BF10036C9D4 /* FilterViewController.swift */,
 				C16B6C391ECA0E4F0036C9D4 /* LaunchScreen.storyboard */,
@@ -227,7 +232,8 @@
 				C16B6C131ECA0BF10036C9D4 /* TagsTableView.swift */,
 				C16B6C151ECA0BF10036C9D4 /* TaskCell.swift */,
 				C16B6C161ECA0BF10036C9D4 /* UITableViewExtension.swift */,
-				C16B6C171ECA0BF10036C9D4 /* UpsertTaskViewController.swift */,
+				C16B6C171ECA0BF10036C9D4 /* TaskViewController.swift */,
+				C18D88CF1F0BB31A00BBFDF2 /* UIKitExtensions.swift */,
 			);
 			path = "RapiDO iOS";
 			sourceTree = "<group>";
@@ -465,13 +471,15 @@
 			files = (
 				C16B6C191ECA0BF10036C9D4 /* FilterViewController.swift in Sources */,
 				C16B6C181ECA0BF10036C9D4 /* Constants.swift in Sources */,
+				C18D88D01F0BB31A00BBFDF2 /* UIKitExtensions.swift in Sources */,
 				C16B6C1E1ECA0BF10036C9D4 /* Task.swift in Sources */,
 				C16B6C201ECA0BF10036C9D4 /* UITableViewExtension.swift in Sources */,
+				C18D88CE1F0BB30500BBFDF2 /* AppNavigationController.swift in Sources */,
 				C16B6C241ECA0CDE0036C9D4 /* AppDelegate.swift in Sources */,
 				C16B6C0B1ECA0BC90036C9D4 /* BEMCheckBoxGroup.m in Sources */,
 				C16B6C091ECA0BC90036C9D4 /* BEMAnimationManager.m in Sources */,
 				C16B6C0A1ECA0BC90036C9D4 /* BEMCheckBox.m in Sources */,
-				C16B6C211ECA0BF10036C9D4 /* UpsertTaskViewController.swift in Sources */,
+				C16B6C211ECA0BF10036C9D4 /* TaskViewController.swift in Sources */,
 				C16B6C0C1ECA0BC90036C9D4 /* BEMPathManager.m in Sources */,
 				C14A3EEA1ED70EEB0042597B /* Extensions.swift in Sources */,
 				C14A3EEE1ED70F310042597B /* Helpers.swift in Sources */,
