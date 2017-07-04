@@ -31,12 +31,11 @@ class RapidTests: XCTestCase {
         super.setUp()
 
         rapid = Rapid(apiKey: apiKey)!
-        
+        rapid.timeout = 10
         rapid.authorize(withToken: testAuthToken)
     }
     
     override func tearDown() {
-        Rapid.timeout = 10
         Rapid.defaultTimeout = 300
         Rapid.heartbeatInterval = 30
         rapid.isCacheEnabled = false
@@ -335,7 +334,6 @@ class RapidTests: XCTestCase {
     }
     
     func testConnectionRequestTimeout() {
-        Rapid.timeout = nil
         Rapid.defaultTimeout = 2
         
         let promise = expectation(description: "Events request")

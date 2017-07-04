@@ -59,11 +59,19 @@ open class Rapid: NSObject {
     /// When Rapid.io tries to write a json to a database it replaces every occurance of `serverTimestamp` with Unix timestamp
     public static let serverTimestamp = "__TIMESTAMP__"
     
-    /// Optional timeout is seconds for Rapid requests. If timeout is nil requests never end up with timeout error
-    public static var timeout: TimeInterval?
-    
     /// API key that serves to connect to Rapid.io database
     public let apiKey: String
+    
+    /// Optional timeout in seconds for Rapid requests. If timeout is nil requests never end up with timeout error
+    public var timeout: TimeInterval? {
+        get {
+            return handler.timeout
+        }
+        
+        set {
+            handler.timeout = newValue
+        }
+    }
     
     /// If `true` subscription values are stored locally to be available offline
     public var isCacheEnabled: Bool {
@@ -257,6 +265,19 @@ public extension Rapid {
             RapidLogger.level = newValue
         }
         
+    }
+    
+    /// Optional timeout in seconds for Rapid requests. If timeout is nil requests never end up with timeout error
+    class var timeout: TimeInterval? {
+        get {
+            let instance = try! shared()
+            return instance.timeout
+        }
+        
+        set {
+            let instance = try! shared()
+            instance.timeout = newValue
+        }
     }
     
     /// If `true` subscription values are stored locally to be available offline

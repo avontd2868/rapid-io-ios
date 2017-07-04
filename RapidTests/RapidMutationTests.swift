@@ -13,7 +13,7 @@ extension RapidTests {
     
     func testMutationTimeout() {
         let rapid = Rapid.getInstance(withApiKey: fakeApiKey)!
-        Rapid.timeout = 2
+        rapid.timeout = 2
         
         let promise = expectation(description: "Mutation timeout")
         
@@ -31,7 +31,7 @@ extension RapidTests {
     
     func testMergeTimeout() {
         let rapid = Rapid.getInstance(withApiKey: fakeApiKey)!
-        Rapid.timeout = 2
+        rapid.timeout = 2
         
         let promise = expectation(description: "Merge timeout")
         
@@ -49,7 +49,7 @@ extension RapidTests {
     
     func testDeleteTimeout() {
         let rapid = Rapid.getInstance(withApiKey: fakeApiKey)!
-        Rapid.timeout = 2
+        rapid.timeout = 2
         
         let promise = expectation(description: "Delete timeout")
         

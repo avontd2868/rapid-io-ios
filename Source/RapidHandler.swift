@@ -108,6 +108,16 @@ class RapidHandler: NSObject {
         }
     }
     
+    var timeout: TimeInterval? {
+        get {
+            return socketManager.timeout
+        }
+        
+        set {
+            socketManager.timeout = newValue
+        }
+    }
+    
     init?(apiKey: String) {
         // Decode connection information from API key
         if let url = Decoder.decode(apiKey: apiKey) {

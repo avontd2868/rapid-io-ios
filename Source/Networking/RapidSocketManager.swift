@@ -19,6 +19,9 @@ class RapidSocketManager {
     
     weak var cacheHandler: RapidCacheHandler?
     
+    /// Optional timeout for timeoutable requests
+    var timeout: TimeInterval?
+    
     /// State of a websocket connection
     fileprivate var state: Rapid.ConnectionState = .disconnected
     
@@ -417,7 +420,7 @@ fileprivate extension RapidSocketManager {
         // Inform a timoutable request that it should start a timeout count down
         // User events can be timeouted only if user sets `Rapid.timeout`
         // System events work always with timeout and they use either a custom `Rapid.timeout` if set or a default `Rapid.defaultTimeout`
-        if let timeoutRequest = event as? RapidTimeoutRequest, let timeout = Rapid.timeout {
+        if let timeoutRequest = event as? RapidTimeoutRequest, let timeout = timeout {
             timeoutRequest.requestSent(withTimeout: timeout, delegate: self)
         }
         else if let timeoutRequest = event as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
