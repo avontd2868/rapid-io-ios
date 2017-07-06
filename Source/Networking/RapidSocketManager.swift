@@ -305,22 +305,15 @@ fileprivate extension RapidSocketManager {
                 
                 return !toBeSent && !toBeAcknowledged
             })
-            for handler in resubscribe {
-                eventQueue.append(handler)
-            }
+            eventQueue = resubscribe
         }
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
-        let pendingArray = (Array(pendingRequests.values) as [(request: Request, timestamp: TimeInterval)])
-        let eventArray = pendingArray.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
-        for event in eventArray {
-            eventQueue.append(event)
-        }
-
+        let eventArray = pendingRequests.values.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
+        eventQueue.append(contentsOf: eventArray)
+        
         // Finally append relevant requests that were waiting to be sent
-        for event in currentQueue {
-            eventQueue.append(event)
-        }
+        eventQueue.append(contentsOf: currentQueue)
         
         // Create new connection
         networkHandler.goOnline()
@@ -461,7 +454,7 @@ fileprivate extension RapidSocketManager {
             // Generate unique event ID
             let eventID = Generator.uniqueID
             
-            if let request = event as? RapidClientRequest {
+            if let request = event as? Request {
                 registerPendingRequest(request, withID: eventID)
             }
             
@@ -477,10 +470,8 @@ fileprivate extension RapidSocketManager {
     /// - Parameters:
     ///   - request: Sent request
     ///   - eventID: Event ID associated with the request
-    func registerPendingRequest(_ request: RapidClientRequest, withID eventID: String) {
-        if let request = request as? Request {
-            pendingRequests[eventID] = (request, Date().timeIntervalSince1970)
-        }
+    func registerPendingRequest(_ request: Request, withID eventID: String) {
+        pendingRequests[eventID] = (request, Date().timeIntervalSince1970)
     }
     
     /// Handle an event sent from the server
