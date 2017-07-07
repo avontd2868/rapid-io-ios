@@ -61,7 +61,7 @@ class MessagesManager: NSObject, RapidSubscriber {
             // Use the execute function which guarantees optimistic concurrency mutations
             Rapid.collection(withName: Constants.channelsCollection).document(withID: strongSelf.channelID).execute(block: { document -> RapidExecutionResult in
                 var value = document.value ?? [:]
-                let timestamp = (value[Channel.lastMessage] as? [AnyHashable: Any])?[Message.sentDate] as? TimeInterval ?? 0
+                let timestamp = ((value[Channel.lastMessage] as? [AnyHashable: Any])?[Message.sentDate] as? TimeInterval ?? 0) / 1000
                 
                 if timestamp <= referenceTime {
                     message[Channel.lastMessageID] = messageRef.documentID
