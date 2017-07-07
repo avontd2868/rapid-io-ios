@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GHN-ac-bxC">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.17" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="GHN-ac-bxC">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.14"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -13,10 +14,6 @@
         <scene sceneID="8yd-Bk-RIO">
             <objects>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" id="dPK-zg-CpT" customClass="ChannelsViewController" customModule="RapiChat_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="w9e-HM-EM3"/>
-                        <viewControllerLayoutGuide type="bottom" id="uwn-Ij-m5T"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Rsp-ey-u5s">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -107,13 +104,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="uwn-Ij-m5T" firstAttribute="top" secondItem="uLW-NV-ssb" secondAttribute="bottom" id="1bh-W2-0oD"/>
-                            <constraint firstItem="uLW-NV-ssb" firstAttribute="leading" secondItem="Rsp-ey-u5s" secondAttribute="leading" id="6av-5j-sBJ"/>
-                            <constraint firstItem="uLW-NV-ssb" firstAttribute="top" secondItem="w9e-HM-EM3" secondAttribute="bottom" id="F26-Rk-fAF"/>
-                            <constraint firstItem="y9d-l5-brA" firstAttribute="centerX" secondItem="Rsp-ey-u5s" secondAttribute="centerX" id="Gkg-CU-YbL"/>
-                            <constraint firstAttribute="trailing" secondItem="uLW-NV-ssb" secondAttribute="trailing" id="mxb-QI-k9u"/>
+                            <constraint firstItem="bre-hp-Ecq" firstAttribute="bottom" secondItem="uLW-NV-ssb" secondAttribute="bottom" id="1bh-W2-0oD"/>
+                            <constraint firstItem="uLW-NV-ssb" firstAttribute="leading" secondItem="bre-hp-Ecq" secondAttribute="leading" id="6av-5j-sBJ"/>
+                            <constraint firstItem="uLW-NV-ssb" firstAttribute="top" secondItem="bre-hp-Ecq" secondAttribute="top" id="F26-Rk-fAF"/>
+                            <constraint firstItem="y9d-l5-brA" firstAttribute="centerX" secondItem="bre-hp-Ecq" secondAttribute="centerX" id="Gkg-CU-YbL"/>
+                            <constraint firstItem="bre-hp-Ecq" firstAttribute="trailing" secondItem="uLW-NV-ssb" secondAttribute="trailing" id="mxb-QI-k9u"/>
                             <constraint firstItem="y9d-l5-brA" firstAttribute="centerY" secondItem="Rsp-ey-u5s" secondAttribute="centerY" id="zro-H8-3Rh"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="bre-hp-Ecq"/>
                     </view>
                     <navigationItem key="navigationItem" title="Channels" id="Cg8-U2-Paz"/>
                     <connections>
@@ -131,10 +129,6 @@
         <scene sceneID="mLb-b9-314">
             <objects>
                 <viewController storyboardIdentifier="MessagesViewController" automaticallyAdjustsScrollViewInsets="NO" id="hUD-Fk-zbH" customClass="MessagesViewController" customModule="RapiChat_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="BBv-Kp-gIz"/>
-                        <viewControllerLayoutGuide type="bottom" id="mtz-jW-kue"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="K9J-oZ-izE">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -242,21 +236,21 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="2Fh-hX-mgh" firstAttribute="leading" secondItem="K9J-oZ-izE" secondAttribute="leading" id="1Lb-PI-gvE"/>
+                            <constraint firstItem="2Fh-hX-mgh" firstAttribute="leading" secondItem="Hu1-Hd-Tct" secondAttribute="leading" id="1Lb-PI-gvE"/>
                             <constraint firstItem="vfd-6x-bX3" firstAttribute="centerY" secondItem="K9J-oZ-izE" secondAttribute="centerY" id="5Ia-qx-Mp7"/>
-                            <constraint firstItem="zVp-3C-bLQ" firstAttribute="top" secondItem="BBv-Kp-gIz" secondAttribute="bottom" id="FhM-3A-l30"/>
-                            <constraint firstAttribute="trailing" secondItem="zVp-3C-bLQ" secondAttribute="trailing" id="Kmd-Sn-Amy"/>
-                            <constraint firstAttribute="trailing" secondItem="2Fh-hX-mgh" secondAttribute="trailing" id="Wqk-Tm-zH3"/>
-                            <constraint firstItem="zVp-3C-bLQ" firstAttribute="leading" secondItem="K9J-oZ-izE" secondAttribute="leading" id="XGa-vN-X36"/>
-                            <constraint firstItem="mtz-jW-kue" firstAttribute="top" secondItem="2Fh-hX-mgh" secondAttribute="bottom" id="rGO-cI-cag"/>
+                            <constraint firstItem="zVp-3C-bLQ" firstAttribute="top" secondItem="Hu1-Hd-Tct" secondAttribute="top" id="FhM-3A-l30"/>
+                            <constraint firstItem="Hu1-Hd-Tct" firstAttribute="trailing" secondItem="zVp-3C-bLQ" secondAttribute="trailing" id="Kmd-Sn-Amy"/>
+                            <constraint firstItem="Hu1-Hd-Tct" firstAttribute="trailing" secondItem="2Fh-hX-mgh" secondAttribute="trailing" id="Wqk-Tm-zH3"/>
+                            <constraint firstItem="zVp-3C-bLQ" firstAttribute="leading" secondItem="Hu1-Hd-Tct" secondAttribute="leading" id="XGa-vN-X36"/>
+                            <constraint firstItem="Hu1-Hd-Tct" firstAttribute="bottom" secondItem="2Fh-hX-mgh" secondAttribute="bottom" id="rGO-cI-cag"/>
                             <constraint firstItem="2Fh-hX-mgh" firstAttribute="top" secondItem="zVp-3C-bLQ" secondAttribute="bottom" id="wkZ-of-1BA"/>
-                            <constraint firstItem="vfd-6x-bX3" firstAttribute="centerX" secondItem="K9J-oZ-izE" secondAttribute="centerX" id="yFW-od-pg6"/>
+                            <constraint firstItem="vfd-6x-bX3" firstAttribute="centerX" secondItem="Hu1-Hd-Tct" secondAttribute="centerX" id="yFW-od-pg6"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="Hu1-Hd-Tct"/>
                     </view>
                     <connections>
                         <outlet property="accessoryViewHeight" destination="qQw-0x-QbH" id="cH4-ix-8Iv"/>
                         <outlet property="activityIndicator" destination="vfd-6x-bX3" id="1T4-zw-ZkD"/>
-                        <outlet property="bottomMarginConstraint" destination="rGO-cI-cag" id="OHf-iT-r46"/>
                         <outlet property="placeholderLabel" destination="rCb-NE-Iqf" id="768-XG-E2i"/>
                         <outlet property="sendButton" destination="Dp8-GS-PA8" id="NLk-He-OGe"/>
                         <outlet property="separatorHeight" destination="vfH-KQ-W66" id="ntE-yJ-bEV"/>

@@ -15,7 +15,6 @@ class MessagesViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var placeholderLabel: UILabel!
-    @IBOutlet weak var bottomMarginConstraint: NSLayoutConstraint!
     @IBOutlet weak var accessoryViewHeight: NSLayoutConstraint!
     @IBOutlet weak var separatorHeight: NSLayoutConstraint!
     
@@ -108,7 +107,7 @@ fileprivate extension MessagesViewController {
     }
     
     func configureInputBarHeight() {
-        let maxHeigth = (view.frame.height - bottomMarginConstraint.constant) / 2
+        let maxHeigth = (view.frame.height - additionalSafeAreaInsets.bottom) / 2
         
         let newTextViewSize = textView.sizeThatFits(CGSize(width: textView.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
         
@@ -133,7 +132,7 @@ fileprivate extension MessagesViewController {
     }
     
     func scrollToBottom(animated: Bool) {
-        if let count = manager.messages?.count {
+        if let count = manager.messages?.count, count > 0 {
             tableView.scrollToRow(at: IndexPath(row: count - 1, section: 0), at: .top, animated: animated)
         }
     }
@@ -192,7 +191,7 @@ extension MessagesViewController: UITextViewDelegate {
 extension MessagesViewController: AdjustsToKeyboard {
     
     func animateWithKeyboard(height: CGFloat) {
-        bottomMarginConstraint.constant = height
+        additionalSafeAreaInsets.bottom = height
     }
     
     func completeKeyboardAnimation(height: CGFloat) {
