@@ -56,8 +56,7 @@ class AppNavigationController: UINavigationController {
         bar.titleTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: UIColor.appText, NSAttributedStringKey.font.rawValue: UIFont.systemFont(ofSize: 20)]
         bar.tintColor = UIColor.appRed
         bar.shadowImage = UIImage.imageWithColor(.appSeparator)
-        bar.setBackgroundImage(UIImage(), for: .default)
-        bar.barStyle = .black
+        bar.barStyle = .default
     }
 }
 

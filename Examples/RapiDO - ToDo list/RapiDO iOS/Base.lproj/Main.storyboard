@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nmy-sl-Smn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.17" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="nmy-sl-Smn">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.14"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -30,10 +30,7 @@
         <scene sceneID="bRh-uI-5Je">
             <objects>
                 <viewController storyboardIdentifier="OrderViewController" id="LYh-hW-iTM" customClass="OrderViewController" customModule="RapiDO_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="csI-Ih-2iq"/>
-                        <viewControllerLayoutGuide type="bottom" id="Skr-Gz-sba"/>
-                    </layoutGuides>
+                    <layoutGuides/>
                     <view key="view" contentMode="scaleToFill" id="Zzp-0M-Qdd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -106,10 +103,11 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.69991438356164382" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="0ic-Cc-Ok8" firstAttribute="leading" secondItem="Zzp-0M-Qdd" secondAttribute="leading" constant="30" id="282-lo-FWX"/>
-                            <constraint firstAttribute="trailing" secondItem="0ic-Cc-Ok8" secondAttribute="trailing" constant="30" id="7G7-EK-ejN"/>
+                            <constraint firstItem="0ic-Cc-Ok8" firstAttribute="leading" secondItem="627-k3-4PS" secondAttribute="leading" constant="30" id="282-lo-FWX"/>
+                            <constraint firstItem="627-k3-4PS" firstAttribute="trailing" secondItem="0ic-Cc-Ok8" secondAttribute="trailing" constant="30" id="7G7-EK-ejN"/>
                             <constraint firstItem="0ic-Cc-Ok8" firstAttribute="centerY" secondItem="Zzp-0M-Qdd" secondAttribute="centerY" id="7HH-5W-aci"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="627-k3-4PS"/>
                     </view>
                     <connections>
                         <outlet property="attributePicker" destination="rAC-4W-A8l" id="Yvh-3p-2HS"/>
@@ -127,10 +125,7 @@
         <scene sceneID="F6o-xw-lpV">
             <objects>
                 <viewController storyboardIdentifier="FilterViewController" id="bP7-yP-Xaj" customClass="FilterViewController" customModule="RapiDO_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="sk6-C0-9xj"/>
-                        <viewControllerLayoutGuide type="bottom" id="LB2-0L-5xs"/>
-                    </layoutGuides>
+                    <layoutGuides/>
                     <view key="view" contentMode="scaleToFill" id="V1Y-ww-0dN">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -207,10 +202,11 @@
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="sA6-l5-FQ4" firstAttribute="leading" secondItem="V1Y-ww-0dN" secondAttribute="leading" constant="30" id="ar4-BD-301"/>
+                            <constraint firstItem="sA6-l5-FQ4" firstAttribute="leading" secondItem="nHa-Qk-U6e" secondAttribute="leading" constant="30" id="ar4-BD-301"/>
                             <constraint firstItem="sA6-l5-FQ4" firstAttribute="centerY" secondItem="V1Y-ww-0dN" secondAttribute="centerY" id="m8j-Ih-mAT"/>
-                            <constraint firstAttribute="trailing" secondItem="sA6-l5-FQ4" secondAttribute="trailing" constant="30" id="snP-5W-Xy0"/>
+                            <constraint firstItem="nHa-Qk-U6e" firstAttribute="trailing" secondItem="sA6-l5-FQ4" secondAttribute="trailing" constant="30" id="snP-5W-Xy0"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="nHa-Qk-U6e"/>
                     </view>
                     <connections>
                         <outlet property="cancelButton" destination="7VC-Cb-jF1" id="pte-38-OGl"/>
@@ -228,16 +224,13 @@
         <scene sceneID="clh-Xr-P1g">
             <objects>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" id="D0y-jY-vHF" customClass="ListViewController" customModule="RapiDO_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="2d4-xF-1oq"/>
-                        <viewControllerLayoutGuide type="bottom" id="OVg-C1-fYB"/>
-                    </layoutGuides>
+                    <layoutGuides/>
                     <view key="view" contentMode="scaleToFill" id="RvJ-X7-HdI">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="110" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Z1A-Z9-Jzw">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="84" width="375" height="583"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="gray" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TaskCell" id="ylN-QI-Sj0" customClass="TaskCell" customModule="RapiDO_iOS" customModuleProvider="target">
@@ -324,18 +317,19 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="8Bx-lf-bGP" secondAttribute="trailing" constant="20" id="GcN-cw-O2V"/>
-                            <constraint firstItem="OVg-C1-fYB" firstAttribute="top" secondItem="Z1A-Z9-Jzw" secondAttribute="bottom" id="JG5-3H-sGc"/>
-                            <constraint firstAttribute="trailing" secondItem="Z1A-Z9-Jzw" secondAttribute="trailing" id="T0q-tU-1UX"/>
-                            <constraint firstItem="OVg-C1-fYB" firstAttribute="top" secondItem="8Bx-lf-bGP" secondAttribute="bottom" constant="20" id="Zyu-Bh-F9M"/>
-                            <constraint firstItem="Z1A-Z9-Jzw" firstAttribute="top" secondItem="2d4-xF-1oq" secondAttribute="bottom" id="ejM-I2-r44"/>
-                            <constraint firstItem="Z1A-Z9-Jzw" firstAttribute="leading" secondItem="RvJ-X7-HdI" secondAttribute="leading" id="wZb-wy-ESt"/>
+                            <constraint firstItem="76y-Ey-L3j" firstAttribute="trailing" secondItem="8Bx-lf-bGP" secondAttribute="trailing" constant="20" id="GcN-cw-O2V"/>
+                            <constraint firstItem="Z1A-Z9-Jzw" firstAttribute="top" secondItem="76y-Ey-L3j" secondAttribute="top" id="SJE-As-ePn"/>
+                            <constraint firstItem="76y-Ey-L3j" firstAttribute="trailing" secondItem="Z1A-Z9-Jzw" secondAttribute="trailing" id="T0q-tU-1UX"/>
+                            <constraint firstItem="Z1A-Z9-Jzw" firstAttribute="bottom" secondItem="76y-Ey-L3j" secondAttribute="bottom" id="meT-cO-uup"/>
+                            <constraint firstItem="Z1A-Z9-Jzw" firstAttribute="leading" secondItem="76y-Ey-L3j" secondAttribute="leading" id="wZb-wy-ESt"/>
+                            <constraint firstAttribute="bottom" secondItem="8Bx-lf-bGP" secondAttribute="bottom" constant="20" id="z09-FO-Tgi"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="76y-Ey-L3j"/>
                     </view>
                     <navigationItem key="navigationItem" id="WGw-ho-dUH">
                         <rightBarButtonItems>
                             <barButtonItem title="Filter" id="kSc-eX-dID"/>
-                            <barButtonItem title="Sort   " id="Lpa-Qx-Tq3"/>
+                            <barButtonItem title="Sort" id="Lpa-Qx-Tq3"/>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
@@ -351,7 +345,7 @@
         <!--App Navigation Controller-->
         <scene sceneID="WGP-Wg-n8f">
             <objects>
-                <navigationController storyboardIdentifier="TaskViewController" id="MpB-XS-307" customClass="AppNavigationController" customModule="RapiDO_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="TaskNavigationViewController" id="MpB-XS-307" customClass="AppNavigationController" customModule="RapiDO_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="1gk-24-pO7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -367,17 +361,14 @@
         <!--Task View Controller-->
         <scene sceneID="F1R-fN-8VO">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="xhr-tM-IoZ" customClass="TaskViewController" customModule="RapiDO_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Ioh-jY-wa6"/>
-                        <viewControllerLayoutGuide type="bottom" id="qWI-Ea-f7Q"/>
-                    </layoutGuides>
+                <viewController storyboardIdentifier="TaskViewController" automaticallyAdjustsScrollViewInsets="NO" id="xhr-tM-IoZ" customClass="TaskViewController" customModule="RapiDO_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides/>
                     <view key="view" contentMode="scaleToFill" id="vwE-zO-h18">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="de7-FH-XdM">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="84" width="375" height="583"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N7d-bi-QN1">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="748.5"/>
@@ -556,19 +547,16 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="de7-FH-XdM" secondAttribute="trailing" id="NNQ-Ph-3E0"/>
-                            <constraint firstItem="qWI-Ea-f7Q" firstAttribute="top" secondItem="de7-FH-XdM" secondAttribute="bottom" id="brt-yZ-si4"/>
-                            <constraint firstItem="de7-FH-XdM" firstAttribute="leading" secondItem="vwE-zO-h18" secondAttribute="leading" id="sTh-nO-jUL"/>
-                            <constraint firstItem="de7-FH-XdM" firstAttribute="top" secondItem="Ioh-jY-wa6" secondAttribute="bottom" id="wBL-o3-kaX"/>
+                            <constraint firstItem="KER-uP-F0H" firstAttribute="trailing" secondItem="de7-FH-XdM" secondAttribute="trailing" id="NNQ-Ph-3E0"/>
+                            <constraint firstItem="de7-FH-XdM" firstAttribute="top" secondItem="KER-uP-F0H" secondAttribute="top" id="exH-AM-F4W"/>
+                            <constraint firstItem="KER-uP-F0H" firstAttribute="bottom" secondItem="de7-FH-XdM" secondAttribute="bottom" id="sDY-Rf-Os8"/>
+                            <constraint firstItem="de7-FH-XdM" firstAttribute="leading" secondItem="KER-uP-F0H" secondAttribute="leading" id="sTh-nO-jUL"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="KER-uP-F0H"/>
                     </view>
-                    <navigationItem key="navigationItem" id="mcB-gS-fIV">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="BCG-gT-oSw"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="mcB-gS-fIV"/>
                     <connections>
                         <outlet property="actionButton" destination="Xxh-jk-tH2" id="fCc-oN-TqQ"/>
-                        <outlet property="bottomMarginConstraint" destination="brt-yZ-si4" id="qIk-P4-tgH"/>
-                        <outlet property="cancelButton" destination="BCG-gT-oSw" id="psc-Vb-5GM"/>
                         <outlet property="completedCheckbox" destination="iYi-e8-kw3" id="TiD-ey-t8G"/>
                         <outlet property="descriptionTextView" destination="Dse-Ir-gAf" id="ZpU-Cw-60t"/>
                         <outlet property="priorityView" destination="6xG-JU-khI" id="pZg-fi-bk7"/>
@@ -580,7 +568,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="msh-Hy-d3Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1445.5999999999999" y="614.84257871064472"/>
+            <point key="canvasLocation" x="1445.5" y="614.5"/>
         </scene>
     </scenes>
     <resources>

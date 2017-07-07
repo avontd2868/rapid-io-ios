@@ -12,7 +12,6 @@ import Rapid
 class TaskViewController: UIViewController {
 
     @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var titleTextView: TitleTextView!
     @IBOutlet weak var descriptionTextView: DescriptionTextView!
     @IBOutlet weak var tagsTableView: TagsTableView!
@@ -35,7 +34,6 @@ class TaskViewController: UIViewController {
     }
     
     @IBOutlet weak var titleTextFieldTop: NSLayoutConstraint!
-    @IBOutlet weak var bottomMarginConstraint: NSLayoutConstraint!
     
     var task: Task?
     
@@ -97,11 +95,20 @@ class TaskViewController: UIViewController {
             Task.create(withValue: task)
         }
         
-        dismiss(animated: true, completion: nil)
+        dismissController()
     }
     
     @objc func cancel(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    func dismissController() {
+        if navigationController?.viewControllers.first == self {
+            dismiss(animated: true, completion: nil)
+        }
+        else {
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     @objc func hideKeyboard(_ sender: AnyObject) {
@@ -113,8 +120,7 @@ class TaskViewController: UIViewController {
 fileprivate extension TaskViewController {
     
     func setupUI() {
-        cancelButton.target = self
-        cancelButton.action = #selector(self.cancel(_:))
+        navigationItem.largeTitleDisplayMode = .never
         
         descriptionTextView.layer.borderColor = UIColor(red: 0.783922, green: 0.780392, blue: 0.8, alpha: 1).cgColor
         descriptionTextView.layer.borderWidth = 0.5
@@ -136,6 +142,9 @@ fileprivate extension TaskViewController {
             tagsTableView.selectTags(task.tags)
         }
         else {
+            let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.cancel(_:)))
+            navigationItem.leftBarButtonItem = cancelButton
+            
             title = "New task"
             actionButton.setTitle("Create", for: .normal)
             titleTextFieldTop.constant = 20
@@ -154,7 +163,7 @@ fileprivate extension TaskViewController {
 extension TaskViewController: AdjustsToKeyboard {
     
     func animateWithKeyboard(height: CGFloat) {
-        bottomMarginConstraint.constant = height
+        additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: height, right: 0)
     }
 }
 

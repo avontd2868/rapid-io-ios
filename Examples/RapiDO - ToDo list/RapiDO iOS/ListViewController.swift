@@ -11,7 +11,9 @@ import Rapid
 
 class ListViewController: UIViewController {
     
-    var searchBar: UISearchBar!
+    var searchedTerm = ""
+    var searchTimer: Timer?
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var orderButton: UIBarButtonItem!
     @IBOutlet weak var filterButton: UIBarButtonItem!
@@ -47,12 +49,16 @@ class ListViewController: UIViewController {
 fileprivate extension ListViewController {
     
     func setupUI() {
-        searchBar = UISearchBar()
-        searchBar.delegate = self
-        searchBar.enablesReturnKeyAutomatically = false
-        searchBar.barTintColor = .white
-        searchBar.tintColor = .appRed
-        navigationItem.titleView = searchBar
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.delegate = self
+        searchController.searchResultsUpdater = self
+        searchController.dimsBackgroundDuringPresentation = false
+        definesPresentationContext = true
+        navigationItem.searchController = searchController
+        navigationItem.title = "Tasks"
+        navigationItem.largeTitleDisplayMode = .always
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -82,12 +88,12 @@ fileprivate extension ListViewController {
         // If a filter is set, modify the collection reference with it
         if let filter = filter {
             // If the search bar text is not empty, filter also by the text
-            if let text = searchBar.text, !text.isEmpty {
+            if !searchedTerm.isEmpty {
                 // The search bar text can be in a title or in a description
                 // Combine two "CONTAINS" filters with logical "OR"
                 let combinedFilter = RapidFilter.or([
-                    RapidFilter.contains(keyPath: Task.titleAttributeName, subString: text),
-                    RapidFilter.contains(keyPath: Task.descriptionAttributeName, subString: text)
+                    RapidFilter.contains(keyPath: Task.titleAttributeName, subString: searchedTerm),
+                    RapidFilter.contains(keyPath: Task.descriptionAttributeName, subString: searchedTerm)
                     ])
                 // And then, combine the search bar text filter with a filter from the filter modal
                 collection.filtered(by: RapidFilter.and([filter, combinedFilter]))
@@ -98,10 +104,10 @@ fileprivate extension ListViewController {
             }
         }
         // If the searchBar text is not empty, filter by the text
-        else if let text = searchBar.text, !text.isEmpty {
+        else if !searchedTerm.isEmpty {
             let combinedFilter = RapidFilter.or([
-                RapidFilter.contains(keyPath: Task.titleAttributeName, subString: text),
-                RapidFilter.contains(keyPath: Task.descriptionAttributeName, subString: text)
+                RapidFilter.contains(keyPath: Task.titleAttributeName, subString: searchedTerm),
+                RapidFilter.contains(keyPath: Task.descriptionAttributeName, subString: searchedTerm)
                 ])
             collection.filtered(by: combinedFilter)
         }
@@ -126,7 +132,7 @@ fileprivate extension ListViewController {
     }
     
     func presentNewTaskController() {
-        let controller = self.storyboard!.instantiateViewController(withIdentifier: "TaskViewController")
+        let controller = self.storyboard!.instantiateViewController(withIdentifier: "TaskNavigationViewController")
         
         present(controller, animated: true, completion: nil)
     }
@@ -154,11 +160,11 @@ fileprivate extension ListViewController {
     }
     
     func presentEditTask(_ task: Task) {
-        let controller = self.storyboard?.instantiateViewController(withIdentifier: "TaskViewController") as! UINavigationController
+        let controller = self.storyboard?.instantiateViewController(withIdentifier: "TaskViewController") as! TaskViewController
         
-        (controller.viewControllers.first as? TaskViewController)?.task = task
+        controller.task = task
         
-        present(controller, animated: true, completion: nil)
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
 
@@ -193,6 +199,16 @@ extension ListViewController: UITableViewDataSource, UITableViewDelegate {
         return true
     }
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completion) in
+            let task = self.tasks[indexPath.row]
+            
+            task.delete()
+        }
+        action.backgroundColor = .appRed
+        return UISwipeActionsConfiguration(actions: [action])
+    }
+    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let task = tasks[indexPath.row]
@@ -213,11 +229,19 @@ extension ListViewController: TaskCellDelegate {
 }
 
 // MARK: Search bar delegate
-extension ListViewController: UISearchBarDelegate {
+extension ListViewController: UISearchControllerDelegate, UISearchResultsUpdating {
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        subscribe()
+    func updateSearchResults(for searchController: UISearchController) {
+        guard searchedTerm != (searchController.searchBar.text ?? "") else {
+            return
+        }
+        
+        searchedTerm = searchController.searchBar.text ?? ""
+        searchTimer?.invalidate()
+        
+        searchTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+            self?.subscribe()
+        }
     }
 }
 
