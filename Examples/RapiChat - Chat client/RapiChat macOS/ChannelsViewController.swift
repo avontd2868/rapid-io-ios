@@ -46,6 +46,8 @@ fileprivate extension ChannelsViewController {
         Rapid.isCacheEnabled = true
         // Set timeout for requests
         Rapid.timeout = 10
+        
+        TimeManager.shared.initialize()
     }
     
     func setupController() {

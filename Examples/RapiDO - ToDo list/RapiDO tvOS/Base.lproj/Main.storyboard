@@ -68,7 +68,7 @@
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="70" id="jAR-BH-6ri"/>
                                                     </constraints>
-                                                    <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                                     <fontDescription key="fontDescription" type="system" pointSize="28"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -161,8 +161,8 @@
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem image="Icon-Filter" id="3g6-od-H83"/>
-                            <barButtonItem image="Icon-Order" id="4Ug-hR-Oki"/>
+                            <barButtonItem title="Filter" id="3g6-od-H83"/>
+                            <barButtonItem title="Sort" id="4Ug-hR-Oki"/>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
@@ -186,7 +186,7 @@
                             <tableViewSection id="aXt-60-orC">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="140" id="uzl-rQ-7nt">
-                                        <rect key="frame" x="0.0" y="0.0" width="1880" height="140"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1920" height="140"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uzl-rQ-7nt" id="A1M-Xa-X9Y">
                                             <rect key="frame" x="0.0" y="0.0" width="1904" height="140"/>
@@ -211,8 +211,8 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Title" id="zcX-E4-pfU">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" misplaced="YES" selectionStyle="default" indentationWidth="10" rowHeight="100" id="ZBq-43-IZP">
-                                        <rect key="frame" x="0.0" y="220" width="1880" height="100"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="100" id="ZBq-43-IZP">
+                                        <rect key="frame" x="0.0" y="220" width="1920" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZBq-43-IZP" id="Esw-V8-iOs">
                                             <rect key="frame" x="0.0" y="0.0" width="1904" height="100"/>
@@ -236,8 +236,8 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Description" id="xfA-PU-5Y6">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" misplaced="YES" selectionStyle="default" indentationWidth="10" rowHeight="100" id="NKm-RX-OBO">
-                                        <rect key="frame" x="0.0" y="400" width="1880" height="100"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="100" id="NKm-RX-OBO">
+                                        <rect key="frame" x="0.0" y="400" width="1920" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NKm-RX-OBO" id="vzg-A5-o3w">
                                             <rect key="frame" x="0.0" y="0.0" width="1904" height="100"/>
@@ -261,8 +261,8 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Priority" id="kn6-11-ThI">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" misplaced="YES" selectionStyle="default" indentationWidth="10" rowHeight="100" id="zgg-jh-Fn1">
-                                        <rect key="frame" x="0.0" y="580" width="1880" height="100"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="100" id="zgg-jh-Fn1">
+                                        <rect key="frame" x="0.0" y="580" width="1920" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zgg-jh-Fn1" id="cPD-oD-uRu">
                                             <rect key="frame" x="0.0" y="0.0" width="1904" height="100"/>
@@ -289,7 +289,7 @@
                             <tableViewSection headerTitle="Tags" id="1I8-Eq-GAb">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="250" id="fWQ-jM-3ok">
-                                        <rect key="frame" x="0.0" y="760" width="1880" height="250"/>
+                                        <rect key="frame" x="0.0" y="760" width="1920" height="250"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fWQ-jM-3ok" id="bSf-eP-8rn">
                                             <rect key="frame" x="0.0" y="0.0" width="1904" height="250"/>
@@ -312,8 +312,8 @@
                             </tableViewSection>
                             <tableViewSection id="zbi-2O-Uau">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" misplaced="YES" selectionStyle="default" indentationWidth="10" rowHeight="150" id="9lk-ic-UUj">
-                                        <rect key="frame" x="0.0" y="1024" width="1880" height="150"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="150" id="9lk-ic-UUj">
+                                        <rect key="frame" x="0.0" y="1024" width="1920" height="150"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9lk-ic-UUj" id="i1V-no-SPc">
                                             <rect key="frame" x="0.0" y="0.0" width="1904" height="150"/>
@@ -557,8 +557,4 @@
             <point key="canvasLocation" x="2149" y="1874"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Icon-Filter" width="20" height="24"/>
-        <image name="Icon-Order" width="24" height="24"/>
-    </resources>
 </document>

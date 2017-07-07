@@ -48,6 +48,7 @@ class MessagesManager: NSObject, RapidSubscriber {
                 Message.sentDate: Rapid.serverTimestamp,
                 Message.text: text
             ]
+            let referenceTime = TimeManager.shared.serverTime.timeIntervalSince1970
             
             // Get a new rapid.io document reference from the messages collection
             let messageRef = Rapid.collection(withName: Constants.messagesCollection)
@@ -60,11 +61,17 @@ class MessagesManager: NSObject, RapidSubscriber {
             // Use the execute function which guarantees optimistic concurrency mutations
             Rapid.collection(withName: Constants.channelsCollection).document(withID: strongSelf.channelID).execute(block: { document -> RapidExecutionResult in
                 var value = document.value ?? [:]
+                let timestamp = (value[Channel.lastMessage] as? [AnyHashable: Any])?[Message.sentDate] as? TimeInterval ?? 0
                 
-                message[Channel.lastMessageID] = messageRef.documentID
-                value[Channel.lastMessage] = message
-                
-                return .write(value: value)
+                if timestamp <= referenceTime {
+                    message[Channel.lastMessageID] = messageRef.documentID
+                    value[Channel.lastMessage] = message
+                    
+                    return .write(value: value)
+                }
+                else {
+                    return .abort
+                }
             })
         }
     }
