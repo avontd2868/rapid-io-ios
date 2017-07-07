@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Rapid
 
 struct UserDefaultsManager {
     
@@ -83,5 +84,31 @@ class Validator {
         let uuid = NSUUID(uuidString: components.joined(separator: "-"))
         
         return (first == "channels" || first == "messages") && uuid != nil
+    }
+}
+
+class TimeManager {
+    
+    static let shared = TimeManager()
+    private(set) var offset: TimeInterval = 0
+    
+    var serverTime: Date {
+        return Date().addingTimeInterval(-offset)
+    }
+    
+    func initialize() {
+        NotificationCenter.default.addObserver(forName: Notification.Name.UIApplicationDidBecomeActive, object: nil, queue: OperationQueue.main) { [weak self] notification in
+            self?.getTimeOffset()
+        }
+        
+        getTimeOffset()
+    }
+    
+    private func getTimeOffset() {
+        Rapid.serverTimeOffset { [weak self] result in
+            if case .success(let offset) = result {
+                self?.offset = offset
+            }
+        }
     }
 }

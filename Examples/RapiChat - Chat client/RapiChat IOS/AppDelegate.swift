@@ -25,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Set timeout for requests
         Rapid.timeout = 10
         
+        TimeManager.shared.initialize()
+        
         return true
     }
 
