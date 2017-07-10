@@ -28,8 +28,13 @@ extension RapidTests {
     }
     
     func testFileSize() {
-        let plistURL = Bundle(for: RapidTests.self).url(forResource: "Info", withExtension: "plist")
-        XCTAssertGreaterThan(plistURL?.memorySize ?? 0, 0, "Zero size")
+        #if os(OSX)
+            let plistURL = Bundle(for: RapidTests.self).bundleURL.appendingPathComponent("Contents", isDirectory: true).appendingPathComponent("Info.plist")
+            XCTAssertGreaterThan(plistURL.memorySize ?? 0, 0, "Zero size")
+        #elseif os(iOS)
+            let plistURL = Bundle(for: RapidTests.self).url(forResource: "Info", withExtension: "plist")
+            XCTAssertGreaterThan(plistURL?.memorySize ?? 0, 0, "Zero size")
+        #endif
     }
     
     func testDirectorySize() {

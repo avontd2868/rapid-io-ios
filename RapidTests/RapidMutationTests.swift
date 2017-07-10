@@ -387,7 +387,7 @@ extension RapidTests {
                         XCTAssertLessThan(value, counter, "Wrong order")
                     }
                     value = counter
-                    print(counter)
+
                     if counter == numberOfMutations {
                         promise.fulfill()
                     }
