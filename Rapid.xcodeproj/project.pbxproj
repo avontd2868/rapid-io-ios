@@ -24,6 +24,15 @@
 		C1375A571F137968009A45BF /* RapidQuaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2A1EF1E9FD899009444B3 /* RapidQuaryTests.swift */; };
 		C1375A581F13796D009A45BF /* RapidMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB401E952FA8007983EA /* RapidMutationTests.swift */; };
 		C1375A591F137970009A45BF /* RapidAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */; };
+		C1375A631F137ED0009A45BF /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C13EAB591EF820C600264F4E /* Rapid.framework */; };
+		C1375A6A1F137EF6009A45BF /* RapidAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */; };
+		C1375A6B1F137EF6009A45BF /* RapidMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB401E952FA8007983EA /* RapidMutationTests.swift */; };
+		C1375A6C1F137EF6009A45BF /* RapidQuaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2A1EF1E9FD899009444B3 /* RapidQuaryTests.swift */; };
+		C1375A6D1F137EF6009A45BF /* RapidSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB431E95384D007983EA /* RapidSerializationTests.swift */; };
+		C1375A6E1F137EF6009A45BF /* RapidSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */; };
+		C1375A6F1F137EF6009A45BF /* RapidTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E82D1E7856AD007589FC /* RapidTests.swift */; };
+		C1375A701F137EF6009A45BF /* RapidCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EDC1A31EA6010D006570FC /* RapidCacheTests.swift */; };
+		C1375A711F137EF6009A45BF /* RapidChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16067FB1EE836F400B118D4 /* RapidChannelTests.swift */; };
 		C13EAB621EF820F100264F4E /* Rapid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8A71E785D72007589FC /* Rapid.swift */; };
 		C13EAB631EF820FB00264F4E /* RapidCollectionRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9941E7ADC78007589FC /* RapidCollectionRef.swift */; };
 		C13EAB641EF820FF00264F4E /* RapidDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A741F1EDD7686001339DC /* RapidDocument.swift */; };
@@ -152,6 +161,13 @@
 			remoteGlobalIDString = C142DCCF1EC9E0E2000B9617;
 			remoteInfo = "Rapid macOS";
 		};
+		C1375A641F137ED0009A45BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C1D6E8161E7856AD007589FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C13EAB581EF820C600264F4E;
+			remoteInfo = "Rapid tvOS";
+		};
 		C1D6E82A1E7856AD007589FC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C1D6E8161E7856AD007589FC /* Project object */;
@@ -170,6 +186,7 @@
 		C1281A471E8AA8C20054AF73 /* RapidCollectionSubscriptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidCollectionSubscriptions.swift; sourceTree = "<group>"; };
 		C1281A491E8AA9020054AF73 /* RapidMutations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidMutations.swift; sourceTree = "<group>"; };
 		C1375A461F137763009A45BF /* RapidTests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RapidTests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1375A5E1F137ED0009A45BF /* RapidTests tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RapidTests tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C13EAB591EF820C600264F4E /* Rapid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rapid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionTests.swift; sourceTree = "<group>"; };
 		C142DCD01EC9E0E2000B9617 /* Rapid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rapid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -224,6 +241,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1375A4B1F137764009A45BF /* Rapid.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1375A5B1F137ED0009A45BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1375A631F137ED0009A45BF /* Rapid.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +323,7 @@
 				C142DCD01EC9E0E2000B9617 /* Rapid.framework */,
 				C13EAB591EF820C600264F4E /* Rapid.framework */,
 				C1375A461F137763009A45BF /* RapidTests macOS.xctest */,
+				C1375A5E1F137ED0009A45BF /* RapidTests tvOS.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -431,6 +457,24 @@
 			productReference = C1375A461F137763009A45BF /* RapidTests macOS.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		C1375A5D1F137ED0009A45BF /* RapidTests tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1375A661F137ED0009A45BF /* Build configuration list for PBXNativeTarget "RapidTests tvOS" */;
+			buildPhases = (
+				C1375A5A1F137ED0009A45BF /* Sources */,
+				C1375A5B1F137ED0009A45BF /* Frameworks */,
+				C1375A5C1F137ED0009A45BF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C1375A651F137ED0009A45BF /* PBXTargetDependency */,
+			);
+			name = "RapidTests tvOS";
+			productName = "RapidTests tvOS";
+			productReference = C1375A5E1F137ED0009A45BF /* RapidTests tvOS.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C13EAB581EF820C600264F4E /* Rapid tvOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C13EAB611EF820C600264F4E /* Build configuration list for PBXNativeTarget "Rapid tvOS" */;
@@ -521,6 +565,10 @@
 						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
 					};
+					C1375A5D1F137ED0009A45BF = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
 					C13EAB581EF820C600264F4E = {
 						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
@@ -557,12 +605,20 @@
 				C13EAB581EF820C600264F4E /* Rapid tvOS */,
 				C1D6E8271E7856AD007589FC /* RapidTests */,
 				C1375A451F137763009A45BF /* RapidTests macOS */,
+				C1375A5D1F137ED0009A45BF /* RapidTests tvOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C1375A441F137763009A45BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1375A5C1F137ED0009A45BF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -671,6 +727,21 @@
 				C1375A581F13796D009A45BF /* RapidMutationTests.swift in Sources */,
 				C1375A551F13795C009A45BF /* RapidSubscriptionTests.swift in Sources */,
 				C1375A571F137968009A45BF /* RapidQuaryTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1375A5A1F137ED0009A45BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1375A701F137EF6009A45BF /* RapidCacheTests.swift in Sources */,
+				C1375A6E1F137EF6009A45BF /* RapidSubscriptionTests.swift in Sources */,
+				C1375A6A1F137EF6009A45BF /* RapidAuthorizationTests.swift in Sources */,
+				C1375A6D1F137EF6009A45BF /* RapidSerializationTests.swift in Sources */,
+				C1375A6B1F137EF6009A45BF /* RapidMutationTests.swift in Sources */,
+				C1375A6F1F137EF6009A45BF /* RapidTests.swift in Sources */,
+				C1375A711F137EF6009A45BF /* RapidChannelTests.swift in Sources */,
+				C1375A6C1F137EF6009A45BF /* RapidQuaryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -832,6 +903,11 @@
 			target = C142DCCF1EC9E0E2000B9617 /* Rapid macOS */;
 			targetProxy = C1375A4C1F137764009A45BF /* PBXContainerItemProxy */;
 		};
+		C1375A651F137ED0009A45BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C13EAB581EF820C600264F4E /* Rapid tvOS */;
+			targetProxy = C1375A641F137ED0009A45BF /* PBXContainerItemProxy */;
+		};
 		C1D6E82B1E7856AD007589FC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C1D6E81E1E7856AD007589FC /* Rapid */;
@@ -885,6 +961,48 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
+			};
+			name = Framework;
+		};
+		C1375A671F137ED0009A45BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Debug;
+		};
+		C1375A681F137ED0009A45BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Release;
+		};
+		C1375A691F137ED0009A45BF /* Framework */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
 			};
 			name = Framework;
 		};
@@ -1316,6 +1434,15 @@
 				C1375A4E1F137764009A45BF /* Debug */,
 				C1375A4F1F137764009A45BF /* Release */,
 				C1375A501F137764009A45BF /* Framework */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		C1375A661F137ED0009A45BF /* Build configuration list for PBXNativeTarget "RapidTests tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1375A671F137ED0009A45BF /* Debug */,
+				C1375A681F137ED0009A45BF /* Release */,
+				C1375A691F137ED0009A45BF /* Framework */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

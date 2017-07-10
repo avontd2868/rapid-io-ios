@@ -34,6 +34,9 @@ extension RapidTests {
         #elseif os(iOS)
             let plistURL = Bundle(for: RapidTests.self).url(forResource: "Info", withExtension: "plist")
             XCTAssertGreaterThan(plistURL?.memorySize ?? 0, 0, "Zero size")
+        #elseif os(tvOS)
+            let plistURL = Bundle(for: RapidTests.self).url(forResource: "Info", withExtension: "plist")
+            XCTAssertGreaterThan(plistURL?.memorySize ?? 0, 0, "Zero size")
         #endif
     }
     
