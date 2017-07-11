@@ -1,5 +1,5 @@
 language: objective-c
 osx_image: xcode8.3
 xcode_project: Rapid.xcodeproj
-xcode_scheme: RapidTests
+xcode_scheme: 'Rapid iOS'
 xcode_sdk: iphonesimulator10.3
