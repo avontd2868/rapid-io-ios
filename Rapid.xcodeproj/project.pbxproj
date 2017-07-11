@@ -668,7 +668,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nif which jazzy >/dev/null; then\njazzy -c -o \"${SRCROOT}/docs\"\nelse\necho \"warning: Jazzy not installed\"\nfi\nfi";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nif which jazzy >/dev/null; then\n$HOME/.rvm/rubies/ruby-2.2.2/bin/jazzy -c -o \"${SRCROOT}/docs\"\nelse\necho \"warning: Jazzy not installed\"\nfi\nfi";
 		};
 		C1D6E8BA1E796333007589FC /* Build Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -682,7 +682,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nDEVICE_BIN=\"${BUILD_DIR}/Release-iphoneos/${TARGET_NAME}.framework\"\nSIMULATOR_BIN=\"${BUILD_DIR}/Release-iphonesimulator/${TARGET_NAME}.framework\"\nMAC_BIN=\"${BUILD_DIR}/Release/${TARGET_NAME}.framework\"\nTV_DEVICE_BIN=\"${BUILD_DIR}/Release-appletvos/${TARGET_NAME}.framework\"\nTV_SIMULATOR_BIN=\"${BUILD_DIR}/Release-appletvsimulator/${TARGET_NAME}.framework\"\n\nIOS_ARCHIVE_PATH=\"${SRCROOT}/Framework/iOS\"\nrm -rf \"${IOS_ARCHIVE_PATH}\"\nmkdir \"${IOS_ARCHIVE_PATH}\"\n\nMAC_ARCHIVE_PATH=\"${SRCROOT}/Framework/Mac\"\nrm -rf \"${MAC_ARCHIVE_PATH}\"\nmkdir \"${MAC_ARCHIVE_PATH}\"\n\nTV_ARCHIVE_PATH=\"${SRCROOT}/Framework/tvOS\"\nrm -rf \"${TV_ARCHIVE_PATH}\"\nmkdir \"${TV_ARCHIVE_PATH}\"\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid tvOS\" \\\n-configuration Release \\\n-sdk appletvos \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid tvOS\" \\\n-configuration Release \\\n-sdk appletvsimulator \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${TV_DEVICE_BIN}\" ] && [ -d \"${TV_SIMULATOR_BIN}\" ]; then\ncp -RL \"${TV_DEVICE_BIN}\" \"${TV_ARCHIVE_PATH}\"\ncp -RL \"${TV_SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${TV_ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${TV_DEVICE_BIN}/${TARGET_NAME}\" \"${TV_SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${TV_ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\npushd \"${TV_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid macOS\" \\\n-configuration Release \\\n-sdk macosx \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${MAC_BIN}\" ]; then\ncp -RL \"${MAC_BIN}\" \"${MAC_ARCHIVE_PATH}\"\npushd \"${MAC_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Release \\\n-sdk iphonesimulator \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Release \\\n-sdk iphoneos \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${DEVICE_BIN}\" ] && [ -d \"${SIMULATOR_BIN}\" ]; then\ncp -RL \"${DEVICE_BIN}\" \"${IOS_ARCHIVE_PATH}\"\ncp -RL \"${SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${IOS_ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${DEVICE_BIN}/${TARGET_NAME}\" \"${SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${IOS_ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\npushd \"${IOS_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nfi\n";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nDEVICE_BIN=\"${BUILD_DIR}/Release-iphoneos/${TARGET_NAME}.framework\"\nSIMULATOR_BIN=\"${BUILD_DIR}/Release-iphonesimulator/${TARGET_NAME}.framework\"\nMAC_BIN=\"${BUILD_DIR}/Release/${TARGET_NAME}.framework\"\nTV_DEVICE_BIN=\"${BUILD_DIR}/Release-appletvos/${TARGET_NAME}.framework\"\nTV_SIMULATOR_BIN=\"${BUILD_DIR}/Release-appletvsimulator/${TARGET_NAME}.framework\"\n\nIOS_ARCHIVE_PATH=\"${SRCROOT}/Framework/iOS\"\nrm -rf \"${IOS_ARCHIVE_PATH}\"\nmkdir \"${IOS_ARCHIVE_PATH}\"\n\nMAC_ARCHIVE_PATH=\"${SRCROOT}/Framework/Mac\"\nrm -rf \"${MAC_ARCHIVE_PATH}\"\nmkdir \"${MAC_ARCHIVE_PATH}\"\n\nTV_ARCHIVE_PATH=\"${SRCROOT}/Framework/tvOS\"\nrm -rf \"${TV_ARCHIVE_PATH}\"\nmkdir \"${TV_ARCHIVE_PATH}\"\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid tvOS\" \\\n-configuration Release \\\n-sdk appletvos \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid tvOS\" \\\n-configuration Release \\\n-sdk appletvsimulator \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${TV_DEVICE_BIN}\" ] && [ -d \"${TV_SIMULATOR_BIN}\" ]; then\ncp -RL \"${TV_DEVICE_BIN}\" \"${TV_ARCHIVE_PATH}\"\ncp -RL \"${TV_SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${TV_ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${TV_DEVICE_BIN}/${TARGET_NAME}\" \"${TV_SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${TV_ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\npushd \"${TV_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid macOS\" \\\n-configuration Release \\\n-sdk macosx \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${MAC_BIN}\" ]; then\ncp -RL \"${MAC_BIN}\" \"${MAC_ARCHIVE_PATH}\"\npushd \"${MAC_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Release \\\n-sdk iphonesimulator \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Release \\\n-sdk iphoneos \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${DEVICE_BIN}\" ] && [ -d \"${SIMULATOR_BIN}\" ]; then\ncp -RL \"${DEVICE_BIN}\" \"${IOS_ARCHIVE_PATH}\"\ncp -RL \"${SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${IOS_ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${DEVICE_BIN}/${TARGET_NAME}\" \"${SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${IOS_ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\npushd \"${IOS_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nfi\n";
 		};
 		C1D6E99D1E7AE7A5007589FC /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1015,6 +1015,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1037,6 +1038,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1059,6 +1061,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1082,6 +1085,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1105,6 +1109,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1128,6 +1133,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1259,6 +1265,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1291,6 +1298,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1398,6 +1406,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1436,6 +1445,7 @@
 				C1375A501F137764009A45BF /* Framework */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C1375A661F137ED0009A45BF /* Build configuration list for PBXNativeTarget "RapidTests tvOS" */ = {
 			isa = XCConfigurationList;
@@ -1445,6 +1455,7 @@
 				C1375A691F137ED0009A45BF /* Framework */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C13EAB611EF820C600264F4E /* Build configuration list for PBXNativeTarget "Rapid tvOS" */ = {
 			isa = XCConfigurationList;

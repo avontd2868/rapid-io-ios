@@ -14,7 +14,7 @@
     <a title="Rapid Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Rapid Docs</a> (73% documented)</p>
+        <p><a href="../index.html">Rapid Docs</a> (74% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -257,33 +257,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:ZvC5Rapid5Rapid7timeoutGSqSd_"></a>
-                    <a name="//apple_ref/swift/Variable/timeout" class="dashAnchor"></a>
-                    <a class="token" href="#/s:ZvC5Rapid5Rapid7timeoutGSqSd_">timeout</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Optional timeout is seconds for Rapid requests. If timeout is nil requests never end up with timeout error</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">timeout</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:vC5Rapid5Rapid6apiKeySS"></a>
                     <a name="//apple_ref/swift/Property/apiKey" class="dashAnchor"></a>
                     <a class="token" href="#/s:vC5Rapid5Rapid6apiKeySS">apiKey</a>
@@ -302,6 +275,33 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">apiKey</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Rapid5Rapid7timeoutGSqSd_"></a>
+                    <a name="//apple_ref/swift/Property/timeout" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Rapid5Rapid7timeoutGSqSd_">timeout</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Optional timeout in seconds for Rapid requests. If timeout is nil requests never end up with timeout error</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">timeout</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -774,6 +774,57 @@
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Rapid5Rapid16serverTimeOffsetFT10completionFGOS_11RapidResultSd_T__T_"></a>
+                    <a name="//apple_ref/swift/Method/serverTimeOffset(completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Rapid5Rapid16serverTimeOffsetFT10completionFGOS_11RapidResultSd_T__T_">serverTimeOffset(completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a difference between local device time and server time</p>
+
+<p>When server time is 1.1.2017 7:18:19 AM and device time is 1.1.2017 7:18:20
+the offset is positive 1</p>
+
+<p>Offset&rsquo;s accuracy can be affected by network latency, so it is useful primarily for discovering large (&gt; 1 second) discrepancies in clock time</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">func</span> <span class="nf">serverTimeOffset</span><span class="p">(</span><span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">RapidTimeOffsetHandler</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Completion handler which returns the offset</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
             <div class="task-group">
@@ -890,6 +941,33 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">class</span> <span class="k">var</span> <span class="nv">logLevel</span><span class="p">:</span> <span class="kt"><a href="../Classes/RapidLogger.html">RapidLogger</a></span><span class="o">.</span><span class="kt">Level</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvC5Rapid5Rapid7timeoutGSqSd_"></a>
+                    <a name="//apple_ref/swift/Variable/timeout" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvC5Rapid5Rapid7timeoutGSqSd_">timeout</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Optional timeout in seconds for Rapid requests. If timeout is nil requests never end up with timeout error</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">class</span> <span class="k">var</span> <span class="nv">timeout</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -1054,6 +1132,57 @@
                           <pre class="highlight"><code><span class="kd">class</span> <span class="kd">func</span> <span class="nf">unsubscribeAll</span><span class="p">()</span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFC5Rapid5Rapid16serverTimeOffsetFT10completionFGOS_11RapidResultSd_T__T_"></a>
+                    <a name="//apple_ref/swift/Method/serverTimeOffset(completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFC5Rapid5Rapid16serverTimeOffsetFT10completionFGOS_11RapidResultSd_T__T_">serverTimeOffset(completion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a difference between local device time and server time</p>
+
+<p>When server time is 1.1.2017 7:18:19 AM and device time is 1.1.2017 7:18:20
+the offset is positive 1</p>
+
+<p>Offset&rsquo;s accuracy can be affected by network latency, so it is useful primarily for discovering large (&gt; 1 second) discrepancies in clock time</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">class</span> <span class="kd">func</span> <span class="nf">serverTimeOffset</span><span class="p">(</span><span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">RapidTimeOffsetHandler</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Completion handler which returns the offset</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </section>
                   </div>
@@ -1392,8 +1521,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-06-22)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-07-11)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
