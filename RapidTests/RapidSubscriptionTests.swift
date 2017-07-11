@@ -1301,7 +1301,8 @@ extension RapidTests {
     
     func testUnauthorizedCollectionFetch() {
         let promise = expectation(description: "Subscription update")
-
+        rapid.deauthorize()
+        
         self.rapid.collection(named: "fakeCollectionName").fetch(completion: { result in
             if case .failure(let error) = result, case RapidError.permissionDenied = error {
                 promise.fulfill()
@@ -1316,7 +1317,8 @@ extension RapidTests {
     
     func testUnauthorizedDocumentFetch() {
         let promise = expectation(description: "Subscription update")
-
+        rapid.deauthorize()
+        
         self.rapid.collection(named: "fakeCollectionName").document(withID: "1").fetch(completion: { result in
             if case .failure(let error) = result, case RapidError.permissionDenied = error {
                 promise.fulfill()
@@ -1362,9 +1364,7 @@ extension RapidTests {
         rapid.isCacheEnabled = true
         
         mutate(documentID: "1", value: ["car": ["type": "Skoda", "model": "Octavia"]])
-        mutate(documentID: "2", value: ["car": ["type": "Skoda", "model": "Fabia"]])
-        
-        runAfter(1) {
+        mutate(documentID: "2", value: ["car": ["type": "Skoda", "model": "Fabia"]]) { _ in
             
             self.rapid.collection(named: self.testCollectionName).order(by: RapidOrdering(keyPath: "car.model", ordering: .ascending)).fetch { result in
                 guard case .success(let documents) = result else {

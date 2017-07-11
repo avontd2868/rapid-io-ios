@@ -1317,9 +1317,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles/Dependencies";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles";
 				INFOPLIST_FILE = RapidTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles/Dependencies";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -1332,9 +1332,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles/Dependencies";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles";
 				INFOPLIST_FILE = RapidTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles/Dependencies";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -1425,9 +1425,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles/Dependencies";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles";
 				INFOPLIST_FILE = RapidTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles/Dependencies";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;

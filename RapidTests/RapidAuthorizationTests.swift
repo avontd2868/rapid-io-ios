@@ -13,6 +13,7 @@ extension RapidTests {
 
     func testSubscribeWituhoutAuthorization() {
         let promise = expectation(description: "Permission denied")
+        rapid.deauthorize()
         
         rapid.collection(named: "test1").subscribe(block: { result in
             if case .failure(let error) = result, case .permissionDenied = error {

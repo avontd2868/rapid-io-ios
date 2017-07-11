@@ -335,13 +335,11 @@ extension RapidTests {
     func testConcurrencyMergeSafeWithBlock() {
         let promise = expectation(description: "Merge document")
         
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "loadTest"])
-        
         var iterations = [Int]()
-
+        
         let numberOfIterations = 20
         
-        runAfter(1) {
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "loadTest"]) { _ in
             
             for i in 0..<numberOfIterations {
                 self.rapid.collection(named: self.testCollectionName).document(withID: "1").execute(

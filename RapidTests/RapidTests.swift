@@ -13,19 +13,33 @@ func ==(lhs: [AnyHashable: Any], rhs: [AnyHashable: Any] ) -> Bool {
     return NSDictionary(dictionary: lhs).isEqual(to: rhs)
 }
 
+#if DEBUG
+let nameSuffix = "Debug"
+#else
+let nameSuffix = "Release"
+#endif
+
 class RapidTests: XCTestCase {
     
     var rapid: Rapid!
     
-    let apiKey = "ZGV2LXdzLXNlcnZpY2UucmFwaWQuaW8="
+    let apiKey = "ZGV2ZWxvcG1lbnQuYXBwLXJhcGlkLmlv"
     let localApiKey = "bG9jYWxob3N0OjgwODA="
     let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
     let socketURL = URL(string: "wss://dev-ws-service.rapid.io")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
-    let testCollectionName = "iosUnitTests"
-    let testChannelName = "iosUnitTestsChannel"
+    #if os(OSX)
+        let testCollectionName = "macosUnitTests\(nameSuffix)"
+        let testChannelName = "macosUnitTestsChannel\(nameSuffix)"
+    #elseif os(iOS)
+        let testCollectionName = "iosUnitTests\(nameSuffix)"
+        let testChannelName = "iosUnitTestsChannel\(nameSuffix)"
+    #elseif os(tvOS)
+        let testCollectionName = "tvosUnitTests\(nameSuffix)"
+        let testChannelName = "tvosUnitTestsChannel\(nameSuffix)"
+    #endif
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6eyJwYXR0ZXJuIjoiXmlvcy4qIn0sInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOnsicGF0dGVybiI6Il5pb3MuKiJ9LCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.8fZjAjt4mRq7yUfWWQ4paw93-2ZiKMVM1Y4gstkyULs"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwid3JpdGUiOnRydWV9LHsiY29sbGVjdGlvbiI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.MdQbdW958yzRQk46qj7_bY92A60pxtSkDgy9yJV7Vd8"
     
     override func setUp() {
         super.setUp()
