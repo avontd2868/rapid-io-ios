@@ -178,6 +178,6 @@ extension RapidTests {
             self.rapid.channel(named: self.testChannelName).publish(message: ["message": "test"])
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
     }
 }

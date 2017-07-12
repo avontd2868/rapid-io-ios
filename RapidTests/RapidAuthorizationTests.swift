@@ -113,6 +113,6 @@ extension RapidTests {
         
         socketManager.deauthorize(deauthRequest: deauth)
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 }

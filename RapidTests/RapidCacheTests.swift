@@ -464,7 +464,7 @@ extension RapidTests {
         
         cache?.save(dataset: ["test1" as NSString], forKey: "testKey")
         
-        runAfter(1.5) {
+        runAfter(2) {
             cache = RapidCache(apiKey: self.apiKey, timeToLive: 1)
             
             cache?.loadDataset(forKey: "testKey", completion: { (value) in
@@ -475,7 +475,7 @@ extension RapidTests {
                         if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "test1") && arr.count == 1 {
                             promise.fulfill()
                         }
-                        else{
+                        else {
                             XCTFail("Cache not loaded")
                         }
                     })

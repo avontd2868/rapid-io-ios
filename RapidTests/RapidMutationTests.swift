@@ -200,7 +200,7 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
     }
     
     func testMergeSafeWithBlock() {
@@ -329,7 +329,7 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
     }
     
     func testConcurrencyMergeSafeWithBlock() {
@@ -374,7 +374,7 @@ extension RapidTests {
     
     func testMultipleDocumentMutations() {
         let promise = expectation(description: "Mutate document")
-        
+
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["counter": 0]) { _ in
             let numberOfMutations = 200
             var value: Int?
