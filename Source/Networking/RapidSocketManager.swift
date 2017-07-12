@@ -25,9 +25,6 @@ class RapidSocketManager {
     /// State of a websocket connection
     fileprivate var state: Rapid.ConnectionState = .disconnected
     
-    /// ID that identifies a websocket connection to this client for reconnecting purposes
-    fileprivate(set) var connectionID: String?
-    
     fileprivate(set) var auth: RapidAuthorization?
     
     /// Dedicated threads
@@ -257,7 +254,7 @@ fileprivate extension RapidSocketManager {
 
             // Do not include connection requests and heartbeats that are relevant to one physical websocket connection
             switch $0 {
-            case is RapidConnectionRequest, is RapidEmptyRequest, is RapidReconnectionRequest:
+            case is RapidConnectionRequest, is RapidEmptyRequest, is RapidAuthRequest:
                 return false
                 
             default:
@@ -267,30 +264,16 @@ fileprivate extension RapidSocketManager {
         
         eventQueue.removeAll(keepingCapacity: true)
         
-        let connectionTerminated: Bool
-        switch error {
-        case .some(.connectionTerminated), .some(.timeout):
-            connectionTerminated = true
-            
-        default:
-            connectionTerminated = false
-        }
-        
-        // If abstract connection to the server was terminated
-        if connectionTerminated {
-            //Because an abstract connection expired a new connection with a new connection ID needs to be established
-            connectionID = nil
-
-            // Add to the request queue those subscriptions that were already acknowledged by the server
-            let resubscribe = activeSubscriptions
-                .map({ $0.value })
-                .filter({ (subscription) -> Bool in
-                    
+        // Add to the request queue those subscriptions that were already acknowledged by the server
+        let resubscribe = activeSubscriptions
+            .map({ $0.value })
+            .filter({ (subscription) -> Bool in
+                
                 let toBeSent = currentQueue.contains(where: { (request) -> Bool in
                     if let request = request as? RapidSubscriptionManager {
                         return request.subscriptionID == subscription.subscriptionID
                     }
-
+                    
                     return false
                 })
                 
@@ -298,15 +281,14 @@ fileprivate extension RapidSocketManager {
                     if let request = request as? RapidSubscriptionManager {
                         return request.subscriptionID == subscription.subscriptionID
                     }
-
+                    
                     return false
                 })
                 
                 return !toBeSent && !toBeAcknowledged
             })
-            for handler in resubscribe {
-                eventQueue.append(handler)
-            }
+        for handler in resubscribe {
+            eventQueue.append(handler)
         }
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
@@ -336,27 +318,16 @@ fileprivate extension RapidSocketManager {
     /// When socket is connected physically, the client still needs to identify itself by its connection ID.
     /// This creates an abstract connection which is not dependent on a physical one
     func sendConnectionRequest() {
-        let connection: RapidConnectionRequest
         let authorization: RapidAuthRequest?
 
-        if let connectionID = connectionID {
-            connection = RapidReconnectionRequest(connectionID: connectionID, delegate: self)
-            
-            // No need to reauthorize when reconnecting
-            authorization = nil
+        let connection = RapidConnectionRequest(connectionID: Rapid.uniqueID, delegate: self)
+        
+        // Client needs to reauthorize when creating a new connection
+        if let token = self.auth?.token {
+            authorization = RapidAuthRequest(token: token)
         }
         else {
-            let connectionID = Rapid.uniqueID
-            connection = RapidConnectionRequest(connectionID: connectionID, delegate: self)
-            self.connectionID = connectionID
-            
-            // Client needs to reauthorize when creating a new connection
-            if let token = self.auth?.token {
-                authorization = RapidAuthRequest(token: token)
-            }
-            else {
-                authorization = nil
-            }
+            authorization = nil
         }
 
         post(event: connection, prioritize: true)

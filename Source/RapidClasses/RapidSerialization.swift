@@ -417,22 +417,6 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
-    /// Serialize a reconnection request into JSON string
-    ///
-    /// - Parameters:
-    ///   - reconnection: Reconnection request object
-    ///   - identifiers: Identifiers that are associated with the connection request event
-    /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(reconnection: RapidReconnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
-        var json = identifiers
-        
-        json[Reconnect.ConnectionID.name] = reconnection.connectionID
-        
-        let resultDict = [Reconnect.name: json]
-        return try resultDict.jsonString()
-    }
-    
     /// Serialize an disconnection request into JSON string
     ///
     /// - Parameters:

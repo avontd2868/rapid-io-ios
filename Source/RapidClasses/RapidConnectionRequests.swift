@@ -72,15 +72,6 @@ extension RapidConnectionRequest: RapidTimeoutRequest {
 
 }
 
-/// Reconnection request
-class RapidReconnectionRequest: RapidConnectionRequest {
-    
-    override func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(reconnection: self, withIdentifiers: identifiers)
-    }
-    
-}
-
 // MARK: Disconnect
 
 /// Disconnection request
