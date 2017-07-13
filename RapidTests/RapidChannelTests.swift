@@ -28,7 +28,7 @@ extension RapidTests {
             self.rapid.channel(named: self.testChannelName).publish(message: ["message": "test"])
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testSubscribeToChannels() {
@@ -49,7 +49,7 @@ extension RapidTests {
             self.rapid.channel(named: "\(self.testChannelName)test").publish(message: ["message": "test"])
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testUnauthorizedPublish() {
@@ -60,9 +60,13 @@ extension RapidTests {
             if case .failure(let error) = result, case .permissionDenied = error {
                 promise.fulfill()
             }
+            else {
+                XCTFail("Wrong message")
+                promise.fulfill()
+            }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testUnauthorizedSubscription() {
@@ -73,9 +77,13 @@ extension RapidTests {
             if case .failure(let error) = result, case .permissionDenied = error {
                 promise.fulfill()
             }
+            else {
+                XCTFail("Wrong message")
+                promise.fulfill()
+            }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testUnsubscribe() {
@@ -96,10 +104,12 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Wrong message")
+                    promise.fulfill()
                 }
             }
             else {
                 XCTFail("Wrong message")
+                promise.fulfill()
             }
         }
         
@@ -107,7 +117,7 @@ extension RapidTests {
             self.rapid.channel(named: self.testChannelName).publish(message: ["message": "test"])
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     
@@ -127,6 +137,7 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Wrong message")
+                    promise.fulfill()
                 }
             }
             else if orderSub1 == 1 {
@@ -141,10 +152,12 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Wrong message")
+                    promise.fulfill()
                 }
             }
             else {
                 XCTFail("Wrong message")
+                promise.fulfill()
             }
         }
         subscription2 = RapidChannelSub(channelID: .name(testChannelName)) { (result) in
@@ -157,10 +170,12 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Wrong message")
+                    promise.fulfill()
                 }
             }
             else {
                 XCTFail("Wrong message")
+                promise.fulfill()
             }
         }
         
@@ -173,11 +188,12 @@ extension RapidTests {
             
             if sub1 !== sub2 {
                 XCTFail("Different handlers")
+                promise.fulfill()
             }
             
             self.rapid.channel(named: self.testChannelName).publish(message: ["message": "test"])
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 20, handler: nil)
     }
 }

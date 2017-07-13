@@ -429,10 +429,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subsription passed")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testMutationWithArray() {
@@ -449,7 +450,7 @@ extension RapidTests {
             promise.fulfill()
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testInvalidNestedDictionaryMutation() {
@@ -463,10 +464,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subsription passed")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testWrongDocumentIDMutation() {
@@ -480,10 +482,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subsription passed")
+                promise.fulfill()
             }
         }
             
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testInvalidKeyMutation() {
@@ -497,10 +500,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subsription passed")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testEmptyAndFilter() {
@@ -512,10 +516,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Dictionary valid")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testEmptyOrFilter() {
@@ -527,10 +532,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Dictionary valid")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testSubscriptionHashes() {
@@ -664,9 +670,10 @@ extension RapidTests {
             }
             else {
                 XCTFail("Wrong error")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 3, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 }

@@ -21,10 +21,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Did subscribe")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testAuthorizeAndSubscribe() {
@@ -38,10 +39,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Did not subscribe")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testSubscriptionChangeAfterUnsubscription() {
@@ -58,6 +60,7 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Did not subscribe")
+                    promise.fulfill()
                 }
             }
             else {
@@ -66,11 +69,12 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Still subscribed")
+                    promise.fulfill()
                 }
             }
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testInvalidAuthToken() {
@@ -82,10 +86,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Authorization passed")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDeauthorizeFail() {
@@ -108,11 +113,12 @@ extension RapidTests {
             }
             else {
                 XCTFail("Did unauthorize")
+                promise.fulfill()
             }
         }
         
         socketManager.deauthorize(deauthRequest: deauth)
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 }
