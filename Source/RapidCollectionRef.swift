@@ -9,13 +9,13 @@
 import Foundation
 
 /// Collection subscription handler which provides a client either with an error or with an array of documents
-public typealias RapidColSubHandler = (_ result: RapidResult<[RapidDocument]>) -> Void
+public typealias RapidCollectionSubscriptionHandler = (_ result: RapidResult<[RapidDocument]>) -> Void
 
 /// Collection subscription handler which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
-public typealias RapidColSubHandlerWithChanges = (_ result: RapidResult<(documents: [RapidDocument], added: [RapidDocument], updated: [RapidDocument], removed: [RapidDocument])>) -> Void
+public typealias RapidCollectionSubscriptionHandlerWithChanges = (_ result: RapidResult<(documents: [RapidDocument], added: [RapidDocument], updated: [RapidDocument], removed: [RapidDocument])>) -> Void
 
 /// Collection fetch completion handler which provides a client either with an error or with an array of documents
-public typealias RapidColFetchCompletion = RapidColSubHandler
+public typealias RapidCollectionFetchCompletion = RapidCollectionSubscriptionHandler
 
 /// Class representing Rapid.io collection
 open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
@@ -183,6 +183,9 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     open func limited(to take: Int, skip: Int? = nil) {
         self.subscriptionPaging = RapidPaging(skip: skip, take: take)
     }*/
+}
+
+extension RapidCollectionRef: RapidSubscriptionReference {
     
     /// Subscribe for listening to the collection changes
     ///
@@ -191,7 +194,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// - Parameter block: Subscription handler which provides a client either with an error or with an array of documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribe(block: @escaping RapidColSubHandler) -> RapidSubscription {
+    open func subscribe(block: @escaping RapidCollectionSubscriptionHandler) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: block, handlerWithChanges: nil)
         
         socketManager.subscribe(toCollection: subscription)
@@ -206,7 +209,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// - Parameter block: Subscription handler which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribeWithChanges(block: @escaping RapidColSubHandlerWithChanges) -> RapidSubscription {
+    open func subscribeWithChanges(block: @escaping RapidCollectionSubscriptionHandlerWithChanges) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: nil, handlerWithChanges: block)
         
         socketManager.subscribe(toCollection: subscription)
@@ -214,16 +217,21 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
         return subscription
     }
     
+}
+
+extension RapidCollectionRef: RapidFetchReference {
+    
     /// Fetch collection
     ///
     /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
     ///
     /// - Parameter completion: Fetch completion handler which provides a client either with an error or with an array of documents
-    open func fetch(completion: @escaping RapidColFetchCompletion) {
+    open func fetch(completion: @escaping RapidCollectionFetchCompletion) {
         let fetch = RapidCollectionFetch(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, completion: completion)
         
         socketManager.fetch(fetch)
     }
+
 }
 
 extension RapidCollectionRef {

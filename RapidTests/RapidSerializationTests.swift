@@ -318,7 +318,6 @@ extension RapidTests {
     func testSubscriptionOrdering() {
         let collection = self.rapid.collection(named: testCollectionName)
             .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
-            .order(by: [RapidOrdering(keyPath: "second_nem", ordering: .descending)])
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
@@ -326,8 +325,7 @@ extension RapidTests {
             "sub": [
                 "col-id": sub.collectionID,
                 "order": [
-                    ["name": "asc"],
-                    ["second_nem": "desc"]
+                    ["name": "asc"]
                 ]
             ]
         ]
@@ -363,10 +361,7 @@ extension RapidTests {
             .order(by:
                 RapidOrdering(keyPath: "urgency", ordering: .ascending)
             )
-            .order(by: [
-                RapidOrdering(keyPath: "sentDate", ordering: .descending)
-                ])
-            .limit(to: 50, skip: 10)
+            .limit(to: 50)
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
@@ -398,11 +393,9 @@ extension RapidTests {
                     ]
                 ],
                 "order": [
-                    ["urgency": "asc"],
-                    ["sentDate": "desc"]
+                    ["urgency": "asc"]
                 ],
-                "limit": 50,
-                "skip": 10
+                "limit": 50
             ]
         ]
         
@@ -558,14 +551,11 @@ extension RapidTests {
             .order(by:
                 RapidOrdering(keyPath: "urgency", ordering: .ascending)
             )
-            .order(by: [
-                RapidOrdering(keyPath: "sentDate", ordering: .descending)
-                ])
-            .limit(to: 50, skip: 10)
+            .limit(to: 50)
 
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let hash = "collection#\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a|o-sentDate-d#t50s10"
+        let hash = "collection#\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a#t50"
         
         XCTAssertEqual(sub.subscriptionHash, hash)
     }

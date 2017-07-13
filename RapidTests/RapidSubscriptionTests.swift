@@ -1436,7 +1436,7 @@ extension RapidTests {
 // MARK: Helper methods
 extension RapidTests {
     
-    func mutate(documentID: String?, value: [AnyHashable: Any]?, completion: RapidMutationCompletion? = nil) {
+    func mutate(documentID: String?, value: [AnyHashable: Any]?, completion: RapidDocumentMutationCompletion? = nil) {
         if let id = documentID, let value = value {
             self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value, completion: completion)
         }
