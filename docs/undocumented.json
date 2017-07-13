@@ -36,13 +36,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidChannelRef.swift",
-      "line": 19,
-      "symbol": "RapidChannelRefProtocol.subscribe(block:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
       "line": 151,
       "symbol": "RapidDocument.init(coder:)",
@@ -208,6 +201,20 @@
       "line": 121,
       "symbol": "RapidError.ExecutionError.aborted",
       "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidProtocols.swift",
+      "line": 16,
+      "symbol": "RapidSubscriptionReference.subscribe(block:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidProtocols.swift",
+      "line": 23,
+      "symbol": "RapidFetchReference.fetch(completion:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {

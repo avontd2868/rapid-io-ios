@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>RapidResult Enum Reference</title>
+    <title>RapidSubscriptionReference Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/RapidResult" class="dashAnchor"></a>
-    <a title="RapidResult Enum Reference"></a>
+    <a name="//apple_ref/swift/Protocol/RapidSubscriptionReference" class="dashAnchor"></a>
+    <a title="RapidSubscriptionReference Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Rapid Docs</a> (74% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Rapid Reference</a>
         <img id="carat" src="../img/carat.png" />
-        RapidResult Enum Reference
+        RapidSubscriptionReference Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -186,19 +186,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>RapidResult</h1>
+            <h1>RapidSubscriptionReference</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RapidResult</span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RapidSubscriptionReference</span></code></pre>
 
                 </div>
               </div>
-            <p>Result for completion handlers</p>
-
-<ul>
-<li>success: Request was proceeded without any error</li>
-<li>failure: An error occured</li>
-</ul>
+            <p>Common protocol for channel references</p>
 
           </section>
           <section class="section task-group-section">
@@ -207,9 +202,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO5Rapid11RapidResult7successurFMGS0_x_FT5valuex_GS0_x_"></a>
-                    <a name="//apple_ref/swift/Element/success" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO5Rapid11RapidResult7successurFMGS0_x_FT5valuex_GS0_x_">success</a>
+                    <a name="/s:FP5Rapid26RapidSubscriptionReference9subscribeFT5blockFGOS_11RapidResultwx6Result_T__PS_17RapidSubscription_"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(block:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FP5Rapid26RapidSubscriptionReference9subscribeFT5blockFGOS_11RapidResultwx6Result_T__PS_17RapidSubscription_">subscribe(block:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -224,38 +219,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RapidResult</span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:FO5Rapid11RapidResult7failureurFMGS0_x_FT5errorOS_10RapidError_GS0_x_"></a>
-                    <a name="//apple_ref/swift/Element/failure" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO5Rapid11RapidResult7failureurFMGS0_x_FT5errorOS_10RapidError_GS0_x_">failure</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RapidResult</span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RapidSubscriptionReference</span></code></pre>
 
                         </div>
                       </div>
