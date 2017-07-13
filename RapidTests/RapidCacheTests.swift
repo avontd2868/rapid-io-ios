@@ -180,10 +180,11 @@ extension RapidTests {
             }
             else{
                 XCTFail("Cache not loaded")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testOverwriteCache() {
@@ -200,10 +201,11 @@ extension RapidTests {
             }
             else{
                 XCTFail("Cache not loaded")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testHasCache() {
@@ -236,7 +238,7 @@ extension RapidTests {
             })
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testClearCache() {
@@ -262,12 +264,13 @@ extension RapidTests {
                     }
                     else {
                         XCTFail("Cache not cleared")
+                        promise.fulfill()
                     }
                 })
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testClearCacheClassMethod() {
@@ -283,6 +286,7 @@ extension RapidTests {
         cache?.loadDataset(forKey: "testKey", completion: { (value) in
             if value != nil {
                 XCTFail("Cache not cleared")
+                promise.fulfill()
             }
             else {
                 cache?.loadDataset(forKey: "testString2", completion: { (value) in
@@ -291,12 +295,13 @@ extension RapidTests {
                     }
                     else {
                         XCTFail("Cache not cleared")
+                        promise.fulfill()
                     }
                 })
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testHashFunction() {
@@ -395,10 +400,11 @@ extension RapidTests {
             }
             else{
                 XCTFail("Cache not loaded")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testRemoveCollidingKeys() {
@@ -422,10 +428,11 @@ extension RapidTests {
             }
             else{
                 XCTFail("Cache not loaded")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testRemoveJustSoftLinkWhenRCNot0() {
@@ -451,10 +458,11 @@ extension RapidTests {
             }
             else{
                 XCTFail("Cache not loaded")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testOutdatedFilesPruning() {
@@ -477,16 +485,18 @@ extension RapidTests {
                         }
                         else {
                             XCTFail("Cache not loaded")
+                            promise.fulfill()
                         }
                     })
                 }
                 else {
                     XCTFail("Cache not pruned")
+                    promise.fulfill()
                 }
             })
         }
         
-        waitForExpectations(timeout: 3, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testSizePruning() {
@@ -510,16 +520,18 @@ extension RapidTests {
                         }
                         else{
                             XCTFail("Cache not loaded")
+                            promise.fulfill()
                         }
                     })
                 }
                 else {
                     XCTFail("Cache not pruned")
+                    promise.fulfill()
                 }
             })
         }
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testSaveEncryptedCache() {
@@ -536,10 +548,11 @@ extension RapidTests {
             }
             else{
                 XCTFail("Cache not loaded")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testLoadEncryptedCacheError() {
@@ -555,10 +568,11 @@ extension RapidTests {
             }
             else{
                 XCTFail("Did access cache")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testLoadAndRemoveCachedObject() {
@@ -578,15 +592,17 @@ extension RapidTests {
                     }
                     else {
                         XCTFail("Cache not removed")
+                        promise.fulfill()
                     }
                 })
             }
             else {
                 XCTFail("Cache not loaded")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testUpdateCacheWithEmptyArray() {
@@ -606,15 +622,17 @@ extension RapidTests {
                     }
                     else {
                         XCTFail("Cache not updated")
+                        promise.fulfill()
                     }
                 })
             }
             else{
                 XCTFail("No cache")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testLoadingSubscriptionFromCache() {
@@ -632,6 +650,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).subscribe(block: { result in
                 guard case .success(let docs) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -650,11 +669,13 @@ extension RapidTests {
                             let subscription = RapidCollectionSub(collectionID: self.testCollectionName, filter: nil, ordering: nil, paging: nil, handler: { result in
                                 guard case .success(let cachedDocuments) = result else {
                                     XCTFail("Error")
+                                    promise.fulfill()
                                     return
                                 }
                                 
                                 if cachedDocuments == documents {
                                     XCTFail("Cache not updated")
+                                    promise.fulfill()
                                 }
                                 else {
                                     for document in documents {
@@ -670,6 +691,7 @@ extension RapidTests {
                                         }
                                         else {
                                             XCTFail("Missing document")
+                                            promise.fulfill()
                                         }
                                     }
                                     
@@ -684,7 +706,7 @@ extension RapidTests {
             })
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 20, handler: nil)
     }
     
     func testRemovingCachedValuesOnFailure() {
@@ -705,6 +727,7 @@ extension RapidTests {
                     
                     guard case .success(let docs) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -725,7 +748,7 @@ extension RapidTests {
             hash = sub.subscriptionHash
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 20, handler: nil)
     }
 
 }

@@ -136,16 +136,18 @@ class RapidTests: XCTestCase {
                         }
                         else {
                             XCTFail("Rapid is not connecting")
+                            promise.fulfill()
                         }
                     })
                 }
                 else {
                     XCTFail("Rapid is not disconnected")
-                }
+                    promise.fulfill()
+               }
             }
         }
         
-        waitForExpectations(timeout: 4, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testReconnect() {
@@ -154,18 +156,19 @@ class RapidTests: XCTestCase {
         runAfter(1) { 
             self.rapid.handler.socketManager.networkHandler.restartSocket(afterError: nil)
             
-            runAfter(3, closure: {
+            runAfter(5, closure: {
                 
                 if self.rapid.connectionState == .connected {
                     promise.fulfill()
                 }
                 else {
                     XCTFail("Rapid didn't reconnect")
+                    promise.fulfill()
                 }
             })
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testReconnectWhenNotConnected() {
@@ -177,6 +180,7 @@ class RapidTests: XCTestCase {
 
         let delegateObject = MockNetworkHandlerDelegateObject(connectCallback: {
             XCTFail("Socket connected")
+            promise.fulfill()
         }, disconnectCallback: { (error) in
             if let error = error, case .timeout = error {
                 networkHandler.goOnline()
@@ -188,16 +192,18 @@ class RapidTests: XCTestCase {
             }
             else {
                 XCTFail("Disconnect without error")
+                promise.fulfill()
             }
         }) { _ in
             XCTFail("Received response")
+            promise.fulfill()
         }
         
         networkHandler.delegate = delegateObject
         
         networkHandler.goOnline()
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testReconnectionAfterTerminated() {
@@ -216,12 +222,13 @@ class RapidTests: XCTestCase {
                     }
                     else {
                         XCTFail("Rapid didn't reconnect")
+                        promise.fulfill()
                     }
                 })
             })
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testCollectionWithoutHandler() {
@@ -331,7 +338,7 @@ class RapidTests: XCTestCase {
         let socketManager = RapidSocketManager(networkHandler: mockHandler)
         socketManager.goOnline()
         
-        waitForExpectations(timeout: 6, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testServerOffset() {
@@ -344,7 +351,7 @@ class RapidTests: XCTestCase {
             }
         }
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testConnectionRequestTimeout() {
@@ -373,7 +380,7 @@ class RapidTests: XCTestCase {
             XCTAssertEqual(manager.networkHandler.state, .connected)
         }
         
-        waitForExpectations(timeout: 6, handler: nil)
+        waitForExpectations(timeout: 16, handler: nil)
     }
     
     func testSendingEventsInQueueAfterReconnect() {
@@ -392,6 +399,7 @@ class RapidTests: XCTestCase {
             if event is RapidConnectionRequest {
                 if conReq {
                     XCTFail("Second connection request")
+                    promise.fulfill()
                 }
                 else {
                     conReq = true
@@ -403,6 +411,7 @@ class RapidTests: XCTestCase {
                 }
                 else {
                     XCTFail("Wrong order")
+                    promise.fulfill()
                 }
             }
             else if event is RapidDocumentMutation {
@@ -411,6 +420,7 @@ class RapidTests: XCTestCase {
                 }
                 else {
                     XCTFail("Wrong order")
+                    promise.fulfill()
                 }
             }
             else if event is RapidDocumentMerge {
@@ -423,10 +433,12 @@ class RapidTests: XCTestCase {
                 }
                 else {
                     XCTFail("Wrong order")
+                    promise.fulfill()
                 }
             }
             else if conReq && subReq && mutReq && merReq {
                 XCTFail("More requests")
+                promise.fulfill()
             }
         }, goOnlineCallback: { handler in
             if firstOnlineRequest {
@@ -450,7 +462,7 @@ class RapidTests: XCTestCase {
         manager.sendEmptyRequest()
         subscription.unsubscribe()
         
-        waitForExpectations(timeout: 6, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 
     func testSubscriptionReregistration() {
@@ -493,6 +505,7 @@ class RapidTests: XCTestCase {
                         
                     default:
                         XCTFail("Another subscription")
+                        promise.fulfill()
                     }
                 }
                 else if let mutation = event as? RapidDocumentMutation {
@@ -509,6 +522,7 @@ class RapidTests: XCTestCase {
                         
                     default:
                         XCTFail("Another mutation")
+                        promise.fulfill()
                     }
                 }
             }
@@ -554,7 +568,7 @@ class RapidTests: XCTestCase {
             })
         }
         
-        waitForExpectations(timeout: 6, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDictionaryMerge() {

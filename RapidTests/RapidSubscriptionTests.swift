@@ -198,7 +198,7 @@ extension RapidTests {
             promise.fulfill()
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testUnsubscription() {
@@ -223,7 +223,7 @@ extension RapidTests {
             promise.fulfill()
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testUnsubsciptionRetry() {
@@ -250,7 +250,7 @@ extension RapidTests {
         
         subscription.unsubscribe()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDoubleUnsubscriptionOnOneHandler() {
@@ -292,7 +292,7 @@ extension RapidTests {
             })
         }
         
-        waitForExpectations(timeout: 3, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testUnsubscribeAll() {
@@ -328,7 +328,7 @@ extension RapidTests {
             promise.fulfill()
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testInsert() {
@@ -340,6 +340,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
                     XCTFail("Document not inserted")
+                    promise.fulfill()
                     return
                 }
                 
@@ -351,13 +352,14 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Document not inserted")
+                    promise.fulfill()
                 }
             }
             
             self.mutate(documentID: "1", value: ["name": "testInsert"])
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 
     func testUpdate() {
@@ -369,6 +371,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
                     XCTFail("Document not inserted")
+                    promise.fulfill()
                     return
                 }
                 
@@ -380,13 +383,14 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Document not updated")
+                    promise.fulfill()
                 }
             }
             
             self.mutate(documentID: "1", value: ["name": "testUpdatedUpdate"])
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDelete() {
@@ -398,6 +402,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                 guard case .success(let tuple) = result else {
                     XCTFail("Document not inserted")
+                    promise.fulfill()
                     return
                 }
                 
@@ -409,13 +414,14 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Document not deleted")
+                    promise.fulfill()
                 }
             }
             
             self.mutate(documentID: "1", value: nil)
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testEmptySubscriptionUpdate() {
@@ -473,6 +479,7 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subscription was informed about no change")
+                promise.fulfill()
             }
         }
         
@@ -489,10 +496,11 @@ extension RapidTests {
                 promise.fulfill()
             })
             
-            waitForExpectations(timeout: 2, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
         }
         else {
             XCTFail("Wrong response")
+            promise.fulfill()
         }
     }
     
@@ -638,6 +646,7 @@ extension RapidTests {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: [RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending)], paging: nil, handler: nil) { result in
             guard case .success(let changes) = result else {
                 XCTFail("Error")
+                promise.fulfill()
                 return
             }
             
@@ -685,10 +694,11 @@ extension RapidTests {
             handler.receivedSubscriptionEvent(valResponse)
             handler.receivedSubscriptionEvent(updateResponse)
             
-            waitForExpectations(timeout: 2, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
         }
         else {
             XCTFail("Wrong response")
+            promise.fulfill()
         }
     }
     
@@ -832,6 +842,7 @@ extension RapidTests {
             
             guard case .success(let changes) = result else {
                 XCTFail("Error")
+                promise.fulfill()
                 return
             }
             
@@ -877,10 +888,11 @@ extension RapidTests {
             handler.receivedSubscriptionEvent(valResponse)
             handler.receivedSubscriptionEvent(updateResponse)
             
-            waitForExpectations(timeout: 2, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
         }
         else {
             XCTFail("Wrong response")
+            promise.fulfill()
         }
     }
     
@@ -975,6 +987,7 @@ extension RapidTests {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { result in
             guard case .success(let changes) = result else {
                 XCTFail("Error")
+                promise.fulfill()
                 return
             }
             
@@ -1011,10 +1024,11 @@ extension RapidTests {
             handler.receivedSubscriptionEvent(valResponse)
             handler.receivedSubscriptionEvent(updateResponse)
             
-            waitForExpectations(timeout: 2, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
         }
         else {
             XCTFail("Wrong response")
+            promise.fulfill()
         }
     }
     
@@ -1044,6 +1058,7 @@ extension RapidTests {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { result in
             guard case .success(let changes) = result else {
                 XCTFail("Error")
+                promise.fulfill()
                 return
             }
             
@@ -1054,6 +1069,7 @@ extension RapidTests {
             }
             else {
                 XCTFail("Wrong update")
+                promise.fulfill()
             }
         }
         
@@ -1064,10 +1080,11 @@ extension RapidTests {
             
             handler.receivedSubscriptionEvent(updateResponse)
             
-            waitForExpectations(timeout: 2, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
         }
         else {
             XCTFail("Wrong response")
+            promise.fulfill()
         }
     }
     
@@ -1091,6 +1108,7 @@ extension RapidTests {
         let subscription = RapidCollectionSub(collectionID: testCollectionName, filter: nil, ordering: nil, paging: nil, handler: nil) { result in
             guard case .success(let changes) = result else {
                 XCTFail("Error")
+                promise.fulfill()
                 return
             }
             
@@ -1101,6 +1119,7 @@ extension RapidTests {
             }
             else {
                 XCTFail("Wrong update")
+                promise.fulfill()
             }
         }
         
@@ -1111,11 +1130,12 @@ extension RapidTests {
             
             handler.receivedSubscriptionEvent(updateResponse)
             
-            waitForExpectations(timeout: 2, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
         }
         else {
             XCTFail("Wrong response")
-        }
+            promise.fulfill()
+       }
     }
     
     func testInitialValueOnDuplicateSubscription() {
@@ -1129,6 +1149,7 @@ extension RapidTests {
                 self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                     guard case .success(let changes) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -1143,6 +1164,7 @@ extension RapidTests {
                         self.rapid.collection(named: self.testCollectionName).subscribeWithChanges { result in
                             guard case .success(let changes) = result else {
                                 XCTFail("Error")
+                                promise.fulfill()
                                 return
                             }
                             
@@ -1153,13 +1175,14 @@ extension RapidTests {
                             }
                             else {
                                 XCTFail("Initial value different")
+                                promise.fulfill()
                             }
                         }
                     }
                 }
             }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDocumentSubscriptionDelete() {
@@ -1206,6 +1229,7 @@ extension RapidTests {
         let subscription = RapidDocumentSub(collectionID: testCollectionName, documentID: "1") { result in
             guard case .success(let document) = result else {
                 XCTFail("Error")
+                promise.fulfill()
                 return
             }
             
@@ -1231,10 +1255,11 @@ extension RapidTests {
             handler.receivedSubscriptionEvent(valResponse)
             handler.receivedSubscriptionEvent(updateResponse)
             
-            waitForExpectations(timeout: 2, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
         }
         else {
             XCTFail("Wrong response")
+            promise.fulfill()
         }
     }
     
@@ -1249,6 +1274,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).subscribe { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -1261,6 +1287,7 @@ extension RapidTests {
                     self.rapid.collection(named: self.testCollectionName).fetch(completion: { result in
                         guard case .success(let fetched) = result else {
                             XCTFail("Error")
+                            promise.fulfill()
                             return
                         }
                         
@@ -1269,13 +1296,14 @@ extension RapidTests {
                         }
                         else{
                             XCTFail("Fetched collection is different")
+                            promise.fulfill()
                         }
                     })
                 }
             }
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDocumentFetch() {
@@ -1288,6 +1316,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
                 guard case .success(let document) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -1296,7 +1325,7 @@ extension RapidTests {
             })
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testUnauthorizedCollectionFetch() {
@@ -1309,10 +1338,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Fetch passed")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testUnauthorizedDocumentFetch() {
@@ -1325,10 +1355,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Fetch passed")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 
     func testDotConventionFilter() {
@@ -1341,6 +1372,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).filter(by: RapidFilter.equal(keyPath: "car.type", value: "Skoda")).fetch { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -1355,7 +1387,7 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDotConventionOrder() {
@@ -1369,6 +1401,7 @@ extension RapidTests {
             self.rapid.collection(named: self.testCollectionName).order(by: RapidOrdering(keyPath: "car.model", ordering: .ascending)).fetch { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -1395,7 +1428,7 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 
 }
