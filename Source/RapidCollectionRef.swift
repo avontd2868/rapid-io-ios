@@ -86,8 +86,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     
     /// Get a new collection object with a subscription ordering assigned
     ///
-    /// An ordering with the array index 0 has the highest priority.
-    /// When the collection already contains an ordering the new ordering is appended to the original one
+    /// When the collection already contains an ordering the original ordering is overwriten by the new one
     ///
     /// - Parameter ordering: Ordering object
     /// - Returns: The collection with the ordering assigned
@@ -99,8 +98,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     
     /// Assign subscription ordering to the collection
     ///
-    /// An ordering with the array index 0 has the highest priority.
-    /// When the collection already contains an ordering the new ordering is appended to the original one
+    /// When the collection already contains an ordering the original ordering is overwriten by the new one
     ///
     /// - Parameter ordering: Ordering object
     open func ordered(by ordering: RapidOrdering) {
@@ -112,14 +110,14 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     }
 
     //TODO: Ordering with multiple descriptors
-    
+    /*
     /// Get a new collection object with a subscription ordering options assigned
     ///
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
-    func order(by ordering: [RapidOrdering]) -> RapidCollectionRef {
+    open func order(by ordering: [RapidOrdering]) -> RapidCollectionRef {
         let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
@@ -130,14 +128,38 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
-    func ordered(by ordering: [RapidOrdering]) {
+    open func ordered(by ordering: [RapidOrdering]) {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
         self.subscriptionOrdering?.append(contentsOf: ordering)
-    }
+    }*/
     
     /// Get a new collection object with a subscription limit options assigned
+    ///
+    /// When the collection already contains a limit the original limit is replaced by the new one
+    ///
+    /// - Parameters:
+    ///   - take: Maximum number of documents to be returned
+    /// - Returns: The collection with the limit assigned
+    open func limit(to take: Int) -> RapidCollectionRef {
+        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.limited(to: take)
+        return collection
+    }
+
+    /// Assing a subscription limit options to the collection
+    ///
+    /// When the collection already contains a limit the original limit is replaced by the new one
+    ///
+    /// - Parameters:
+    ///   - take: Maximum number of documents to be returned
+    open func limited(to take: Int) {
+        self.subscriptionPaging = RapidPaging(skip: nil, take: take)
+    }
+
+    //TODO: Implement skip
+    /*/// Get a new collection object with a subscription limit options assigned
     ///
     /// When the collection already contains a limit the original limit is replaced by the new one
     ///
@@ -150,7 +172,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
         collection.limited(to: take, skip: skip)
         return collection
     }
-
+    
     /// Assing a subscription limit options to the collection
     ///
     /// When the collection already contains a limit the original limit is replaced by the new one
@@ -160,8 +182,8 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///   - skip: Number of documents to be skipped
     open func limited(to take: Int, skip: Int? = nil) {
         self.subscriptionPaging = RapidPaging(skip: skip, take: take)
-    }
-
+    }*/
+    
     /// Subscribe for listening to the collection changes
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
