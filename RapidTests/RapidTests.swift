@@ -23,7 +23,7 @@ class RapidTests: XCTestCase {
     
     var rapid: Rapid!
     
-    let apiKey = "ZGV2ZWxvcG1lbnQuYXBwLXJhcGlkLmlv"
+    let apiKey = "dGVzdC5hcHAtcmFwaWQuaW8="
     let localApiKey = "bG9jYWxob3N0OjgwODA="
     let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
     let socketURL = URL(string: "wss://dev-ws-service.rapid.io")!
