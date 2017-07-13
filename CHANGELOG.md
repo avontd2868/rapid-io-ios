@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.1.0](https://github.com/rapid-io/ios/releases/tag/1.1.0)
+## [1.1.0](https://github.com/rapid-io/rapid-io-ios/releases/tag/1.1.0)
 Released on 2017-06-22.
 
 #### Added
@@ -17,14 +17,14 @@ Released on 2017-06-22.
 #### Updated
 
 - Channel reference implementation
-  - You can check up-to-date implementation [here](https://rapid-io.github.io/ios/Classes.html)
+  - You can check up-to-date implementation [here](https://rapid-io.github.io/rapid-io-ios/Classes.html)
 
 - Execution block signature
-  - You can check up-to-date implementation [here](https://rapid-io.github.io/ios/Typealiases.html#/s:5Rapid19RapidExecutionBlock)
+  - You can check up-to-date implementation [here](https://rapid-io.github.io/rapid-io-ios/Typealiases.html#/s:5Rapid19RapidExecutionBlock)
 
 ---
 
-## [1.0.2](https://github.com/rapid-io/ios/releases/tag/1.0.2)
+## [1.0.2](https://github.com/rapid-io/rapid-io-ios/releases/tag/1.0.2)
 Released on 2017-06-08.
 
 #### Fixed
@@ -32,7 +32,7 @@ Released on 2017-06-08.
 
 ---
 
-## [1.0.1](https://github.com/rapid-io/ios/releases/tag/1.0.1)
+## [1.0.1](https://github.com/rapid-io/rapid-io-ios/releases/tag/1.0.1)
 Released on 2017-06-07.
 
 #### Added
@@ -43,7 +43,7 @@ Released on 2017-06-07.
 
 ---
 
-## [1.0.0](https://github.com/rapid-io/ios/releases/tag/1.0.0)
+## [1.0.0](https://github.com/rapid-io/rapid-io-ios/releases/tag/1.0.0)
 Released on 2017-06-02
 
 #### Added

@@ -76,7 +76,7 @@ struct RapidErrorInstance: RapidServerResponse {
 ///
 /// - permissionDenied: Client doesn't have permisson to read or write specified data
 /// - server: Internal Rapid server error
-/// - invalidRequest: Client sent invalid request to the server. Please update Rapid SDK framework. If your framework is up to date, please report an issue at https://github.com/Rapid-SDK/ios
+/// - invalidRequest: Client sent invalid request to the server. Please update Rapid SDK framework. If your framework is up to date, please report an issue at https://github.com/rapid-io/rapid-io-ios
 /// - connectionTerminated: Websocket connection expired and needs to be reestablished
 /// - invalidData: Data are in an invalid format
 /// - timeout: Request timout
