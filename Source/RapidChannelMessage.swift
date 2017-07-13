@@ -17,7 +17,7 @@ open class RapidChannelMessage: RapidServerEvent {
     /// Channel name
     public let channelName: String
     
-    /// Message dictionary
+    /// Received message
     public let message: [AnyHashable: Any]
     
     init?(withJSON dict: [AnyHashable: Any]) {

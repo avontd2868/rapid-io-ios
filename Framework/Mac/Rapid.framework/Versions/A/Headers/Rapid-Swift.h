@@ -160,19 +160,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 @property (nonatomic, readonly, copy) NSString * _Nonnull apiKey;
 /// If <code>true</code> subscription values are stored locally to be available offline
 @property (nonatomic) BOOL isCacheEnabled;
-/// Initializes a Rapid instance
+/// Initialize a Rapid instance
 /// \param withApiKey API key that contains necessary information about a database to which you want to connect
 ///
 ///
 /// returns:
 /// New or previously initialized instance
 + (Rapid * _Nullable)getInstanceWithApiKey:(NSString * _Nonnull)apiKey SWIFT_WARN_UNUSED_RESULT;
-/// Creates a new object representing Rapid collection
+/// Create a new object representing Rapid.io collection
 /// \param named Collection name
 ///
 ///
 /// returns:
-/// New object representing Rapid collection
+/// New object representing Rapid.io collection
 - (RapidCollectionRef * _Nonnull)collectionWithNamed:(NSString * _Nonnull)name SWIFT_WARN_UNUSED_RESULT;
 /// Disconnect from server
 - (void)goOffline;
@@ -193,7 +193,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 /// returns:
 /// Shared Rapid instance
 + (Rapid * _Nullable)sharedAndReturnError:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
-/// Generates an unique ID which can be safely used as your document ID
+/// Generate an unique ID which can be safely used as your document ID
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull uniqueID;)
 + (NSString * _Nonnull)uniqueID SWIFT_WARN_UNUSED_RESULT;
 /// If <code>true</code> subscription values are stored locally to be available offline
@@ -206,17 +206,17 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isCacheEnabled;)
 + (void)goOnline;
 /// Remove all subscriptions
 + (void)unsubscribeAll;
-/// Configures shared Rapid instance
-/// Initializes an instance that can be lately accessed through singleton class functions
+/// Configure shared Rapid instance
+/// It initializes a shared instance that can be lately accessed through class functions
 /// \param withApiKey API key that contains necessary information about a database to which you want to connect
 ///
 + (void)configureWithApiKey:(NSString * _Nonnull)key;
-/// Creates a new object representing Rapid collection
+/// Create a new object representing Rapid.io collection
 /// \param named Collection name
 ///
 ///
 /// returns:
-/// New object representing Rapid collection
+/// New object representing Rapid.io collection
 + (RapidCollectionRef * _Nonnull)collectionWithNamed:(NSString * _Nonnull)named SWIFT_WARN_UNUSED_RESULT;
 /// Deinitialize shared Rapid instance
 + (void)deinitialize;
@@ -271,24 +271,37 @@ SWIFT_CLASS("_TtC5Rapid18RapidCollectionRef")
 
 @class NSCoder;
 
-/// Class representing Rapid.io document that is returned from a subscription handler
+/// Class representing Rapid.io document
 SWIFT_CLASS("_TtC5Rapid13RapidDocument")
 @interface RapidDocument : NSObject <NSCoding>
 /// Document ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull id;
-/// Collection ID
+/// Name of a collection to which the document belongs
 @property (nonatomic, readonly, copy) NSString * _Nonnull collectionName;
-/// Document body
+/// Document content
 @property (nonatomic, readonly, copy) NSDictionary * _Nullable value;
 /// Etag identifier
 @property (nonatomic, readonly, copy) NSString * _Nullable etag;
-/// Time of a document creation
+/// Time of document creation
 @property (nonatomic, readonly, copy) NSDate * _Nullable createdAt;
-/// Time of a document modification
+/// Time of document modification
 @property (nonatomic, readonly, copy) NSDate * _Nullable modifiedAt;
+/// Returns an object initialized from data in a given unarchiver
+/// \param aDecoder An unarchiver object
+///
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+/// Encode the document using a given archiver
+/// \param aCoder An archiver object
+///
 - (void)encodeWithCoder:(NSCoder * _Nonnull)aCoder;
+/// Determine whether the document is equal to a given object
+/// \param object An object for comparison
+///
+///
+/// returns:
+/// <code>true</code> if the document is equal to the object
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+/// Document description
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end

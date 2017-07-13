@@ -20,10 +20,10 @@ public typealias RapidDocumentMutationCompletion = (_ result: RapidResult<Any?>)
 /// Document deletion completion handler which informs a client about the operation result
 public typealias RapidDocumentDeletionCompletion = RapidDocumentMutationCompletion
 
-/// Document mutation completion handler which informs a client about the operation result
+/// Document merge completion handler which informs a client about the operation result
 public typealias RapidDocumentMergeCompletion = RapidDocumentMutationCompletion
 
-/// Block of code which is called on optimistic concurrency write
+/// The block of code that receives current document content and a developer chooses an action based on that.
 public typealias RapidDocumentExecutionBlock = (_ current: RapidDocument) -> RapidExecutionResult
 
 /// Execution completion handler which informs a client about the operation result
@@ -72,10 +72,11 @@ open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
         socketManager.mutate(mutationRequest: mutation)
     }
     
-    /// Mutate the document with regard to a current document content
-    /// Provided etag is compared to an etag of the document stored in a database
-    /// When provided etag is `nil` it means that the document shouldn't be stored in a database yet
-    /// If provided etag equals to an etag stored in database all values in the document are deleted and replaced by values in the provided dictionary
+    /// Mutate the document with regard to a current document content.
+    ///
+    /// Provided etag is compared to an etag of the document stored in a database.
+    /// When provided etag is `nil` it means that the document shouldn't be stored in a database yet.
+    /// If provided etag equals to an etag stored in a database all values in the document are deleted and replaced by values in the provided dictionary.
     /// If provided etag differs from an etag stored in a database the mutation fails with `RapidError.executionFailed`
     ///
     /// - Parameters:
@@ -88,20 +89,20 @@ open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
         socketManager.mutate(mutationRequest: mutation)
     }
     
-    /// Update the document with regard to a current document content
+    /// Update the document with regard to a current document content.
     ///
-    /// Block of code that receives current document content and returns `RapidExecutionResult` based on the received value
+    /// The block of code receives current document content and a developer chooses an action based on that.
     ///
-    /// If block returns `RapidExecutionResult.abort` the execution is aborted and the completion handler receives `RapidError.executionFailed(RapidError.ExecutionError.aborted)`
+    /// If the block returns `RapidExecutionResult.abort` the execution is aborted and the completion handler receives `RapidError.executionFailed(RapidError.ExecutionError.aborted)`.
     ///
-    /// If block returns `RapidExecutionResult.delete` it means that the document should be deleted, but only if it wasn't updated in a database in the meanwhile
-    /// If the document was updated in the meanwhile the block is called again with a new document content
+    /// If the block returns `RapidExecutionResult.delete` it means that the document should be deleted, but only if it wasn't updated in a database in the meanwhile.
+    /// If the document was updated in the meanwhile the block is called again with a new document content.
     ///
-    /// If block returns `RapidExecutionResult.write(value)` it means that the document should be mutated with `value`, but only if it wasn't updated in a database in the meanwhile
-    /// If the document was updated in the meanwhile the block is called again with a new document content
+    /// If block returns `RapidExecutionResult.write(value)` it means that the document should be mutated with `value`, but only if it wasn't updated in a database in the meanwhile.
+    /// If the document was updated in the meanwhile the block is called again with a new document content.
     ///
     /// - Parameters:
-    ///   - block: Block of code that receives current document content updates it and decides what to do next
+    ///   - block: Block of code that receives current document content and returns `RapidExecutionResult` based on the received value.
     ///   - completion: Execuction completion handler which provides a client with an error if any error occurs
     open func execute(block: @escaping RapidDocumentExecutionBlock, completion: RapidDocumentExecutionCompletion? = nil) {
         let concurrencyMutation = RapidDocumentExecution(collectionID: collectionName, documentID: documentID, delegate: socketManager, block: block, completion: completion)
@@ -109,32 +110,33 @@ open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
         socketManager.execute(execution: concurrencyMutation)
     }
     
-    /// Merge values in the document content with values in the provided dictionary
+    /// Merge values in the document with values in a provided dictionary
     ///
-    /// Values that are not mentioned in the provided dictionary remains as they are.
-    /// Values that are mentioned in the provided dictionary are either replaced or added to the document.
-    /// Values that contains `Rapid.nilValue` are deleted from the document
+    /// Properties that are not mentioned in the provided dictionary remains as they are.
+    /// Properties that are mentioned in the provided dictionary are either replaced or added to the document.
+    /// Properties that are mentioned in the provided dictionary and contains `Rapid.nilValue` are deleted from the document
     ///
     /// - Parameters:
-    ///   - value: Dictionary with new values that should be merged with the document content
+    ///   - value: Dictionary with new values that should be merged with the document values
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     open func merge(value: [AnyHashable: Any], completion: RapidDocumentMergeCompletion? = nil) {
         let merge = RapidDocumentMerge(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         socketManager.mutate(mutationRequest: merge)
     }
     
-    /// Merge values in the document content with values in the provided dictionary
-    /// Provided etag is compared to an etag of the document stored in a database
-    /// When provided etag is `nil` it means that the document shouldn't be stored in a database yet
-    /// If provided etag equals to an etag stored in a database the merge takes place
+    /// Merge values in the document with values in a provided dictionary.
+    ///
+    /// Provided etag is compared to an etag of the document stored in a database.
+    /// When provided etag is `nil` it means that the document shouldn't be stored in a database yet.
+    /// If provided etag equals to an etag stored in a database the merge takes place.
     /// If provided etag differs from an etag stored in a database the merge fails with `RapidError.executionFailed`
     ///
-    /// Values that are not mentioned in the provided dictionary remains as they are.
-    /// Values that are mentioned in the provided dictionary are either replaced or added to the document.
-    /// Values that contains `Rapid.nilValue` are deleted from the document
+    /// Properties that are not mentioned in the provided dictionary remains as they are.
+    /// Properties that are mentioned in the provided dictionary are either replaced or added to the document.
+    /// Properties that are mentioned in the provided dictionary and contains `Rapid.nilValue` are deleted from the document
     ///
     /// - Parameters:
-    ///   - value: Dictionary with new values that should be merged with the document content
+    ///   - value: Dictionary with new values that should be merged with the document values
     ///   - etag: `RapidDocument` etag
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     open func merge(value: [AnyHashable: Any], etag: String?, completion: RapidDocumentMergeCompletion? = nil) {
@@ -151,10 +153,11 @@ open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
         socketManager.mutate(mutationRequest: deletion)
     }
     
-    /// Delete the document
-    /// Provided etag is compared to an etag of the document stored in a database
-    /// If provided etag equals to an etag stored in a database the merge takes place
-    /// If provided etag differs from an etag stored in a database the merge fails with `RapidError.executionFailed`
+    /// Delete the document.
+    ///
+    /// Provided etag is compared to an etag of the document stored in a database.
+    /// If provided etag equals to an etag stored in a database the merge takes place.
+    /// If provided etag differs from an etag stored in a database the merge fails with `RapidError.executionFailed`.
     ///
     /// - Parameters:
     ///   - etag: `RapidDocument` etag
@@ -169,9 +172,9 @@ open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
 
 extension RapidDocumentRef: RapidSubscriptionReference {
     
-    /// Subscribe for listening to the document changes
+    /// Subscribe for listening to document changes
     ///
-    /// - Parameter block: Subscription handler which provides a client either with an error or with a document
+    /// - Parameter block: Subscription handler that provides a client either with an error or with any new document content
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     open func subscribe(block: @escaping RapidDocumentSubscriptionHandler) -> RapidSubscription {
@@ -186,9 +189,9 @@ extension RapidDocumentRef: RapidSubscriptionReference {
 
 extension RapidDocumentRef: RapidFetchReference {
     
-    /// Fetch document
+    /// Fetch the document
     ///
-    /// - Parameter completion: Fetch completion handler which provides a client either with an error or with an array of documents
+    /// - Parameter completion: Fetch completion handler that provides a client either with an error or with the document
     open func fetch(completion: @escaping RapidDocumentFetchCompletion) {
         let fetch = RapidDocumentFetch(collectionID: collectionName, documentID: documentID, cache: handler, completion: completion)
         

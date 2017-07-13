@@ -9,20 +9,21 @@
 import Foundation
 import CoreGraphics
 
+/// Protocol that describes a subscription query
 public protocol RapidQuery {}
 extension RapidQuery {
     
-    /// Special key which stands for a document ID
+    /// Special key which stands for a document ID property
     public static var docIdKey: String {
         return "$id"
     }
     
-    /// Special key which stands for a document creation timestamp
+    /// Special key which stands for a document creation timestamp property
     public static var docCreatedAtKey: String {
         return "$created"
     }
     
-    /// Special key which stands for a document modification timestamp
+    /// Special key which stands for a document modification timestamp property
     public static var docModifiedAtKey: String {
         return "$modified"
     }
@@ -60,7 +61,7 @@ public extension RapidFilter {
         return RapidFilterCompound(compoundOperator: .not, operands: [filter])
     }
     
-    /// Combine filters with logical and
+    /// Combine filters with logical AND
     ///
     /// - Parameter operands: Filters to be combined
     /// - Returns: Compound filter
@@ -68,7 +69,7 @@ public extension RapidFilter {
         return RapidFilterCompound(compoundOperator: .and, operands: operands)
     }
     
-    /// Combine filters with logical or
+    /// Combine filters with logical OR
     ///
     /// - Parameter operands: Filters to be combined
     /// - Returns: Compound filter
@@ -81,8 +82,8 @@ public extension RapidFilter {
     /// Create equality filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - value: Filter value
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
     /// - Returns: Filter for key path equal to value
     class func equal(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .equal, value: value)
@@ -90,7 +91,7 @@ public extension RapidFilter {
     
     /// Create equal to null filter
     ///
-    /// - Parameter keyPath: Filter parameter key path
+    /// - Parameter keyPath: Document property key path
     /// - Returns: Filter for key path equal to null
     class func isNull(keyPath: String) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .equal)
@@ -99,8 +100,8 @@ public extension RapidFilter {
     /// Create greater than filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - value: Filter value
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
     /// - Returns: Filter for key path greater than value
     class func greaterThan(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .greaterThan, value: value)
@@ -109,8 +110,8 @@ public extension RapidFilter {
     /// Create greater than or equal filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - value: Filter value
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
     /// - Returns: Filter for key path greater than or equal to value
     class func greaterThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .greaterThanOrEqual, value: value)
@@ -119,8 +120,8 @@ public extension RapidFilter {
     /// Create less than filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - value: Filter value
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
     /// - Returns: Filter for key path less than value
     class func lessThan(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .lessThan, value: value)
@@ -129,8 +130,8 @@ public extension RapidFilter {
     /// Create less than or equal filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - value: Filter value
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
     /// - Returns: Filter for key path less than or equal to value
     class func lessThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .lessThanOrEqual, value: value)
@@ -139,8 +140,8 @@ public extension RapidFilter {
     /// Create string contains filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - subString: Substring
+    ///   - keyPath: Document property key path
+    ///   - subString: Property value substring
     /// - Returns: Filter for string at key path contains a substring
     class func contains(keyPath: String, subString: String) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .contains, value: subString)
@@ -149,8 +150,8 @@ public extension RapidFilter {
     /// Create string starts with filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - prefix: Prefix
+    ///   - keyPath: Document property key path
+    ///   - prefix: Property value prefix
     /// - Returns: Filter for string at key path starts with a prefix
     class func startsWith(keyPath: String, prefix: String) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .startsWith, value: prefix)
@@ -159,8 +160,8 @@ public extension RapidFilter {
     /// Create string ends with filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - suffix: Suffix
+    ///   - keyPath: Document property key path
+    ///   - suffix: Property value suffix
     /// - Returns: Filter for string at key path ends with a suffix
     class func endsWith(keyPath: String, suffix: String) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .endsWith, value: suffix)
@@ -169,8 +170,8 @@ public extension RapidFilter {
     /// Create array contains filter
     ///
     /// - Parameters:
-    ///   - keyPath: Filter parameter key path
-    ///   - value: Value that should be present in an array
+    ///   - keyPath: Document property key path
+    ///   - value: Value that should be present in a property array
     /// - Returns: Filter for array at key path that contains a value
     class func arrayContains(keyPath: String, value: RapidComparable) -> RapidFilter {
         return RapidFilterSimple(keyPath: keyPath, relation: .arrayContains, value: value)
@@ -179,10 +180,20 @@ public extension RapidFilter {
 
 /// Class that describes simple subscription filter
 ///
-/// Simple filter can contain only a name of a filtering parameter, its reference value and a relation to the value.
+/// Simple filter can contain only a name of a filtering document property, its reference value and a relation to the value.
 open class RapidFilterSimple: RapidFilter {
     
     /// Type of relation to a specified value
+    ///
+    /// - equal: Property value is equal to a reference value
+    /// - greaterThanOrEqual: Property value is greater than or equal to a reference value
+    /// - lessThanOrEqual: Property value is less than or equal to a reference value
+    /// - greaterThan: Parameter value is greater than a reference value
+    /// - lessThan: Property value is less than a reference value
+    /// - contains: Property value contains a reference value as a substring
+    /// - startsWith: Property value starts with a reference value
+    /// - endsWith: Property value ends with a reference value
+    /// - arrayContains: Property array contains a reference value
     public enum Relation {
         case equal
         case greaterThanOrEqual
@@ -226,10 +237,12 @@ open class RapidFilterSimple: RapidFilter {
         }
     }
     
-    /// Name of a document parameter
+    /// Name of a document property
     public let keyPath: String
-    /// Ralation to a specified value
+    
+    /// Ralation to a reference value
     public let relation: Relation
+    
     /// Reference value
     public let value: Any?
     
@@ -268,6 +281,10 @@ open class RapidFilterSimple: RapidFilter {
 open class RapidFilterCompound: RapidFilter {
     
     /// Type of logical operator
+    ///
+    /// - and: Logical AND
+    /// - or: Logical OR
+    /// - not: Logical NOT
     public enum Operator {
         case and
         case or
@@ -316,6 +333,9 @@ open class RapidFilterCompound: RapidFilter {
 public struct RapidOrdering: RapidSubscriptionHashable, RapidQuery {
     
     /// Type of ordering
+    ///
+    /// - ascending: Ascending ordering
+    /// - descending: Descending ordering
     public enum Ordering {
         case ascending
         case descending
@@ -331,15 +351,16 @@ public struct RapidOrdering: RapidSubscriptionHashable, RapidQuery {
         }
     }
     
-    /// Name of a document parameter
+    /// Name of a document property
     public let keyPath: String
+    
     /// Ordering type
     public let ordering: Ordering
     
-    /// Ordering initializer
+    /// Initialize an ordering
     ///
     /// - Parameters:
-    ///   - keyPath: Name of a document parameter
+    ///   - keyPath: Name of a document property
     ///   - ordering: Ordering type
     public init(keyPath: String, ordering: Ordering) {
         self.keyPath = keyPath
@@ -358,8 +379,8 @@ public struct RapidPaging: RapidSubscriptionHashable {
     /// Maximum value of `take`
     public static let takeLimit = 500
     
-    /// Number of documents to be skipped
-    public let skip: Int?
+    // Number of documents to be skipped
+    //public let skip: Int?
     
     /// Maximum number of documents to be returned
     ///
@@ -367,11 +388,12 @@ public struct RapidPaging: RapidSubscriptionHashable {
     public let take: Int
     
     var subscriptionHash: String {
-        var hash = "t\(take)"
+        let hash = "t\(take)"
         
-        if let skip = skip {
+        //TODO: Implement skip
+        /*if let skip = skip {
             hash += "s\(skip)"
-        }
+        }*/
         
         return hash
     }

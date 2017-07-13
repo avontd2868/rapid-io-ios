@@ -121,7 +121,7 @@ class RapidTests: XCTestCase {
         let promise = expectation(description: "Rapid forced disconnect")
         
         runAfter(1) {
-            XCTAssertEqual(rapid.connectionState, Rapid.ConnectionState.connecting, "Rapid is not connecting")
+            XCTAssertEqual(rapid.connectionState, RapidConnectionState.connecting, "Rapid is not connecting")
             
             rapid.goOffline()
             

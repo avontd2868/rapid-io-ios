@@ -23,7 +23,7 @@ class RapidNetworkHandler {
     fileprivate let socket: WebSocket
     
     /// State of a websocket connection
-    fileprivate(set) var state: Rapid.ConnectionState = .disconnected {
+    fileprivate(set) var state: RapidConnectionState = .disconnected {
         didSet {
             if oldValue != state {
                 onConnectionStateChanged?(state)
@@ -48,7 +48,7 @@ class RapidNetworkHandler {
     weak var delegate: RapidNetworkHandlerDelegate?
     
     /// Connection state changed handler
-    var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)?
+    var onConnectionStateChanged: ((RapidConnectionState) -> Void)?
     
     init(socketURL: URL) {
         self.parseQueue = DispatchQueue(label: "RapidParseQueue-\(socketURL.lastPathComponent)", attributes: [])

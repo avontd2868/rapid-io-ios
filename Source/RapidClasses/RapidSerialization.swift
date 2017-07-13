@@ -159,7 +159,8 @@ class RapidSerialization {
         json[Fetch.Filter.name] = try serialize(filter: fetch.filter)
         json[Fetch.Ordering.name] = try serialize(ordering: fetch.ordering)
         json[Fetch.Limit.name] = fetch.paging?.take
-        json[Fetch.Skip.name] = fetch.paging?.skip
+        //TODO: Include skip
+        //json[Fetch.Skip.name] = fetch.paging?.skip
         
         let resultDict: [AnyHashable: Any] = [Fetch.name: json]
         return try resultDict.jsonString()
@@ -183,7 +184,8 @@ class RapidSerialization {
         json[CollectionSubscription.Filter.name] = try serialize(filter: subscription.filter)
         json[CollectionSubscription.Ordering.name] = try serialize(ordering: subscription.ordering)
         json[CollectionSubscription.Limit.name] = subscription.paging?.take
-        json[CollectionSubscription.Skip.name] = subscription.paging?.skip
+        //TODO: Include skip
+        //json[CollectionSubscription.Skip.name] = subscription.paging?.skip
         
         let resultDict: [AnyHashable: Any] = [CollectionSubscription.name: json]
         return try resultDict.jsonString()

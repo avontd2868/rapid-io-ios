@@ -13,7 +13,7 @@
     <a title="Typealiases  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Rapid Docs</a> (74% documented)</p>
+        <p><a href="index.html">Rapid Docs</a> (78% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -31,9 +31,6 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Classes/Rapid.html">Rapid</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Rapid/ConnectionState.html">– ConnectionState</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/RapidChannelMessage.html">RapidChannelMessage</a>
@@ -79,6 +76,9 @@
           <li class="nav-group-name">
             <a href="Enums.html">Enums</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/RapidConnectionState.html">RapidConnectionState</a>
+              </li>
               <li class="nav-group-task">
                 <a href="Enums/RapidError.html">RapidError</a>
               </li>
@@ -177,6 +177,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Typealiases.html#/s:5Rapid22RapidPublishCompletion">RapidPublishCompletion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:5Rapid22RapidTimeOffsetHandler">RapidTimeOffsetHandler</a>
               </li>
             </ul>
           </li>
@@ -317,7 +320,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Authorization completion handler</p>
+                        <p>Deauthorization completion handler</p>
 
                       </div>
                       <div class="declaration">
@@ -325,6 +328,33 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">RapidDeuthHandler</span> <span class="o">=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">result</span><span class="p">:</span> <span class="kt"><a href="Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="kt">Any</span><span class="p">?</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid22RapidTimeOffsetHandler"></a>
+                    <a name="//apple_ref/swift/Alias/RapidTimeOffsetHandler" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid22RapidTimeOffsetHandler">RapidTimeOffsetHandler</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Server time offset handler</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">RapidTimeOffsetHandler</span> <span class="o">=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">offset</span><span class="p">:</span> <span class="kt"><a href="Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="kt">TimeInterval</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
 
                         </div>
                       </div>
@@ -514,7 +544,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Document mutation completion handler which informs a client about the operation result</p>
+                        <p>Document merge completion handler which informs a client about the operation result</p>
 
                       </div>
                       <div class="declaration">
@@ -541,7 +571,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Block of code which is called on optimistic concurrency write</p>
+                        <p>The block of code that receives current document content and a developer chooses an action based on that.</p>
 
                       </div>
                       <div class="declaration">

@@ -23,7 +23,7 @@ class RapidSocketManager {
     var timeout: TimeInterval?
     
     /// State of a websocket connection
-    fileprivate var state: Rapid.ConnectionState = .disconnected
+    fileprivate var state: RapidConnectionState = .disconnected
     
     fileprivate(set) var auth: RapidAuthorization?
     

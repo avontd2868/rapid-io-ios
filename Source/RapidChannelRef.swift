@@ -30,8 +30,8 @@ open class RapidChannelRef: RapidInstanceWithSocketManager {
     /// Publish message to the channel
     ///
     /// - Parameters:
-    ///   - message: Message dictionary that should be published
-    ///   - completion: Publish completion handler which provides a client with an error if any error occurs
+    ///   - message: Message that should be published
+    ///   - completion: Publish completion handler which provides a client with an error if any occurs
     open func publish(message: [AnyHashable: Any], completion: RapidPublishCompletion? = nil) {
         let publish = RapidChannelPublish(channelID: channelName, value: message, completion: completion)
         
@@ -44,7 +44,7 @@ extension RapidChannelRef: RapidSubscriptionReference {
     
     /// Subscribe for listening to messages in the channel
     ///
-    /// - Parameter block: Subscription handler which provides a client either with an error or with a message
+    /// - Parameter block: Subscription handler which provides a client either with an error or with a new message
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     open func subscribe(block: @escaping RapidChannelSubscriptionHandler) -> RapidSubscription {
@@ -60,7 +60,7 @@ extension RapidChannelRef: RapidSubscriptionReference {
 /// Reference to multiple channels identified by their channel name prefix
 open class RapidChannelsRef: RapidInstanceWithSocketManager {
     
-    /// Channel prefix
+    /// Channel name prefix
     public let channelPrefix: String
     
     weak var handler: RapidHandler?
@@ -74,9 +74,9 @@ open class RapidChannelsRef: RapidInstanceWithSocketManager {
 
 extension RapidChannelsRef: RapidSubscriptionReference {
     
-    /// Subscribe for listening to messages in the channel
+    /// Subscribe for listening to messages in channels
     ///
-    /// - Parameter block: Subscription handler which provides a client either with an error or with a message
+    /// - Parameter block: Subscription handler which provides a client either with an error or with a new message
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     open func subscribe(block: @escaping RapidChannelSubscriptionHandler) -> RapidSubscription {

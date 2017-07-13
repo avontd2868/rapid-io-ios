@@ -73,11 +73,11 @@ class RapidHandler: NSObject {
     let apiKey: String
     
     let socketManager: RapidSocketManager!
-    var state: Rapid.ConnectionState {
+    var state: RapidConnectionState {
         return socketManager.networkHandler.state
     }
     
-    var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)? {
+    var onConnectionStateChanged: ((RapidConnectionState) -> Void)? {
         get {
             return socketManager.networkHandler.onConnectionStateChanged
         }

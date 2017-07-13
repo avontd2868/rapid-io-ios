@@ -62,7 +62,7 @@ extension RapidTests {
                 RapidFilter.not(RapidFilter.isNull(keyPath: "receiver"))
                 ]),
             ordering: [RapidOrdering(keyPath: "sentDate", ordering: .descending)],
-            paging: RapidPaging(skip: 10, take: 50),
+            paging: RapidPaging(take: 50),
             handler: nil,
             handlerWithChanges: nil)
         

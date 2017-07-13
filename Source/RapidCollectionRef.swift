@@ -155,7 +155,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// - Parameters:
     ///   - take: Maximum number of documents to be returned
     open func limited(to take: Int) {
-        self.subscriptionPaging = RapidPaging(skip: nil, take: take)
+        self.subscriptionPaging = RapidPaging(take: take)
     }
 
     //TODO: Implement skip
@@ -191,7 +191,7 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
-    /// - Parameter block: Subscription handler which provides a client either with an error or with an array of documents
+    /// - Parameter block: Subscription handler that provides a client either with an error or with an array of documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     open func subscribe(block: @escaping RapidCollectionSubscriptionHandler) -> RapidSubscription {
@@ -206,7 +206,7 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
-    /// - Parameter block: Subscription handler which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
+    /// - Parameter block: Subscription handler that provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
     open func subscribeWithChanges(block: @escaping RapidCollectionSubscriptionHandlerWithChanges) -> RapidSubscription {
@@ -225,7 +225,7 @@ extension RapidCollectionRef: RapidFetchReference {
     ///
     /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
     ///
-    /// - Parameter completion: Fetch completion handler which provides a client either with an error or with an array of documents
+    /// - Parameter completion: Fetch completion handler that provides a client either with an error or with an array of documents
     open func fetch(completion: @escaping RapidCollectionFetchCompletion) {
         let fetch = RapidCollectionFetch(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, completion: completion)
         
