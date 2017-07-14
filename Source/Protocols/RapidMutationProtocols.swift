@@ -26,4 +26,9 @@ protocol RapidConcOptRequest {
 
 /// Protocol describing mutation request
 protocol RapidMutationRequest: RapidTimeoutRequest, RapidSerializable, RapidConcOptRequest {
+    func register(delegate: RapidMutationRequestDelegate)
+}
+
+protocol RapidMutationRequestDelegate: class {
+    func cancelMutationRequest<T: RapidMutationRequest>(_ request: T)
 }

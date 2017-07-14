@@ -47,6 +47,8 @@ class RapidSocketManager {
     
     fileprivate var pendingTimeRequests: [RapidTimeOffset] = []
     
+    fileprivate var onConnectActions: [String: RapidOnConnectAction] = [:]
+    
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
     
@@ -107,6 +109,10 @@ class RapidSocketManager {
     /// - Parameter mutationRequest: Mutation object
     func mutate<T: RapidMutationRequest>(mutationRequest: T) {
         websocketQueue.async { [weak self] in
+            if let strongSelf = self {
+                mutationRequest.register(delegate: strongSelf)
+            }
+            
             self?.post(event: mutationRequest)
         }
     }
@@ -138,6 +144,22 @@ class RapidSocketManager {
             self?.pendingTimeRequests.append(request)
             
             self?.post(event: request)
+        }
+    }
+    
+    func registerOnConnectAction(_ action: RapidOnConnectAction) {
+        websocketQueue.async { [weak self] in
+            let actionID = Rapid.uniqueID
+            
+            self?.onConnectActions[actionID] = action
+            
+            if let strongSelf = self {
+                action.register(actionID: actionID, delegate: strongSelf)
+                
+                if strongSelf.state == .connected {
+                    self?.post(event: action)
+                }
+            }
         }
     }
     
@@ -241,6 +263,12 @@ class RapidSocketManager {
 // MARK: Fileprivate methods
 fileprivate extension RapidSocketManager {
     
+    func handleDidConnect() {
+        for (_, action) in onConnectActions {
+            post(event: action)
+        }
+    }
+    
     /// Handle a situation when socket was unintentionally disconnected
     func handleDidDisconnect(withError error: RapidError?) {
         RapidLogger.developerLog(message: "Did disconnect with error \(String(describing: error))")
@@ -254,7 +282,7 @@ fileprivate extension RapidSocketManager {
 
             // Do not include connection requests and heartbeats that are relevant to one physical websocket connection
             switch $0 {
-            case is RapidConnectionRequest, is RapidEmptyRequest, is RapidAuthRequest:
+            case is RapidConnectionRequest, is RapidEmptyRequest, is RapidAuthRequest, is RapidOnConnectAction:
                 return false
                 
             default:
@@ -380,6 +408,28 @@ fileprivate extension RapidSocketManager {
         }
         else {
             post(event: handler)
+        }
+    }
+    
+    func cancel(request: Request) {
+        let index = eventQueue.index(where: {
+            if let queuedRequest = $0 as? RapidClientRequest {
+                return request === queuedRequest
+            }
+            
+            return false
+        })
+        
+        if let index = index {
+            eventQueue.remove(at: index)
+        }
+        
+        let pending = pendingRequests.filter({
+            return $0.value.request === request
+        })
+        
+        if let (eventID, _) = pending.first {
+            pendingRequests[eventID] = nil
         }
     }
     
@@ -542,6 +592,29 @@ extension RapidSocketManager: RapidSubscriptionManagerDelegate {
     }
 }
 
+// MARK: Mutation request delegate
+extension RapidSocketManager: RapidMutationRequestDelegate {
+    
+    func cancelMutationRequest<T>(_ request: T) where T : RapidMutationRequest {
+        websocketQueue.async { [weak self] in
+            self?.cancel(request: request)
+        }
+    }
+}
+
+// MARK: On-connect action delegate
+extension RapidSocketManager: RapidOnConnectActionDelegate {
+    
+    func cancelOnConnectAction(withActionID actionID: String) {
+        websocketQueue.async { [weak self] in
+            if let action = self?.onConnectActions[actionID] {
+                self?.onConnectActions[actionID] = nil
+                self?.cancel(request: action)
+            }
+        }
+    }
+}
+
 // MARK: Heartbeat
 extension RapidSocketManager {
     
@@ -646,6 +719,8 @@ extension RapidSocketManager: RapidNetworkHandlerDelegate {
             self?.sendConnectionRequest()
             
             self?.state = .connected
+            
+            self?.handleDidConnect()
             
             self?.flushQueue()
         }
