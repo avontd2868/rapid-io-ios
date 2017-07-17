@@ -353,16 +353,16 @@ extension RapidTests {
         
         let numberOfIterations = 20
 
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "loadTest"]) { _ in
+        rapid.collection(named: testCollectionName).document(withID: "666").mutate(value: ["name": "loadTest"]) { _ in
             
             for i in 0..<numberOfIterations {
-                self.rapid.collection(named: self.testCollectionName).document(withID: "1").execute(
+                self.rapid.collection(named: self.testCollectionName).document(withID: "666").execute(
                     block: { doc -> RapidExecutionResult in
                         let count = doc.value?["counter"] as? Int ?? 0
                         return .write(value: ["counter": count+1])
                 },
                     completion: { error in
-                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "666").fetch(completion: { result in
                             if case .success(let doc) = result, let counter = doc.value?["counter"] as? Int {
 
                                 iterations.append(i)
@@ -385,18 +385,18 @@ extension RapidTests {
             }
         }
         
-        waitForExpectations(timeout: 2*TimeInterval(numberOfIterations), handler: nil)
+        waitForExpectations(timeout: 3*TimeInterval(numberOfIterations), handler: nil)
     }
     
     func testMultipleDocumentMutations() {
         let promise = expectation(description: "Mutate document")
         rapid.timeout = nil
 
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["counter": 0]) { _ in
+        rapid.collection(named: testCollectionName).document(withID: "666").mutate(value: ["counter": 0]) { _ in
             let numberOfMutations = 200
             var value: Int?
             
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(block: { result in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "666").subscribe(block: { result in
                 if case .success(let document) = result, let counter = document.value?["counter"] as? Int {
                     if let value = value {
                         XCTAssertLessThan(value, counter, "Wrong order")
@@ -414,7 +414,7 @@ extension RapidTests {
             })
             
             for i in 1...numberOfMutations {
-                self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["counter": i])
+                self.rapid.collection(named: self.testCollectionName).document(withID: "666").mutate(value: ["counter": i])
             }
         }
         
