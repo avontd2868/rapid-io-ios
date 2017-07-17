@@ -113,6 +113,10 @@ protocol RapidSubscriptionManager: class, RapidSubscriptionHashable, RapidSerial
 
 extension RapidSubscriptionManager {
     
+    var shouldSendOnReconnect: Bool {
+        return false
+    }
+    
     /// Unsubscribe handler
     ///
     /// - Parameter handler: Previously creaated unsubscription handler

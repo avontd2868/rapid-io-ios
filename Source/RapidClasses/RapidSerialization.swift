@@ -493,8 +493,11 @@ fileprivate extension RapidSerialization {
         else if let rm = json[SubscriptionDocRemoved.name] as? [AnyHashable: Any] {
             return RapidSubscriptionBatch(withUpdateJSON: rm, docRemoved: true)
         }
-        else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionCancel(json: ca)
+        else if let ca = json[CollectionSubscriptionCancelled.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionCancelled(json: ca)
+        }
+        else if let ca = json[ChannelSubscriptionCancelled.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionCancelled(json: ca)
         }
         else if let res = json[FetchValue.name] as? [AnyHashable: Any] {
             return RapidFetchResponse(withJSON: res)

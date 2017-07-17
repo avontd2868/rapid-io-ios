@@ -247,58 +247,33 @@ fileprivate extension RapidSocketManager {
         
         // Get all relevant events that were about to be sent
         let currentQueue = eventQueue.filter({
-            // If the request is timeoutable then invalidate it
-            if let timeout = $0 as? RapidTimeoutRequest {
-                timeout.invalidateTimer()
-            }
-
-            // Do not include connection requests and heartbeats that are relevant to one physical websocket connection
-            switch $0 {
-            case is RapidConnectionRequest, is RapidEmptyRequest, is RapidAuthRequest:
-                return false
-                
-            default:
-                return true
-            }
+            // Do not include requests that are relevant to one physical websocket connection
+            return $0.shouldSendOnReconnect
         })
         
-        eventQueue.removeAll(keepingCapacity: true)
+        // Get all relevant requests that had been sent, but they were still waiting for an acknowledgement
+        let pendingArray = (Array(pendingRequests.values) as [(request: Request, timestamp: TimeInterval)]).filter({
+            // Do not include requests that are relevant to one physical websocket connection
+            return $0.request.shouldSendOnReconnect
+        })
+        let sortedPendingArray = pendingArray.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
         
-        // Add to the request queue those subscriptions that were already acknowledged by the server
+        eventQueue.removeAll(keepingCapacity: true)
+        pendingRequests.removeAll()
+        
+        // Resubscribe all subscriptions
         let resubscribe = activeSubscriptions
             .map({ $0.value })
-            .filter({ (subscription) -> Bool in
-                
-                let toBeSent = currentQueue.contains(where: { (request) -> Bool in
-                    if let request = request as? RapidSubscriptionManager {
-                        return request.subscriptionID == subscription.subscriptionID
-                    }
-                    
-                    return false
-                })
-                
-                let toBeAcknowledged = pendingRequests.values.contains(where: { (request, _) -> Bool in
-                    if let request = request as? RapidSubscriptionManager {
-                        return request.subscriptionID == subscription.subscriptionID
-                    }
-                    
-                    return false
-                })
-                
-                return !toBeSent && !toBeAcknowledged
-            })
         for handler in resubscribe {
             eventQueue.append(handler)
         }
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
-        let pendingArray = (Array(pendingRequests.values) as [(request: Request, timestamp: TimeInterval)])
-        let eventArray = pendingArray.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
-        for event in eventArray {
+        for event in sortedPendingArray {
             eventQueue.append(event)
         }
 
-        // Finally append relevant requests that were waiting to be sent
+        // Finally append events that were waiting to be sent
         for event in currentQueue {
             eventQueue.append(event)
         }
@@ -490,7 +465,7 @@ fileprivate extension RapidSocketManager {
             }
             
         // Subscription cancel
-        case let message as RapidSubscriptionCancel:
+        case let message as RapidSubscriptionCancelled:
             let subscription = activeSubscriptions[message.subscriptionID]
             let eventID = message.eventIDsToAcknowledge.first ?? Generator.uniqueID
             let error = RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "No longer authorized to read data"))
