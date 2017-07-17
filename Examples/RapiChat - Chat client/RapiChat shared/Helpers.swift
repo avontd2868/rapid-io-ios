@@ -97,9 +97,15 @@ class TimeManager {
     }
     
     func initialize() {
-        NotificationCenter.default.addObserver(forName: Notification.Name.UIApplicationDidBecomeActive, object: nil, queue: OperationQueue.main) { [weak self] notification in
-            self?.getTimeOffset()
-        }
+        #if os(OSX)
+            NotificationCenter.default.addObserver(forName: Notification.Name.NSApplicationDidBecomeActive, object: nil, queue: OperationQueue.main) { [weak self] notification in
+                self?.getTimeOffset()
+            }
+        #elseif os(iOS)
+            NotificationCenter.default.addObserver(forName: Notification.Name.UIApplicationDidBecomeActive, object: nil, queue: OperationQueue.main) { [weak self] notification in
+                self?.getTimeOffset()
+            }
+        #endif
         
         getTimeOffset()
     }
