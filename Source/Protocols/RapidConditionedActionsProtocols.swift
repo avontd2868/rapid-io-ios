@@ -18,6 +18,12 @@ protocol RapidOnConnectAction: RapidClientRequest, RapidSerializable {
     func performAction()
 }
 
+extension RapidOnConnectAction {
+    var shouldSendOnReconnect: Bool {
+        return false
+    }
+}
+
 protocol RapidOnDisconnectActionDelegate: class {
     func cancelOnDisconnectAction(withActionID actionID: String)
 }
@@ -27,4 +33,10 @@ protocol RapidOnDisconnectAction: RapidClientRequest, RapidSerializable {
     func actionJSON() throws -> [AnyHashable: Any]
     func register(actionID: String, delegate: RapidOnDisconnectActionDelegate)
     func cancelRequest() -> RapidCancelOnDisconnectAction
+}
+
+extension RapidOnDisconnectAction {
+    var shouldSendOnReconnect: Bool {
+        return false
+    }
 }
