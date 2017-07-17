@@ -528,7 +528,10 @@ fileprivate extension RapidSerialization {
             return RapidSubscriptionBatch(withUpdateJSON: rm, docRemoved: true)
         }
         else if let ca = json[CollectionSubscriptionCancelled.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionCancel(json: ca)
+            return RapidSubscriptionCancelled(json: ca)
+        }
+        else if let ca = json[ChannelSubscriptionCancelled.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionCancelled(json: ca)
         }
         else if let caDisconnectAction = json[DisconnectActionCancelled.name] as? [AnyHashable: Any] {
             return RapidOnDisconnectActionCancelled(json: caDisconnectAction)

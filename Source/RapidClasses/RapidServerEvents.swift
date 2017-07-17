@@ -44,6 +44,8 @@ extension RapidServerAcknowledgement: RapidSerializable {
 /// This acknowledgement is sent to server as a response to a server event
 class RapidClientAcknowledgement: RapidClientEvent {
     
+    let shouldSendOnReconnect = false
+    
     let eventID: String
     
     init(eventID: String) {
@@ -58,17 +60,16 @@ extension RapidClientAcknowledgement: RapidSerializable {
     }
 }
 
-// MARK: Subscription cancel
+// MARK: Subscription cancelled
 
 /// Subscription cancel event object
 ///
 /// Subscription cancel is a sever event which occurs 
 /// when a client has no longer permissions to read collection after reauthorization/deauthorization
-class RapidSubscriptionCancel: RapidServerEvent {
+class RapidSubscriptionCancelled: RapidServerEvent {
     
     let eventIDsToAcknowledge: [String]
     let subscriptionID: String
-    let collectionID: String
     
     init?(json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {
@@ -83,13 +84,8 @@ class RapidSubscriptionCancel: RapidServerEvent {
             return nil
         }
         
-        guard let colID = dict[RapidSerialization.CollectionSubscriptionCancelled.CollectionID.name] as? String else {
-            return nil
-        }
-        
         self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subID
-        self.collectionID = colID
     }
 }
 

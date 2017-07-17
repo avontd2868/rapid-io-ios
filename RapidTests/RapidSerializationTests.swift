@@ -630,9 +630,9 @@ extension RapidTests {
     }
     
     func testSubscriptionCancel() {
-        let ca1 = RapidSubscriptionCancel(json: "test")
-        let ca2 = RapidSubscriptionCancel(json: [:])
-        let ca3 = RapidSubscriptionCancel(json: ["evt-id": "kldjflk"])
+        let ca1 = RapidSubscriptionCancelled(json: "test")
+        let ca2 = RapidSubscriptionCancelled(json: [:])
+        let ca3 = RapidSubscriptionCancelled(json: ["evt-id": "kldjflk"])
         
         XCTAssertNil(ca1, "Not nil")
         XCTAssertNil(ca2, "Not nil")

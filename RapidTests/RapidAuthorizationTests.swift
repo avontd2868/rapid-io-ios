@@ -46,7 +46,7 @@ extension RapidTests {
         waitForExpectations(timeout: 15, handler: nil)
     }
     
-    func testSubscriptionChangeAfterUnsubscription() {
+    func testCollectionSubscriptionCancelAfterUnsubscription() {
         let promise = expectation(description: "Authorization")
         
         var initialValue = true
@@ -73,6 +73,39 @@ extension RapidTests {
                 }
             }
         })
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testChannelSubscriptionCancelAfterUnsubscription() {
+        let promise = expectation(description: "Authorization")
+        
+        var initialValue = true
+        
+        rapid.channel(named: testChannelName).subscribe { result in
+            if initialValue {
+                initialValue = false
+                
+                if case .success = result {
+                    self.rapid.deauthorize()
+                }
+                else {
+                    XCTFail("Did not subscribe")
+                    promise.fulfill()
+                }
+            }
+            else {
+                if case .failure(let error) = result, case .permissionDenied = error {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Still subscribed")
+                    promise.fulfill()
+                }
+            }
+        }
+        
+        rapid.channel(named: testChannelName).publish(message: ["test": "test"])
         
         waitForExpectations(timeout: 15, handler: nil)
     }

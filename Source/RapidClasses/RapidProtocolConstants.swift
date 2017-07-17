@@ -369,9 +369,13 @@ extension RapidSerialization {
     struct CollectionSubscriptionCancelled {
         static let name = "ca"
         
-        struct CollectionID {
-            static let name = "col-id"
+        struct SubscriptionID {
+            static let name = "sub-id"
         }
+    }
+    
+    struct ChannelSubscriptionCancelled {
+        static let name = "ca-ch"
         
         struct SubscriptionID {
             static let name = "sub-id"

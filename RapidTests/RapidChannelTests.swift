@@ -120,6 +120,21 @@ extension RapidTests {
         waitForExpectations(timeout: 15, handler: nil)
     }
     
+    func testImmediateUnsubscribe() {
+        let promise = expectation(description: "Subscribe to channel")
+        
+        let subscription = rapid.channel(named: testChannelName).subscribe { _ in
+        }
+        
+        subscription.unsubscribe()
+        
+        runAfter(1) {
+            XCTAssertNil(self.rapid.handler.socketManager.activeSubscription(withHash: subscription.subscriptionHash), "Subscription handler not released")
+            promise.fulfill()
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
     
     func testDuplicateChannelSubscriptions() {
         let promise = expectation(description: "Subscribe to channel")

@@ -479,29 +479,17 @@ class RapidTests: XCTestCase {
         let mutatationDocumentID = "2"
         var acknowledgeAll = false
         
-        var lastSubscription: RapidSubscriptionManager?
         var lastMutation: RapidDocumentMutation?
+        var hashes = [String]()
         
         let mockHandler = MockNetworkHandler(socketURL: self.fakeSocketURL, writeCallback: { (handler, event, eventID) in
             if acknowledgeAll {
                 if let subscription = event as? RapidSubscriptionManager {
                     switch subscription.subscriptionHash {
-                    case subscription1.subscriptionHash:
-                        XCTAssertNil(lastSubscription, "wrong order")
+                    case subscription1.subscriptionHash, subscription2.subscriptionHash, subscription3.subscriptionHash:
                         XCTAssertNil(lastMutation, "wrong order")
-                        lastSubscription = subscription
-                        lastMutation = nil
-                        
-                    case subscription2.subscriptionHash:
-                        XCTAssertEqual(lastSubscription?.subscriptionHash, subscription1.subscriptionHash, "wrong order")
-                        lastSubscription = subscription
-                        lastMutation = nil
-                        
-                    case subscription3.subscriptionHash:
-                        XCTAssertEqual(lastMutation?.documentID, "3", "wrong order")
-                        lastSubscription = subscription
-                        lastMutation = nil
-                        promise.fulfill()
+                        XCTAssertFalse(hashes.contains(subscription.subscriptionHash), "Reoccuring subscription")
+                        hashes.append(subscription.subscriptionHash)
                         
                     default:
                         XCTFail("Another subscription")
@@ -511,14 +499,14 @@ class RapidTests: XCTestCase {
                 else if let mutation = event as? RapidDocumentMutation {
                     switch mutation.documentID {
                     case "2":
-                        XCTAssertEqual(lastSubscription?.subscriptionHash, subHash, "wrong order")
-                        lastSubscription = nil
+                        XCTAssertNil(lastMutation, "wrong order")
+                        XCTAssertEqual(hashes.count, 3, "wrong number of subscriptions")
                         lastMutation = mutation
                         
                     case "3":
                         XCTAssertEqual(lastMutation?.documentID, "2", "wrong order")
-                        lastSubscription = nil
                         lastMutation = mutation
+                        promise.fulfill()
                         
                     default:
                         XCTFail("Another mutation")
@@ -622,6 +610,31 @@ class RapidTests: XCTestCase {
                 "att3": true
             ]
             ], "Wrong merge")
+    }
+    
+    func testOnConnectionStateChangeHandler() {
+        let promise = expectation(description: "Connection states")
+        
+        var previousState = RapidConnectionState.disconnected
+        rapid.onConnectionStateChanged = { state in
+            switch state {
+            case .connecting:
+                XCTAssertEqual(previousState, .disconnected, "Wrong state")
+                
+            case .connected:
+                XCTAssertEqual(previousState, .connecting, "Wrong state")
+                self.rapid.goOffline()
+                
+            case .disconnected:
+                XCTAssertEqual(previousState, .connected, "Wrong state")
+                promise.fulfill()
+
+            }
+            
+            previousState = state
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
     }
 }
 

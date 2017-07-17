@@ -352,7 +352,7 @@ extension RapidTests {
         var iterations = [Int]()
         
         let numberOfIterations = 20
-        
+
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "loadTest"]) { _ in
             
             for i in 0..<numberOfIterations {
@@ -390,6 +390,7 @@ extension RapidTests {
     
     func testMultipleDocumentMutations() {
         let promise = expectation(description: "Mutate document")
+        rapid.timeout = nil
 
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["counter": 0]) { _ in
             let numberOfMutations = 200
