@@ -2,8 +2,30 @@
 All notable changes to this project will be documented in this file.
 
 #### 1.x Releases
-- `1.1.x` Releases - [1.1.0](#110)
+- `1.1.x` Releases - [1.1.0](#110) | [1.1.1](#111)
 - `1.0.x` Releases - [1.0.0](#100) | [1.0.1](#101) | [1.0.2](#102)
+
+---
+
+## [1.1.1](https://github.com/rapid-io/rapid-io-ios/releases/tag/1.1.1)
+Released on 2017-07-17.
+
+#### Added
+
+- Chat example
+
+- Get server time offset
+
+#### Updated
+
+- Common protocol for subscription and fetch references
+
+- Implement request timeout as an instance variable
+  - Request timeout used to be a static variable of `Rapid` class
+
+#### Fixed
+
+- Testability for prebuilt frameworks
 
 ---
 
