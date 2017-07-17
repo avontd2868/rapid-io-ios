@@ -26,10 +26,10 @@ class RapidCollectionSub: NSObject {
     let paging: RapidPaging?
     
     /// Subscription handler
-    let handler: RapidColSubHandler?
+    let handler: RapidCollectionSubscriptionHandler?
     
     /// Subscription handler with lists of changes
-    let handlerWithChanges: RapidColSubHandlerWithChanges?
+    let handlerWithChanges: RapidCollectionSubscriptionHandlerWithChanges?
     
     /// Block of code to be called when unsubscribing
     fileprivate var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
@@ -43,7 +43,7 @@ class RapidCollectionSub: NSObject {
     ///   - paging: Subscription paging
     ///   - handler: Subscription handler
     ///   - handlerWithChanges: Subscription handler with lists of changes
-    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, handler: RapidColSubHandler?, handlerWithChanges: RapidColSubHandlerWithChanges?) {
+    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, handler: RapidCollectionSubscriptionHandler?, handlerWithChanges: RapidCollectionSubscriptionHandlerWithChanges?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
@@ -125,7 +125,7 @@ class RapidDocumentSub: NSObject {
     let documentID: String
     
     /// Subscription handler
-    let handler: RapidDocSubHandler?
+    let handler: RapidDocumentSubscriptionHandler?
     
     /// Underlying collection subscription object
     fileprivate(set) var subscription: RapidCollectionSub!
@@ -139,7 +139,7 @@ class RapidDocumentSub: NSObject {
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
     ///   - handler: Subscription handler
-    init(collectionID: String, documentID: String, handler: RapidDocSubHandler?) {
+    init(collectionID: String, documentID: String, handler: RapidDocumentSubscriptionHandler?) {
         self.collectionID = collectionID
         self.documentID = documentID
         self.handler = handler

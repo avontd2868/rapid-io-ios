@@ -19,11 +19,11 @@ class RapidSocketManager {
     
     weak var cacheHandler: RapidCacheHandler?
     
-    /// State of a websocket connection
-    fileprivate var state: Rapid.ConnectionState = .disconnected
+    /// Optional timeout for timeoutable requests
+    var timeout: TimeInterval?
     
-    /// ID that identifies a websocket connection to this client for reconnecting purposes
-    fileprivate(set) var connectionID: String?
+    /// State of a websocket connection
+    fileprivate var state: RapidConnectionState = .disconnected
     
     fileprivate(set) var auth: RapidAuthorization?
     
@@ -44,6 +44,8 @@ class RapidSocketManager {
     fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
     
     fileprivate var pendingExectuionRequests: [String: RapidExecution] = [:]
+    
+    fileprivate var pendingTimeRequests: [RapidTimeOffset] = []
     
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
@@ -128,6 +130,14 @@ class RapidSocketManager {
             self?.pendingFetches[fetch.fetchID] = fetch
             
             self?.post(event: fetch)
+        }
+    }
+    
+    func requestTimestamp(_ request: RapidTimeOffset) {
+        websocketQueue.async { [weak self] in
+            self?.pendingTimeRequests.append(request)
+            
+            self?.post(event: request)
         }
     }
     
@@ -237,73 +247,33 @@ fileprivate extension RapidSocketManager {
         
         // Get all relevant events that were about to be sent
         let currentQueue = eventQueue.filter({
-            // If the request is timeoutable then invalidate it
-            if let timeout = $0 as? RapidTimeoutRequest {
-                timeout.invalidateTimer()
-            }
-
-            // Do not include connection requests and heartbeats that are relevant to one physical websocket connection
-            switch $0 {
-            case is RapidConnectionRequest, is RapidEmptyRequest, is RapidReconnectionRequest:
-                return false
-                
-            default:
-                return true
-            }
+            // Do not include requests that are relevant to one physical websocket connection
+            return $0.shouldSendOnReconnect
         })
         
+        // Get all relevant requests that had been sent, but they were still waiting for an acknowledgement
+        let pendingArray = (Array(pendingRequests.values) as [(request: Request, timestamp: TimeInterval)]).filter({
+            // Do not include requests that are relevant to one physical websocket connection
+            return $0.request.shouldSendOnReconnect
+        })
+        let sortedPendingArray = pendingArray.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
+        
         eventQueue.removeAll(keepingCapacity: true)
+        pendingRequests.removeAll()
         
-        let connectionTerminated: Bool
-        switch error {
-        case .some(.connectionTerminated), .some(.timeout):
-            connectionTerminated = true
-            
-        default:
-            connectionTerminated = false
-        }
-        
-        // If abstract connection to the server was terminated
-        if connectionTerminated {
-            //Because an abstract connection expired a new connection with a new connection ID needs to be established
-            connectionID = nil
-
-            // Add to the request queue those subscriptions that were already acknowledged by the server
-            let resubscribe = activeSubscriptions
-                .map({ $0.value })
-                .filter({ (subscription) -> Bool in
-                    
-                let toBeSent = currentQueue.contains(where: { (request) -> Bool in
-                    if let request = request as? RapidSubscriptionManager {
-                        return request.subscriptionID == subscription.subscriptionID
-                    }
-
-                    return false
-                })
-                
-                let toBeAcknowledged = pendingRequests.values.contains(where: { (request, _) -> Bool in
-                    if let request = request as? RapidSubscriptionManager {
-                        return request.subscriptionID == subscription.subscriptionID
-                    }
-
-                    return false
-                })
-                
-                return !toBeSent && !toBeAcknowledged
-            })
-            for handler in resubscribe {
-                eventQueue.append(handler)
-            }
+        // Resubscribe all subscriptions
+        let resubscribe = activeSubscriptions
+            .map({ $0.value })
+        for handler in resubscribe {
+            eventQueue.append(handler)
         }
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
-        let pendingArray = (Array(pendingRequests.values) as [(request: Request, timestamp: TimeInterval)])
-        let eventArray = pendingArray.sorted(by: { $0.timestamp < $1.timestamp }).map({ $0.request }) as [Event]
-        for event in eventArray {
+        for event in sortedPendingArray {
             eventQueue.append(event)
         }
 
-        // Finally append relevant requests that were waiting to be sent
+        // Finally append events that were waiting to be sent
         for event in currentQueue {
             eventQueue.append(event)
         }
@@ -323,27 +293,16 @@ fileprivate extension RapidSocketManager {
     /// When socket is connected physically, the client still needs to identify itself by its connection ID.
     /// This creates an abstract connection which is not dependent on a physical one
     func sendConnectionRequest() {
-        let connection: RapidConnectionRequest
         let authorization: RapidAuthRequest?
 
-        if let connectionID = connectionID {
-            connection = RapidReconnectionRequest(connectionID: connectionID, delegate: self)
-            
-            // No need to reauthorize when reconnecting
-            authorization = nil
+        let connection = RapidConnectionRequest(connectionID: Rapid.uniqueID, delegate: self)
+        
+        // Client needs to reauthorize when creating a new connection
+        if let token = self.auth?.token {
+            authorization = RapidAuthRequest(token: token)
         }
         else {
-            let connectionID = Rapid.uniqueID
-            connection = RapidConnectionRequest(connectionID: connectionID, delegate: self)
-            self.connectionID = connectionID
-            
-            // Client needs to reauthorize when creating a new connection
-            if let token = self.auth?.token {
-                authorization = RapidAuthRequest(token: token)
-            }
-            else {
-                authorization = nil
-            }
+            authorization = nil
         }
 
         post(event: connection, prioritize: true)
@@ -407,7 +366,7 @@ fileprivate extension RapidSocketManager {
         // Inform a timoutable request that it should start a timeout count down
         // User events can be timeouted only if user sets `Rapid.timeout`
         // System events work always with timeout and they use either a custom `Rapid.timeout` if set or a default `Rapid.defaultTimeout`
-        if let timeoutRequest = event as? RapidTimeoutRequest, let timeout = Rapid.timeout {
+        if let timeoutRequest = event as? RapidTimeoutRequest, let timeout = timeout {
             timeoutRequest.requestSent(withTimeout: timeout, delegate: self)
         }
         else if let timeoutRequest = event as? RapidTimeoutRequest, timeoutRequest.alwaysTimeout {
@@ -506,7 +465,7 @@ fileprivate extension RapidSocketManager {
             }
             
         // Subscription cancel
-        case let message as RapidSubscriptionCancel:
+        case let message as RapidSubscriptionCancelled:
             let subscription = activeSubscriptions[message.subscriptionID]
             let eventID = message.eventIDsToAcknowledge.first ?? Generator.uniqueID
             let error = RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "No longer authorized to read data"))
@@ -523,6 +482,13 @@ fileprivate extension RapidSocketManager {
         case let message as RapidChannelMessage:
             if let subscription = activeSubscriptions[message.subscriptionID] as? RapidChanSubManager {
                 subscription.receivedMessage(message)
+            }
+            
+        // Server timestamp
+        case let message as RapidServerTimestamp:
+            if pendingTimeRequests.count > 0 {
+                let request = pendingTimeRequests.removeFirst()
+                request.receivedTimestamp(message)
             }
         
         default:

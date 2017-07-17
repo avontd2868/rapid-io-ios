@@ -29,10 +29,10 @@ class RapidDocumentExecution: RapidExecution {
     weak var cacheHandler: RapidCacheHandler?
     
     /// Execution block that returns a client action based on current data
-    let executionBlock: RapidExecutionBlock
+    let executionBlock: RapidDocumentExecutionBlock
     
     /// Completion handler
-    let completion: RapidExecutionCompletion?
+    let completion: RapidDocumentExecutionCompletion?
     
     /// Fetch document request
     var fetchRequest: RapidFetchInstance {
@@ -57,7 +57,7 @@ class RapidDocumentExecution: RapidExecution {
     ///   - delegate: Flow controller delegate
     ///   - block: Execution block that returns a client action based on current data
     ///   - completion: Completion handler
-    init(collectionID: String, documentID: String, delegate: RapidExectuionDelegate, block: @escaping RapidExecutionBlock, completion: RapidExecutionCompletion?) {
+    init(collectionID: String, documentID: String, delegate: RapidExectuionDelegate, block: @escaping RapidDocumentExecutionBlock, completion: RapidDocumentExecutionCompletion?) {
         self.collectionID = collectionID
         self.documentID = documentID
         self.executionBlock = block
@@ -70,7 +70,7 @@ class RapidDocumentExecution: RapidExecution {
         delegate?.sendFetchRequest(fetchRequest)
     }
     
-    /// Pass current value to `RapidExecutionBlock` and perform an action based on a result
+    /// Pass current value to `RapidDocumentExecutionBlock` and perform an action based on a result
     ///
     /// - Parameter document: `RapidDocument` returned from fetch
     fileprivate func resolveValue(forDocument document: RapidDocument) {
@@ -181,7 +181,7 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     let documentID: String
     
     /// Mutation completion
-    let completion: RapidMutationCompletion?
+    let completion: RapidDocumentMutationCompletion?
     
     /// Timout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
@@ -201,7 +201,7 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: Document JSON
     ///   - completion: Mutation completion
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidMutationCompletion?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidDocumentMutationCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
@@ -267,7 +267,7 @@ class RapidDocumentMerge: NSObject, RapidMutationRequest {
     let documentID: String
     
     /// Merge completion
-    let completion: RapidMergeCompletion?
+    let completion: RapidDocumentMergeCompletion?
     
     /// Timeout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
@@ -287,7 +287,7 @@ class RapidDocumentMerge: NSObject, RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: JSON with values to be merged
     ///   - completion: Merge completion
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidMergeCompletion?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidDocumentMergeCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
@@ -350,7 +350,7 @@ class RapidDocumentDelete: NSObject, RapidMutationRequest {
     let documentID: String
     
     /// Deletion completion
-    let completion: RapidDeletionCompletion?
+    let completion: RapidDocumentDeletionCompletion?
     
     /// Timeout delegate
     internal weak var timoutDelegate: RapidTimeoutRequestDelegate?
@@ -369,7 +369,7 @@ class RapidDocumentDelete: NSObject, RapidMutationRequest {
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
     ///   - completion: Delete completion handler
-    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDeletionCompletion?) {
+    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDocumentDeletionCompletion?) {
         self.collectionID = collectionID
         self.documentID = documentID
         self.completion = completion

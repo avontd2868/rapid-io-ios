@@ -13,6 +13,8 @@ import Foundation
 // Wrapper for `RapidSubscriptionManager` that handles unsubscription
 class RapidUnsubscriptionManager: NSObject {
     
+    let shouldSendOnReconnect = false
+    
     let subscription: RapidSubscriptionManager
     
     init(subscription: RapidSubscriptionManager) {

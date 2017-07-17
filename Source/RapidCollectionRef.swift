@@ -9,13 +9,13 @@
 import Foundation
 
 /// Collection subscription handler which provides a client either with an error or with an array of documents
-public typealias RapidColSubHandler = (_ result: RapidResult<[RapidDocument]>) -> Void
+public typealias RapidCollectionSubscriptionHandler = (_ result: RapidResult<[RapidDocument]>) -> Void
 
 /// Collection subscription handler which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
-public typealias RapidColSubHandlerWithChanges = (_ result: RapidResult<(documents: [RapidDocument], added: [RapidDocument], updated: [RapidDocument], removed: [RapidDocument])>) -> Void
+public typealias RapidCollectionSubscriptionHandlerWithChanges = (_ result: RapidResult<(documents: [RapidDocument], added: [RapidDocument], updated: [RapidDocument], removed: [RapidDocument])>) -> Void
 
 /// Collection fetch completion handler which provides a client either with an error or with an array of documents
-public typealias RapidColFetchCompletion = RapidColSubHandler
+public typealias RapidCollectionFetchCompletion = RapidCollectionSubscriptionHandler
 
 /// Class representing Rapid.io collection
 open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
@@ -86,8 +86,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     
     /// Get a new collection object with a subscription ordering assigned
     ///
-    /// An ordering with the array index 0 has the highest priority.
-    /// When the collection already contains an ordering the new ordering is appended to the original one
+    /// When the collection already contains an ordering the original ordering is overwriten by the new one
     ///
     /// - Parameter ordering: Ordering object
     /// - Returns: The collection with the ordering assigned
@@ -99,8 +98,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     
     /// Assign subscription ordering to the collection
     ///
-    /// An ordering with the array index 0 has the highest priority.
-    /// When the collection already contains an ordering the new ordering is appended to the original one
+    /// When the collection already contains an ordering the original ordering is overwriten by the new one
     ///
     /// - Parameter ordering: Ordering object
     open func ordered(by ordering: RapidOrdering) {
@@ -112,14 +110,14 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     }
 
     //TODO: Ordering with multiple descriptors
-    
+    /*
     /// Get a new collection object with a subscription ordering options assigned
     ///
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
-    func order(by ordering: [RapidOrdering]) -> RapidCollectionRef {
+    open func order(by ordering: [RapidOrdering]) -> RapidCollectionRef {
         let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
@@ -130,14 +128,38 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
-    func ordered(by ordering: [RapidOrdering]) {
+    open func ordered(by ordering: [RapidOrdering]) {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
         self.subscriptionOrdering?.append(contentsOf: ordering)
-    }
+    }*/
     
     /// Get a new collection object with a subscription limit options assigned
+    ///
+    /// When the collection already contains a limit the original limit is replaced by the new one
+    ///
+    /// - Parameters:
+    ///   - take: Maximum number of documents to be returned
+    /// - Returns: The collection with the limit assigned
+    open func limit(to take: Int) -> RapidCollectionRef {
+        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+        collection.limited(to: take)
+        return collection
+    }
+
+    /// Assing a subscription limit options to the collection
+    ///
+    /// When the collection already contains a limit the original limit is replaced by the new one
+    ///
+    /// - Parameters:
+    ///   - take: Maximum number of documents to be returned
+    open func limited(to take: Int) {
+        self.subscriptionPaging = RapidPaging(take: take)
+    }
+
+    //TODO: Implement skip
+    /*/// Get a new collection object with a subscription limit options assigned
     ///
     /// When the collection already contains a limit the original limit is replaced by the new one
     ///
@@ -150,7 +172,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
         collection.limited(to: take, skip: skip)
         return collection
     }
-
+    
     /// Assing a subscription limit options to the collection
     ///
     /// When the collection already contains a limit the original limit is replaced by the new one
@@ -160,16 +182,19 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///   - skip: Number of documents to be skipped
     open func limited(to take: Int, skip: Int? = nil) {
         self.subscriptionPaging = RapidPaging(skip: skip, take: take)
-    }
+    }*/
+}
 
+extension RapidCollectionRef: RapidSubscriptionReference {
+    
     /// Subscribe for listening to the collection changes
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
-    /// - Parameter block: Subscription handler which provides a client either with an error or with an array of documents
+    /// - Parameter block: Subscription handler that provides a client either with an error or with an array of documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribe(block: @escaping RapidColSubHandler) -> RapidSubscription {
+    open func subscribe(block: @escaping RapidCollectionSubscriptionHandler) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: block, handlerWithChanges: nil)
         
         socketManager.subscribe(toCollection: subscription)
@@ -181,10 +206,10 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
-    /// - Parameter block: Subscription handler which provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
+    /// - Parameter block: Subscription handler that provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribeWithChanges(block: @escaping RapidColSubHandlerWithChanges) -> RapidSubscription {
+    open func subscribeWithChanges(block: @escaping RapidCollectionSubscriptionHandlerWithChanges) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: nil, handlerWithChanges: block)
         
         socketManager.subscribe(toCollection: subscription)
@@ -192,16 +217,21 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
         return subscription
     }
     
+}
+
+extension RapidCollectionRef: RapidFetchReference {
+    
     /// Fetch collection
     ///
     /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
     ///
-    /// - Parameter completion: Fetch completion handler which provides a client either with an error or with an array of documents
-    open func fetch(completion: @escaping RapidColFetchCompletion) {
+    /// - Parameter completion: Fetch completion handler that provides a client either with an error or with an array of documents
+    open func fetch(completion: @escaping RapidCollectionFetchCompletion) {
         let fetch = RapidCollectionFetch(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, completion: completion)
         
         socketManager.fetch(fetch)
     }
+
 }
 
 extension RapidCollectionRef {

@@ -14,12 +14,22 @@ protocol RapidSerializable {
 }
 
 /// Protocol describing events that can be sent to the server
-protocol RapidClientMessage {}
+protocol RapidClientMessage {
+    var shouldSendOnReconnect: Bool { get }
+}
 
 /// Protocol describing socket events that wait for a server response
 protocol RapidClientRequest: class, RapidClientMessage {
     func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement)
     func eventFailed(withError error: RapidErrorInstance)
+}
+
+extension RapidClientRequest {
+    
+    var shouldSendOnReconnect: Bool {
+        return true
+    }
+
 }
 
 /// Protocol describing socket events that inform server and do not wait for a server response

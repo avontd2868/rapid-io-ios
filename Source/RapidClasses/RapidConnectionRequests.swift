@@ -19,6 +19,8 @@ protocol RapidConnectionRequestDelegate: class {
 /// Connection request
 class RapidConnectionRequest: RapidSerializable {
     
+    let shouldSendOnReconnect = false
+    
     /// Request should timeout even if `Rapid.timeout` is `nil`
     let alwaysTimeout = true
     
@@ -72,19 +74,12 @@ extension RapidConnectionRequest: RapidTimeoutRequest {
 
 }
 
-/// Reconnection request
-class RapidReconnectionRequest: RapidConnectionRequest {
-    
-    override func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(reconnection: self, withIdentifiers: identifiers)
-    }
-    
-}
-
 // MARK: Disconnect
 
 /// Disconnection request
 class RapidDisconnectionRequest: RapidSerializable, RapidClientEvent {
+    
+    let shouldSendOnReconnect = false
     
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(disconnection: self)
@@ -96,6 +91,8 @@ class RapidDisconnectionRequest: RapidSerializable, RapidClientEvent {
 /// Empty request for connection test
 class RapidEmptyRequest: RapidSerializable, RapidClientEvent {
     
+    let shouldSendOnReconnect = false
+    
     func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
         return try RapidSerialization.serialize(emptyRequest: self)
     }
@@ -104,6 +101,8 @@ class RapidEmptyRequest: RapidSerializable, RapidClientEvent {
 // MARK: Authorization
 
 class RapidAuthRequest: RapidClientRequest {
+    
+    let shouldSendOnReconnect = false
     
     let auth: RapidAuthorization
     let handler: RapidAuthHandler?
@@ -145,6 +144,8 @@ extension RapidAuthRequest: RapidSerializable {
 }
 
 class RapidDeauthRequest: RapidClientRequest {
+    
+    let shouldSendOnReconnect = false
     
     let handler: RapidDeuthHandler?
     

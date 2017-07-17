@@ -24,6 +24,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -44,10 +45,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("No hash")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testStartsWithFilter() {
@@ -63,6 +65,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -83,10 +86,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("No hash")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 15, handler: nil)
+        waitForExpectations(timeout: 25, handler: nil)
     }
     
     func testEndsWithFilter() {
@@ -103,6 +107,7 @@ extension RapidTests {
                     
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -123,10 +128,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("No hash")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testArrayContainsFilter() {
@@ -142,6 +148,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -162,10 +169,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("No hash")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 18, handler: nil)
+        waitForExpectations(timeout: 30, handler: nil)
     }
     
     func testOrderingAsc() {
@@ -181,6 +189,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -196,7 +205,7 @@ extension RapidTests {
                 })
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testOrderingDesc() {
@@ -212,6 +221,7 @@ extension RapidTests {
             .subscribe(block: { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -230,7 +240,7 @@ extension RapidTests {
                 promise.fulfill()
             })
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testOrderByID() {
@@ -247,6 +257,7 @@ extension RapidTests {
                 
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -265,7 +276,7 @@ extension RapidTests {
                 promise.fulfill()
             })
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testOrderingUpdates() {
@@ -285,6 +296,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -318,6 +330,7 @@ extension RapidTests {
                         
                     default:
                         XCTFail("More updates")
+                        promise.fulfill()
                     }
                     
                     numberOfDocuments = documents.count
@@ -325,7 +338,7 @@ extension RapidTests {
                 })
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 
     func testLimit() {
@@ -334,34 +347,133 @@ extension RapidTests {
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
         rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
         rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
-        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"]) { _ in
         
-        rapid.collection(named: testCollectionName)
-            .filter(by: RapidFilter.lessThan(keyPath: RapidFilter.docIdKey, value: "5"))
-            .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .descending))
-            .limit(to: 2)
-            .subscribe(block: { result in
-                guard case .success(let documents) = result else {
-                    XCTFail("Error")
-                    return
-                }
-                
-                XCTAssertEqual(documents.count, 2, "No documents")
-                
-                var lastID: String?
-                for document in documents {
-                    if let lastID = lastID {
-                        XCTAssertLessThanOrEqual(document.id, lastID, "Wrong order")
+            self.rapid.collection(named: self.testCollectionName)
+                .limit(to: 2)
+                .subscribe(block: { result in
+                    guard case .success(let documents) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
                     }
-                    else {
-                        lastID = document.id
-                    }
-                }
-                
-                promise.fulfill()
-            })
+                    
+                    XCTAssertEqual(documents.count, 2, "No documents")
+                    
+                    promise.fulfill()
+                })
+        }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testIdKey() {
+        let promise = expectation(description: "$id")
+
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
+        rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
+        rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"]) { _ in
+        
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by: RapidFilter.lessThan(keyPath: RapidFilter.docIdKey, value: "4"))
+                .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .descending))
+                .subscribe(block: { result in
+                    guard case .success(let documents) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    var lastID: String?
+                    for document in documents {
+                        if let lastID = lastID {
+                            XCTAssertLessThanOrEqual(document.id, lastID, "Wrong order")
+                        }
+                        else {
+                            lastID = document.id
+                        }
+                        
+                        XCTAssertLessThan(document.id, "4", "Wrong filter")
+                    }
+                    
+                    promise.fulfill()
+                })
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testCreatedKey() {
+        let promise = expectation(description: "$created")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
+        rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
+        rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by: RapidFilter.greaterThan(keyPath: RapidFilter.docCreatedAtKey, value: 0))
+                .order(by: RapidOrdering(keyPath: RapidOrdering.docCreatedAtKey, ordering: .descending))
+                .subscribe(block: { result in
+                    guard case .success(let documents) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    var lastTimestamp: TimeInterval?
+                    for document in documents {
+                        if let lastTimestamp = lastTimestamp {
+                            XCTAssertLessThanOrEqual(document.createdAt?.timeIntervalSince1970 ?? TimeInterval.greatestFiniteMagnitude, lastTimestamp, "Wrong order")
+                        }
+                        else {
+                            lastTimestamp = document.createdAt?.timeIntervalSince1970 ?? -1
+                        }
+                        XCTAssertGreaterThan(document.createdAt?.timeIntervalSince1970 ?? 0, 0, "Wrong filter")
+                    }
+                    
+                    promise.fulfill()
+                })
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testModifiedKey() {
+        let promise = expectation(description: "$modified")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "test1"])
+        rapid.collection(named: testCollectionName).document(withID: "2").mutate(value: ["name": "test2"])
+        rapid.collection(named: testCollectionName).document(withID: "3").mutate(value: ["name": "test3"])
+        rapid.collection(named: testCollectionName).document(withID: "4").mutate(value: ["name": "test4"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by: RapidFilter.greaterThan(keyPath: RapidFilter.docModifiedAtKey, value: 0))
+                .order(by: RapidOrdering(keyPath: RapidOrdering.docModifiedAtKey, ordering: .descending))
+                .subscribe(block: { result in
+                    guard case .success(let documents) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    var lastTimestamp: TimeInterval?
+                    for document in documents {
+                        if let lastTimestamp = lastTimestamp {
+                            XCTAssertLessThanOrEqual(document.modifiedAt?.timeIntervalSince1970 ?? TimeInterval.greatestFiniteMagnitude, lastTimestamp, "Wrong order")
+                        }
+                        else {
+                            lastTimestamp = document.modifiedAt?.timeIntervalSince1970 ?? -1
+                        }
+                        XCTAssertGreaterThan(document.modifiedAt?.timeIntervalSince1970 ?? 0, 0, "Wrong filter")
+                    }
+                    
+                    promise.fulfill()
+                })
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
 }

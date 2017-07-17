@@ -23,7 +23,7 @@ class RapidNetworkHandler {
     fileprivate let socket: WebSocket
     
     /// State of a websocket connection
-    fileprivate(set) var state: Rapid.ConnectionState = .disconnected {
+    fileprivate(set) var state: RapidConnectionState = .disconnected {
         didSet {
             if oldValue != state {
                 onConnectionStateChanged?(state)
@@ -48,7 +48,7 @@ class RapidNetworkHandler {
     weak var delegate: RapidNetworkHandlerDelegate?
     
     /// Connection state changed handler
-    var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)?
+    var onConnectionStateChanged: ((RapidConnectionState) -> Void)?
     
     init(socketURL: URL) {
         self.parseQueue = DispatchQueue(label: "RapidParseQueue-\(socketURL.lastPathComponent)", attributes: [])
@@ -67,7 +67,7 @@ class RapidNetworkHandler {
         mainQueue.async { [weak self] in
             self?.socketTerminated = false
             
-            if let state = self?.state, state == .disconnected {
+            if let state = self?.state, state != .connected {
                 self?.createConnection()
             }
         }
@@ -226,7 +226,13 @@ extension RapidNetworkHandler: WebSocketDelegate {
             self.socketConnectTimer?.invalidate()
             self.socketConnectTimer = nil
             
-            self.state = .disconnected
+            switch self.state {
+            case .connected:
+                self.state = .connecting
+                
+            default:
+                self.state = .disconnected
+            }
             
             // If the connection wasn't terminated intentionally reconnect it
             if !self.socketTerminated {

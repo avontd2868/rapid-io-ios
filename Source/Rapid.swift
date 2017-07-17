@@ -8,22 +8,27 @@
 
 import Foundation
 
-/// Protocol for handling existing subscription
-public protocol RapidSubscription {
-    /// Unique subscription identifier
-    var subscriptionHash: String { get }
-    
-    /// Remove subscription
-    func unsubscribe()
+/// Possible connection states
+///
+/// - disconnected: Rapid instance is disconnected
+/// - connecting: Rapid instance is connecting to server
+/// - connected: Rapid instance is connected
+public enum RapidConnectionState {
+    case disconnected
+    case connecting
+    case connected
 }
 
 /// Authorization completion handler
 public typealias RapidAuthHandler = (_ result: RapidResult<RapidAuthorization>) -> Void
 
-/// Authorization completion handler
+/// Deauthorization completion handler
 public typealias RapidDeuthHandler = (_ result: RapidResult<Any?>) -> Void
 
-/// Result for completion handlers
+/// Server time offset handler
+public typealias RapidTimeOffsetHandler = (_ offset: RapidResult<TimeInterval>) -> Void
+
+/// Result of a request that is passed to a completion handler
 ///
 /// - success: Request was proceeded without any error
 /// - failure: An error occured
@@ -57,11 +62,19 @@ open class Rapid: NSObject {
     /// When Rapid.io tries to write a json to a database it replaces every occurance of `serverTimestamp` with Unix timestamp
     public static let serverTimestamp = "__TIMESTAMP__"
     
-    /// Optional timeout is seconds for Rapid requests. If timeout is nil requests never end up with timeout error
-    public static var timeout: TimeInterval?
-    
     /// API key that serves to connect to Rapid.io database
     public let apiKey: String
+    
+    /// Optional timeout in seconds for requests. If `timeout` is nil requests never end up with timeout error
+    public var timeout: TimeInterval? {
+        get {
+            return handler.timeout
+        }
+        
+        set {
+            handler.timeout = newValue
+        }
+    }
     
     /// If `true` subscription values are stored locally to be available offline
     public var isCacheEnabled: Bool {
@@ -74,13 +87,13 @@ open class Rapid: NSObject {
         }
     }
     
-    /// Current state of Rapid instance
-    public var connectionState: ConnectionState {
+    /// Current connection state of Rapid instance
+    public var connectionState: RapidConnectionState {
         return handler.state
     }
     
     /// Block of code that is called every time the `connectionState` changes
-    var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)? {
+    public var onConnectionStateChanged: ((RapidConnectionState) -> Void)? {
         get {
             return handler.onConnectionStateChanged
         }
@@ -90,14 +103,14 @@ open class Rapid: NSObject {
         }
     }
     
-    /// Current authorization instace
+    /// Current authorization instance
     public var authorization: RapidAuthorization? {
         return handler.authorization
     }
     
     let handler: RapidHandler
     
-    /// Initializes a Rapid instance
+    /// Initialize a Rapid instance
     ///
     /// - parameter withApiKey:     API key that contains necessary information about a database to which you want to connect
     ///
@@ -157,27 +170,27 @@ open class Rapid: NSObject {
         handler.socketManager.deauthorize(deauthRequest: request)
     }
     
-    /// Creates a new object representing Rapid collection
+    /// Create a new object representing Rapid.io collection
     ///
     /// - parameter named: Collection name
     ///
-    /// - returns: New object representing Rapid collection
+    /// - returns: New object representing Rapid.io collection
     open func collection(named name: String) -> RapidCollectionRef {
         return RapidCollectionRef(id: name, handler: handler)
     }
     
-    /// Creates a new object representing Rapid channel
+    /// Creates a new object representing Rapid.io channel
     ///
     /// - Parameter name: Channel name
-    /// - Returns: New object representing Rapid channel
+    /// - Returns: New object representing Rapid.io channel
     open func channel(named name: String) -> RapidChannelRef {
         return RapidChannelRef(name: name, handler: handler)
     }
     
-    /// Creates a new object representing multiple Rapid channels identified by a name prefix
+    /// Creates a new object representing multiple Rapid.io channels identified by a name prefix
     ///
     /// - Parameter prefix: Channel name prefix
-    /// - Returns: New object representing multiple Rapid channels
+    /// - Returns: New object representing multiple Rapid.io channels
     open func channels(nameStartsWith prefix: String) -> RapidChannelsRef {
         return RapidChannelsRef(prefix: prefix, handler: handler)
     }
@@ -200,6 +213,20 @@ open class Rapid: NSObject {
     open func unsubscribeAll() {
         handler.socketManager.unsubscribeAll()
     }
+    
+    /// Get a difference between local device time and server time
+    ///
+    /// When server time is 1.1.2017 7:18:19 AM and device time is 1.1.2017 7:18:20
+    /// the offset is positive 1
+    ///
+    /// Offset's accuracy can be affected by network latency, so it is useful primarily for discovering large (> 1 second) discrepancies in clock time
+    ///
+    /// - Parameter completion: Completion handler which returns the offset
+    open func serverTimeOffset(completion: @escaping RapidTimeOffsetHandler) {
+        let request = RapidTimeOffset(completion: completion)
+        
+        handler.socketManager.requestTimestamp(request)
+    }
 }
 
 // MARK: Singleton methods
@@ -219,14 +246,7 @@ public extension Rapid {
         throw RapidInternalError.rapidInstanceNotInitialized
     }
     
-    /// Possible connection states
-    enum ConnectionState {
-        case disconnected
-        case connecting
-        case connected
-    }
-    
-    /// Generates an unique ID which can be safely used as your document ID
+    /// Generate an unique ID which can be safely used as your document ID
     class var uniqueID: String {
         return Generator.uniqueID
     }
@@ -243,6 +263,19 @@ public extension Rapid {
         
     }
     
+    /// Optional timeout in seconds for requests. If `timeout` is nil requests never end up with timeout error
+    class var timeout: TimeInterval? {
+        get {
+            let instance = try! shared()
+            return instance.timeout
+        }
+        
+        set {
+            let instance = try! shared()
+            instance.timeout = newValue
+        }
+    }
+    
     /// If `true` subscription values are stored locally to be available offline
     class var isCacheEnabled: Bool {
         get {
@@ -256,13 +289,13 @@ public extension Rapid {
         }
     }
     
-    /// Current state of shared Rapid instance
-    class var connectionState: ConnectionState {
+    /// Current connection state of shared Rapid instance
+    class var connectionState: RapidConnectionState {
         return try! shared().connectionState
     }
     
     /// Block of code that is called every time the `connectionState` changes
-    class var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)? {
+    class var onConnectionStateChanged: ((RapidConnectionState) -> Void)? {
         get {
             let instance = try! shared()
             return instance.onConnectionStateChanged
@@ -289,6 +322,18 @@ public extension Rapid {
         try! shared().unsubscribeAll()
     }
     
+    /// Get a difference between local device time and server time
+    ///
+    /// When server time is 1.1.2017 7:18:19 AM and device time is 1.1.2017 7:18:20
+    /// the offset is positive 1
+    ///
+    /// Offset's accuracy can be affected by network latency, so it is useful primarily for discovering large (> 1 second) discrepancies in clock time
+    ///
+    /// - Parameter completion: Completion handler which returns the offset
+    class func serverTimeOffset(completion: @escaping RapidTimeOffsetHandler) {
+        try! shared().serverTimeOffset(completion: completion)
+    }
+    
     /// Authorize Rapid instance
     ///
     /// - Parameters:
@@ -305,36 +350,36 @@ public extension Rapid {
         try! shared().deauthorize(completion: completion)
     }
     
-    /// Configures shared Rapid instance
+    /// Configure shared Rapid instance
     ///
-    /// Initializes an instance that can be lately accessed through singleton class functions
+    /// It initializes a shared instance that can be lately accessed through class functions
     ///
     /// - parameter withApiKey:     API key that contains necessary information about a database to which you want to connect
     class func configure(withApiKey key: String) {
         sharedInstance = Rapid.getInstance(withApiKey: key)
     }
     
-    /// Creates a new object representing Rapid collection
+    /// Create a new object representing Rapid.io collection
     ///
     /// - parameter named: Collection name
     ///
-    /// - returns: New object representing Rapid collection
+    /// - returns: New object representing Rapid.io collection
     class func collection(named: String) -> RapidCollectionRef {
         return try! shared().collection(named: named)
     }
     
-    /// Creates a new object representing Rapid channel
+    /// Create a new object representing Rapid.io channel
     ///
     /// - Parameter name: Channel name
-    /// - Returns: New object representing Rapid channel
+    /// - Returns: New object representing Rapid.io channel
     class func channel(named name: String) -> RapidChannelRef {
         return try! shared().channel(named: name)
     }
     
-    /// Creates a new object representing multiple Rapid channels identified by a name prefix
+    /// Creates a new object representing multiple Rapid.io channels identified by a name prefix
     ///
     /// - Parameter prefix: Channel name prefix
-    /// - Returns: New object representing multiple Rapid channels
+    /// - Returns: New object representing multiple Rapid.io channels
     class func channels(nameStartsWith prefix: String) -> RapidChannelsRef {
         return try! shared().channels(nameStartsWith: prefix)
     }

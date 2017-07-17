@@ -366,15 +366,31 @@ extension RapidSerialization {
         static let name = "deauth"
     }
     
-    struct Cancel {
+    struct CollectionSubscriptionCancelled {
         static let name = "ca"
-        
-        struct CollectionID {
-            static let name = "col-id"
-        }
         
         struct SubscriptionID {
             static let name = "sub-id"
+        }
+    }
+    
+    struct ChannelSubscriptionCancelled {
+        static let name = "ca-ch"
+        
+        struct SubscriptionID {
+            static let name = "sub-id"
+        }
+    }
+    
+    struct RequestTimestamp {
+        static let name = "req-ts"
+    }
+    
+    struct Timestamp {
+        static let name = "ts"
+        
+        struct Timestamp {
+            static let name = "timestamp"
         }
     }
 }
