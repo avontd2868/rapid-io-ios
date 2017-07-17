@@ -24,7 +24,6 @@
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/Rapid.svg)](https://img.shields.io/cocoapods/v/Rapid.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/cocoapods/p/Rapid.svg?style=flat)](https://img.shields.io/cocoapods/p/Rapid.svg)
-[![Build Status](https://travis-ci.org/rapid-io/rapid-io-ios.svg?branch=master)](https://travis-ci.org/rapid-io/rapid-io-ios)
 
 
 # What
