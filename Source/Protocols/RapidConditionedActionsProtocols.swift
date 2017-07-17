@@ -17,3 +17,14 @@ protocol RapidOnConnectAction: RapidClientRequest, RapidSerializable {
     func register(actionID: String, delegate: RapidOnConnectActionDelegate)
     func performAction()
 }
+
+protocol RapidOnDisconnectActionDelegate: class {
+    func cancelOnDisconnectAction(withActionID actionID: String)
+}
+
+protocol RapidOnDisconnectAction: RapidClientRequest, RapidSerializable {
+    var actionID: String? { get }
+    func actionJSON() throws -> [AnyHashable: Any]
+    func register(actionID: String, delegate: RapidOnDisconnectActionDelegate)
+    func cancelRequest() -> RapidCancelOnDisconnectAction
+}

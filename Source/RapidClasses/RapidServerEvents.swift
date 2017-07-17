@@ -79,17 +79,42 @@ class RapidSubscriptionCancel: RapidServerEvent {
             return nil
         }
         
-        guard let subID = dict[RapidSerialization.Cancel.SubscriptionID.name] as? String else {
+        guard let subID = dict[RapidSerialization.CollectionSubscriptionCancelled.SubscriptionID.name] as? String else {
             return nil
         }
         
-        guard let colID = dict[RapidSerialization.Cancel.CollectionID.name] as? String else {
+        guard let colID = dict[RapidSerialization.CollectionSubscriptionCancelled.CollectionID.name] as? String else {
             return nil
         }
         
         self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subID
         self.collectionID = colID
+    }
+}
+
+// MARK: On-disconnect action cancelled
+
+/// On-disconnect action cancelled event object
+///
+/// On-disconnect action cancelled is a server event which occurs
+/// when a client has no longer permissions to modify a document after reauthorization/deauthorization
+class RapidOnDisconnectActionCancelled: RapidServerEvent {
+    
+    let eventIDsToAcknowledge: [String]
+    let actionID: String
+    
+    init?(json: [AnyHashable: Any]) {
+        guard let eventID = json[RapidSerialization.EventID.name] as? String else {
+            return nil
+        }
+        
+        guard let actionID = json[RapidSerialization.DisconnectActionCancelled.ActionID.name] as? String else {
+            return nil
+        }
+        
+        self.eventIDsToAcknowledge = [eventID]
+        self.actionID = actionID
     }
 }
 

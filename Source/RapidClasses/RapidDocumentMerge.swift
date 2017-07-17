@@ -106,7 +106,7 @@ extension RapidDocumentMerge: RapidWriteRequest {
     }
 }
 
-// MARK: On-create merge
+// MARK: On-connect merge
 
 class RapidDocumentOnConnectMerge: NSObject {
     
@@ -135,14 +135,14 @@ extension RapidDocumentOnConnectMerge: RapidSerializable {
 extension RapidDocumentOnConnectMerge: RapidClientRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
-        RapidLogger.log(message: "Rapid on-connect merge performed - document \(self.merge.documentID) in collection \(self.merge.collectionID)", level: .info)
+        RapidLogger.log(message: "Rapid on-connect merge performed - document \(self.merge.documentID) in collection \(self.merge.collectionID)", level: .debug)
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
         cancel()
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid on-connect merge cancelled - document \(self.merge.documentID) in collection \(self.merge.collectionID) - because of error: \(error)", level: .info)
+            RapidLogger.log(message: "Rapid on-connect merge cancelled - document \(self.merge.documentID) in collection \(self.merge.collectionID) - because of error: \(error)", level: .debug)
             
             self.completion?(.failure(error: error.error))
             self.completion = nil
@@ -158,7 +158,7 @@ extension RapidDocumentOnConnectMerge: RapidOnConnectAction {
         self.delegate = delegate
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid on-connect merge registered - document \(self.merge.documentID) in collection \(self.merge.collectionID)", level: .info)
+            RapidLogger.log(message: "Rapid on-connect merge registered - document \(self.merge.documentID) in collection \(self.merge.collectionID)", level: .debug)
             
             self.completion?(.success(value: nil))
         }
@@ -174,6 +174,79 @@ extension RapidDocumentOnConnectMerge: RapidWriteRequest {
     func cancel() {
         if let id = actionID {
             delegate?.cancelOnConnectAction(withActionID: id)
+        }
+    }
+}
+
+// MARK: On-disconnect merge
+
+class RapidDocumentOnDisconnectMerge: NSObject {
+    
+    let merge: RapidDocumentMerge!
+    
+    fileprivate(set) var completion: RapidDocumentMergeCompletion?
+    
+    fileprivate(set) var actionID: String?
+    fileprivate(set) weak var delegate: RapidOnDisconnectActionDelegate?
+    
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentMergeCompletion?) {
+        self.completion = completion
+        
+        self.merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)
+    }
+    
+}
+
+extension RapidDocumentOnDisconnectMerge: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(disconnectAction: self, withIdentifiers: identifiers)
+    }
+}
+
+extension RapidDocumentOnDisconnectMerge: RapidClientRequest {
+    
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid on-disconnect mutation registered - document \(self.merge.documentID) in collection \(self.merge.collectionID)", level: .debug)
+            
+            self.completion?(.success(value: nil))
+        }
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid on-disconnect mutation cancelled - document \(self.merge.documentID) in collection \(self.merge.collectionID) - because of error: \(error)", level: .debug)
+            
+            self.completion?(.failure(error: error.error))
+            self.completion = nil
+        }
+    }
+    
+}
+
+extension RapidDocumentOnDisconnectMerge: RapidOnDisconnectAction {
+    
+    func actionJSON() throws -> [AnyHashable : Any] {
+        let jsonString = try RapidSerialization.serialize(merge: merge, withIdentifiers: [:])
+        return try jsonString.json() ?? [:]
+    }
+    
+    func register(actionID: String, delegate: RapidOnDisconnectActionDelegate) {
+        self.actionID = actionID
+        self.delegate = delegate
+    }
+    
+    func cancelRequest() -> RapidCancelOnDisconnectAction {
+        return RapidCancelOnDisconnectAction(actionID: actionID ?? "", collectionID: merge.collectionID, documentID: merge.documentID)
+    }
+}
+
+extension RapidDocumentOnDisconnectMerge: RapidWriteRequest {
+    
+    func cancel() {
+        if let id = actionID {
+            delegate?.cancelOnDisconnectAction(withActionID: id)
         }
     }
 }

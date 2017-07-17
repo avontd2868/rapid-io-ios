@@ -49,6 +49,8 @@ class RapidSocketManager {
     
     fileprivate var onConnectActions: [String: RapidOnConnectAction] = [:]
     
+    fileprivate var onDisconnectActions: [String: RapidOnDisconnectAction] = [:]
+    
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
     fileprivate var nopTimer: Timer?
     
@@ -160,6 +162,20 @@ class RapidSocketManager {
                     self?.post(event: action)
                 }
             }
+        }
+    }
+    
+    func registerOnDisconnectAction(_ action: RapidOnDisconnectAction) {
+        websocketQueue.async { [weak self] in
+            let actionID = Rapid.uniqueID
+            
+            self?.onDisconnectActions[actionID] = action
+            
+            if let strongSelf = self {
+                action.register(actionID: actionID, delegate: strongSelf)
+            }
+            
+            self?.post(event: action)
         }
     }
     
@@ -547,6 +563,14 @@ fileprivate extension RapidSocketManager {
             subscription?.eventFailed(withError: error)
             activeSubscriptions[message.subscriptionID] = nil
             
+        // On-disconnect action cancelled
+        case let message as RapidOnDisconnectActionCancelled:
+            let action = onDisconnectActions[message.actionID]
+            let eventID = message.eventIDsToAcknowledge.first ?? Generator.uniqueID
+            let error = RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "No longer authorized to write data"))
+            action?.eventFailed(withError: error)
+            onDisconnectActions[message.actionID] = nil
+            
         // Fetch response
         case let message as RapidFetchResponse:
             let fetch = pendingFetches[message.fetchID]
@@ -610,6 +634,20 @@ extension RapidSocketManager: RapidOnConnectActionDelegate {
             if let action = self?.onConnectActions[actionID] {
                 self?.onConnectActions[actionID] = nil
                 self?.cancel(request: action)
+            }
+        }
+    }
+}
+
+// MARK: On-disconnect action delegate
+extension RapidSocketManager: RapidOnDisconnectActionDelegate {
+    
+    func cancelOnDisconnectAction(withActionID actionID: String) {
+        websocketQueue.async { [weak self] in
+            if let action = self?.onDisconnectActions[actionID] {
+                self?.onDisconnectActions[actionID] = nil
+                self?.cancel(request: action)
+                self?.post(event: action.cancelRequest())
             }
         }
     }

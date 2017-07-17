@@ -106,7 +106,7 @@ extension RapidDocumentMutation: RapidWriteRequest {
     }
 }
 
-// MARK: On-create mutation
+// MARK: On-connect mutation
 
 class RapidDocumentOnConnectMutation: NSObject {
     
@@ -135,14 +135,14 @@ extension RapidDocumentOnConnectMutation: RapidSerializable {
 extension RapidDocumentOnConnectMutation: RapidClientRequest {
     
     func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
-        RapidLogger.log(message: "Rapid on-connect mutation performed - document \(self.mutation.documentID) in collection \(self.mutation.collectionID)", level: .info)
+        RapidLogger.log(message: "Rapid on-connect mutation performed - document \(self.mutation.documentID) in collection \(self.mutation.collectionID)", level: .debug)
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
         cancel()
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid on-connect mutation cancelled - document \(self.mutation.documentID) in collection \(self.mutation.collectionID) - because of error: \(error)", level: .info)
+            RapidLogger.log(message: "Rapid on-connect mutation cancelled - document \(self.mutation.documentID) in collection \(self.mutation.collectionID) - because of error: \(error)", level: .debug)
             
             self.completion?(.failure(error: error.error))
             self.completion = nil
@@ -158,7 +158,7 @@ extension RapidDocumentOnConnectMutation: RapidOnConnectAction {
         self.delegate = delegate
         
         DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid on-connect mutation registered - document \(self.mutation.documentID) in collection \(self.mutation.collectionID)", level: .info)
+            RapidLogger.log(message: "Rapid on-connect mutation registered - document \(self.mutation.documentID) in collection \(self.mutation.collectionID)", level: .debug)
             
             self.completion?(.success(value: nil))
         }
@@ -174,6 +174,108 @@ extension RapidDocumentOnConnectMutation: RapidWriteRequest {
     func cancel() {
         if let id = actionID {
             delegate?.cancelOnConnectAction(withActionID: id)
+        }
+    }
+}
+
+// MARK: On-disconnect mutation
+
+class RapidDocumentOnDisconnectMutation: NSObject {
+    
+    let mutation: RapidDocumentMutation!
+    
+    fileprivate(set) var completion: RapidDocumentMutationCompletion?
+    
+    fileprivate(set) var actionID: String?
+    fileprivate(set) weak var delegate: RapidOnDisconnectActionDelegate?
+    
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentMutationCompletion?) {
+        self.completion = completion
+        
+        self.mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)
+    }
+    
+}
+
+extension RapidDocumentOnDisconnectMutation: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(disconnectAction: self, withIdentifiers: identifiers)
+    }
+}
+
+extension RapidDocumentOnDisconnectMutation: RapidClientRequest {
+    
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid on-disconnect mutation registered - document \(self.mutation.documentID) in collection \(self.mutation.collectionID)", level: .debug)
+            
+            self.completion?(.success(value: nil))
+        }
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid on-disconnect mutation cancelled - document \(self.mutation.documentID) in collection \(self.mutation.collectionID) - because of error: \(error)", level: .debug)
+            
+            self.completion?(.failure(error: error.error))
+            self.completion = nil
+        }
+    }
+    
+}
+
+extension RapidDocumentOnDisconnectMutation: RapidOnDisconnectAction {
+    
+    func actionJSON() throws -> [AnyHashable : Any] {
+        let jsonString = try RapidSerialization.serialize(mutation: mutation, withIdentifiers: [:])
+        return try jsonString.json() ?? [:]
+    }
+    
+    func register(actionID: String, delegate: RapidOnDisconnectActionDelegate) {
+        self.actionID = actionID
+        self.delegate = delegate
+    }
+    
+    func cancelRequest() -> RapidCancelOnDisconnectAction {
+        return RapidCancelOnDisconnectAction(actionID: actionID ?? "", collectionID: mutation.collectionID, documentID: mutation.documentID)
+    }
+}
+
+extension RapidDocumentOnDisconnectMutation: RapidWriteRequest {
+    
+    func cancel() {
+        if let id = actionID {
+            delegate?.cancelOnDisconnectAction(withActionID: id)
+        }
+    }
+}
+
+class RapidCancelOnDisconnectAction: RapidSerializable, RapidClientRequest {
+    
+    let actionID: String
+    let collectionID: String
+    let documentID: String
+    
+    init(actionID: String, collectionID: String, documentID: String) {
+        self.actionID = actionID
+        self.collectionID = collectionID
+        self.documentID = documentID
+    }
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(cancelDisconnectAction: self, withIdentifiers: identifiers)
+    }
+    
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid on-disconnect action cancelled - document \(self.documentID) in collection \(self.collectionID)", level: .debug)
+        }
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid on-disconnect mutation cancelled - document \(self.documentID) in collection \(self.collectionID) - because of error: \(error)", level: .info)
         }
     }
 }

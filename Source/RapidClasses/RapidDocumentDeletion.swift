@@ -95,7 +95,7 @@ extension RapidDocumentDelete: RapidWriteRequest {
     }
 }
 
-// MARK: On-create merge
+// MARK: On-connect merge
 
 class RapidDocumentOnConnectDelete: NSObject {
     
@@ -163,6 +163,79 @@ extension RapidDocumentOnConnectDelete: RapidWriteRequest {
     func cancel() {
         if let id = actionID {
             delegate?.cancelOnConnectAction(withActionID: id)
+        }
+    }
+}
+
+// MARK: On-disconnect delete
+
+class RapidDocumentOnDisconnectDelete: NSObject {
+    
+    let delete: RapidDocumentDelete!
+    
+    fileprivate(set) var completion: RapidDocumentDeletionCompletion?
+    
+    fileprivate(set) var actionID: String?
+    fileprivate(set) weak var delegate: RapidOnDisconnectActionDelegate?
+    
+    init(collectionID: String, documentID: String, completion: RapidDocumentDeletionCompletion?) {
+        self.completion = completion
+        
+        self.delete = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: nil, completion: nil)
+    }
+    
+}
+
+extension RapidDocumentOnDisconnectDelete: RapidSerializable {
+    
+    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
+        return try RapidSerialization.serialize(disconnectAction: self, withIdentifiers: identifiers)
+    }
+}
+
+extension RapidDocumentOnDisconnectDelete: RapidClientRequest {
+    
+    func eventAcknowledged(_ acknowledgement: RapidServerAcknowledgement) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid on-disconnect mutation registered - document \(self.delete.documentID) in collection \(self.delete.collectionID)", level: .debug)
+            
+            self.completion?(.success(value: nil))
+        }
+    }
+    
+    func eventFailed(withError error: RapidErrorInstance) {
+        DispatchQueue.main.async {
+            RapidLogger.log(message: "Rapid on-disconnect mutation cancelled - document \(self.delete.documentID) in collection \(self.delete.collectionID) - because of error: \(error)", level: .debug)
+            
+            self.completion?(.failure(error: error.error))
+            self.completion = nil
+        }
+    }
+    
+}
+
+extension RapidDocumentOnDisconnectDelete: RapidOnDisconnectAction {
+    
+    func actionJSON() throws -> [AnyHashable : Any] {
+        let jsonString = try RapidSerialization.serialize(delete: delete, withIdentifiers: [:])
+        return try jsonString.json() ?? [:]
+    }
+    
+    func register(actionID: String, delegate: RapidOnDisconnectActionDelegate) {
+        self.actionID = actionID
+        self.delegate = delegate
+    }
+    
+    func cancelRequest() -> RapidCancelOnDisconnectAction {
+        return RapidCancelOnDisconnectAction(actionID: actionID ?? "", collectionID: delete.collectionID, documentID: delete.documentID)
+    }
+}
+
+extension RapidDocumentOnDisconnectDelete: RapidWriteRequest {
+    
+    func cancel() {
+        if let id = actionID {
+            delegate?.cancelOnDisconnectAction(withActionID: id)
         }
     }
 }
