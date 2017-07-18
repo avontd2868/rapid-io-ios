@@ -60,6 +60,14 @@ open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
         self.handler = handler
     }
     
+    open func onConnect() -> RapidDocumentOnConnectedRef {
+        return try! getOnConnected()
+    }
+    
+    open func onDisconnect() -> RapidDocumentOnDisconnectedRef {
+        return try! getOnDisconnected()
+    }
+    
     /// Update the document with regard to a current document content.
     ///
     /// The block of code receives current document content and a developer chooses an action based on that.
@@ -220,6 +228,28 @@ extension RapidDocumentRef: RapidDeletionReference {
         deletion.etag = etag
         socketManager.mutate(mutationRequest: deletion)
         return deletion
+    }
+    
+}
+
+extension RapidDocumentRef {
+    
+    func getOnConnected() throws -> RapidDocumentOnConnectedRef {
+        if let handler = handler {
+            return RapidDocumentOnConnectedRef(id: documentID, inCollection: collectionName, handler: handler)
+        }
+        
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
+        throw RapidInternalError.rapidInstanceNotInitialized
+    }
+    
+    func getOnDisconnected() throws -> RapidDocumentOnDisconnectedRef {
+        if let handler = handler {
+            return RapidDocumentOnDisconnectedRef(id: documentID, inCollection: collectionName, handler: handler)
+        }
+        
+        RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
+        throw RapidInternalError.rapidInstanceNotInitialized
     }
     
 }
