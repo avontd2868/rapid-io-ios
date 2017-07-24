@@ -150,6 +150,48 @@ class RapidTests: XCTestCase {
         waitForExpectations(timeout: 15, handler: nil)
     }
     
+    func testGoOnlineMultipleCalls() {
+        let promise = expectation(description: "offline/online")
+        
+        rapid.onConnectionStateChanged = { state in
+            if state == .connected {
+                self.rapid.onConnectionStateChanged = { state in
+                    if state == .disconnected {
+                        self.rapid.timeout = 2
+                        self.rapid.goOffline()
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["test": "Offline"], completion: { result in
+                            if case .failure(let error) = result, case .timeout = error {
+                                self.rapid.onConnectionStateChanged = { state in
+                                    if state == .connected {
+                                        self.rapid.timeout = 10
+                                        self.rapid.goOnline()
+                                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["test": "Online"], completion: { result in
+                                            if case .success = result {
+                                                promise.fulfill()
+                                            }
+                                            else {
+                                                XCTFail("Did not mutate")
+                                                promise.fulfill()
+                                            }
+                                        })
+                                    }
+                                }
+                                self.rapid.goOnline()
+                            }
+                            else {
+                                XCTFail("Wrong error")
+                                promise.fulfill()
+                            }
+                        })
+                    }
+                }
+                self.rapid.goOffline()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
     func testReconnect() {
         let promise = expectation(description: "Reconnect")
         

@@ -94,7 +94,10 @@ class RapidSocketManager {
     func goOnline() {
         websocketQueue.async { [weak self] in
             self?.networkHandler.goOnline()
-            self?.state = .connecting
+            
+            if let state = self?.state, state != .connected {
+                self?.state = .connecting
+            }
         }
     }
     
