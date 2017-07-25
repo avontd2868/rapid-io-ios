@@ -128,13 +128,16 @@ extension RapidDocumentOnConnectDelete: RapidClientRequest {
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        cancel()
-        
-        DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid on-connect delete cancelled - document \(self.delete.documentID) in collection \(self.delete.collectionID) - because of error: \(error)", level: .info)
+        switch error.error {
+        case .cancelled, .permissionDenied:
+            DispatchQueue.main.async {
+                RapidLogger.log(message: "Rapid on-connect delete cancelled - document \(self.delete.documentID) in collection \(self.delete.collectionID) - because of error: \(error)", level: .info)
+                
+                self.completion?(.failure(error: error.error))
+            }
             
-            self.completion?(.failure(error: error.error))
-            self.completion = nil
+        default:
+            break
         }
     }
     
@@ -151,10 +154,6 @@ extension RapidDocumentOnConnectDelete: RapidOnConnectAction {
             
             self.completion?(.success(value: nil))
         }
-    }
-    
-    func performAction() {
-        delegate?.mutate(mutationRequest: delete)
     }
 }
 
@@ -208,7 +207,6 @@ extension RapidDocumentOnDisconnectDelete: RapidClientRequest {
             RapidLogger.log(message: "Rapid on-disconnect mutation cancelled - document \(self.delete.documentID) in collection \(self.delete.collectionID) - because of error: \(error)", level: .debug)
             
             self.completion?(.failure(error: error.error))
-            self.completion = nil
         }
     }
     

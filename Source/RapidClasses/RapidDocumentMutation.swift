@@ -139,13 +139,16 @@ extension RapidDocumentOnConnectMutation: RapidClientRequest {
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        cancel()
-        
-        DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid on-connect mutation cancelled - document \(self.mutation.documentID) in collection \(self.mutation.collectionID) - because of error: \(error)", level: .debug)
+        switch error.error {
+        case .cancelled, .permissionDenied:
+            DispatchQueue.main.async {
+                RapidLogger.log(message: "Rapid on-connect mutation cancelled - document \(self.mutation.documentID) in collection \(self.mutation.collectionID) - because of error: \(error)", level: .debug)
+                
+                self.completion?(.failure(error: error.error))
+            }
             
-            self.completion?(.failure(error: error.error))
-            self.completion = nil
+        default:
+            break
         }
     }
 
@@ -162,10 +165,6 @@ extension RapidDocumentOnConnectMutation: RapidOnConnectAction {
             
             self.completion?(.success(value: nil))
         }
-    }
-
-    func performAction() {
-        delegate?.mutate(mutationRequest: mutation)
     }
 }
 
@@ -219,7 +218,6 @@ extension RapidDocumentOnDisconnectMutation: RapidClientRequest {
             RapidLogger.log(message: "Rapid on-disconnect mutation cancelled - document \(self.mutation.documentID) in collection \(self.mutation.collectionID) - because of error: \(error)", level: .debug)
             
             self.completion?(.failure(error: error.error))
-            self.completion = nil
         }
     }
     
@@ -274,8 +272,5 @@ class RapidCancelOnDisconnectAction: RapidSerializable, RapidClientRequest {
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid on-disconnect mutation cancelled - document \(self.documentID) in collection \(self.collectionID) - because of error: \(error)", level: .info)
-        }
     }
 }

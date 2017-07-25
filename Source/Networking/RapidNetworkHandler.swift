@@ -206,6 +206,11 @@ extension RapidNetworkHandler: WebSocketDelegate {
     
     func websocketDidConnect(socket: WebSocket) {
         mainQueue.async {
+            guard !self.socketTerminated else {
+                self.destroySocket()
+                return
+            }
+            
             RapidLogger.developerLog(message: "Socket did connect")
             
             // Invalidate connection timer

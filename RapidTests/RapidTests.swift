@@ -85,7 +85,9 @@ class RapidTests: XCTestCase {
         
         Rapid.unsubscribeAll()
         
-        XCTAssertNotNil(Rapid.collection(named: testCollectionName), "Collection not returned")
+        Rapid.authorize(withToken: "")
+        
+        Rapid.deauthorize()
         
         Rapid.deinitialize()
     }
@@ -148,6 +150,31 @@ class RapidTests: XCTestCase {
         }
         
         waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testClassMethods() {
+        Rapid.logLevel = .debug
+        XCTAssertEqual(Rapid.logLevel, .debug)
+        Rapid.logLevel = .critical
+        
+        Rapid.configure(withApiKey: apiKey)
+        
+        Rapid.timeout = 5
+        XCTAssertEqual(Rapid.timeout, 5)
+        
+        Rapid.isCacheEnabled = true
+        XCTAssertTrue(Rapid.isCacheEnabled)
+        
+        Rapid.onConnectionStateChanged = { _ in }
+        XCTAssertNotNil(Rapid.onConnectionStateChanged)
+        
+        XCTAssertNotNil(Rapid.collection(named: testCollectionName), "Collection not returned")
+        
+        XCTAssertNotNil(Rapid.channel(named: testChannelName), "Channel not returned")
+        
+        XCTAssertNotNil(Rapid.channels(nameStartsWith: testChannelName), "Channel not returned")
+        
+        Rapid.deinitialize()
     }
     
     func testGoOnlineMultipleCalls() {
@@ -396,6 +423,26 @@ class RapidTests: XCTestCase {
         waitForExpectations(timeout: 15, handler: nil)
     }
     
+    func testServerOffsetTimeout() {
+        let promise = expectation(description: "Server timestamp")
+        rapid.timeout = 2
+        rapid.goOffline()
+
+        runAfter(1) {
+            self.rapid.serverTimeOffset { result in
+                if case .failure(let error) = result, case .timeout = error {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Wrong response")
+                    promise.fulfill()
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
     func testConnectionRequestTimeout() {
         Rapid.defaultTimeout = 2
         
@@ -575,6 +622,8 @@ class RapidTests: XCTestCase {
             if shouldConnect {
                 handler.websocketDidConnect(socket: socket)
             }
+        }, goOfflineCallback: { handler in
+            handler.websocketDidDisconnect(socket: socket, error: nil)
         })
         
         let manager = RapidSocketManager(networkHandler: mockHandler)

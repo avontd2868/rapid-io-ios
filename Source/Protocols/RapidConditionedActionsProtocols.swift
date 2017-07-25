@@ -9,13 +9,12 @@
 import Foundation
 
 protocol RapidOnConnectActionDelegate: class {
-    func mutate<T: RapidMutationRequest>(mutationRequest: T)
     func cancelOnConnectAction(withActionID actionID: String)
 }
 
 protocol RapidOnConnectAction: RapidClientRequest, RapidSerializable {
+    var actionID: String? { get }
     func register(actionID: String, delegate: RapidOnConnectActionDelegate)
-    func performAction()
 }
 
 extension RapidOnConnectAction {

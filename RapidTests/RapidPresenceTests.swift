@@ -122,11 +122,13 @@ extension RapidTests {
     func testCancelMutateOnDisconnect() {
         let promise = expectation(description: "Mutate")
 
+        var initialResponse = true
         rapid.collection(named: testCollectionName).document(withID: "disconnect").mutate(value: ["online": true]) { result in
             if case .success = result {
                 var mutateOnDisconnect: RapidWriteRequest?
                 mutateOnDisconnect = self.rapid.collection(named: self.testCollectionName).document(withID: "disconnect").onDisconnect().mutate(value: ["online": false], completion: { result in
-                    if case .success = result {
+                    if initialResponse, case .success = result {
+                        initialResponse = false
                         mutateOnDisconnect?.cancel()
                         runAfter(1, closure: {
                             self.rapid.goOffline()
@@ -144,6 +146,7 @@ extension RapidTests {
                             })
                         })
                     }
+                    else if !initialResponse, case .failure(let error) = result, case .cancelled = error {}
                     else {
                         XCTFail("Handler not registered")
                         promise.fulfill()
@@ -162,11 +165,13 @@ extension RapidTests {
     func testCancelMergeOnDisconnect() {
         let promise = expectation(description: "Merge")
 
+        var initialResponse = true
         rapid.collection(named: testCollectionName).document(withID: "disconnect").mutate(value: ["online": true]) { result in
             if case .success = result {
                 var mutateOnDisconnect: RapidWriteRequest?
                 mutateOnDisconnect = self.rapid.collection(named: self.testCollectionName).document(withID: "disconnect").onDisconnect().merge(value: ["online": false], completion: { result in
-                    if case .success = result {
+                    if initialResponse, case .success = result {
+                        initialResponse = false
                         mutateOnDisconnect?.cancel()
                         runAfter(1, closure: {
                             self.rapid.goOffline()
@@ -184,6 +189,7 @@ extension RapidTests {
                             })
                         })
                     }
+                    else if !initialResponse, case .failure(let error) = result, case .cancelled = error {}
                     else {
                         XCTFail("Handler not registered")
                         promise.fulfill()
@@ -202,11 +208,13 @@ extension RapidTests {
     func testCancelDeleteOnDisconnect() {
         let promise = expectation(description: "Delete")
 
+        var initialResponse = true
         rapid.collection(named: testCollectionName).document(withID: "disconnect").mutate(value: ["online": true]) { result in
             if case .success = result {
                 var mutateOnDisconnect: RapidWriteRequest?
                 mutateOnDisconnect = self.rapid.collection(named: self.testCollectionName).document(withID: "disconnect").onDisconnect().delete(completion: { result in
-                    if case .success = result {
+                    if initialResponse, case .success = result {
+                        initialResponse = false
                         mutateOnDisconnect?.cancel()
                         runAfter(1, closure: {
                             self.rapid.goOffline()
@@ -224,6 +232,7 @@ extension RapidTests {
                             })
                         })
                     }
+                    else if !initialResponse, case .failure(let error) = result, case .cancelled = error {}
                     else {
                         XCTFail("Handler not registered")
                         promise.fulfill()
@@ -398,7 +407,7 @@ extension RapidTests {
     
     func testDeleteOnConnect() {
         let promise = expectation(description: "Delete")
-        
+
         rapid.collection(named: testCollectionName).document(withID: "connect").mutate(value: ["online": false]) { result in
             if case .success = result {
                 self.rapid.goOffline()
@@ -437,13 +446,15 @@ extension RapidTests {
     func testCancelMutateOnConnect() {
         let promise = expectation(description: "Mutate")
         
+        var initialResponse = true
         rapid.collection(named: testCollectionName).document(withID: "connect").mutate(value: ["online": false]) { result in
             if case .success = result {
                 self.rapid.goOffline()
                 runAfter(0.5, closure: {
                 var mutateOnConnect: RapidWriteRequest?
                 mutateOnConnect = self.rapid.collection(named: self.testCollectionName).document(withID: "connect").onConnect().mutate(value: ["online": true], completion: { result in
-                    if case .success = result {
+                    if initialResponse, case .success = result {
+                        initialResponse = false
                         mutateOnConnect?.cancel()
                         runAfter(0.5, closure: {
                             self.rapid.goOnline()
@@ -460,6 +471,7 @@ extension RapidTests {
                             })
                         })
                     }
+                    else if !initialResponse, case .failure(let error) = result, case .cancelled = error {}
                     else {
                         XCTFail("Handler not registered")
                         promise.fulfill()
@@ -479,13 +491,15 @@ extension RapidTests {
     func testCancelMergeOnConnect() {
         let promise = expectation(description: "Merge")
         
+        var initialResponse = true
         rapid.collection(named: testCollectionName).document(withID: "connect").mutate(value: ["online": false]) { result in
             if case .success = result {
                 self.rapid.goOffline()
                 runAfter(0.5, closure: {
                     var mutateOnConnect: RapidWriteRequest?
                     mutateOnConnect = self.rapid.collection(named: self.testCollectionName).document(withID: "connect").onConnect().merge(value: ["online": true], completion: { result in
-                        if case .success = result {
+                        if initialResponse, case .success = result {
+                            initialResponse = false
                             mutateOnConnect?.cancel()
                             runAfter(0.5, closure: {
                                 self.rapid.goOnline()
@@ -502,6 +516,7 @@ extension RapidTests {
                                 })
                             })
                         }
+                        else if !initialResponse, case .failure(let error) = result, case .cancelled = error {}
                         else {
                             XCTFail("Handler not registered")
                             promise.fulfill()
@@ -520,14 +535,15 @@ extension RapidTests {
     
     func testCancelDeleteOnConnect() {
         let promise = expectation(description: "Delete")
-        
+        var initialResponse = true
         rapid.collection(named: testCollectionName).document(withID: "connect").mutate(value: ["online": false]) { result in
             if case .success = result {
                 self.rapid.goOffline()
                 runAfter(0.5, closure: {
                     var mutateOnConnect: RapidWriteRequest?
                     mutateOnConnect = self.rapid.collection(named: self.testCollectionName).document(withID: "connect").onConnect().delete(completion: { result in
-                        if case .success = result {
+                        if initialResponse, case .success = result {
+                            initialResponse = false
                             mutateOnConnect?.cancel()
                             runAfter(0.5, closure: {
                                 self.rapid.goOnline()
@@ -544,6 +560,7 @@ extension RapidTests {
                                 })
                             })
                         }
+                        else if !initialResponse, case .failure(let error) = result, case .cancelled = error {}
                         else {
                             XCTFail("Handler not registered")
                             promise.fulfill()

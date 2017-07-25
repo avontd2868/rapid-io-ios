@@ -32,13 +32,6 @@ class RapidServerAcknowledgement: RapidServerResponse {
     }
 }
 
-extension RapidServerAcknowledgement: RapidSerializable {
-    
-    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(acknowledgement: self)
-    }
-}
-
 /// Acknowledgement event object
 ///
 /// This acknowledgement is sent to server as a response to a server event

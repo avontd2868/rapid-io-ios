@@ -43,7 +43,7 @@ class RapidSocketManager {
     
     fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
     
-    fileprivate var pendingExectuionRequests: [String: RapidExecution] = [:]
+    fileprivate var pendingExecutionRequests: [String: RapidExecution] = [:]
     
     fileprivate var pendingTimeRequests: [RapidTimeOffset] = []
     
@@ -113,11 +113,9 @@ class RapidSocketManager {
     ///
     /// - Parameter mutationRequest: Mutation object
     func mutate<T: RapidMutationRequest>(mutationRequest: T) {
+        mutationRequest.register(delegate: self)
+        
         websocketQueue.async { [weak self] in
-            if let strongSelf = self {
-                mutationRequest.register(delegate: strongSelf)
-            }
-            
             self?.post(event: mutationRequest)
         }
     }
@@ -130,7 +128,7 @@ class RapidSocketManager {
     
     func execute<T: RapidExecution>(execution: T) {
         websocketQueue.async { [weak self] in
-            self?.pendingExectuionRequests[execution.identifier] = execution
+            self?.pendingExecutionRequests[execution.identifier] = execution
             
             self?.fetch(execution.fetchRequest)
         }
@@ -153,30 +151,26 @@ class RapidSocketManager {
     }
     
     func registerOnConnectAction(_ action: RapidOnConnectAction) {
+        let actionID = Rapid.uniqueID
+        
+        action.register(actionID: actionID, delegate: self)
+
         websocketQueue.async { [weak self] in
-            let actionID = Rapid.uniqueID
-            
             self?.onConnectActions[actionID] = action
             
-            if let strongSelf = self {
-                action.register(actionID: actionID, delegate: strongSelf)
-                
-                if strongSelf.state == .connected {
-                    self?.post(event: action)
-                }
+            if self?.state == .connected {
+                self?.post(event: action)
             }
         }
     }
     
     func registerOnDisconnectAction(_ action: RapidOnDisconnectAction) {
+        let actionID = Rapid.uniqueID
+        
+        action.register(actionID: actionID, delegate: self)
+        
         websocketQueue.async { [weak self] in
-            let actionID = Rapid.uniqueID
-            
             self?.onDisconnectActions[actionID] = action
-            
-            if let strongSelf = self {
-                action.register(actionID: actionID, delegate: strongSelf)
-            }
             
             self?.post(event: action)
         }
@@ -430,6 +424,8 @@ fileprivate extension RapidSocketManager {
         if let (eventID, _) = pending.first {
             pendingRequests[eventID] = nil
         }
+        
+        request.eventFailed(withError: RapidErrorInstance(eventID: Rapid.uniqueID, error: .cancelled))
     }
     
     /// Enque a event to the queue
@@ -519,6 +515,18 @@ fileprivate extension RapidSocketManager {
             // If fetch failed remove it from the list of pending fetches
             else if let fetch = tuple?.request as? RapidFetchInstance {
                 pendingFetches[fetch.fetchID] = nil
+            }
+            // If time request failed remove it from the list of pending time requests
+            else if tuple?.request is RapidTimeOffset && pendingTimeRequests.count > 0 {
+                pendingTimeRequests.removeFirst()
+            }
+            // If on disconnect action failed remove it from the list of pending disconnect actions
+            else if let action = tuple?.request as? RapidOnDisconnectAction, let actionID = action.actionID {
+                onDisconnectActions[actionID] = nil
+            }
+            // If on connect action failed because of permission denied remove it from the list of pending connect actions
+            else if let action = tuple?.request as? RapidOnConnectAction, let actionID = action.actionID, case .permissionDenied = message.error {
+                onDisconnectActions[actionID] = nil
             }
             else if let request = tuple?.request as? RapidAuthRequest, self.auth?.token == request.auth.token {
                 self.auth = nil
@@ -719,7 +727,7 @@ extension RapidSocketManager: RapidExectuionDelegate {
     
     func executionCompleted(_ execution: RapidExecution) {
         websocketQueue.async { [weak self] in
-            self?.pendingExectuionRequests[execution.identifier] = nil
+            self?.pendingExecutionRequests[execution.identifier] = nil
         }
     }
     

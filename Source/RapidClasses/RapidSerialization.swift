@@ -392,17 +392,6 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
-    /// Serialize an event acknowledgement into JSON string
-    ///
-    /// - Parameters:
-    ///   - acknowledgement: Acknowledgement object
-    /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(acknowledgement: RapidServerAcknowledgement) throws -> String {
-        let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
-        return try resultDict.jsonString()
-    }
-    
     /// Serialize a connection request into JSON string
     ///
     /// - Parameters:

@@ -139,13 +139,16 @@ extension RapidDocumentOnConnectMerge: RapidClientRequest {
     }
     
     func eventFailed(withError error: RapidErrorInstance) {
-        cancel()
-        
-        DispatchQueue.main.async {
-            RapidLogger.log(message: "Rapid on-connect merge cancelled - document \(self.merge.documentID) in collection \(self.merge.collectionID) - because of error: \(error)", level: .debug)
+        switch error.error {
+        case .cancelled, .permissionDenied:
+            DispatchQueue.main.async {
+                RapidLogger.log(message: "Rapid on-connect merge cancelled - document \(self.merge.documentID) in collection \(self.merge.collectionID) - because of error: \(error)", level: .debug)
+                
+                self.completion?(.failure(error: error.error))
+            }
             
-            self.completion?(.failure(error: error.error))
-            self.completion = nil
+        default:
+            break
         }
     }
     
@@ -162,10 +165,6 @@ extension RapidDocumentOnConnectMerge: RapidOnConnectAction {
             
             self.completion?(.success(value: nil))
         }
-    }
-    
-    func performAction() {
-        delegate?.mutate(mutationRequest: merge)
     }
 }
 
@@ -219,7 +218,6 @@ extension RapidDocumentOnDisconnectMerge: RapidClientRequest {
             RapidLogger.log(message: "Rapid on-disconnect mutation cancelled - document \(self.merge.documentID) in collection \(self.merge.collectionID) - because of error: \(error)", level: .debug)
             
             self.completion?(.failure(error: error.error))
-            self.completion = nil
         }
     }
     
