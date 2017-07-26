@@ -570,6 +570,9 @@ class RapidTests: XCTestCase {
         
         var lastMutation: RapidDocumentMutation?
         var hashes = [String]()
+        var numberOfAuthorizations = 0
+        var disconnectActions = [String]()
+        var numberOfConnectActions = 0
         
         let mockHandler = MockNetworkHandler(socketURL: self.fakeSocketURL, writeCallback: { (handler, event, eventID) in
             if acknowledgeAll {
@@ -594,11 +597,34 @@ class RapidTests: XCTestCase {
                         
                     case "3":
                         XCTAssertEqual(lastMutation?.documentID, "2", "wrong order")
+                        XCTAssertGreaterThan(numberOfAuthorizations, 0, "No auth request")
+                        XCTAssertEqual(disconnectActions.count, 2, "Disconnect actions not registered")
                         lastMutation = mutation
-                        promise.fulfill()
                         
                     default:
                         XCTFail("Another mutation")
+                        promise.fulfill()
+                    }
+                }
+                else if event is RapidAuthRequest {
+                    numberOfAuthorizations += 1
+                    if numberOfAuthorizations > 1 {
+                        XCTFail("More than one authorization")
+                        promise.fulfill()
+                    }
+                }
+                else if let mutation = event as? RapidDocumentOnDisconnectMutation {
+                    XCTAssertFalse(disconnectActions.contains(mutation.mutation.documentID), "Action already registered")
+                    disconnectActions.append(mutation.mutation.documentID)
+                }
+                else if event is RapidDocumentOnConnectMutation {
+                    numberOfConnectActions += 1
+                    if numberOfConnectActions > 1 {
+                        XCTFail("More than one connect action")
+                        promise.fulfill()
+                    }
+                    if lastMutation?.documentID == "3" {
+                        XCTAssertGreaterThan(numberOfConnectActions, 0, "No on connect mutate request")
                         promise.fulfill()
                     }
                 }
@@ -614,7 +640,7 @@ class RapidTests: XCTestCase {
                         handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                     }
                 }
-                else {
+                else if !(event is RapidAuthRequest || event is RapidOnConnectAction || event is RapidOnDisconnectAction) {
                     handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                 }
             }
@@ -623,7 +649,7 @@ class RapidTests: XCTestCase {
                 handler.websocketDidConnect(socket: socket)
             }
         }, goOfflineCallback: { handler in
-            handler.websocketDidDisconnect(socket: socket, error: nil)
+            
         })
         
         let manager = RapidSocketManager(networkHandler: mockHandler)
@@ -633,10 +659,15 @@ class RapidTests: XCTestCase {
             manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], cache: nil, completion: nil))
             manager.subscribe(toCollection: subscription2)
             manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], cache: nil, completion: nil))
+            manager.authorize(authRequest: RapidAuthRequest(token: "123"))
+            manager.registerOnDisconnectAction(RapidDocumentOnDisconnectMutation(collectionID: self.testCollectionName, documentID: "disconnect", value: [:], completion: nil))
+            manager.registerOnConnectAction(RapidDocumentOnConnectMutation(collectionID: self.testCollectionName, documentID: "connect", value: [:], completion: nil))
             manager.goOffline()
             runAfter(0.5, closure: {
                 manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], cache: nil, completion: nil))
                 manager.subscribe(toCollection: subscription3)
+                manager.authorize(authRequest: RapidAuthRequest(token: "123"))
+                manager.registerOnDisconnectAction(RapidDocumentOnDisconnectMutation(collectionID: self.testCollectionName, documentID: "disconnect2", value: [:], completion: nil))
                 shouldConnect = false
                 manager.goOnline()
                 runAfter(0.5, closure: {
