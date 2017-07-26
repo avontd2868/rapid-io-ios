@@ -129,7 +129,7 @@ class WebSocket : NSObject, StreamDelegate {
      var headers = [String: String]()
      var voipEnabled = false
      var disableSSLCertValidation = false
-     var security: SSLTrustValidator?
+     var security: Any?
      var enabledSSLCipherSuites: [SSLCipherSuite]?
      var origin: String?
      var timeout = 5
@@ -393,9 +393,9 @@ class WebSocket : NSObject, StreamDelegate {
                     return // disconnectStream will be called.
                 }
             }
-            guard !sOperation.isCancelled, let s = self else { return }
+            guard !sOperation.isCancelled else { return }//, let s = self else { return }
             // Do the pinning now if needed
-            if let sec = s.security, !s.certValidated {
+            /*if let sec = s.security, !s.certValidated {
                 let trust = outStream.property(forKey: kCFStreamPropertySSLPeerTrust as Stream.PropertyKey) as! SecTrust
                 let domain = outStream.property(forKey: kCFStreamSSLPeerName as Stream.PropertyKey) as? String
                 s.certValidated = sec.isValid(trust, domain: domain)
@@ -406,7 +406,7 @@ class WebSocket : NSObject, StreamDelegate {
                     }
                     return
                 }
-            }
+            }*/
             outStream.write(bytes, maxLength: data.count)
         }
         writeQueue.addOperation(operation)
