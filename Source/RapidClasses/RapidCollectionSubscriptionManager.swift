@@ -33,10 +33,10 @@ class RapidColSubManager: NSObject, RapidSubscriptionManager {
     internal weak var delegate: RapidSubscriptionManagerDelegate?
     
     /// Array of subscription objects
-    fileprivate var subscriptions: [RapidColSubInstance] = []
+    internal var subscriptions: [RapidColSubInstance] = []
     
     /// Last known value of the dataset
-    fileprivate var value: [RapidDocument]? {
+    internal var value: [RapidDocument]? {
         didSet {
             if let value = value {
                 // Store last known value to a cache
@@ -111,7 +111,7 @@ extension RapidColSubManager: RapidSerializable {
     }
 }
 
-fileprivate extension RapidColSubManager {
+internal extension RapidColSubManager {
     
     /// Load cached data if there are any
     func loadCachedData() {

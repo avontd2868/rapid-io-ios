@@ -60,11 +60,21 @@ open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
         self.handler = handler
     }
     
-    open func onConnect() -> RapidDocumentOnConnectedRef {
+    /// Get an instance of Rapid document reference that is used to register
+    /// actions that should be permormed when `Rapid` instance connects
+    /// to a server
+    ///
+    /// - Returns: Instance of `RapidDocumentRefOnConnect`
+    open func onConnect() -> RapidDocumentRefOnConnect {
         return try! getOnConnected()
     }
     
-    open func onDisconnect() -> RapidDocumentOnDisconnectedRef {
+    /// Get an instance of Rapid document reference that is used to register
+    /// actions that should be permormed when `Rapid` instance disconnects
+    /// from a server
+    ///
+    /// - Returns: Instance of `RapidDocumentRefOnDisconnect`
+    open func onDisconnect() -> RapidDocumentRefOnDisconnect {
         return try! getOnDisconnected()
     }
     
@@ -130,6 +140,7 @@ extension RapidDocumentRef: RapidMutationReference {
     /// - Parameters:
     ///   - value: Dictionary with new values that the document should contain
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
     open func mutate(value: [AnyHashable: Any], completion: RapidDocumentMutationCompletion? = nil) -> RapidWriteRequest {
         let mutation = RapidDocumentMutation(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
@@ -148,6 +159,7 @@ extension RapidDocumentRef: RapidMutationReference {
     ///   - value: Dictionary with new values that the document should contain
     ///   - etag: `RapidDocument` etag
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
     open func mutate(value: [AnyHashable: Any], etag: String?, completion: RapidDocumentMutationCompletion? = nil) -> RapidWriteRequest {
         let mutation = RapidDocumentMutation(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
@@ -169,6 +181,7 @@ extension RapidDocumentRef: RapidMergeReference {
     /// - Parameters:
     ///   - value: Dictionary with new values that should be merged with the document values
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
     open func merge(value: [AnyHashable: Any], completion: RapidDocumentMergeCompletion? = nil) -> RapidWriteRequest {
         let merge = RapidDocumentMerge(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
@@ -191,6 +204,7 @@ extension RapidDocumentRef: RapidMergeReference {
     ///   - value: Dictionary with new values that should be merged with the document values
     ///   - etag: `RapidDocument` etag
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
     open func merge(value: [AnyHashable: Any], etag: String?, completion: RapidDocumentMergeCompletion? = nil) -> RapidWriteRequest {
         let merge = RapidDocumentMerge(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
@@ -206,6 +220,7 @@ extension RapidDocumentRef: RapidDeletionReference {
     /// Delete the document
     ///
     /// - Parameter completion: Deletion completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
     open func delete(completion: RapidDocumentDeletionCompletion? = nil) -> RapidWriteRequest {
         let deletion = RapidDocumentDelete(collectionID: collectionName, documentID: documentID, cache: handler, completion: completion)
@@ -222,6 +237,7 @@ extension RapidDocumentRef: RapidDeletionReference {
     /// - Parameters:
     ///   - etag: `RapidDocument` etag
     ///   - completion: Deletion completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
     open func delete(etag: String, completion: RapidDocumentDeletionCompletion? = nil) -> RapidWriteRequest {
         let deletion = RapidDocumentDelete(collectionID: collectionName, documentID: documentID, cache: handler, completion: completion)
@@ -234,18 +250,18 @@ extension RapidDocumentRef: RapidDeletionReference {
 
 extension RapidDocumentRef {
     
-    func getOnConnected() throws -> RapidDocumentOnConnectedRef {
+    func getOnConnected() throws -> RapidDocumentRefOnConnect {
         if let handler = handler {
-            return RapidDocumentOnConnectedRef(id: documentID, inCollection: collectionName, handler: handler)
+            return RapidDocumentRefOnConnect(id: documentID, inCollection: collectionName, handler: handler)
         }
         
         RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)
         throw RapidInternalError.rapidInstanceNotInitialized
     }
     
-    func getOnDisconnected() throws -> RapidDocumentOnDisconnectedRef {
+    func getOnDisconnected() throws -> RapidDocumentRefOnDisconnect {
         if let handler = handler {
-            return RapidDocumentOnDisconnectedRef(id: documentID, inCollection: collectionName, handler: handler)
+            return RapidDocumentRefOnDisconnect(id: documentID, inCollection: collectionName, handler: handler)
         }
         
         RapidLogger.log(message: RapidInternalError.rapidInstanceNotInitialized.message, level: .critical)

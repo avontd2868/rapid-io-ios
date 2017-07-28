@@ -112,12 +112,12 @@ class RapidDocumentOnConnectMutation: NSObject {
     
     let mutation: RapidDocumentMutation!
     
-    fileprivate(set) var completion: RapidDocumentMutationCompletion?
+    internal(set) var completion: RapidDocumentRegisterOnConnectActionCompletion?
     
-    fileprivate(set) var actionID: String?
-    fileprivate(set) weak var delegate: RapidOnConnectActionDelegate?
+    internal(set) var actionID: String?
+    internal(set) weak var delegate: RapidOnConnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentMutationCompletion?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion?) {
         self.completion = completion
         
         self.mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)
@@ -183,12 +183,12 @@ class RapidDocumentOnDisconnectMutation: NSObject {
     
     let mutation: RapidDocumentMutation!
     
-    fileprivate(set) var completion: RapidDocumentMutationCompletion?
+    internal(set) var completion: RapidDocumentRegisterOnDisonnectActionCompletion?
     
-    fileprivate(set) var actionID: String?
-    fileprivate(set) weak var delegate: RapidOnDisconnectActionDelegate?
+    internal(set) var actionID: String?
+    internal(set) weak var delegate: RapidOnDisconnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentMutationCompletion?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
         self.completion = completion
         
         self.mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)

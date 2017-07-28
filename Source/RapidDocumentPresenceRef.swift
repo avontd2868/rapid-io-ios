@@ -9,7 +9,15 @@
 import Foundation
 
 // MARK: On connect
-open class RapidDocumentOnConnectedRef: NSObject, RapidInstanceWithSocketManager {
+
+/// Register on-connect action completion handler which informs a client about the operation result
+public typealias RapidDocumentRegisterOnConnectActionCompletion = (_ result: RapidResult<Any?>) -> Void
+
+/// Rapid.io document reference
+///
+/// `RapidDocumentRefOnConnect` is used to register actions that should be performed
+/// when `Rapid` instance connects to a server
+open class RapidDocumentRefOnConnect: NSObject, RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     
@@ -27,10 +35,18 @@ open class RapidDocumentOnConnectedRef: NSObject, RapidInstanceWithSocketManager
     
 }
 
-extension RapidDocumentOnConnectedRef: RapidMutationReference {
+extension RapidDocumentRefOnConnect: RapidMutationReference {
     
+    /// Mutate the document once the instance connects to a server
+    ///
+    /// All values in the document are deleted and replaced by values in the provided dictionary
+    ///
+    /// - Parameters:
+    ///   - value: Dictionary with new values that the document should contain
+    ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func mutate(value: [AnyHashable: Any], completion: RapidDocumentMutationCompletion? = nil) -> RapidWriteRequest {
+    open func mutate(value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion? = nil) -> RapidWriteRequest {
         let mutation = RapidDocumentOnConnectMutation(collectionID: collectionName, documentID: documentID, value: value, completion: completion)
         socketManager.registerOnConnectAction(mutation)
         return mutation
@@ -38,10 +54,21 @@ extension RapidDocumentOnConnectedRef: RapidMutationReference {
     
 }
 
-extension RapidDocumentOnConnectedRef: RapidMergeReference {
+extension RapidDocumentRefOnConnect: RapidMergeReference {
     
+    /// Merge values in the document with values in a provided dictionary
+    /// once the instance connects to a server
+    ///
+    /// Properties that are not mentioned in the provided dictionary remains as they are.
+    /// Properties that are mentioned in the provided dictionary are either replaced or added to the document.
+    /// Properties that are mentioned in the provided dictionary and contains `Rapid.nilValue` are deleted from the document
+    ///
+    /// - Parameters:
+    ///   - value: Dictionary with new values that should be merged with the document values
+    ///   - completion: Merge completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func merge(value: [AnyHashable: Any], completion: RapidDocumentMergeCompletion? = nil) -> RapidWriteRequest {
+    open func merge(value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion? = nil) -> RapidWriteRequest {
         let merge = RapidDocumentOnConnectMerge(collectionID: collectionName, documentID: documentID, value: value, completion: completion)
         socketManager.registerOnConnectAction(merge)
         return merge
@@ -49,10 +76,14 @@ extension RapidDocumentOnConnectedRef: RapidMergeReference {
     
 }
 
-extension RapidDocumentOnConnectedRef: RapidDeletionReference {
+extension RapidDocumentRefOnConnect: RapidDeletionReference {
     
+    /// Delete the document once the instance connects to a server
+    ///
+    /// - Parameter completion: Deletion completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func delete(completion: RapidDocumentDeletionCompletion? = nil) -> RapidWriteRequest {
+    open func delete(completion: RapidDocumentRegisterOnConnectActionCompletion? = nil) -> RapidWriteRequest {
         let deletion = RapidDocumentOnConnectDelete(collectionID: collectionName, documentID: documentID, completion: completion)
         socketManager.registerOnConnectAction(deletion)
         return deletion
@@ -61,7 +92,15 @@ extension RapidDocumentOnConnectedRef: RapidDeletionReference {
 }
 
 // MARK: On disconnect
-open class RapidDocumentOnDisconnectedRef: NSObject, RapidInstanceWithSocketManager {
+
+/// Register on-disconnect action completion handler which informs a client about the operation result
+public typealias RapidDocumentRegisterOnDisonnectActionCompletion = (_ result: RapidResult<Any?>) -> Void
+
+/// Rapid.io document reference
+///
+/// `RapidDocumentRefOnDisconnect` is used to register actions that should be performed
+/// when `Rapid` instance disconnects from a server
+open class RapidDocumentRefOnDisconnect: NSObject, RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     
@@ -79,10 +118,18 @@ open class RapidDocumentOnDisconnectedRef: NSObject, RapidInstanceWithSocketMana
     
 }
 
-extension RapidDocumentOnDisconnectedRef: RapidMutationReference {
+extension RapidDocumentRefOnDisconnect: RapidMutationReference {
     
+    /// Mutate the document once the instance disconnects from a server
+    ///
+    /// All values in the document are deleted and replaced by values in the provided dictionary
+    ///
+    /// - Parameters:
+    ///   - value: Dictionary with new values that the document should contain
+    ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func mutate(value: [AnyHashable: Any], completion: RapidDocumentMutationCompletion? = nil) -> RapidWriteRequest {
+    open func mutate(value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion? = nil) -> RapidWriteRequest {
         let mutation = RapidDocumentOnDisconnectMutation(collectionID: collectionName, documentID: documentID, value: value, completion: completion)
         socketManager.registerOnDisconnectAction(mutation)
         return mutation
@@ -90,10 +137,21 @@ extension RapidDocumentOnDisconnectedRef: RapidMutationReference {
     
 }
 
-extension RapidDocumentOnDisconnectedRef: RapidMergeReference {
+extension RapidDocumentRefOnDisconnect: RapidMergeReference {
     
+    /// Merge values in the document with values in a provided dictionary
+    /// once the instance disconnects from a server
+    ///
+    /// Properties that are not mentioned in the provided dictionary remains as they are.
+    /// Properties that are mentioned in the provided dictionary are either replaced or added to the document.
+    /// Properties that are mentioned in the provided dictionary and contains `Rapid.nilValue` are deleted from the document
+    ///
+    /// - Parameters:
+    ///   - value: Dictionary with new values that should be merged with the document values
+    ///   - completion: Merge completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func merge(value: [AnyHashable: Any], completion: RapidDocumentMergeCompletion? = nil) -> RapidWriteRequest {
+    open func merge(value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion? = nil) -> RapidWriteRequest {
         let merge = RapidDocumentOnDisconnectMerge(collectionID: collectionName, documentID: documentID, value: value, completion: completion)
         socketManager.registerOnDisconnectAction(merge)
         return merge
@@ -101,10 +159,14 @@ extension RapidDocumentOnDisconnectedRef: RapidMergeReference {
     
 }
 
-extension RapidDocumentOnDisconnectedRef: RapidDeletionReference {
+extension RapidDocumentRefOnDisconnect: RapidDeletionReference {
     
+    /// Delete the document once the instance disconnects from a server
+    ///
+    /// - Parameter completion: Deletion completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func delete(completion: RapidDocumentDeletionCompletion? = nil) -> RapidWriteRequest {
+    open func delete(completion: RapidDocumentRegisterOnDisonnectActionCompletion? = nil) -> RapidWriteRequest {
         let deletion = RapidDocumentOnDisconnectDelete(collectionID: collectionName, documentID: documentID, completion: completion)
         socketManager.registerOnDisconnectAction(deletion)
         return deletion

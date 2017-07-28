@@ -25,7 +25,7 @@ class RapidChanSubManager: NSObject, RapidSubscriptionManager {
     internal weak var delegate: RapidSubscriptionManagerDelegate?
     
     /// Array of subscription objects
-    fileprivate var subscriptions: [RapidChanSubInstance] = []
+    internal var subscriptions: [RapidChanSubInstance] = []
     
     /// Subscription state
     internal var state: RapidSubscriptionState = .unsubscribed
@@ -82,7 +82,7 @@ extension RapidChanSubManager: RapidSerializable {
     }
 }
 
-fileprivate extension RapidChanSubManager {
+internal extension RapidChanSubManager {
     
     /// Add a new subscription object
     ///

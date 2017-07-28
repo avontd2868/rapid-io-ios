@@ -493,8 +493,8 @@ class RapidSerialization {
     }
 }
 
-// MARK: Fileprivate methods
-fileprivate extension RapidSerialization {
+// MARK: internal methods
+internal extension RapidSerialization {
     
     /// Parse single event received from websocket
     ///

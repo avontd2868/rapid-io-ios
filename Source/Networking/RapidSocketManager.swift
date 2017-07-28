@@ -23,36 +23,36 @@ class RapidSocketManager {
     var timeout: TimeInterval?
     
     /// State of a websocket connection
-    fileprivate var state: RapidConnectionState = .disconnected
+    internal var state: RapidConnectionState = .disconnected
     
-    fileprivate(set) var auth: RapidAuthorization?
+    internal(set) var auth: RapidAuthorization?
     
     /// Dedicated threads
     internal let websocketQueue: OperationQueue
     internal let parseQueue: OperationQueue
-    fileprivate let mainQueue = DispatchQueue.main
+    internal let mainQueue = DispatchQueue.main
     
     /// Queue of events that are about to be sent to the server
-    fileprivate var eventQueue: [Event] = []
+    internal var eventQueue: [Event] = []
     
     /// Dictionary of events that have been already sent to the server and a response is awaited. Events are identified by an event ID.
-    fileprivate var pendingRequests: [String: (request: Request, timestamp: TimeInterval)] = [:]
+    internal var pendingRequests: [String: (request: Request, timestamp: TimeInterval)] = [:]
     
     /// Dictionary of registered subscriptions. Either active or those that are waiting for acknowledgement from the server. Subscriptions are identified by a subscriptioon hash
-    fileprivate var activeSubscriptions: [String: RapidSubscriptionManager] = [:]
+    internal var activeSubscriptions: [String: RapidSubscriptionManager] = [:]
     
-    fileprivate var pendingFetches: [String: RapidFetchInstance] = [:]
+    internal var pendingFetches: [String: RapidFetchInstance] = [:]
     
-    fileprivate var pendingExecutionRequests: [String: RapidExecution] = [:]
+    internal var pendingExecutionRequests: [String: RapidExecution] = [:]
     
-    fileprivate var pendingTimeRequests: [RapidTimeOffset] = []
+    internal var pendingTimeRequests: [RapidTimeOffset] = []
     
-    fileprivate var onConnectActions: [String: RapidOnConnectAction] = [:]
+    internal var onConnectActions: [String: RapidOnConnectAction] = [:]
     
-    fileprivate var onDisconnectActions: [String: RapidOnDisconnectAction] = [:]
+    internal var onDisconnectActions: [String: RapidOnDisconnectAction] = [:]
     
     /// Timer that limits maximum time without any websocket communication to reveal disconnections
-    fileprivate var nopTimer: Timer?
+    internal var nopTimer: Timer?
     
     init(networkHandler: RapidNetworkHandler) {
         self.websocketQueue = OperationQueue()
@@ -273,8 +273,8 @@ class RapidSocketManager {
     
 }
 
-// MARK: Fileprivate methods
-fileprivate extension RapidSocketManager {
+// MARK: internal methods
+internal extension RapidSocketManager {
     
     func handleDidConnect() {
         for (_, action) in onConnectActions {
@@ -332,7 +332,7 @@ fileprivate extension RapidSocketManager {
 }
 
 // MARK: Socket communication methods
-fileprivate extension RapidSocketManager {
+internal extension RapidSocketManager {
     
     /// Create abstract connection
     ///

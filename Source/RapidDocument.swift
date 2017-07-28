@@ -30,15 +30,7 @@ func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
 }
 
 /// Class representing Rapid.io document
-open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
-    
-    var objectID: String {
-        return id
-    }
-    
-    var groupID: String {
-        return collectionName
-    }
+open class RapidDocument: NSObject, NSCoding {
     
     /// Document ID
     public let id: String
@@ -251,6 +243,20 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
     }
 }
 
+extension RapidDocument: RapidCachableObject {
+    
+    var objectID: String {
+        return id
+    }
+    
+    var groupID: String {
+        return collectionName
+    }
+    
+}
+
+// MARK: Document opearaion
+
 func == (lhs: RapidDocumentOperation, rhs: RapidDocumentOperation) -> Bool {
     return lhs.document.id == rhs.document.id
 }
@@ -277,7 +283,7 @@ struct RapidDocumentOperation: Hashable {
 /// Set updates are treated specially because operations have different priority
 struct RapidDocumentOperationSet: Sequence {
     
-    fileprivate var set = Set<RapidDocumentOperation>()
+    internal var set = Set<RapidDocumentOperation>()
     
     /// Inserts or updates the given element into the set
     ///

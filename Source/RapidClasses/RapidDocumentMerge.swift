@@ -112,12 +112,12 @@ class RapidDocumentOnConnectMerge: NSObject {
     
     let merge: RapidDocumentMerge!
     
-    fileprivate(set) var completion: RapidDocumentMergeCompletion?
+    internal(set) var completion: RapidDocumentRegisterOnConnectActionCompletion?
     
-    fileprivate(set) var actionID: String?
-    fileprivate(set) weak var delegate: RapidOnConnectActionDelegate?
+    internal(set) var actionID: String?
+    internal(set) weak var delegate: RapidOnConnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentMergeCompletion?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion?) {
         self.completion = completion
         
         self.merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)
@@ -183,12 +183,12 @@ class RapidDocumentOnDisconnectMerge: NSObject {
     
     let merge: RapidDocumentMerge!
     
-    fileprivate(set) var completion: RapidDocumentMergeCompletion?
+    internal(set) var completion: RapidDocumentRegisterOnDisonnectActionCompletion?
     
-    fileprivate(set) var actionID: String?
-    fileprivate(set) weak var delegate: RapidOnDisconnectActionDelegate?
+    internal(set) var actionID: String?
+    internal(set) weak var delegate: RapidOnDisconnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentMergeCompletion?) {
+    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
         self.completion = completion
         
         self.merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)

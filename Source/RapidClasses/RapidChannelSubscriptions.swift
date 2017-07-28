@@ -27,7 +27,7 @@ class RapidChannelSub: NSObject {
     let handler: RapidChannelSubscriptionHandler?
     
     /// Block of code to be called when unsubscribing
-    fileprivate var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
+    internal var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
     
     /// Initialize channel subscription object
     ///

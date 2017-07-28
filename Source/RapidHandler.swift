@@ -91,7 +91,7 @@ class RapidHandler: NSObject {
         return socketManager.auth
     }
     
-    fileprivate(set) var cache: RapidCache?
+    internal(set) var cache: RapidCache?
     var cacheEnabled: Bool = false {
         didSet {
             RapidLogger.log(message: "Rapid cache enabled \(cacheEnabled)", level: .debug)

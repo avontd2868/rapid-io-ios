@@ -66,14 +66,14 @@ class RapidDocumentExecution: RapidExecution {
     }
     
     /// Send fetch document request
-    fileprivate func sendFetchRequest() {
+    internal func sendFetchRequest() {
         delegate?.sendFetchRequest(fetchRequest)
     }
     
     /// Pass current value to `RapidDocumentExecutionBlock` and perform an action based on a result
     ///
     /// - Parameter document: `RapidDocument` returned from fetch
-    fileprivate func resolveValue(forDocument document: RapidDocument) {
+    internal func resolveValue(forDocument document: RapidDocument) {
         DispatchQueue.main.async { [weak self] in
             // Get developer action
             guard let result = self?.executionBlock(document) else {
@@ -96,7 +96,7 @@ class RapidDocumentExecution: RapidExecution {
     /// Decide what to do after the server responds to a write trial
     ///
     /// - Parameter error: Optional resulting error
-    fileprivate func resolveWriteError(_ error: RapidError) {
+    internal func resolveWriteError(_ error: RapidError) {
         // If the error is a write-conflict error start over the whole flow
         // Otherwise, finish the optimistic concurrency flow
         if case RapidError.executionFailed(let reason) = error,
@@ -112,7 +112,7 @@ class RapidDocumentExecution: RapidExecution {
     /// Finish the optimistic concurrency flow
     ///
     /// - Parameter error: Optional resulting error
-    fileprivate func completeExecution(withError error: RapidError?) {
+    internal func completeExecution(withError error: RapidError?) {
         // Inform the delegate so that it can release the flow controller
         delegate?.executionCompleted(self)
         
@@ -131,7 +131,7 @@ class RapidDocumentExecution: RapidExecution {
     /// - Parameters:
     ///   - value: Value to be written
     ///   - document: `RapidDocument` returned from fetch
-    fileprivate func write(value: [AnyHashable: Any], forDocument document: RapidDocument) {
+    internal func write(value: [AnyHashable: Any], forDocument document: RapidDocument) {
         let request = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: cacheHandler, completion: { [weak self] result in
             switch result {
             case .failure(let error):
@@ -148,7 +148,7 @@ class RapidDocumentExecution: RapidExecution {
     /// Process a delete action returned from `RapidConcurrencyOptimisticBlock`
     ///
     /// - Parameter document: `RapidDocument` returned from fetch
-    fileprivate func delete(document: RapidDocument) {
+    internal func delete(document: RapidDocument) {
         let request = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: cacheHandler, completion: { [weak self] result in
             switch result {
             case .failure(let error):

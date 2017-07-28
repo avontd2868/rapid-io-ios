@@ -101,12 +101,12 @@ class RapidDocumentOnConnectDelete: NSObject {
     
     let delete: RapidDocumentDelete!
     
-    fileprivate(set) var completion: RapidDocumentMergeCompletion?
+    internal(set) var completion: RapidDocumentRegisterOnConnectActionCompletion?
     
-    fileprivate(set) var actionID: String?
-    fileprivate(set) weak var delegate: RapidOnConnectActionDelegate?
+    internal(set) var actionID: String?
+    internal(set) weak var delegate: RapidOnConnectActionDelegate?
     
-    init(collectionID: String, documentID: String, completion: RapidDocumentMergeCompletion?) {
+    init(collectionID: String, documentID: String, completion: RapidDocumentRegisterOnConnectActionCompletion?) {
         self.completion = completion
         
         self.delete = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: nil, completion: nil)
@@ -172,12 +172,12 @@ class RapidDocumentOnDisconnectDelete: NSObject {
     
     let delete: RapidDocumentDelete!
     
-    fileprivate(set) var completion: RapidDocumentDeletionCompletion?
+    internal(set) var completion: RapidDocumentRegisterOnDisonnectActionCompletion?
     
-    fileprivate(set) var actionID: String?
-    fileprivate(set) weak var delegate: RapidOnDisconnectActionDelegate?
+    internal(set) var actionID: String?
+    internal(set) weak var delegate: RapidOnDisconnectActionDelegate?
     
-    init(collectionID: String, documentID: String, completion: RapidDocumentDeletionCompletion?) {
+    init(collectionID: String, documentID: String, completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
         self.completion = completion
         
         self.delete = RapidDocumentDelete(collectionID: collectionID, documentID: documentID, cache: nil, completion: nil)

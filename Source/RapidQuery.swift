@@ -309,7 +309,7 @@ open class RapidFilterCompound: RapidFilter {
     /// Array of filters
     public let operands: [RapidFilter]
     /// Subscription Hash
-    fileprivate let storedHash: String
+    internal let storedHash: String
     
     /// Compound filter initializer
     ///
