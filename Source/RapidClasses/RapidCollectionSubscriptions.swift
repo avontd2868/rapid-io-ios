@@ -32,7 +32,7 @@ class RapidCollectionSub: NSObject {
     let handlerWithChanges: RapidCollectionSubscriptionHandlerWithChanges?
     
     /// Block of code to be called when unsubscribing
-    fileprivate var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
+    internal var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
     
     /// Initialize collection subscription object
     ///
@@ -128,10 +128,10 @@ class RapidDocumentSub: NSObject {
     let handler: RapidDocumentSubscriptionHandler?
     
     /// Underlying collection subscription object
-    fileprivate(set) var subscription: RapidCollectionSub!
+    internal(set) var subscription: RapidCollectionSub!
     
     /// Block of code to be called when unsubscribing
-    fileprivate var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
+    internal var unsubscribeHandler: ((RapidSubscriptionInstance) -> Void)?
     
     /// Initialize document subscription object
     ///

@@ -32,13 +32,6 @@ class RapidServerAcknowledgement: RapidServerResponse {
     }
 }
 
-extension RapidServerAcknowledgement: RapidSerializable {
-    
-    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(acknowledgement: self)
-    }
-}
-
 /// Acknowledgement event object
 ///
 /// This acknowledgement is sent to server as a response to a server event
@@ -60,7 +53,7 @@ extension RapidClientAcknowledgement: RapidSerializable {
     }
 }
 
-// MARK: Subscription cancel
+// MARK: Subscription cancelled
 
 /// Subscription cancel event object
 ///
@@ -86,6 +79,31 @@ class RapidSubscriptionCancelled: RapidServerEvent {
         
         self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subID
+    }
+}
+
+// MARK: On-disconnect action cancelled
+
+/// On-disconnect action cancelled event object
+///
+/// On-disconnect action cancelled is a server event which occurs
+/// when a client has no longer permissions to modify a document after reauthorization/deauthorization
+class RapidOnDisconnectActionCancelled: RapidServerEvent {
+    
+    let eventIDsToAcknowledge: [String]
+    let actionID: String
+    
+    init?(json: [AnyHashable: Any]) {
+        guard let eventID = json[RapidSerialization.EventID.name] as? String else {
+            return nil
+        }
+        
+        guard let actionID = json[RapidSerialization.DisconnectActionCancelled.ActionID.name] as? String else {
+            return nil
+        }
+        
+        self.eventIDsToAcknowledge = [eventID]
+        self.actionID = actionID
     }
 }
 

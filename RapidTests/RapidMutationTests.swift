@@ -421,4 +421,103 @@ extension RapidTests {
         waitForExpectations(timeout: 40, handler: nil)
     }
     
+    func testCancelMutation() {
+        let promise = expectation(description: "Mutation")
+        
+        rapid.timeout = 30
+        rapid.goOffline()
+
+        var initialResponse = true
+        let mutation = rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["test": "Cancel mutation"]) { result in
+            if initialResponse {
+                initialResponse = false
+                if case .failure(let error) = result, case .cancelled = error {
+                    self.rapid.goOnline()
+                    runAfter(5, closure: {
+                        promise.fulfill()
+                    })
+                }
+                else {
+                    XCTFail("Wrong error")
+                    promise.fulfill()
+                }
+            }
+            else {
+                XCTFail("Second call")
+                promise.fulfill()
+            }
+        }
+        
+        mutation.cancel()
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testCancelMerge() {
+        let promise = expectation(description: "Merge")
+        
+        rapid.timeout = 30
+        rapid.goOffline()
+        
+        var initialResponse = true
+        let merge = rapid.collection(named: testCollectionName).document(withID: "1").merge(value: ["test": "Cancel mutation"]) { result in
+            if initialResponse {
+                initialResponse = false
+                if case .failure(let error) = result, case .cancelled = error {
+                    self.rapid.goOnline()
+                    runAfter(5, closure: {
+                        promise.fulfill()
+                    })
+                }
+                else {
+                    XCTFail("Wrong error")
+                    promise.fulfill()
+                }
+            }
+            else {
+                XCTFail("Second call")
+                promise.fulfill()
+            }
+        }
+        
+        runAfter(0.5) { 
+            merge.cancel()
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testCancelDelete() {
+        let promise = expectation(description: "Delete")
+        
+        rapid.timeout = 30
+        rapid.goOffline()
+        
+        var initialResponse = true
+        let delete = rapid.collection(named: testCollectionName).document(withID: "1").delete() { result in
+            if initialResponse {
+                initialResponse = false
+                if case .failure(let error) = result, case .cancelled = error {
+                    self.rapid.goOnline()
+                    runAfter(5, closure: {
+                        promise.fulfill()
+                    })
+                }
+                else {
+                    XCTFail("Wrong error")
+                    promise.fulfill()
+                }
+            }
+            else {
+                XCTFail("Second call")
+                promise.fulfill()
+            }
+        }
+        
+        runAfter(0.5) {
+            delete.cancel()
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
 }

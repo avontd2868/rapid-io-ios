@@ -41,7 +41,7 @@ public enum RapidResult<Value> {
 open class Rapid: NSObject {
     
     /// All instances which have been initialized
-    fileprivate static var instances: [WRO<Rapid>] = []
+    internal static var instances: [WRO<Rapid>] = []
     
     /// Shared instance accessible by class methods
     static var sharedInstance: Rapid?

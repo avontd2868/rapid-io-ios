@@ -79,9 +79,10 @@ struct RapidErrorInstance: RapidServerResponse {
 /// - invalidRequest: Client sent an invalid request to Rapid.io server. Please update Rapid SDK. If your Rapid SDK is up to date, please report an issue at https://github.com/rapid-io/rapid-io-ios
 /// - connectionTerminated: Websocket connection expired and needs to be reestablished
 /// - invalidData: Data provided by a developer (collection name, document ID, document mutation value etc.) are in an invalid format
-/// - timeout: Request timout
+/// - timeout: Request timeout
 /// - invalidAuthToken: Authorization token is invalid
 /// - executionFailed: Optimistic concurrency write to a document failed
+/// - cancelled: Request cancelled
 /// - `default`: General error
 public enum RapidError: Error {
     
@@ -93,6 +94,7 @@ public enum RapidError: Error {
     case timeout
     case invalidAuthToken(message: String?)
     case executionFailed(reason: ExecutionError)
+    case cancelled
     case `default`
     
     /// Reason of `invalidData` error
