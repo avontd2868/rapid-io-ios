@@ -1,8 +1,8 @@
 language: objective-c
 osx_image: xcode8.3
-#branches:
-#  only:
-#    - master
+branches:
+  only:
+    - master
 env:
   global:
   - PROJECT=Rapid.xcodeproj
