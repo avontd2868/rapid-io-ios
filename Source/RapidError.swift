@@ -74,14 +74,15 @@ struct RapidErrorInstance: RapidServerResponse {
 
 /// Errors which can be thrown by Rapid SDK
 ///
-/// - permissionDenied: Client doesn't have permisson to read or write specified data
-/// - server: Internal Rapid server error
-/// - invalidRequest: Client sent invalid request to the server. Please update Rapid SDK framework. If your framework is up to date, please report an issue at https://github.com/Rapid-SDK/ios
+/// - permissionDenied: Client doesn't have permissons to read or write specified data
+/// - server: Internal Rapid.io server error
+/// - invalidRequest: Client sent an invalid request to Rapid.io server. Please update Rapid SDK. If your Rapid SDK is up to date, please report an issue at https://github.com/rapid-io/rapid-io-ios
 /// - connectionTerminated: Websocket connection expired and needs to be reestablished
-/// - invalidData: Data are in an invalid format
-/// - timeout: Request timout
+/// - invalidData: Data provided by a developer (collection name, document ID, document mutation value etc.) are in an invalid format
+/// - timeout: Request timeout
 /// - invalidAuthToken: Authorization token is invalid
-/// - executionFailed: Execution failed
+/// - executionFailed: Optimistic concurrency write to a document failed
+/// - cancelled: Request cancelled
 /// - `default`: General error
 public enum RapidError: Error {
     
@@ -93,11 +94,12 @@ public enum RapidError: Error {
     case timeout
     case invalidAuthToken(message: String?)
     case executionFailed(reason: ExecutionError)
+    case cancelled
     case `default`
     
     /// Reason of `invalidData` error
     ///
-    /// - serializationFailure: Serialization failed because data were in a wrongsubscription format
+    /// - serializationFailure: Serialization failed because data were in a wrong format
     /// - invalidFilter: Invalid subscription filter
     /// - invalidDocument: Invalid document JSON when mutating or merging
     /// - invalidIdentifierFormat: Invalid identifier format - all identifiers e.g. collection ID, document ID must be strings consiting only of alphanumeric characters, dashes and underscores
@@ -112,9 +114,9 @@ public enum RapidError: Error {
         case invalidLimit
     }
     
-    /// Reason of `executionFailed`
+    /// Reason of `executionFailed` error
     ///
-    /// - writeConflict: Server wasn't able to execute a database operation
+    /// - writeConflict: Server wasn't able to execute a concurrency optimistic database operation because the document was modified in a meanwhile
     /// - aborted: Client aborted an execution flow
     public enum ExecutionError {
         case writeConflict(message: String?)

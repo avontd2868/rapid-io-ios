@@ -32,17 +32,12 @@ class RapidServerAcknowledgement: RapidServerResponse {
     }
 }
 
-extension RapidServerAcknowledgement: RapidSerializable {
-    
-    func serialize(withIdentifiers identifiers: [AnyHashable : Any]) throws -> String {
-        return try RapidSerialization.serialize(acknowledgement: self)
-    }
-}
-
 /// Acknowledgement event object
 ///
 /// This acknowledgement is sent to server as a response to a server event
 class RapidClientAcknowledgement: RapidClientEvent {
+    
+    let shouldSendOnReconnect = false
     
     let eventID: String
     
@@ -58,17 +53,16 @@ extension RapidClientAcknowledgement: RapidSerializable {
     }
 }
 
-// MARK: Subscription cancel
+// MARK: Subscription cancelled
 
 /// Subscription cancel event object
 ///
 /// Subscription cancel is a sever event which occurs 
 /// when a client has no longer permissions to read collection after reauthorization/deauthorization
-class RapidSubscriptionCancel: RapidServerEvent {
+class RapidSubscriptionCancelled: RapidServerEvent {
     
     let eventIDsToAcknowledge: [String]
     let subscriptionID: String
-    let collectionID: String
     
     init?(json: Any?) {
         guard let dict = json as? [AnyHashable: Any] else {
@@ -79,17 +73,37 @@ class RapidSubscriptionCancel: RapidServerEvent {
             return nil
         }
         
-        guard let subID = dict[RapidSerialization.Cancel.SubscriptionID.name] as? String else {
-            return nil
-        }
-        
-        guard let colID = dict[RapidSerialization.Cancel.CollectionID.name] as? String else {
+        guard let subID = dict[RapidSerialization.CollectionSubscriptionCancelled.SubscriptionID.name] as? String else {
             return nil
         }
         
         self.eventIDsToAcknowledge = [eventID]
         self.subscriptionID = subID
-        self.collectionID = colID
+    }
+}
+
+// MARK: On-disconnect action cancelled
+
+/// On-disconnect action cancelled event object
+///
+/// On-disconnect action cancelled is a server event which occurs
+/// when a client has no longer permissions to modify a document after reauthorization/deauthorization
+class RapidOnDisconnectActionCancelled: RapidServerEvent {
+    
+    let eventIDsToAcknowledge: [String]
+    let actionID: String
+    
+    init?(json: [AnyHashable: Any]) {
+        guard let eventID = json[RapidSerialization.EventID.name] as? String else {
+            return nil
+        }
+        
+        guard let actionID = json[RapidSerialization.DisconnectActionCancelled.ActionID.name] as? String else {
+            return nil
+        }
+        
+        self.eventIDsToAcknowledge = [eventID]
+        self.actionID = actionID
     }
 }
 

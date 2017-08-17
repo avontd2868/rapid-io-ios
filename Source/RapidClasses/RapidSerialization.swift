@@ -159,7 +159,8 @@ class RapidSerialization {
         json[Fetch.Filter.name] = try serialize(filter: fetch.filter)
         json[Fetch.Ordering.name] = try serialize(ordering: fetch.ordering)
         json[Fetch.Limit.name] = fetch.paging?.take
-        json[Fetch.Skip.name] = fetch.paging?.skip
+        //TODO: Include skip
+        //json[Fetch.Skip.name] = fetch.paging?.skip
         
         let resultDict: [AnyHashable: Any] = [Fetch.name: json]
         return try resultDict.jsonString()
@@ -183,7 +184,8 @@ class RapidSerialization {
         json[CollectionSubscription.Filter.name] = try serialize(filter: subscription.filter)
         json[CollectionSubscription.Ordering.name] = try serialize(ordering: subscription.ordering)
         json[CollectionSubscription.Limit.name] = subscription.paging?.take
-        json[CollectionSubscription.Skip.name] = subscription.paging?.skip
+        //TODO: Include skip
+        //json[CollectionSubscription.Skip.name] = subscription.paging?.skip
         
         let resultDict: [AnyHashable: Any] = [CollectionSubscription.name: json]
         return try resultDict.jsonString()
@@ -390,17 +392,6 @@ class RapidSerialization {
         return try resultDict.jsonString()
     }
     
-    /// Serialize an event acknowledgement into JSON string
-    ///
-    /// - Parameters:
-    ///   - acknowledgement: Acknowledgement object
-    /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(acknowledgement: RapidServerAcknowledgement) throws -> String {
-        let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
-        return try resultDict.jsonString()
-    }
-    
     /// Serialize a connection request into JSON string
     ///
     /// - Parameters:
@@ -414,22 +405,6 @@ class RapidSerialization {
         json[Connect.ConnectionID.name] = connection.connectionID
         
         let resultDict = [Connect.name: json]
-        return try resultDict.jsonString()
-    }
-    
-    /// Serialize a reconnection request into JSON string
-    ///
-    /// - Parameters:
-    ///   - reconnection: Reconnection request object
-    ///   - identifiers: Identifiers that are associated with the connection request event
-    /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(reconnection: RapidReconnectionRequest, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
-        var json = identifiers
-        
-        json[Reconnect.ConnectionID.name] = reconnection.connectionID
-        
-        let resultDict = [Reconnect.name: json]
         return try resultDict.jsonString()
     }
     
@@ -482,10 +457,44 @@ class RapidSerialization {
         let resultDict = [Deauthorization.name: identifiers]
         return try resultDict.jsonString()
     }
+    
+    /// Serialize an on-disconnect action into JSON string
+    ///
+    /// - Parameters:
+    ///   - disconnectAction: On-disconnect action request
+    ///   - identifiers: Identifiers that are associated with the request
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(disconnectAction: RapidOnDisconnectAction, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[DisconnectAction.ActionID.name] = try Validator.validate(identifier: disconnectAction.actionID)
+        
+        json[DisconnectAction.Action.name] = try disconnectAction.actionJSON()
+        
+        let resultDict = [DisconnectAction.name: json]
+        return try resultDict.jsonString()
+    }
+    
+    /// Serialize a cancel on-disconnect action into JSON string
+    ///
+    /// - Parameters:
+    ///   - disconnectAction: Cancel on-disconnect action request
+    ///   - identifiers: Identifiers that are associated with the request
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(cancelDisconnectAction: RapidCancelOnDisconnectAction, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[CancelDisconnectAction.ActionID.name] = cancelDisconnectAction.actionID
+        
+        let resultDict = [CancelDisconnectAction.name: json]
+        return try resultDict.jsonString()
+    }
 }
 
-// MARK: Fileprivate methods
-fileprivate extension RapidSerialization {
+// MARK: internal methods
+internal extension RapidSerialization {
     
     /// Parse single event received from websocket
     ///
@@ -507,8 +516,14 @@ fileprivate extension RapidSerialization {
         else if let rm = json[SubscriptionDocRemoved.name] as? [AnyHashable: Any] {
             return RapidSubscriptionBatch(withUpdateJSON: rm, docRemoved: true)
         }
-        else if let ca = json[Cancel.name] as? [AnyHashable: Any] {
-            return RapidSubscriptionCancel(json: ca)
+        else if let ca = json[CollectionSubscriptionCancelled.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionCancelled(json: ca)
+        }
+        else if let ca = json[ChannelSubscriptionCancelled.name] as? [AnyHashable: Any] {
+            return RapidSubscriptionCancelled(json: ca)
+        }
+        else if let caDisconnectAction = json[DisconnectActionCancelled.name] as? [AnyHashable: Any] {
+            return RapidOnDisconnectActionCancelled(json: caDisconnectAction)
         }
         else if let res = json[FetchValue.name] as? [AnyHashable: Any] {
             return RapidFetchResponse(withJSON: res)

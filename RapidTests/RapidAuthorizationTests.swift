@@ -13,6 +13,7 @@ extension RapidTests {
 
     func testSubscribeWituhoutAuthorization() {
         let promise = expectation(description: "Permission denied")
+        rapid.deauthorize()
         
         rapid.collection(named: "test1").subscribe(block: { result in
             if case .failure(let error) = result, case .permissionDenied = error {
@@ -20,10 +21,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Did subscribe")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testAuthorizeAndSubscribe() {
@@ -37,17 +39,18 @@ extension RapidTests {
             }
             else {
                 XCTFail("Did not subscribe")
+                promise.fulfill()
             }
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
-    func testSubscriptionChangeAfterUnsubscription() {
+    func testCollectionSubscriptionCancelAfterDeauthorization() {
         let promise = expectation(description: "Authorization")
         
         var initialValue = true
-        
+
         rapid.collection(named: testCollectionName).subscribe(block: { result in
             if initialValue {
                 initialValue = false
@@ -57,6 +60,7 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Did not subscribe")
+                    promise.fulfill()
                 }
             }
             else {
@@ -65,11 +69,45 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Still subscribed")
+                    promise.fulfill()
                 }
             }
         })
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testChannelSubscriptionCancelAfterDeauthorization() {
+        let promise = expectation(description: "Authorization")
+        
+        var initialValue = true
+        
+        rapid.channel(named: testChannelName).subscribe { result in
+            if initialValue {
+                initialValue = false
+                
+                if case .success = result {
+                    self.rapid.deauthorize()
+                }
+                else {
+                    XCTFail("Did not subscribe")
+                    promise.fulfill()
+                }
+            }
+            else {
+                if case .failure(let error) = result, case .permissionDenied = error {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Still subscribed")
+                    promise.fulfill()
+                }
+            }
+        }
+        
+        rapid.channel(named: testChannelName).publish(message: ["test": "test"])
+        
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testInvalidAuthToken() {
@@ -81,10 +119,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Authorization passed")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDeauthorizeFail() {
@@ -107,11 +146,12 @@ extension RapidTests {
             }
             else {
                 XCTFail("Did unauthorize")
+                promise.fulfill()
             }
         }
         
         socketManager.deauthorize(deauthRequest: deauth)
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 }

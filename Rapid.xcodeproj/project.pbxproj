@@ -14,7 +14,40 @@
 		C12692241E83D6F4002577B2 /* DictionaryJSONExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */; };
 		C1281A461E8AA3A50054AF73 /* RapidConnectionRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */; };
 		C1281A481E8AA8C20054AF73 /* RapidCollectionSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A471E8AA8C20054AF73 /* RapidCollectionSubscriptions.swift */; };
-		C1281A4A1E8AA9020054AF73 /* RapidMutations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A491E8AA9020054AF73 /* RapidMutations.swift */; };
+		C1281A4A1E8AA9020054AF73 /* RapidDocumentMutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A491E8AA9020054AF73 /* RapidDocumentMutation.swift */; };
+		C1375A4B1F137764009A45BF /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C142DCD01EC9E0E2000B9617 /* Rapid.framework */; };
+		C1375A521F1378F5009A45BF /* RapidTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E82D1E7856AD007589FC /* RapidTests.swift */; };
+		C1375A531F137949009A45BF /* RapidChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16067FB1EE836F400B118D4 /* RapidChannelTests.swift */; };
+		C1375A541F13794D009A45BF /* RapidCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EDC1A31EA6010D006570FC /* RapidCacheTests.swift */; };
+		C1375A551F13795C009A45BF /* RapidSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */; };
+		C1375A561F137963009A45BF /* RapidSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB431E95384D007983EA /* RapidSerializationTests.swift */; };
+		C1375A571F137968009A45BF /* RapidQuaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2A1EF1E9FD899009444B3 /* RapidQuaryTests.swift */; };
+		C1375A581F13796D009A45BF /* RapidMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB401E952FA8007983EA /* RapidMutationTests.swift */; };
+		C1375A591F137970009A45BF /* RapidAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */; };
+		C1375A631F137ED0009A45BF /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C13EAB591EF820C600264F4E /* Rapid.framework */; };
+		C1375A6A1F137EF6009A45BF /* RapidAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB481E978D1B007983EA /* RapidAuthorizationTests.swift */; };
+		C1375A6B1F137EF6009A45BF /* RapidMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB401E952FA8007983EA /* RapidMutationTests.swift */; };
+		C1375A6C1F137EF6009A45BF /* RapidQuaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2A1EF1E9FD899009444B3 /* RapidQuaryTests.swift */; };
+		C1375A6D1F137EF6009A45BF /* RapidSerializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C169DB431E95384D007983EA /* RapidSerializationTests.swift */; };
+		C1375A6E1F137EF6009A45BF /* RapidSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */; };
+		C1375A6F1F137EF6009A45BF /* RapidTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E82D1E7856AD007589FC /* RapidTests.swift */; };
+		C1375A701F137EF6009A45BF /* RapidCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EDC1A31EA6010D006570FC /* RapidCacheTests.swift */; };
+		C1375A711F137EF6009A45BF /* RapidChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16067FB1EE836F400B118D4 /* RapidChannelTests.swift */; };
+		C1375A731F1791FA009A45BF /* RapidProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A721F1791FA009A45BF /* RapidProtocols.swift */; };
+		C1375A741F1791FA009A45BF /* RapidProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A721F1791FA009A45BF /* RapidProtocols.swift */; };
+		C1375A751F1791FA009A45BF /* RapidProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A721F1791FA009A45BF /* RapidProtocols.swift */; };
+		C1375A771F18B3BE009A45BF /* RapidDocumentPresenceRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A761F18B3BE009A45BF /* RapidDocumentPresenceRef.swift */; };
+		C1375A781F18B3BE009A45BF /* RapidDocumentPresenceRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A761F18B3BE009A45BF /* RapidDocumentPresenceRef.swift */; };
+		C1375A791F18B3BE009A45BF /* RapidDocumentPresenceRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A761F18B3BE009A45BF /* RapidDocumentPresenceRef.swift */; };
+		C1375A7B1F190068009A45BF /* RapidDocumentMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A7A1F190068009A45BF /* RapidDocumentMerge.swift */; };
+		C1375A7C1F190068009A45BF /* RapidDocumentMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A7A1F190068009A45BF /* RapidDocumentMerge.swift */; };
+		C1375A7D1F190068009A45BF /* RapidDocumentMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A7A1F190068009A45BF /* RapidDocumentMerge.swift */; };
+		C1375A7F1F190078009A45BF /* RapidDocumentDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A7E1F190078009A45BF /* RapidDocumentDeletion.swift */; };
+		C1375A801F190078009A45BF /* RapidDocumentDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A7E1F190078009A45BF /* RapidDocumentDeletion.swift */; };
+		C1375A811F190078009A45BF /* RapidDocumentDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A7E1F190078009A45BF /* RapidDocumentDeletion.swift */; };
+		C1375A831F1900AF009A45BF /* RapidDocumentExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A821F1900AF009A45BF /* RapidDocumentExecution.swift */; };
+		C1375A841F1900AF009A45BF /* RapidDocumentExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A821F1900AF009A45BF /* RapidDocumentExecution.swift */; };
+		C1375A851F1900AF009A45BF /* RapidDocumentExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1375A821F1900AF009A45BF /* RapidDocumentExecution.swift */; };
 		C13EAB621EF820F100264F4E /* Rapid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E8A71E785D72007589FC /* Rapid.swift */; };
 		C13EAB631EF820FB00264F4E /* RapidCollectionRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9941E7ADC78007589FC /* RapidCollectionRef.swift */; };
 		C13EAB641EF820FF00264F4E /* RapidDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A741F1EDD7686001339DC /* RapidDocument.swift */; };
@@ -36,14 +69,13 @@
 		C13EAB741EF8219100264F4E /* RapidSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */; };
 		C13EAB751EF8219400264F4E /* RapidChannelPublish.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16067FD1EE8388500B118D4 /* RapidChannelPublish.swift */; };
 		C13EAB761EF8219900264F4E /* RapidChannelSubscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16067ED1EE8027800B118D4 /* RapidChannelSubscriptions.swift */; };
-		C13EAB771EF8219C00264F4E /* RapidMutations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A491E8AA9020054AF73 /* RapidMutations.swift */; };
+		C13EAB771EF8219C00264F4E /* RapidDocumentMutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A491E8AA9020054AF73 /* RapidDocumentMutation.swift */; };
 		C13EAB781EF8219F00264F4E /* RapidConnectionRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */; };
 		C13EAB791EF821A500264F4E /* RapidReadProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9AE1E7C0D59007589FC /* RapidReadProtocols.swift */; };
 		C13EAB7A1EF821A900264F4E /* RapidResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A81E7BECA4007589FC /* RapidResponse.swift */; };
 		C13EAB7B1EF821AC00264F4E /* RapidRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A21E7BE356007589FC /* RapidRequest.swift */; };
 		C13EAB7C1EF821B000264F4E /* RapidMutationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E99B1E7AE523007589FC /* RapidMutationProtocols.swift */; };
 		C13EAB7D1EF821B500264F4E /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E98F1E7AD7E3007589FC /* WebSocket.swift */; };
-		C13EAB7E1EF821B800264F4E /* SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9911E7AD822007589FC /* SSLSecurity.swift */; };
 		C13EAB7F1EF821BB00264F4E /* RapidSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E90D1E7A9131007589FC /* RapidSocketManager.swift */; };
 		C13EAB801EF821BF00264F4E /* RapidNetworkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B9C2C11E9D37D7008F7A7B /* RapidNetworkHandler.swift */; };
 		C13EAB811EF8227A00264F4E /* RapidCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EDC19D1EA4B952006570FC /* RapidCache.swift */; };
@@ -73,7 +105,7 @@
 		C142DCE91EC9E1C8000B9617 /* RapidSubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692211E82D27A002577B2 /* RapidSubscriptionEvent.swift */; };
 		C142DCEA1EC9E1CB000B9617 /* RapidServerEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A41E7BE3C0007589FC /* RapidServerEvents.swift */; };
 		C142DCEB1EC9E1CD000B9617 /* RapidSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */; };
-		C142DCEC1EC9E1D0000B9617 /* RapidMutations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A491E8AA9020054AF73 /* RapidMutations.swift */; };
+		C142DCEC1EC9E1D0000B9617 /* RapidDocumentMutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A491E8AA9020054AF73 /* RapidDocumentMutation.swift */; };
 		C142DCED1EC9E1D2000B9617 /* RapidConnectionRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */; };
 		C142DCEE1EC9E1D5000B9617 /* RapidReadProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9AE1E7C0D59007589FC /* RapidReadProtocols.swift */; };
 		C142DCEF1EC9E1D8000B9617 /* RapidResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9A81E7BECA4007589FC /* RapidResponse.swift */; };
@@ -82,7 +114,6 @@
 		C142DCF21EC9E1E0000B9617 /* RapidNetworkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B9C2C11E9D37D7008F7A7B /* RapidNetworkHandler.swift */; };
 		C142DCF31EC9E1E2000B9617 /* RapidSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E90D1E7A9131007589FC /* RapidSocketManager.swift */; };
 		C142DCF41EC9E210000B9617 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E98F1E7AD7E3007589FC /* WebSocket.swift */; };
-		C142DCF51EC9E214000B9617 /* SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9911E7AD822007589FC /* SSLSecurity.swift */; };
 		C14A74201EDD7686001339DC /* RapidDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A741F1EDD7686001339DC /* RapidDocument.swift */; };
 		C14A74211EDD7686001339DC /* RapidDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14A741F1EDD7686001339DC /* RapidDocument.swift */; };
 		C14F274A1EA910260079093E /* RapidAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14F27491EA910260079093E /* RapidAuthorization.swift */; };
@@ -117,7 +148,6 @@
 		C1D6E90E1E7A9131007589FC /* RapidSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E90D1E7A9131007589FC /* RapidSocketManager.swift */; };
 		C1D6E9121E7A92A0007589FC /* Rapid.h in Headers */ = {isa = PBXBuildFile; fileRef = C1D6E9101E7A92A0007589FC /* Rapid.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C1D6E9901E7AD7E3007589FC /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E98F1E7AD7E3007589FC /* WebSocket.swift */; };
-		C1D6E9921E7AD822007589FC /* SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9911E7AD822007589FC /* SSLSecurity.swift */; };
 		C1D6E9951E7ADC78007589FC /* RapidCollectionRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9941E7ADC78007589FC /* RapidCollectionRef.swift */; };
 		C1D6E9971E7ADE35007589FC /* RapidError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9961E7ADE35007589FC /* RapidError.swift */; };
 		C1D6E9991E7ADF0C007589FC /* RapidDocumentRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9981E7ADF0C007589FC /* RapidDocumentRef.swift */; };
@@ -133,9 +163,29 @@
 		C1D6E9B11E7C0FAE007589FC /* RapidQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D6E9B01E7C0FAE007589FC /* RapidQuery.swift */; };
 		C1EDC19E1EA4B952006570FC /* RapidCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EDC19D1EA4B952006570FC /* RapidCache.swift */; };
 		C1EDC1A41EA6010D006570FC /* RapidCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EDC1A31EA6010D006570FC /* RapidCacheTests.swift */; };
+		C1F7662A1F1910E9002EB96C /* RapidConditionedActionsProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F766291F1910E9002EB96C /* RapidConditionedActionsProtocols.swift */; };
+		C1F7662B1F1910E9002EB96C /* RapidConditionedActionsProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F766291F1910E9002EB96C /* RapidConditionedActionsProtocols.swift */; };
+		C1F7662C1F1910E9002EB96C /* RapidConditionedActionsProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F766291F1910E9002EB96C /* RapidConditionedActionsProtocols.swift */; };
+		C1F7662E1F1E5675002EB96C /* RapidPresenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F7662D1F1E5675002EB96C /* RapidPresenceTests.swift */; };
+		C1F7662F1F1E5675002EB96C /* RapidPresenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F7662D1F1E5675002EB96C /* RapidPresenceTests.swift */; };
+		C1F766301F1E5675002EB96C /* RapidPresenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F7662D1F1E5675002EB96C /* RapidPresenceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C1375A4C1F137764009A45BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C1D6E8161E7856AD007589FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C142DCCF1EC9E0E2000B9617;
+			remoteInfo = "Rapid macOS";
+		};
+		C1375A641F137ED0009A45BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C1D6E8161E7856AD007589FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C13EAB581EF820C600264F4E;
+			remoteInfo = "Rapid tvOS";
+		};
 		C1D6E82A1E7856AD007589FC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C1D6E8161E7856AD007589FC /* Project object */;
@@ -152,7 +202,14 @@
 		C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryJSONExtension.swift; sourceTree = "<group>"; };
 		C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidConnectionRequests.swift; sourceTree = "<group>"; };
 		C1281A471E8AA8C20054AF73 /* RapidCollectionSubscriptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidCollectionSubscriptions.swift; sourceTree = "<group>"; };
-		C1281A491E8AA9020054AF73 /* RapidMutations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidMutations.swift; sourceTree = "<group>"; };
+		C1281A491E8AA9020054AF73 /* RapidDocumentMutation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidDocumentMutation.swift; sourceTree = "<group>"; };
+		C1375A461F137763009A45BF /* RapidTests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RapidTests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1375A5E1F137ED0009A45BF /* RapidTests tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RapidTests tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1375A721F1791FA009A45BF /* RapidProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidProtocols.swift; sourceTree = "<group>"; };
+		C1375A761F18B3BE009A45BF /* RapidDocumentPresenceRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidDocumentPresenceRef.swift; sourceTree = "<group>"; };
+		C1375A7A1F190068009A45BF /* RapidDocumentMerge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidDocumentMerge.swift; sourceTree = "<group>"; };
+		C1375A7E1F190078009A45BF /* RapidDocumentDeletion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidDocumentDeletion.swift; sourceTree = "<group>"; };
+		C1375A821F1900AF009A45BF /* RapidDocumentExecution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidDocumentExecution.swift; sourceTree = "<group>"; };
 		C13EAB591EF820C600264F4E /* Rapid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rapid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C140F9331E894871002AB9C5 /* RapidSubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionTests.swift; sourceTree = "<group>"; };
 		C142DCD01EC9E0E2000B9617 /* Rapid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rapid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -183,7 +240,6 @@
 		C1D6E90F1E7A92A0007589FC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C1D6E9101E7A92A0007589FC /* Rapid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rapid.h; sourceTree = "<group>"; };
 		C1D6E98F1E7AD7E3007589FC /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
-		C1D6E9911E7AD822007589FC /* SSLSecurity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSLSecurity.swift; sourceTree = "<group>"; };
 		C1D6E9941E7ADC78007589FC /* RapidCollectionRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidCollectionRef.swift; sourceTree = "<group>"; };
 		C1D6E9961E7ADE35007589FC /* RapidError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidError.swift; sourceTree = "<group>"; };
 		C1D6E9981E7ADF0C007589FC /* RapidDocumentRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidDocumentRef.swift; sourceTree = "<group>"; };
@@ -199,9 +255,27 @@
 		C1D6E9B01E7C0FAE007589FC /* RapidQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidQuery.swift; sourceTree = "<group>"; };
 		C1EDC19D1EA4B952006570FC /* RapidCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidCache.swift; sourceTree = "<group>"; };
 		C1EDC1A31EA6010D006570FC /* RapidCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidCacheTests.swift; sourceTree = "<group>"; };
+		C1F766291F1910E9002EB96C /* RapidConditionedActionsProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidConditionedActionsProtocols.swift; sourceTree = "<group>"; };
+		C1F7662D1F1E5675002EB96C /* RapidPresenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidPresenceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C1375A431F137763009A45BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1375A4B1F137764009A45BF /* Rapid.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1375A5B1F137ED0009A45BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1375A631F137ED0009A45BF /* Rapid.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C13EAB551EF820C600264F4E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -238,7 +312,10 @@
 			isa = PBXGroup;
 			children = (
 				C1281A451E8AA3A50054AF73 /* RapidConnectionRequests.swift */,
-				C1281A491E8AA9020054AF73 /* RapidMutations.swift */,
+				C1281A491E8AA9020054AF73 /* RapidDocumentMutation.swift */,
+				C1375A7A1F190068009A45BF /* RapidDocumentMerge.swift */,
+				C1375A7E1F190078009A45BF /* RapidDocumentDeletion.swift */,
+				C1375A821F1900AF009A45BF /* RapidDocumentExecution.swift */,
 				C16067ED1EE8027800B118D4 /* RapidChannelSubscriptions.swift */,
 				C16067FD1EE8388500B118D4 /* RapidChannelPublish.swift */,
 				C1D6E9A61E7BE942007589FC /* RapidSerialization.swift */,
@@ -272,6 +349,8 @@
 				C1D6E8281E7856AD007589FC /* RapidTests.xctest */,
 				C142DCD01EC9E0E2000B9617 /* Rapid.framework */,
 				C13EAB591EF820C600264F4E /* Rapid.framework */,
+				C1375A461F137763009A45BF /* RapidTests macOS.xctest */,
+				C1375A5E1F137ED0009A45BF /* RapidTests tvOS.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -284,10 +363,12 @@
 				C1642F331E8BA4A700C455E1 /* RapidClasses */,
 				C1D6E99F1E7AFDFE007589FC /* Utils */,
 				C1D6E8A71E785D72007589FC /* Rapid.swift */,
+				C1375A721F1791FA009A45BF /* RapidProtocols.swift */,
 				C1D6E9941E7ADC78007589FC /* RapidCollectionRef.swift */,
 				C14A741F1EDD7686001339DC /* RapidDocument.swift */,
 				C16067F61EE81CC000B118D4 /* RapidChannelMessage.swift */,
 				C1D6E9981E7ADF0C007589FC /* RapidDocumentRef.swift */,
+				C1375A761F18B3BE009A45BF /* RapidDocumentPresenceRef.swift */,
 				C16067EA1EE800DB00B118D4 /* RapidChannelRef.swift */,
 				C1D6E9961E7ADE35007589FC /* RapidError.swift */,
 				C1D6E9AA1E7BF7F4007589FC /* RapidHandler.swift */,
@@ -309,6 +390,7 @@
 				C1D6E82D1E7856AD007589FC /* RapidTests.swift */,
 				C1EDC1A31EA6010D006570FC /* RapidCacheTests.swift */,
 				C16067FB1EE836F400B118D4 /* RapidChannelTests.swift */,
+				C1F7662D1F1E5675002EB96C /* RapidPresenceTests.swift */,
 			);
 			path = RapidTests;
 			sourceTree = "<group>";
@@ -327,7 +409,6 @@
 			children = (
 				C1B9C2C11E9D37D7008F7A7B /* RapidNetworkHandler.swift */,
 				C1D6E90D1E7A9131007589FC /* RapidSocketManager.swift */,
-				C1D6E9911E7AD822007589FC /* SSLSecurity.swift */,
 				C1D6E98F1E7AD7E3007589FC /* WebSocket.swift */,
 			);
 			path = Networking;
@@ -340,6 +421,7 @@
 				C1D6E9A21E7BE356007589FC /* RapidRequest.swift */,
 				C1D6E9A81E7BECA4007589FC /* RapidResponse.swift */,
 				C1D6E9AE1E7C0D59007589FC /* RapidReadProtocols.swift */,
+				C1F766291F1910E9002EB96C /* RapidConditionedActionsProtocols.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -387,6 +469,42 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		C1375A451F137763009A45BF /* RapidTests macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1375A511F137764009A45BF /* Build configuration list for PBXNativeTarget "RapidTests macOS" */;
+			buildPhases = (
+				C1375A421F137763009A45BF /* Sources */,
+				C1375A431F137763009A45BF /* Frameworks */,
+				C1375A441F137763009A45BF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C1375A4D1F137764009A45BF /* PBXTargetDependency */,
+			);
+			name = "RapidTests macOS";
+			productName = RapidTestsMac;
+			productReference = C1375A461F137763009A45BF /* RapidTests macOS.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C1375A5D1F137ED0009A45BF /* RapidTests tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1375A661F137ED0009A45BF /* Build configuration list for PBXNativeTarget "RapidTests tvOS" */;
+			buildPhases = (
+				C1375A5A1F137ED0009A45BF /* Sources */,
+				C1375A5B1F137ED0009A45BF /* Frameworks */,
+				C1375A5C1F137ED0009A45BF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C1375A651F137ED0009A45BF /* PBXTargetDependency */,
+			);
+			name = "RapidTests tvOS";
+			productName = "RapidTests tvOS";
+			productReference = C1375A5E1F137ED0009A45BF /* RapidTests tvOS.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C13EAB581EF820C600264F4E /* Rapid tvOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C13EAB611EF820C600264F4E /* Build configuration list for PBXNativeTarget "Rapid tvOS" */;
@@ -469,10 +587,18 @@
 		C1D6E8161E7856AD007589FC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0900;
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = Rapid.io;
 				TargetAttributes = {
+					C1375A451F137763009A45BF = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+					C1375A5D1F137ED0009A45BF = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
 					C13EAB581EF820C600264F4E = {
 						CreatedOnToolsVersion = 8.3.3;
 						LastSwiftMigration = 0900;
@@ -508,14 +634,30 @@
 			projectRoot = "";
 			targets = (
 				C1D6E81E1E7856AD007589FC /* Rapid */,
-				C1D6E8271E7856AD007589FC /* RapidTests */,
 				C142DCCF1EC9E0E2000B9617 /* Rapid macOS */,
 				C13EAB581EF820C600264F4E /* Rapid tvOS */,
+				C1D6E8271E7856AD007589FC /* RapidTests */,
+				C1375A451F137763009A45BF /* RapidTests macOS */,
+				C1375A5D1F137ED0009A45BF /* RapidTests tvOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C1375A441F137763009A45BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1375A5C1F137ED0009A45BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C13EAB571EF820C600264F4E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -559,7 +701,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nif which jazzy >/dev/null; then\njazzy -c -o \"${SRCROOT}/docs\"\nelse\necho \"warning: Jazzy not installed\"\nfi\nfi";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nif which jazzy >/dev/null; then\n$HOME/.rvm/rubies/ruby-2.2.2/bin/jazzy -c -o \"${SRCROOT}/docs\"\nelse\necho \"warning: Jazzy not installed\"\nfi\nfi";
 		};
 		C1D6E8BA1E796333007589FC /* Build Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -573,7 +715,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nDEVICE_BIN=\"${BUILD_DIR}/Release-iphoneos/${TARGET_NAME}.framework\"\nSIMULATOR_BIN=\"${BUILD_DIR}/Release-iphonesimulator/${TARGET_NAME}.framework\"\nMAC_BIN=\"${BUILD_DIR}/Release/${TARGET_NAME}.framework\"\nTV_DEVICE_BIN=\"${BUILD_DIR}/Release-appletvos/${TARGET_NAME}.framework\"\nTV_SIMULATOR_BIN=\"${BUILD_DIR}/Release-appletvsimulator/${TARGET_NAME}.framework\"\n\nIOS_ARCHIVE_PATH=\"${SRCROOT}/Framework/iOS\"\nrm -rf \"${IOS_ARCHIVE_PATH}\"\nmkdir \"${IOS_ARCHIVE_PATH}\"\n\nMAC_ARCHIVE_PATH=\"${SRCROOT}/Framework/Mac\"\nrm -rf \"${MAC_ARCHIVE_PATH}\"\nmkdir \"${MAC_ARCHIVE_PATH}\"\n\nTV_ARCHIVE_PATH=\"${SRCROOT}/Framework/tvOS\"\nrm -rf \"${TV_ARCHIVE_PATH}\"\nmkdir \"${TV_ARCHIVE_PATH}\"\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid tvOS\" \\\n-configuration Release \\\n-sdk appletvos \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid tvOS\" \\\n-configuration Release \\\n-sdk appletvsimulator \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${TV_DEVICE_BIN}\" ] && [ -d \"${TV_SIMULATOR_BIN}\" ]; then\ncp -RL \"${TV_DEVICE_BIN}\" \"${TV_ARCHIVE_PATH}\"\ncp -RL \"${TV_SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${TV_ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${TV_DEVICE_BIN}/${TARGET_NAME}\" \"${TV_SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${TV_ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\npushd \"${TV_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid macOS\" \\\n-configuration Release \\\n-sdk macosx \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${MAC_BIN}\" ]; then\ncp -RL \"${MAC_BIN}\" \"${MAC_ARCHIVE_PATH}\"\npushd \"${MAC_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Release \\\n-sdk iphonesimulator \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Release \\\n-sdk iphoneos \\\nONLY_ACTIVE_ARCH=NO \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${DEVICE_BIN}\" ] && [ -d \"${SIMULATOR_BIN}\" ]; then\ncp -RL \"${DEVICE_BIN}\" \"${IOS_ARCHIVE_PATH}\"\ncp -RL \"${SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${IOS_ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${DEVICE_BIN}/${TARGET_NAME}\" \"${SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${IOS_ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\npushd \"${IOS_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nfi\n";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Framework\" ]; then\nDEVICE_BIN=\"${BUILD_DIR}/Release-iphoneos/${TARGET_NAME}.framework\"\nSIMULATOR_BIN=\"${BUILD_DIR}/Release-iphonesimulator/${TARGET_NAME}.framework\"\nMAC_BIN=\"${BUILD_DIR}/Release/${TARGET_NAME}.framework\"\nTV_DEVICE_BIN=\"${BUILD_DIR}/Release-appletvos/${TARGET_NAME}.framework\"\nTV_SIMULATOR_BIN=\"${BUILD_DIR}/Release-appletvsimulator/${TARGET_NAME}.framework\"\n\nIOS_ARCHIVE_PATH=\"${SRCROOT}/Framework/iOS\"\nrm -rf \"${IOS_ARCHIVE_PATH}\"\nmkdir \"${IOS_ARCHIVE_PATH}\"\n\nMAC_ARCHIVE_PATH=\"${SRCROOT}/Framework/Mac\"\nrm -rf \"${MAC_ARCHIVE_PATH}\"\nmkdir \"${MAC_ARCHIVE_PATH}\"\n\nTV_ARCHIVE_PATH=\"${SRCROOT}/Framework/tvOS\"\nrm -rf \"${TV_ARCHIVE_PATH}\"\nmkdir \"${TV_ARCHIVE_PATH}\"\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid tvOS\" \\\n-configuration Release \\\n-sdk appletvos \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid tvOS\" \\\n-configuration Release \\\n-sdk appletvsimulator \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${TV_DEVICE_BIN}\" ] && [ -d \"${TV_SIMULATOR_BIN}\" ]; then\ncp -RL \"${TV_DEVICE_BIN}\" \"${TV_ARCHIVE_PATH}\"\ncp -RL \"${TV_SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${TV_ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${TV_DEVICE_BIN}/${TARGET_NAME}\" \"${TV_SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${TV_ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\npushd \"${TV_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"Rapid macOS\" \\\n-configuration Release \\\n-sdk macosx \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${MAC_BIN}\" ]; then\ncp -RL \"${MAC_BIN}\" \"${MAC_ARCHIVE_PATH}\"\npushd \"${MAC_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Release \\\n-sdk iphonesimulator \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n-target \"${TARGET_NAME}\" \\\n-configuration Release \\\n-sdk iphoneos \\\nONLY_ACTIVE_ARCH=NO \\\nENABLE_TESTABILITY=YES \\\nBUILD_DIR=\"${BUILD_DIR}\" \\\nOBJROOT=\"${OBJROOT}\" \\\nBUILD_ROOT=\"${BUILD_ROOT}\" \\\nSYMROOT=\"${SYMROOT}\" $ACTION\n\nif [ -d \"${DEVICE_BIN}\" ] && [ -d \"${SIMULATOR_BIN}\" ]; then\ncp -RL \"${DEVICE_BIN}\" \"${IOS_ARCHIVE_PATH}\"\ncp -RL \"${SIMULATOR_BIN}/Modules/${TARGET_NAME}.swiftmodule\"/* \"${IOS_ARCHIVE_PATH}/${TARGET_NAME}.framework/Modules/${TARGET_NAME}.swiftmodule/\"\nlipo -create \"${DEVICE_BIN}/${TARGET_NAME}\" \"${SIMULATOR_BIN}/${TARGET_NAME}\" -output  \"${IOS_ARCHIVE_PATH}/${TARGET_NAME}.framework/${TARGET_NAME}\"\npushd \"${IOS_ARCHIVE_PATH}\"\nzip -r -X \"${TARGET_NAME}.framework.zip\" \"${TARGET_NAME}.framework\"\npopd\nfi\n\nfi\n";
 		};
 		C1D6E99D1E7AE7A5007589FC /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -606,26 +748,60 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C1375A421F137763009A45BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1375A561F137963009A45BF /* RapidSerializationTests.swift in Sources */,
+				C1375A541F13794D009A45BF /* RapidCacheTests.swift in Sources */,
+				C1F7662F1F1E5675002EB96C /* RapidPresenceTests.swift in Sources */,
+				C1375A531F137949009A45BF /* RapidChannelTests.swift in Sources */,
+				C1375A521F1378F5009A45BF /* RapidTests.swift in Sources */,
+				C1375A591F137970009A45BF /* RapidAuthorizationTests.swift in Sources */,
+				C1375A581F13796D009A45BF /* RapidMutationTests.swift in Sources */,
+				C1375A551F13795C009A45BF /* RapidSubscriptionTests.swift in Sources */,
+				C1375A571F137968009A45BF /* RapidQuaryTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1375A5A1F137ED0009A45BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1375A701F137EF6009A45BF /* RapidCacheTests.swift in Sources */,
+				C1375A6E1F137EF6009A45BF /* RapidSubscriptionTests.swift in Sources */,
+				C1F766301F1E5675002EB96C /* RapidPresenceTests.swift in Sources */,
+				C1375A6A1F137EF6009A45BF /* RapidAuthorizationTests.swift in Sources */,
+				C1375A6D1F137EF6009A45BF /* RapidSerializationTests.swift in Sources */,
+				C1375A6B1F137EF6009A45BF /* RapidMutationTests.swift in Sources */,
+				C1375A6F1F137EF6009A45BF /* RapidTests.swift in Sources */,
+				C1375A711F137EF6009A45BF /* RapidChannelTests.swift in Sources */,
+				C1375A6C1F137EF6009A45BF /* RapidQuaryTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C13EAB541EF820C600264F4E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C13EAB851EF822A600264F4E /* WRO.swift in Sources */,
 				C13EAB6E1EF8217B00264F4E /* RapidUnsubscriptionManager.swift in Sources */,
+				C1375A791F18B3BE009A45BF /* RapidDocumentPresenceRef.swift in Sources */,
 				C13EAB7F1EF821BB00264F4E /* RapidSocketManager.swift in Sources */,
 				C13EAB661EF8210700264F4E /* RapidDocumentRef.swift in Sources */,
 				C13EAB6A1EF8211500264F4E /* RapidQuery.swift in Sources */,
-				C13EAB7E1EF821B800264F4E /* SSLSecurity.swift in Sources */,
 				C13EAB721EF8218900264F4E /* RapidServerEvents.swift in Sources */,
 				C13EAB7A1EF821A900264F4E /* RapidResponse.swift in Sources */,
+				C1375A811F190078009A45BF /* RapidDocumentDeletion.swift in Sources */,
 				C13EAB751EF8219400264F4E /* RapidChannelPublish.swift in Sources */,
-				C13EAB771EF8219C00264F4E /* RapidMutations.swift in Sources */,
+				C13EAB771EF8219C00264F4E /* RapidDocumentMutation.swift in Sources */,
 				C13EAB681EF8210D00264F4E /* RapidError.swift in Sources */,
 				C13EAB781EF8219F00264F4E /* RapidConnectionRequests.swift in Sources */,
 				C13EAB641EF820FF00264F4E /* RapidDocument.swift in Sources */,
 				C13EAB691EF8211100264F4E /* RapidHandler.swift in Sources */,
 				C1A2DBB61F064F7600C5B00B /* RapidTimeOffset.swift in Sources */,
 				C13EAB631EF820FB00264F4E /* RapidCollectionRef.swift in Sources */,
+				C1375A851F1900AF009A45BF /* RapidDocumentExecution.swift in Sources */,
 				C13EAB6F1EF8217F00264F4E /* RapidChannelSubscriptionManager.swift in Sources */,
 				C13EAB811EF8227A00264F4E /* RapidCache.swift in Sources */,
 				C13EAB7D1EF821B500264F4E /* WebSocket.swift in Sources */,
@@ -637,6 +813,8 @@
 				C13EAB821EF8229B00264F4E /* DictionaryJSONExtension.swift in Sources */,
 				C13EAB801EF821BF00264F4E /* RapidNetworkHandler.swift in Sources */,
 				C13EAB7C1EF821B000264F4E /* RapidMutationProtocols.swift in Sources */,
+				C1375A751F1791FA009A45BF /* RapidProtocols.swift in Sources */,
+				C1375A7D1F190068009A45BF /* RapidDocumentMerge.swift in Sources */,
 				C13EAB731EF8218D00264F4E /* RapidProtocolConstants.swift in Sources */,
 				C13EAB6D1EF8217800264F4E /* RapidCollectionSubscriptions.swift in Sources */,
 				C13EAB621EF820F100264F4E /* Rapid.swift in Sources */,
@@ -648,6 +826,7 @@
 				C13EAB861EF822AA00264F4E /* RapidLogger.swift in Sources */,
 				C13EAB6C1EF8217400264F4E /* RapidFetches.swift in Sources */,
 				C13EAB761EF8219900264F4E /* RapidChannelSubscriptions.swift in Sources */,
+				C1F7662C1F1910E9002EB96C /* RapidConditionedActionsProtocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -657,12 +836,14 @@
 			files = (
 				C16067F21EE8136800B118D4 /* RapidUnsubscriptionManager.swift in Sources */,
 				C142DCE61EC9E1C0000B9617 /* DictionaryJSONExtension.swift in Sources */,
+				C1375A781F18B3BE009A45BF /* RapidDocumentPresenceRef.swift in Sources */,
 				C142DCF31EC9E1E2000B9617 /* RapidSocketManager.swift in Sources */,
 				C142DCE21EC9E1B5000B9617 /* WRO.swift in Sources */,
 				C14A74211EDD7686001339DC /* RapidDocument.swift in Sources */,
 				C142DCE81EC9E1C5000B9617 /* RapidCollectionSubscriptionManager.swift in Sources */,
 				C142DCEB1EC9E1CD000B9617 /* RapidSerialization.swift in Sources */,
 				C142DCED1EC9E1D2000B9617 /* RapidConnectionRequests.swift in Sources */,
+				C1375A801F190078009A45BF /* RapidDocumentDeletion.swift in Sources */,
 				C142DCF11EC9E1DC000B9617 /* RapidMutationProtocols.swift in Sources */,
 				C16067F51EE8158600B118D4 /* RapidChannelSubscriptionManager.swift in Sources */,
 				C142DCEA1EC9E1CB000B9617 /* RapidServerEvents.swift in Sources */,
@@ -671,17 +852,19 @@
 				C142DCE41EC9E1BB000B9617 /* RapidCache.swift in Sources */,
 				C1A2DBB51F064F7600C5B00B /* RapidTimeOffset.swift in Sources */,
 				ADB1C9E51ECCB37900A29271 /* RapidFetches.swift in Sources */,
-				C142DCEC1EC9E1D0000B9617 /* RapidMutations.swift in Sources */,
+				C1375A841F1900AF009A45BF /* RapidDocumentExecution.swift in Sources */,
+				C142DCEC1EC9E1D0000B9617 /* RapidDocumentMutation.swift in Sources */,
 				C142DCDF1EC9E1AE000B9617 /* RapidCollectionRef.swift in Sources */,
 				C142DCEE1EC9E1D5000B9617 /* RapidReadProtocols.swift in Sources */,
 				C142DCDC1EC9E1A2000B9617 /* RapidHandler.swift in Sources */,
-				C142DCF51EC9E214000B9617 /* SSLSecurity.swift in Sources */,
 				C142DCDD1EC9E1A9000B9617 /* RapidError.swift in Sources */,
 				C142DCE01EC9E1B1000B9617 /* Rapid.swift in Sources */,
 				C142DCF41EC9E210000B9617 /* WebSocket.swift in Sources */,
 				C142DCEF1EC9E1D8000B9617 /* RapidResponse.swift in Sources */,
 				C142DCE31EC9E1B8000B9617 /* Extensions.swift in Sources */,
 				C142DCE51EC9E1BD000B9617 /* Helpers.swift in Sources */,
+				C1375A741F1791FA009A45BF /* RapidProtocols.swift in Sources */,
+				C1375A7C1F190068009A45BF /* RapidDocumentMerge.swift in Sources */,
 				C16067EC1EE800DB00B118D4 /* RapidChannelRef.swift in Sources */,
 				C16068161EE9A4DF00B118D4 /* RapidProtocolConstants.swift in Sources */,
 				C142DCE71EC9E1C2000B9617 /* RapidCollectionSubscriptions.swift in Sources */,
@@ -693,6 +876,7 @@
 				C142DCDE1EC9E1AB000B9617 /* RapidDocumentRef.swift in Sources */,
 				C142DCE91EC9E1C8000B9617 /* RapidSubscriptionEvent.swift in Sources */,
 				C142DCDB1EC9E19F000B9617 /* RapidQuery.swift in Sources */,
+				C1F7662B1F1910E9002EB96C /* RapidConditionedActionsProtocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -702,12 +886,14 @@
 			files = (
 				C16067F11EE8136800B118D4 /* RapidUnsubscriptionManager.swift in Sources */,
 				C1D6E90E1E7A9131007589FC /* RapidSocketManager.swift in Sources */,
+				C1375A771F18B3BE009A45BF /* RapidDocumentPresenceRef.swift in Sources */,
 				C12692241E83D6F4002577B2 /* DictionaryJSONExtension.swift in Sources */,
 				C1D6E9B11E7C0FAE007589FC /* RapidQuery.swift in Sources */,
 				C14A74201EDD7686001339DC /* RapidDocument.swift in Sources */,
 				C12692201E82BC37002577B2 /* RapidCollectionSubscriptionManager.swift in Sources */,
 				C1B9C2C21E9D37D7008F7A7B /* RapidNetworkHandler.swift in Sources */,
 				C1D6E9A91E7BECA4007589FC /* RapidResponse.swift in Sources */,
+				C1375A7F1F190078009A45BF /* RapidDocumentDeletion.swift in Sources */,
 				C1D6E9951E7ADC78007589FC /* RapidCollectionRef.swift in Sources */,
 				C16067F41EE8158600B118D4 /* RapidChannelSubscriptionManager.swift in Sources */,
 				C1D6E9AD1E7BFED2007589FC /* WRO.swift in Sources */,
@@ -716,6 +902,7 @@
 				C14F274A1EA910260079093E /* RapidAuthorization.swift in Sources */,
 				C1A2DBB41F064F7600C5B00B /* RapidTimeOffset.swift in Sources */,
 				ADB1C9E41ECCB37900A29271 /* RapidFetches.swift in Sources */,
+				C1375A831F1900AF009A45BF /* RapidDocumentExecution.swift in Sources */,
 				C1D6E9971E7ADE35007589FC /* RapidError.swift in Sources */,
 				C1D6E9A71E7BE942007589FC /* RapidSerialization.swift in Sources */,
 				C12692221E82D27A002577B2 /* RapidSubscriptionEvent.swift in Sources */,
@@ -724,13 +911,14 @@
 				C1D6E9AF1E7C0D59007589FC /* RapidReadProtocols.swift in Sources */,
 				C1281A481E8AA8C20054AF73 /* RapidCollectionSubscriptions.swift in Sources */,
 				C1D6E9A11E7AFE6E007589FC /* Helpers.swift in Sources */,
-				C1D6E9921E7AD822007589FC /* SSLSecurity.swift in Sources */,
 				C1D6E8A81E785D72007589FC /* Rapid.swift in Sources */,
 				C1D6E9AB1E7BF7F4007589FC /* RapidHandler.swift in Sources */,
+				C1375A731F1791FA009A45BF /* RapidProtocols.swift in Sources */,
+				C1375A7B1F190068009A45BF /* RapidDocumentMerge.swift in Sources */,
 				C16067EB1EE800DB00B118D4 /* RapidChannelRef.swift in Sources */,
 				C16068151EE9A4DF00B118D4 /* RapidProtocolConstants.swift in Sources */,
 				C1D6E9A51E7BE3C0007589FC /* RapidServerEvents.swift in Sources */,
-				C1281A4A1E8AA9020054AF73 /* RapidMutations.swift in Sources */,
+				C1281A4A1E8AA9020054AF73 /* RapidDocumentMutation.swift in Sources */,
 				C1D6E99C1E7AE523007589FC /* RapidMutationProtocols.swift in Sources */,
 				C14F274C1EAA02150079093E /* RapidLogger.swift in Sources */,
 				C16067F71EE81CC000B118D4 /* RapidChannelMessage.swift in Sources */,
@@ -738,6 +926,7 @@
 				C1D2A1EE1E9E2A94009444B3 /* Extensions.swift in Sources */,
 				C1D6E9A31E7BE356007589FC /* RapidRequest.swift in Sources */,
 				C1D6E9991E7ADF0C007589FC /* RapidDocumentRef.swift in Sources */,
+				C1F7662A1F1910E9002EB96C /* RapidConditionedActionsProtocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -747,6 +936,7 @@
 			files = (
 				C1EDC1A41EA6010D006570FC /* RapidCacheTests.swift in Sources */,
 				C1D6E82E1E7856AD007589FC /* RapidTests.swift in Sources */,
+				C1F7662E1F1E5675002EB96C /* RapidPresenceTests.swift in Sources */,
 				C169DB441E95384D007983EA /* RapidSerializationTests.swift in Sources */,
 				C140F9341E894871002AB9C5 /* RapidSubscriptionTests.swift in Sources */,
 				C169DB411E952FA8007983EA /* RapidMutationTests.swift in Sources */,
@@ -759,6 +949,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C1375A4D1F137764009A45BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C142DCCF1EC9E0E2000B9617 /* Rapid macOS */;
+			targetProxy = C1375A4C1F137764009A45BF /* PBXContainerItemProxy */;
+		};
+		C1375A651F137ED0009A45BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C13EAB581EF820C600264F4E /* Rapid tvOS */;
+			targetProxy = C1375A641F137ED0009A45BF /* PBXContainerItemProxy */;
+		};
 		C1D6E82B1E7856AD007589FC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C1D6E81E1E7856AD007589FC /* Rapid */;
@@ -767,6 +967,96 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		C1375A4E1F137764009A45BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		C1375A4F1F137764009A45BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		C1375A501F137764009A45BF /* Framework */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Framework;
+		};
+		C1375A671F137ED0009A45BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Debug;
+		};
+		C1375A681F137ED0009A45BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Release;
+		};
+		C1375A691F137ED0009A45BF /* Framework */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				INFOPLIST_FILE = RapidTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Framework;
+		};
 		C13EAB5E1EF820C600264F4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -776,6 +1066,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -799,6 +1090,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -822,6 +1114,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -846,6 +1139,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -870,6 +1164,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -894,6 +1189,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1038,6 +1334,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1071,6 +1368,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1090,9 +1388,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles/Dependencies";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles";
 				INFOPLIST_FILE = RapidTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles/Dependencies";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -1106,9 +1404,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles/Dependencies";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles";
 				INFOPLIST_FILE = RapidTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles/Dependencies";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -1187,6 +1485,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1206,9 +1505,9 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles/Dependencies";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SupportingFiles";
 				INFOPLIST_FILE = RapidTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles/Dependencies";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/SupportingFiles";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rapid.RapidTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -1219,6 +1518,26 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C1375A511F137764009A45BF /* Build configuration list for PBXNativeTarget "RapidTests macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1375A4E1F137764009A45BF /* Debug */,
+				C1375A4F1F137764009A45BF /* Release */,
+				C1375A501F137764009A45BF /* Framework */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C1375A661F137ED0009A45BF /* Build configuration list for PBXNativeTarget "RapidTests tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1375A671F137ED0009A45BF /* Debug */,
+				C1375A681F137ED0009A45BF /* Release */,
+				C1375A691F137ED0009A45BF /* Framework */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C13EAB611EF820C600264F4E /* Build configuration list for PBXNativeTarget "Rapid tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -16,41 +16,41 @@ protocol RapidCachableObject: NSCoding {
 class RapidCache: NSObject {
     
     /// URL of a file with info about cached data
-    fileprivate var cacheInfoURL: URL {
+    internal var cacheInfoURL: URL {
         return cacheDir.appendingPathComponent("00.dat")
     }
 
     /// URL of a file with info about data reference counts
-    fileprivate var referenceCountInfoURL: URL {
+    internal var referenceCountInfoURL: URL {
         return cacheDir.appendingPathComponent("01.dat")
     }
 
     /// Shared file manager
-    fileprivate let fileManager: FileManager
+    internal let fileManager: FileManager
     
     /// URL of a directory with cached data
-    fileprivate let cacheDir: URL
+    internal let cacheDir: URL
     
     /// Dedicated queue for I/O operations
-    fileprivate let diskQueue: DispatchQueue
+    internal let diskQueue: DispatchQueue
     
     /// Maximum size of a cache directory
     ///
     /// Default value is 100 MB
-    fileprivate let maxSize: Float?
+    internal let maxSize: Float?
     
     /// Maximum Time To Live of a single piece of data
     ///
     /// Default value is nil e.i. no expiration
-    fileprivate let timeToLive: TimeInterval?
+    internal let timeToLive: TimeInterval?
     
     /// Dictionary with info about cached data
     ///
     /// It stores modification time for every piece of data
-    fileprivate var cacheInfo: [String: [String: TimeInterval]]
+    internal var cacheInfo: [String: [String: TimeInterval]]
     
     /// Dictionary with info about data reference counts
-    fileprivate var referenceCountInfo: [String: [String: Int]]
+    internal var referenceCountInfo: [String: [String: Int]]
     
     /// Initialize `RapidCache`
     ///
@@ -284,7 +284,7 @@ extension RapidCache {
 }
 
 // MARK: Private methods
-fileprivate extension RapidCache {
+internal extension RapidCache {
     
     /// Bitwise XOR of binary data
     ///

@@ -29,33 +29,25 @@ func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
     return false
 }
 
-/// Class representing Rapid.io document that is returned from a subscription handler
-open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
-    
-    var objectID: String {
-        return id
-    }
-    
-    var groupID: String {
-        return collectionName
-    }
+/// Class representing Rapid.io document
+open class RapidDocument: NSObject, NSCoding {
     
     /// Document ID
     public let id: String
     
-    /// Collection ID
+    /// Name of a collection to which the document belongs
     public let collectionName: String
     
-    /// Document body
+    /// Document content
     public let value: [AnyHashable: Any]?
     
     /// Etag identifier
     public let etag: String?
     
-    /// Time of a document creation
+    /// Time of document creation
     public let createdAt: Date?
     
-    /// Time of a document modification
+    /// Time of document modification
     public let modifiedAt: Date?
     
     /// Document creation sort identifier
@@ -148,7 +140,10 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         self.value = newValue
     }
     
-    public required init?(coder aDecoder: NSCoder) {
+    /// Returns an object initialized from data in a given unarchiver
+    ///
+    /// - Parameter aDecoder: An unarchiver object
+    required public init?(coder aDecoder: NSCoder) {
         guard let id = aDecoder.decodeObject(forKey: "id") as? String else {
             return nil
         }
@@ -198,6 +193,9 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         }
     }
     
+    /// Encode the document using a given archiver
+    ///
+    /// - Parameter aCoder: An archiver object
     public func encode(with aCoder: NSCoder) {
         aCoder.encode(id, forKey: "id")
         aCoder.encode(collectionName, forKey: "collectionID")
@@ -212,6 +210,10 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         catch {}
     }
     
+    /// Determine whether the document is equal to a given object
+    ///
+    /// - Parameter object: An object for comparison
+    /// - Returns: `true` if the document is equal to the object
     override open func isEqual(_ object: Any?) -> Bool {
         if let document = object as? RapidDocument {
             return self == document
@@ -220,6 +222,7 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         return false
     }
     
+    /// Document description
     override open var description: String {
         var dict: [AnyHashable: Any] = [
             "id": id,
@@ -239,6 +242,20 @@ open class RapidDocument: NSObject, NSCoding, RapidCachableObject {
         return dict.description
     }
 }
+
+extension RapidDocument: RapidCachableObject {
+    
+    var objectID: String {
+        return id
+    }
+    
+    var groupID: String {
+        return collectionName
+    }
+    
+}
+
+// MARK: Document opearaion
 
 func == (lhs: RapidDocumentOperation, rhs: RapidDocumentOperation) -> Bool {
     return lhs.document.id == rhs.document.id
@@ -266,7 +283,7 @@ struct RapidDocumentOperation: Hashable {
 /// Set updates are treated specially because operations have different priority
 struct RapidDocumentOperationSet: Sequence {
     
-    fileprivate var set = Set<RapidDocumentOperation>()
+    internal var set = Set<RapidDocumentOperation>()
     
     /// Inserts or updates the given element into the set
     ///

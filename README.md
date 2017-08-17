@@ -86,7 +86,7 @@ $ brew install carthage
 To integrate rapid.io SDK into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "rapid-io/ios"
+github "rapid-io/rapid-io-ios"
 ```
 
 Run `carthage update` to build the framework and drag the built `Rapid.framework` into your Xcode project.

@@ -62,7 +62,7 @@ extension RapidTests {
                 RapidFilter.not(RapidFilter.isNull(keyPath: "receiver"))
                 ]),
             ordering: [RapidOrdering(keyPath: "sentDate", ordering: .descending)],
-            paging: RapidPaging(skip: 10, take: 50),
+            paging: RapidPaging(take: 50),
             handler: nil,
             handlerWithChanges: nil)
         
@@ -318,7 +318,6 @@ extension RapidTests {
     func testSubscriptionOrdering() {
         let collection = self.rapid.collection(named: testCollectionName)
             .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
-            .order(by: [RapidOrdering(keyPath: "second_nem", ordering: .descending)])
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
@@ -326,8 +325,7 @@ extension RapidTests {
             "sub": [
                 "col-id": sub.collectionID,
                 "order": [
-                    ["name": "asc"],
-                    ["second_nem": "desc"]
+                    ["name": "asc"]
                 ]
             ]
         ]
@@ -363,10 +361,7 @@ extension RapidTests {
             .order(by:
                 RapidOrdering(keyPath: "urgency", ordering: .ascending)
             )
-            .order(by: [
-                RapidOrdering(keyPath: "sentDate", ordering: .descending)
-                ])
-            .limit(to: 50, skip: 10)
+            .limit(to: 50)
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
@@ -398,11 +393,9 @@ extension RapidTests {
                     ]
                 ],
                 "order": [
-                    ["urgency": "asc"],
-                    ["sentDate": "desc"]
+                    ["urgency": "asc"]
                 ],
-                "limit": 50,
-                "skip": 10
+                "limit": 50
             ]
         ]
         
@@ -429,10 +422,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subsription passed")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testMutationWithArray() {
@@ -449,7 +443,7 @@ extension RapidTests {
             promise.fulfill()
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testInvalidNestedDictionaryMutation() {
@@ -463,10 +457,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subsription passed")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testWrongDocumentIDMutation() {
@@ -480,10 +475,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subsription passed")
+                promise.fulfill()
             }
         }
             
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testInvalidKeyMutation() {
@@ -497,10 +493,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Subsription passed")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testEmptyAndFilter() {
@@ -512,10 +509,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Dictionary valid")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testEmptyOrFilter() {
@@ -527,10 +525,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Dictionary valid")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testSubscriptionHashes() {
@@ -552,14 +551,11 @@ extension RapidTests {
             .order(by:
                 RapidOrdering(keyPath: "urgency", ordering: .ascending)
             )
-            .order(by: [
-                RapidOrdering(keyPath: "sentDate", ordering: .descending)
-                ])
-            .limit(to: 50, skip: 10)
+            .limit(to: 50)
 
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let hash = "collection#\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a|o-sentDate-d#t50s10"
+        let hash = "collection#\(testCollectionName)#and(and(urgency-lt-4|urgency-gt-2)|and(or(urgency-gte-1|sender-e-john123|priority-lte-2)|not(receiver-e-null)))#o-urgency-a#t50"
         
         XCTAssertEqual(sub.subscriptionHash, hash)
     }
@@ -634,9 +630,9 @@ extension RapidTests {
     }
     
     func testSubscriptionCancel() {
-        let ca1 = RapidSubscriptionCancel(json: "test")
-        let ca2 = RapidSubscriptionCancel(json: [:])
-        let ca3 = RapidSubscriptionCancel(json: ["evt-id": "kldjflk"])
+        let ca1 = RapidSubscriptionCancelled(json: "test")
+        let ca2 = RapidSubscriptionCancelled(json: [:])
+        let ca3 = RapidSubscriptionCancelled(json: ["evt-id": "kldjflk"])
         
         XCTAssertNil(ca1, "Not nil")
         XCTAssertNil(ca2, "Not nil")
@@ -664,9 +660,10 @@ extension RapidTests {
             }
             else {
                 XCTFail("Wrong error")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 3, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 }

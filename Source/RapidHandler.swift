@@ -73,11 +73,11 @@ class RapidHandler: NSObject {
     let apiKey: String
     
     let socketManager: RapidSocketManager!
-    var state: Rapid.ConnectionState {
+    var state: RapidConnectionState {
         return socketManager.networkHandler.state
     }
     
-    var onConnectionStateChanged: ((Rapid.ConnectionState) -> Void)? {
+    var onConnectionStateChanged: ((RapidConnectionState) -> Void)? {
         get {
             return socketManager.networkHandler.onConnectionStateChanged
         }
@@ -91,7 +91,7 @@ class RapidHandler: NSObject {
         return socketManager.auth
     }
     
-    fileprivate(set) var cache: RapidCache?
+    internal(set) var cache: RapidCache?
     var cacheEnabled: Bool = false {
         didSet {
             RapidLogger.log(message: "Rapid cache enabled \(cacheEnabled)", level: .debug)

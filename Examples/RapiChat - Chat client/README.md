@@ -10,7 +10,7 @@
 ## Getting started
 
 - Get your unique demo identifier at rapid.io [website](https://www.rapid.io/demo)
-- Clone or download [rapid.io SDK](https://github.com/rapid-io/ios)
+- Clone or download [rapid.io SDK](https://github.com/rapid-io/rapid-io-ios)
 - Go to `Examples/RapidChat` folder and open `Info.plist` file
 - Copy your unique demo identifier and paste it next to a key called `RapidDemoIdentifier`
 

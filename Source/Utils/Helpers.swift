@@ -176,8 +176,8 @@ class Validator {
     /// - Returns: Validated identifier
     /// - Throws: `RapidError.invalidData`
     @discardableResult
-    class func validate(identifier: String) throws -> String {
-        if isValid(identifier: identifier) {
+    class func validate(identifier: String?) throws -> String {
+        if let identifier = identifier, isValid(identifier: identifier) {
             return identifier
         }
 

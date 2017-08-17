@@ -13,19 +13,33 @@ func ==(lhs: [AnyHashable: Any], rhs: [AnyHashable: Any] ) -> Bool {
     return NSDictionary(dictionary: lhs).isEqual(to: rhs)
 }
 
+#if DEBUG
+let nameSuffix = "Debug"
+#else
+let nameSuffix = "Release"
+#endif
+
 class RapidTests: XCTestCase {
     
     var rapid: Rapid!
     
-    let apiKey = "ZGV2LXdzLXNlcnZpY2UucmFwaWQuaW8="
+    let apiKey = "dGVzdC5hcHAtcmFwaWQuaW8="
     let localApiKey = "bG9jYWxob3N0OjgwODA="
     let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
     let socketURL = URL(string: "wss://dev-ws-service.rapid.io")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
-    let testCollectionName = "iosUnitTests"
-    let testChannelName = "iosUnitTestsChannel"
+    #if os(OSX)
+        let testCollectionName = "macosUnitTests\(nameSuffix)"
+        let testChannelName = "macosUnitTestsChannel\(nameSuffix)"
+    #elseif os(iOS)
+        let testCollectionName = "iosUnitTests\(nameSuffix)"
+        let testChannelName = "iosUnitTestsChannel\(nameSuffix)"
+    #elseif os(tvOS)
+        let testCollectionName = "tvosUnitTests\(nameSuffix)"
+        let testChannelName = "tvosUnitTestsChannel\(nameSuffix)"
+    #endif
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6eyJwYXR0ZXJuIjoiXmlvcy4qIn0sInJlYWQiOnRydWUsIndyaXRlIjp0cnVlfSx7ImNvbGxlY3Rpb24iOnsicGF0dGVybiI6Il5pb3MuKiJ9LCJyZWFkIjp0cnVlLCJjcmVhdGUiOnRydWUsInVwZGF0ZSI6dHJ1ZSwiZGVsZXRlIjp0cnVlfV19.8fZjAjt4mRq7yUfWWQ4paw93-2ZiKMVM1Y4gstkyULs"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwid3JpdGUiOnRydWV9LHsiY29sbGVjdGlvbiI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.MdQbdW958yzRQk46qj7_bY92A60pxtSkDgy9yJV7Vd8"
     
     override func setUp() {
         super.setUp()
@@ -71,7 +85,9 @@ class RapidTests: XCTestCase {
         
         Rapid.unsubscribeAll()
         
-        XCTAssertNotNil(Rapid.collection(named: testCollectionName), "Collection not returned")
+        Rapid.authorize(withToken: "")
+        
+        Rapid.deauthorize()
         
         Rapid.deinitialize()
     }
@@ -107,7 +123,7 @@ class RapidTests: XCTestCase {
         let promise = expectation(description: "Rapid forced disconnect")
         
         runAfter(1) {
-            XCTAssertEqual(rapid.connectionState, Rapid.ConnectionState.connecting, "Rapid is not connecting")
+            XCTAssertEqual(rapid.connectionState, RapidConnectionState.connecting, "Rapid is not connecting")
             
             rapid.goOffline()
             
@@ -122,16 +138,85 @@ class RapidTests: XCTestCase {
                         }
                         else {
                             XCTFail("Rapid is not connecting")
+                            promise.fulfill()
                         }
                     })
                 }
                 else {
                     XCTFail("Rapid is not disconnected")
-                }
+                    promise.fulfill()
+               }
             }
         }
         
-        waitForExpectations(timeout: 4, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testClassMethods() {
+        Rapid.logLevel = .debug
+        XCTAssertEqual(Rapid.logLevel, .debug)
+        Rapid.logLevel = .critical
+        
+        Rapid.configure(withApiKey: apiKey)
+        
+        Rapid.timeout = 5
+        XCTAssertEqual(Rapid.timeout, 5)
+        
+        Rapid.isCacheEnabled = true
+        XCTAssertTrue(Rapid.isCacheEnabled)
+        
+        Rapid.onConnectionStateChanged = { _ in }
+        XCTAssertNotNil(Rapid.onConnectionStateChanged)
+        
+        XCTAssertNotNil(Rapid.collection(named: testCollectionName), "Collection not returned")
+        
+        XCTAssertNotNil(Rapid.channel(named: testChannelName), "Channel not returned")
+        
+        XCTAssertNotNil(Rapid.channels(nameStartsWith: testChannelName), "Channel not returned")
+        
+        Rapid.deinitialize()
+    }
+    
+    func testGoOnlineMultipleCalls() {
+        let promise = expectation(description: "offline/online")
+        
+        rapid.onConnectionStateChanged = { state in
+            if state == .connected {
+                self.rapid.onConnectionStateChanged = { state in
+                    if state == .disconnected {
+                        self.rapid.timeout = 2
+                        self.rapid.goOffline()
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["test": "Offline"], completion: { result in
+                            if case .failure(let error) = result, case .timeout = error {
+                                self.rapid.onConnectionStateChanged = { state in
+                                    if state == .connected {
+                                        self.rapid.timeout = 10
+                                        self.rapid.goOnline()
+                                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["test": "Online"], completion: { result in
+                                            if case .success = result {
+                                                promise.fulfill()
+                                            }
+                                            else {
+                                                XCTFail("Did not mutate")
+                                                promise.fulfill()
+                                            }
+                                        })
+                                    }
+                                }
+                                self.rapid.goOnline()
+                            }
+                            else {
+                                XCTFail("Wrong error")
+                                promise.fulfill()
+                            }
+                        })
+                    }
+                }
+                self.rapid.goOffline()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testReconnect() {
@@ -140,18 +225,19 @@ class RapidTests: XCTestCase {
         runAfter(1) { 
             self.rapid.handler.socketManager.networkHandler.restartSocket(afterError: nil)
             
-            runAfter(3, closure: {
+            runAfter(5, closure: {
                 
                 if self.rapid.connectionState == .connected {
                     promise.fulfill()
                 }
                 else {
                     XCTFail("Rapid didn't reconnect")
+                    promise.fulfill()
                 }
             })
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testReconnectWhenNotConnected() {
@@ -163,6 +249,7 @@ class RapidTests: XCTestCase {
 
         let delegateObject = MockNetworkHandlerDelegateObject(connectCallback: {
             XCTFail("Socket connected")
+            promise.fulfill()
         }, disconnectCallback: { (error) in
             if let error = error, case .timeout = error {
                 networkHandler.goOnline()
@@ -174,16 +261,18 @@ class RapidTests: XCTestCase {
             }
             else {
                 XCTFail("Disconnect without error")
+                promise.fulfill()
             }
         }) { _ in
             XCTFail("Received response")
+            promise.fulfill()
         }
         
         networkHandler.delegate = delegateObject
         
         networkHandler.goOnline()
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testReconnectionAfterTerminated() {
@@ -202,12 +291,13 @@ class RapidTests: XCTestCase {
                     }
                     else {
                         XCTFail("Rapid didn't reconnect")
+                        promise.fulfill()
                     }
                 })
             })
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testCollectionWithoutHandler() {
@@ -317,7 +407,7 @@ class RapidTests: XCTestCase {
         let socketManager = RapidSocketManager(networkHandler: mockHandler)
         socketManager.goOnline()
         
-        waitForExpectations(timeout: 6, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testServerOffset() {
@@ -330,7 +420,27 @@ class RapidTests: XCTestCase {
             }
         }
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testServerOffsetTimeout() {
+        let promise = expectation(description: "Server timestamp")
+        rapid.timeout = 2
+        rapid.goOffline()
+
+        runAfter(1) {
+            self.rapid.serverTimeOffset { result in
+                if case .failure(let error) = result, case .timeout = error {
+                    promise.fulfill()
+                }
+                else {
+                    XCTFail("Wrong response")
+                    promise.fulfill()
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testConnectionRequestTimeout() {
@@ -359,7 +469,7 @@ class RapidTests: XCTestCase {
             XCTAssertEqual(manager.networkHandler.state, .connected)
         }
         
-        waitForExpectations(timeout: 6, handler: nil)
+        waitForExpectations(timeout: 16, handler: nil)
     }
     
     func testSendingEventsInQueueAfterReconnect() {
@@ -378,6 +488,7 @@ class RapidTests: XCTestCase {
             if event is RapidConnectionRequest {
                 if conReq {
                     XCTFail("Second connection request")
+                    promise.fulfill()
                 }
                 else {
                     conReq = true
@@ -389,6 +500,7 @@ class RapidTests: XCTestCase {
                 }
                 else {
                     XCTFail("Wrong order")
+                    promise.fulfill()
                 }
             }
             else if event is RapidDocumentMutation {
@@ -397,6 +509,7 @@ class RapidTests: XCTestCase {
                 }
                 else {
                     XCTFail("Wrong order")
+                    promise.fulfill()
                 }
             }
             else if event is RapidDocumentMerge {
@@ -409,10 +522,12 @@ class RapidTests: XCTestCase {
                 }
                 else {
                     XCTFail("Wrong order")
+                    promise.fulfill()
                 }
             }
             else if conReq && subReq && mutReq && merReq {
                 XCTFail("More requests")
+                promise.fulfill()
             }
         }, goOnlineCallback: { handler in
             if firstOnlineRequest {
@@ -436,7 +551,7 @@ class RapidTests: XCTestCase {
         manager.sendEmptyRequest()
         subscription.unsubscribe()
         
-        waitForExpectations(timeout: 6, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 
     func testSubscriptionReregistration() {
@@ -453,48 +568,64 @@ class RapidTests: XCTestCase {
         let mutatationDocumentID = "2"
         var acknowledgeAll = false
         
-        var lastSubscription: RapidSubscriptionManager?
         var lastMutation: RapidDocumentMutation?
+        var hashes = [String]()
+        var numberOfAuthorizations = 0
+        var disconnectActions = [String]()
+        var numberOfConnectActions = 0
         
         let mockHandler = MockNetworkHandler(socketURL: self.fakeSocketURL, writeCallback: { (handler, event, eventID) in
             if acknowledgeAll {
                 if let subscription = event as? RapidSubscriptionManager {
                     switch subscription.subscriptionHash {
-                    case subscription1.subscriptionHash:
-                        XCTAssertNil(lastSubscription, "wrong order")
+                    case subscription1.subscriptionHash, subscription2.subscriptionHash, subscription3.subscriptionHash:
                         XCTAssertNil(lastMutation, "wrong order")
-                        lastSubscription = subscription
-                        lastMutation = nil
-                        
-                    case subscription2.subscriptionHash:
-                        XCTAssertEqual(lastSubscription?.subscriptionHash, subscription1.subscriptionHash, "wrong order")
-                        lastSubscription = subscription
-                        lastMutation = nil
-                        
-                    case subscription3.subscriptionHash:
-                        XCTAssertEqual(lastMutation?.documentID, "3", "wrong order")
-                        lastSubscription = subscription
-                        lastMutation = nil
-                        promise.fulfill()
+                        XCTAssertFalse(hashes.contains(subscription.subscriptionHash), "Reoccuring subscription")
+                        hashes.append(subscription.subscriptionHash)
                         
                     default:
                         XCTFail("Another subscription")
+                        promise.fulfill()
                     }
                 }
                 else if let mutation = event as? RapidDocumentMutation {
                     switch mutation.documentID {
                     case "2":
-                        XCTAssertEqual(lastSubscription?.subscriptionHash, subHash, "wrong order")
-                        lastSubscription = nil
+                        XCTAssertNil(lastMutation, "wrong order")
+                        XCTAssertEqual(hashes.count, 3, "wrong number of subscriptions")
                         lastMutation = mutation
                         
                     case "3":
                         XCTAssertEqual(lastMutation?.documentID, "2", "wrong order")
-                        lastSubscription = nil
+                        XCTAssertGreaterThan(numberOfAuthorizations, 0, "No auth request")
+                        XCTAssertEqual(disconnectActions.count, 2, "Disconnect actions not registered")
                         lastMutation = mutation
                         
                     default:
                         XCTFail("Another mutation")
+                        promise.fulfill()
+                    }
+                }
+                else if event is RapidAuthRequest {
+                    numberOfAuthorizations += 1
+                    if numberOfAuthorizations > 1 {
+                        XCTFail("More than one authorization")
+                        promise.fulfill()
+                    }
+                }
+                else if let mutation = event as? RapidDocumentOnDisconnectMutation {
+                    XCTAssertFalse(disconnectActions.contains(mutation.mutation.documentID), "Action already registered")
+                    disconnectActions.append(mutation.mutation.documentID)
+                }
+                else if event is RapidDocumentOnConnectMutation {
+                    numberOfConnectActions += 1
+                    if numberOfConnectActions > 1 {
+                        XCTFail("More than one connect action")
+                        promise.fulfill()
+                    }
+                    if lastMutation?.documentID == "3" {
+                        XCTAssertGreaterThan(numberOfConnectActions, 0, "No on connect mutate request")
+                        promise.fulfill()
                     }
                 }
             }
@@ -509,7 +640,7 @@ class RapidTests: XCTestCase {
                         handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                     }
                 }
-                else {
+                else if !(event is RapidAuthRequest || event is RapidOnConnectAction || event is RapidOnDisconnectAction) {
                     handler.delegate?.handlerDidReceive(message: RapidServerAcknowledgement(eventID: eventID))
                 }
             }
@@ -517,6 +648,8 @@ class RapidTests: XCTestCase {
             if shouldConnect {
                 handler.websocketDidConnect(socket: socket)
             }
+        }, goOfflineCallback: { handler in
+            
         })
         
         let manager = RapidSocketManager(networkHandler: mockHandler)
@@ -526,10 +659,15 @@ class RapidTests: XCTestCase {
             manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "1", value: [:], cache: nil, completion: nil))
             manager.subscribe(toCollection: subscription2)
             manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: mutatationDocumentID, value: [:], cache: nil, completion: nil))
+            manager.authorize(authRequest: RapidAuthRequest(token: "123"))
+            manager.registerOnDisconnectAction(RapidDocumentOnDisconnectMutation(collectionID: self.testCollectionName, documentID: "disconnect", value: [:], completion: nil))
+            manager.registerOnConnectAction(RapidDocumentOnConnectMutation(collectionID: self.testCollectionName, documentID: "connect", value: [:], completion: nil))
             manager.goOffline()
             runAfter(0.5, closure: {
                 manager.mutate(mutationRequest: RapidDocumentMutation(collectionID: self.testCollectionName, documentID: "3", value: [:], cache: nil, completion: nil))
                 manager.subscribe(toCollection: subscription3)
+                manager.authorize(authRequest: RapidAuthRequest(token: "123"))
+                manager.registerOnDisconnectAction(RapidDocumentOnDisconnectMutation(collectionID: self.testCollectionName, documentID: "disconnect2", value: [:], completion: nil))
                 shouldConnect = false
                 manager.goOnline()
                 runAfter(0.5, closure: {
@@ -540,7 +678,7 @@ class RapidTests: XCTestCase {
             })
         }
         
-        waitForExpectations(timeout: 6, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDictionaryMerge() {
@@ -594,6 +732,31 @@ class RapidTests: XCTestCase {
                 "att3": true
             ]
             ], "Wrong merge")
+    }
+    
+    func testOnConnectionStateChangeHandler() {
+        let promise = expectation(description: "Connection states")
+        
+        var previousState = RapidConnectionState.disconnected
+        rapid.onConnectionStateChanged = { state in
+            switch state {
+            case .connecting:
+                XCTAssertEqual(previousState, .disconnected, "Wrong state")
+                
+            case .connected:
+                XCTAssertEqual(previousState, .connecting, "Wrong state")
+                self.rapid.goOffline()
+                
+            case .disconnected:
+                XCTAssertEqual(previousState, .connected, "Wrong state")
+                promise.fulfill()
+
+            }
+            
+            previousState = state
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
     }
 }
 

@@ -24,6 +24,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -44,10 +45,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("No hash")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testStartsWithFilter() {
@@ -63,6 +65,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -83,10 +86,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("No hash")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 15, handler: nil)
+        waitForExpectations(timeout: 25, handler: nil)
     }
     
     func testEndsWithFilter() {
@@ -103,6 +107,7 @@ extension RapidTests {
                     
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -123,10 +128,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("No hash")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testArrayContainsFilter() {
@@ -142,6 +148,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -162,10 +169,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("No hash")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 18, handler: nil)
+        waitForExpectations(timeout: 30, handler: nil)
     }
     
     func testOrderingAsc() {
@@ -181,6 +189,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -196,7 +205,7 @@ extension RapidTests {
                 })
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testOrderingDesc() {
@@ -212,6 +221,7 @@ extension RapidTests {
             .subscribe(block: { result in
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -230,7 +240,7 @@ extension RapidTests {
                 promise.fulfill()
             })
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testOrderByID() {
@@ -247,6 +257,7 @@ extension RapidTests {
                 
                 guard case .success(let documents) = result else {
                     XCTFail("Error")
+                    promise.fulfill()
                     return
                 }
                 
@@ -265,7 +276,7 @@ extension RapidTests {
                 promise.fulfill()
             })
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testOrderingUpdates() {
@@ -285,6 +296,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -318,6 +330,7 @@ extension RapidTests {
                         
                     default:
                         XCTFail("More updates")
+                        promise.fulfill()
                     }
                     
                     numberOfDocuments = documents.count
@@ -325,7 +338,7 @@ extension RapidTests {
                 })
         }
         
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
 
     func testLimit() {
@@ -341,6 +354,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -350,7 +364,7 @@ extension RapidTests {
                 })
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testIdKey() {
@@ -367,6 +381,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -386,7 +401,7 @@ extension RapidTests {
                 })
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testCreatedKey() {
@@ -403,6 +418,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -421,7 +437,7 @@ extension RapidTests {
                 })
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testModifiedKey() {
@@ -438,6 +454,7 @@ extension RapidTests {
                 .subscribe(block: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
+                        promise.fulfill()
                         return
                     }
                     
@@ -456,7 +473,63 @@ extension RapidTests {
                 })
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testIncludeNewDoc() {
+        let promise = expectation(description: "Include")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["orderingNumber": 1]) { _ in
+            
+            var initial = true
+            self.rapid.collection(named: self.testCollectionName)
+                .order(by: RapidOrdering(keyPath: "orderingNumber", ordering: .ascending))
+                .subscribe(block: { result in
+                    if initial {
+                        initial = false
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["orderingNumber": 0])
+                    }
+                    else {
+                        if case .success(let documents) = result, let index = documents.index(where: { $0.id == "1" }) {
+                            XCTAssertEqual(documents[index].value?["orderingNumber"] as? Int ?? -1, 0, "Wrong value")
+                        }
+                        else {
+                            XCTFail("Document not included")
+                        }
+                        promise.fulfill()
+                    }
+            })
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testIncludeZeroFilter() {
+        let promise = expectation(description: "Include")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["filterNumber": 1]) { _ in
+            
+            var initial = true
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by: RapidFilter.lessThan(keyPath: "filterNumber", value: 2))
+                .subscribe(block: { result in
+                    if initial {
+                        initial = false
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["filterNumber": 0])
+                    }
+                    else {
+                        if case .success(let documents) = result, let index = documents.index(where: { $0.id == "1" }) {
+                            XCTAssertEqual(documents[index].value?["filterNumber"] as? Int ?? -1, 0, "Wrong value")
+                        }
+                        else {
+                            XCTFail("Document not included")
+                        }
+                        promise.fulfill()
+                    }
+                })
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
 }

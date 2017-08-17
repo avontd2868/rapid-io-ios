@@ -23,10 +23,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Request did not timed out")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 3, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testMergeTimeout() {
@@ -41,10 +42,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Request did not timed out")
-            }
+                promise.fulfill()
+           }
         }
         
-        waitForExpectations(timeout: 3, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testDeleteTimeout() {
@@ -59,10 +61,11 @@ extension RapidTests {
             }
             else {
                 XCTFail("Request did not timed out")
+                promise.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 3, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testCreateAndDelete() {
@@ -78,16 +81,18 @@ extension RapidTests {
                     }
                     else {
                         XCTFail("Document not deleted")
+                        promise.fulfill()
                     }
                 })
             }
             else {
                 XCTFail("Document not created")
+                promise.fulfill()
             }
         })
         
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testMerge() {
@@ -106,11 +111,12 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Values doesn't match")
+                    promise.fulfill()
                 }
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testCreateAndDeleteSafeWithEtag() {
@@ -128,21 +134,24 @@ extension RapidTests {
                             }
                             else {
                                 XCTFail("Document not deleted")
+                                promise.fulfill()
                             }
                         })
                     }
                     else {
                         XCTFail("Document not fetched")
+                        promise.fulfill()
                     }
                 })
             }
             else {
                 XCTFail("Document not created")
+                promise.fulfill()
             }
         })
         
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testCreateAndDeleteSafeWithBlock() {
@@ -171,7 +180,7 @@ extension RapidTests {
             })
         }
         
-        waitForExpectations(timeout: 8, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testMergeSafeWithEtag() {
@@ -187,6 +196,7 @@ extension RapidTests {
                         self.rapid.collection(named: self.testCollectionName).document(withID: "1").merge(value: ["desc": "desc", "bla": 6], etag: doc.etag) { result in
                             if case .failure = result {
                                 XCTFail("Error occured")
+                                promise.fulfill()
                             }
                         }
                     }
@@ -195,12 +205,13 @@ extension RapidTests {
                     }
                     else {
                         XCTFail("Values doesn't match")
+                        promise.fulfill()
                     }
                 }
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testMergeSafeWithBlock() {
@@ -225,12 +236,13 @@ extension RapidTests {
                         }
                         else {
                             XCTFail("Values doesn't match")
+                            promise.fulfill()
                         }
                     })
                 })
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testMergeSafeRetry() {
@@ -290,6 +302,7 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Wrong error")
+                    promise.fulfill()
                 }
             })
             
@@ -299,7 +312,7 @@ extension RapidTests {
         manager.mutate(mutationRequest: mutate)
         rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "mergeTest", "desc": "description"])
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testMutateSefeWithWrongEtag() {
@@ -325,32 +338,31 @@ extension RapidTests {
                 }
                 else {
                     XCTFail("Wrong error")
+                    promise.fulfill()
                 }
             }
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 15, handler: nil)
     }
     
     func testConcurrencyMergeSafeWithBlock() {
         let promise = expectation(description: "Merge document")
         
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "loadTest"])
-        
         var iterations = [Int]()
-
-        let numberOfIterations = 20
         
-        runAfter(1) {
+        let numberOfIterations = 20
+
+        rapid.collection(named: testCollectionName).document(withID: "666").mutate(value: ["name": "loadTest"]) { _ in
             
             for i in 0..<numberOfIterations {
-                self.rapid.collection(named: self.testCollectionName).document(withID: "1").execute(
+                self.rapid.collection(named: self.testCollectionName).document(withID: "666").execute(
                     block: { doc -> RapidExecutionResult in
                         let count = doc.value?["counter"] as? Int ?? 0
                         return .write(value: ["counter": count+1])
                 },
                     completion: { error in
-                        self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
+                        self.rapid.collection(named: self.testCollectionName).document(withID: "666").fetch(completion: { result in
                             if case .success(let doc) = result, let counter = doc.value?["counter"] as? Int {
 
                                 iterations.append(i)
@@ -361,48 +373,151 @@ extension RapidTests {
                                 }
                                 else if counter > numberOfIterations {
                                     XCTFail("Counter greater than expected")
+                                    promise.fulfill()
                                 }
                             }
                             else {
                                 XCTFail("No counter")
+                                promise.fulfill()
                             }
                         })
                 })
             }
         }
         
-        waitForExpectations(timeout: TimeInterval(numberOfIterations), handler: { error in print(iterations.sorted())})
+        waitForExpectations(timeout: 3*TimeInterval(numberOfIterations), handler: nil)
     }
     
     func testMultipleDocumentMutations() {
         let promise = expectation(description: "Mutate document")
-        
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["counter": 0]) { _ in
+        rapid.timeout = nil
+
+        rapid.collection(named: testCollectionName).document(withID: "666").mutate(value: ["counter": 0]) { _ in
             let numberOfMutations = 200
             var value: Int?
             
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(block: { result in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "666").subscribe(block: { result in
                 if case .success(let document) = result, let counter = document.value?["counter"] as? Int {
                     if let value = value {
                         XCTAssertLessThan(value, counter, "Wrong order")
                     }
                     value = counter
-                    print(counter)
+
                     if counter == numberOfMutations {
                         promise.fulfill()
                     }
                 }
                 else {
                     XCTFail("Subscription failed")
+                    promise.fulfill()
                 }
             })
             
             for i in 1...numberOfMutations {
-                self.rapid.collection(named: self.testCollectionName).document(withID: "1").mutate(value: ["counter": i])
+                self.rapid.collection(named: self.testCollectionName).document(withID: "666").mutate(value: ["counter": i])
             }
         }
         
-        waitForExpectations(timeout: 20, handler: nil)
+        waitForExpectations(timeout: 40, handler: nil)
     }
     
+    func testCancelMutation() {
+        let promise = expectation(description: "Mutation")
+        
+        rapid.timeout = 30
+        rapid.goOffline()
+
+        var initialResponse = true
+        let mutation = rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["test": "Cancel mutation"]) { result in
+            if initialResponse {
+                initialResponse = false
+                if case .failure(let error) = result, case .cancelled = error {
+                    self.rapid.goOnline()
+                    runAfter(5, closure: {
+                        promise.fulfill()
+                    })
+                }
+                else {
+                    XCTFail("Wrong error")
+                    promise.fulfill()
+                }
+            }
+            else {
+                XCTFail("Second call")
+                promise.fulfill()
+            }
+        }
+        
+        mutation.cancel()
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testCancelMerge() {
+        let promise = expectation(description: "Merge")
+        
+        rapid.timeout = 30
+        rapid.goOffline()
+        
+        var initialResponse = true
+        let merge = rapid.collection(named: testCollectionName).document(withID: "1").merge(value: ["test": "Cancel mutation"]) { result in
+            if initialResponse {
+                initialResponse = false
+                if case .failure(let error) = result, case .cancelled = error {
+                    self.rapid.goOnline()
+                    runAfter(5, closure: {
+                        promise.fulfill()
+                    })
+                }
+                else {
+                    XCTFail("Wrong error")
+                    promise.fulfill()
+                }
+            }
+            else {
+                XCTFail("Second call")
+                promise.fulfill()
+            }
+        }
+        
+        runAfter(0.5) { 
+            merge.cancel()
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testCancelDelete() {
+        let promise = expectation(description: "Delete")
+        
+        rapid.timeout = 30
+        rapid.goOffline()
+        
+        var initialResponse = true
+        let delete = rapid.collection(named: testCollectionName).document(withID: "1").delete() { result in
+            if initialResponse {
+                initialResponse = false
+                if case .failure(let error) = result, case .cancelled = error {
+                    self.rapid.goOnline()
+                    runAfter(5, closure: {
+                        promise.fulfill()
+                    })
+                }
+                else {
+                    XCTFail("Wrong error")
+                    promise.fulfill()
+                }
+            }
+            else {
+                XCTFail("Second call")
+                promise.fulfill()
+            }
+        }
+        
+        runAfter(0.5) {
+            delete.cancel()
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
 }

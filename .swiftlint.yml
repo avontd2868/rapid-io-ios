@@ -30,7 +30,12 @@ variable_name:
   min_length:
     warning: 2
   max_length:
-    warning: 40
+    warning: 30
+type_name:
+  min_length:
+    warning: 3
+  max_length:
+    warning: 50
 large_tuple:
   - 4
   - 6
