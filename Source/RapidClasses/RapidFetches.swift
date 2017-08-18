@@ -37,7 +37,7 @@ class RapidCollectionFetch: NSObject {
     internal var requestTimeoutTimer: Timer?
     
     /// Fetch identifier
-    let fetchID = Generator.uniqueID
+    let fetchID = Rapid.uniqueID
     
     /// Initialize collection fetch object
     ///

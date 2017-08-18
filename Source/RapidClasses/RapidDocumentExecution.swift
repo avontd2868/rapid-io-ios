@@ -14,7 +14,7 @@ import Foundation
 class RapidDocumentExecution: RapidExecution {
     
     /// Operation identifier
-    let identifier = Generator.uniqueID
+    let identifier = Rapid.uniqueID
     
     /// Collection identifier
     let collectionID: String

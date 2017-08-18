@@ -194,7 +194,7 @@ class RapidSocketManager {
             }
             else {
                 // Create an unique ID that identifies the subscription
-                let subscriptionID = Generator.uniqueID
+                let subscriptionID = Rapid.uniqueID
                 
                 // Create a handler for the subscription
                 let subscriptionHandler = RapidColSubManager(withSubscriptionID: subscriptionID, subscription: subscription, delegate: self)
@@ -225,7 +225,7 @@ class RapidSocketManager {
             }
             else {
                 // Create an unique ID that identifies the subscription
-                let subscriptionID = Generator.uniqueID
+                let subscriptionID = Rapid.uniqueID
                 
                 // Create a handler for the subscription
                 let subscriptionHandler = RapidChanSubManager(withSubscriptionID: subscriptionID, subscription: subscription, delegate: self)
@@ -474,7 +474,7 @@ internal extension RapidSocketManager {
 
         for event in queueCopy {
             // Generate unique event ID
-            let eventID = Generator.uniqueID
+            let eventID = Rapid.uniqueID
             
             if let request = event as? RapidClientRequest {
                 registerPendingRequest(request, withID: eventID)
@@ -549,7 +549,7 @@ internal extension RapidSocketManager {
         // Subscription cancel
         case let message as RapidSubscriptionCancelled:
             let subscription = activeSubscriptions[message.subscriptionID]
-            let eventID = message.eventIDsToAcknowledge.first ?? Generator.uniqueID
+            let eventID = message.eventIDsToAcknowledge.first ?? Rapid.uniqueID
             let error = RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "No longer authorized to read data"))
             subscription?.eventFailed(withError: error)
             activeSubscriptions[message.subscriptionID] = nil
@@ -557,7 +557,7 @@ internal extension RapidSocketManager {
         // On-disconnect action cancelled
         case let message as RapidOnDisconnectActionCancelled:
             let action = onDisconnectActions[message.actionID]
-            let eventID = message.eventIDsToAcknowledge.first ?? Generator.uniqueID
+            let eventID = message.eventIDsToAcknowledge.first ?? Rapid.uniqueID
             let error = RapidErrorInstance(eventID: eventID, error: .permissionDenied(message: "No longer authorized to write data"))
             action?.eventFailed(withError: error)
             onDisconnectActions[message.actionID] = nil
@@ -712,7 +712,7 @@ extension RapidSocketManager: RapidTimeoutRequestDelegate {
             else if let index = self?.eventQueue.flatMap({ $0 as? Request }).index(where: { request === $0 }), let request = request as? Request {
                 self?.eventQueue.remove(at: index)
                 
-                let eventID = Generator.uniqueID
+                let eventID = Rapid.uniqueID
                 self?.registerPendingRequest(request, withID: eventID)
                 
                 let error = RapidErrorInstance(eventID: eventID, error: .timeout)
