@@ -18,7 +18,7 @@ func runAfter(_ delay: TimeInterval, queue: DispatchQueue = DispatchQueue.main, 
         deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
 }
 
-class Generator {
+class RapidGenerator {
     
     /// Unique ID which can serve as a document or collection ID
     class var uniqueID: String {
@@ -81,7 +81,7 @@ class Generator {
 
 }
 
-class Validator {
+class RapidValidator {
     
     /// Decode API key
     ///

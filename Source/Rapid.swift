@@ -248,7 +248,7 @@ public extension Rapid {
     
     /// Generate an unique ID which can be safely used as your document ID
     class var uniqueID: String {
-        return Generator.uniqueID
+        return RapidGenerator.uniqueID
     }
     
     /// Log level
@@ -357,6 +357,8 @@ public extension Rapid {
     /// - parameter withApiKey:     API key that contains necessary information about a database to which you want to connect
     class func configure(withApiKey key: String) {
         sharedInstance = Rapid.getInstance(withApiKey: key)
+        
+        assert(sharedInstance != nil, RapidInternalError.rapidInstanceNotInitialized.message)
     }
     
     /// Create a new object representing Rapid.io collection
