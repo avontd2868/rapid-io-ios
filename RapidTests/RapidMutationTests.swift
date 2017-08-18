@@ -520,4 +520,32 @@ extension RapidTests {
         
         waitForExpectations(timeout: 15, handler: nil)
     }
+    
+    func testMutateWithEncoding() {
+        let promise = expectation(description: "Mutation with encoding")
+        
+        let myStruct = RapidTestStruct(name: "Encoding test")
+        
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(encodableValue: myStruct) { result in
+            if case .success = result {
+                self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(completion: { result in
+                    if case .success(let document) = result {
+                        XCTAssertEqual(document.value?["name"] as? String, "Encoding test", "Wrong name")
+                        XCTAssertEqual(document.value?.keys.count ?? 0, 1, "Wrong number of keys")
+                    }
+                    else {
+                        XCTFail("Fetch failed")
+                    }
+                    
+                    promise.fulfill()
+                })
+            }
+            else {
+                XCTFail("Mutation failed")
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
 }

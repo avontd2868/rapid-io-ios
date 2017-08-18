@@ -8,6 +8,10 @@
 
 import Foundation
 
+struct RapidEmptyWriteRequest: RapidWriteRequest {
+    func cancel() {}
+}
+
 // MARK: Document mutation
 
 /// Document mutation request

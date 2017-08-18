@@ -52,7 +52,7 @@ public protocol RapidWriteRequest {
 
 /// Protocol describing Rapid.io reference that defines data mutation
 public protocol RapidMutationReference {
-    associatedtype MutationValue
+    //associatedtype MutationValue
     associatedtype MutationResult
     
     /// Mutate data
@@ -64,7 +64,23 @@ public protocol RapidMutationReference {
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    func mutate(value: MutationValue, completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest
+    func mutate(value: [AnyHashable: Any], completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest
+}
+
+extension RapidMutationReference {
+    
+    @discardableResult
+    public func mutate<T>(encodableValue: T, completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest where T: Encodable {
+        do {
+            let data = try JSONEncoder().encode(encodableValue)
+            let dict = try data.json() ?? [:]
+            return mutate(value: dict, completion: completion)
+        }
+        catch let error {
+            completion?(RapidResult.failure(error: RapidError.invalidData(reason: RapidError.InvalidDataReason.serializationFailure(message: error.localizedDescription))))
+            return RapidEmptyWriteRequest()
+        }
+    }
 }
 
 /// Protocol describing Rapid.io reference that defines data merge

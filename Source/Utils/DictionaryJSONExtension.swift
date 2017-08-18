@@ -16,7 +16,7 @@ extension Dictionary {
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     func jsonString() throws -> String {
         guard JSONSerialization.isValidJSONObject(self) else {
-            throw RapidError.invalidData(reason: .serializationFailure)
+            throw RapidError.invalidData(reason: .serializationFailure(message: "Invalid JSON object"))
         }
         
         let data = try JSONSerialization.data(withJSONObject: self, options: [])

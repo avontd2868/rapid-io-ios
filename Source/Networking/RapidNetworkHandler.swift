@@ -117,8 +117,8 @@ class RapidNetworkHandler {
             catch let rapidError as RapidError {
                 self?.delegate?.handlerDidReceive(message: RapidErrorInstance(eventID: eventID, error: rapidError))
             }
-            catch {
-                self?.delegate?.handlerDidReceive(message: RapidErrorInstance(eventID: eventID, error: .invalidData(reason: .serializationFailure)))
+            catch let error {
+                self?.delegate?.handlerDidReceive(message: RapidErrorInstance(eventID: eventID, error: .invalidData(reason: .serializationFailure(message: error.localizedDescription))))
             }
         }
     }

@@ -81,7 +81,7 @@ class Generator {
 
 }
 
-class Decoder {
+class Validator {
     
     /// Decode API key
     ///
@@ -89,17 +89,14 @@ class Decoder {
     /// - Returns: Tuple of decoded values
     class func decode(apiKey: String) -> URL? {
         if let data = Data(base64Encoded: apiKey),
-        let decodedString = String(data: data, encoding: .utf8),
-        !decodedString.isEmpty,
-        let url = URL(string: "wss://\(decodedString)") {
+            let decodedString = String(data: data, encoding: .utf8),
+            !decodedString.isEmpty,
+            let url = URL(string: "wss://\(decodedString)") {
             return url
         }
-
+        
         return nil
     }
-}
-
-class Validator {
     
     /// Check a document dictionary if it is valid
     ///
