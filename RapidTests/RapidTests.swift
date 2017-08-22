@@ -23,10 +23,10 @@ class RapidTests: XCTestCase {
     
     var rapid: Rapid!
     
-    let apiKey = "dGVzdC5hcHAtcmFwaWQuaW8="
+    let apiKey = "NDA1OWE0MWo2N3RicTdyLmFwcC1yYXBpZC5pbw=="
     let localApiKey = "bG9jYWxob3N0OjgwODA="
     let fakeApiKey = "MTMuNjQuNzcuMjAyOjgwODA1L2Zha2U="
-    let socketURL = URL(string: "wss://dev-ws-service.rapid.io")!
+    let socketURL = URL(string: "wss://4059a41j67tbq7r.app-rapid.io")!
     let fakeSocketURL = URL(string: "ws://12.13.14.15:1111/fake")!
     #if os(OSX)
         let testCollectionName = "macosUnitTests\(nameSuffix)"
@@ -39,7 +39,7 @@ class RapidTests: XCTestCase {
         let testChannelName = "tvosUnitTestsChannel\(nameSuffix)"
     #endif
     
-    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY2hhbm5lbCI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwid3JpdGUiOnRydWV9LHsiY29sbGVjdGlvbiI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX1dfQ.MdQbdW958yzRQk46qj7_bY92A60pxtSkDgy9yJV7Vd8"
+    let testAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJydWxlcyI6W3siY29sbGVjdGlvbiI6eyJwYXR0ZXJuIjoiLioifSwicmVhZCI6dHJ1ZSwiY3JlYXRlIjp0cnVlLCJ1cGRhdGUiOnRydWUsImRlbGV0ZSI6dHJ1ZX0seyJjaGFubmVsIjp7InBhdHRlcm4iOiIuKiJ9LCJyZWFkIjp0cnVlLCJ3cml0ZSI6dHJ1ZX1dfQ.dqCaHSlyMxtvPas6zFFmLjy8oEgQjgcj0OxEhmul2C0"
     
     override func setUp() {
         super.setUp()

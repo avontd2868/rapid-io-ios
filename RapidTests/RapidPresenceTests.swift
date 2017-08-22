@@ -339,7 +339,7 @@ extension RapidTests {
                     self.rapid.collection(named: self.testCollectionName).document(withID: "connect").onConnect().mutate(value: ["online": true], completion: { result in
                         if case .success = result {
                             self.rapid.goOnline()
-                            runAfter(1, closure: {
+                            runAfter(2, closure: {
                                 self.rapid.collection(named: self.testCollectionName).document(withID: "connect").fetch(completion: { result in
                                     if case .success(let doc) = result {
                                         XCTAssertTrue(doc.value?["online"] as? Bool ?? false, "Wrong value")
@@ -377,7 +377,7 @@ extension RapidTests {
                     self.rapid.collection(named: self.testCollectionName).document(withID: "connect").onConnect().merge(value: ["online": true], completion: { result in
                         if case .success = result {
                             self.rapid.goOnline()
-                            runAfter(1, closure: {
+                            runAfter(2, closure: {
                                 self.rapid.collection(named: self.testCollectionName).document(withID: "connect").fetch(completion: { result in
                                     if case .success(let doc) = result {
                                         XCTAssertTrue(doc.value?["online"] as? Bool ?? false, "Wrong value")

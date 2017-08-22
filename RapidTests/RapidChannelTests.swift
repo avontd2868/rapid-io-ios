@@ -31,7 +31,7 @@ extension RapidTests {
         waitForExpectations(timeout: 15, handler: nil)
     }
     
-    func testSubscribeToChannels() {
+    /*func testSubscribeToChannels() {
         let promise = expectation(description: "Subscribe to channel")
         
         rapid.channels(nameStartsWith: testChannelName).subscribe { result in
@@ -50,7 +50,7 @@ extension RapidTests {
         }
         
         waitForExpectations(timeout: 15, handler: nil)
-    }
+    }*/
     
     func testUnauthorizedPublish() {
         let promise = expectation(description: "Subscribe to channel")
