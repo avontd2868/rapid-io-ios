@@ -91,7 +91,7 @@ class RapidHandler: NSObject {
         return socketManager.auth
     }
     
-    fileprivate(set) var cache: RapidCache?
+    internal(set) var cache: RapidCache?
     var cacheEnabled: Bool = false {
         didSet {
             RapidLogger.log(message: "Rapid cache enabled \(cacheEnabled)", level: .debug)
@@ -120,7 +120,7 @@ class RapidHandler: NSObject {
     
     init?(apiKey: String) {
         // Decode connection information from API key
-        if let url = Decoder.decode(apiKey: apiKey) {
+        if let url = RapidValidator.decode(apiKey: apiKey) {
             let networkHandler = RapidNetworkHandler(socketURL: url)
             
             socketManager = RapidSocketManager(networkHandler: networkHandler)

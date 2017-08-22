@@ -69,11 +69,11 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-        doc[Mutation.Document.DocumentID.name] = try Validator.validate(identifier: mutation.documentID)
+        doc[Mutation.Document.DocumentID.name] = try RapidValidator.validate(identifier: mutation.documentID)
         doc[Mutation.Document.Etag.name] = mutation.etag
-        doc[Mutation.Document.Body.name] = try Validator.validate(document: mutation.value)
+        doc[Mutation.Document.Body.name] = try RapidValidator.validate(document: mutation.value)
         
-        json[Mutation.CollectionID.name] = try Validator.validate(identifier: mutation.collectionID)
+        json[Mutation.CollectionID.name] = try RapidValidator.validate(identifier: mutation.collectionID)
         
         json[Mutation.Document.name] = doc
         
@@ -92,11 +92,11 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-        doc[Merge.Document.DocumentID.name] = try Validator.validate(identifier: merge.documentID)
+        doc[Merge.Document.DocumentID.name] = try RapidValidator.validate(identifier: merge.documentID)
         doc[Merge.Document.Etag.name] = merge.etag
-        doc[Merge.Document.Body.name] = try Validator.validate(document: merge.value)
+        doc[Merge.Document.Body.name] = try RapidValidator.validate(document: merge.value)
         
-        json[Merge.CollectionID.name] = try Validator.validate(identifier: merge.collectionID)
+        json[Merge.CollectionID.name] = try RapidValidator.validate(identifier: merge.collectionID)
         json[Merge.Document.name] = doc
         
         let resultDict: [AnyHashable: Any] = [Merge.name: json]
@@ -114,10 +114,10 @@ class RapidSerialization {
         var json = identifiers
         
         var doc = [AnyHashable: Any]()
-        doc[Delete.Document.DocumentID.name] = try Validator.validate(identifier: delete.documentID)
+        doc[Delete.Document.DocumentID.name] = try RapidValidator.validate(identifier: delete.documentID)
         doc[Delete.Document.Etag.name] = delete.etag
         
-        json[Delete.CollectionID.name] = try Validator.validate(identifier: delete.collectionID)
+        json[Delete.CollectionID.name] = try RapidValidator.validate(identifier: delete.collectionID)
         json[Delete.Document.name] = doc
         
         let resultDict: [AnyHashable: Any] = [Delete.name: json]
@@ -134,8 +134,8 @@ class RapidSerialization {
     class func serialize(publish: RapidChannelPublish, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
         var json = identifiers
         
-        json[Publish.ChannelID.name] = try Validator.validate(identifier: publish.channelID)
-        json[Publish.Body.name] = try Validator.validate(document: publish.value)
+        json[Publish.ChannelID.name] = try RapidValidator.validate(identifier: publish.channelID)
+        json[Publish.Body.name] = try RapidValidator.validate(document: publish.value)
         
         let resultDict: [AnyHashable: Any] = [Publish.name: json]
         return try resultDict.jsonString()
@@ -155,7 +155,7 @@ class RapidSerialization {
             throw RapidError.invalidData(reason: .invalidLimit)
         }
         
-        json[Fetch.CollectionID.name] = try Validator.validate(identifier: fetch.collectionID)
+        json[Fetch.CollectionID.name] = try RapidValidator.validate(identifier: fetch.collectionID)
         json[Fetch.Filter.name] = try serialize(filter: fetch.filter)
         json[Fetch.Ordering.name] = try serialize(ordering: fetch.ordering)
         json[Fetch.Limit.name] = fetch.paging?.take
@@ -180,7 +180,7 @@ class RapidSerialization {
             throw RapidError.invalidData(reason: .invalidLimit)
         }
         
-        json[CollectionSubscription.CollectionID.name] = try Validator.validate(identifier: subscription.collectionID)
+        json[CollectionSubscription.CollectionID.name] = try RapidValidator.validate(identifier: subscription.collectionID)
         json[CollectionSubscription.Filter.name] = try serialize(filter: subscription.filter)
         json[CollectionSubscription.Ordering.name] = try serialize(ordering: subscription.ordering)
         json[CollectionSubscription.Limit.name] = subscription.paging?.take
@@ -218,13 +218,13 @@ class RapidSerialization {
     /// - Parameter simpleFilter: Simple filter object
     /// - Returns: JSON dictionary
     class func serialize(simpleFilter: RapidFilterSimple) throws -> [AnyHashable: Any] {
-        guard Validator.isValid(keyPath: simpleFilter.keyPath) else {
+        guard RapidValidator.isValid(keyPath: simpleFilter.keyPath) else {
             throw RapidError.invalidData(reason: .invalidKeyPath(keyPath: simpleFilter.keyPath))
         }
         
         if simpleFilter.keyPath == RapidFilter.docIdKey {
             if let value = simpleFilter.value as? String {
-                try Validator.validate(identifier: value)
+                try RapidValidator.validate(identifier: value)
             }
             else {
                 throw RapidError.invalidData(reason: .invalidIdentifierFormat(identifier: simpleFilter.value))
@@ -296,7 +296,7 @@ class RapidSerialization {
     class func serialize(ordering: [RapidOrdering]?) throws -> [[AnyHashable: Any]]? {
         if let ordering = ordering {
             let orderingArray = try ordering.map({ order -> [AnyHashable: Any] in
-                guard Validator.isValid(keyPath: order.keyPath) else {
+                guard RapidValidator.isValid(keyPath: order.keyPath) else {
                     throw RapidError.invalidData(reason: .invalidKeyPath(keyPath: order.keyPath))
                 }
                 
@@ -344,10 +344,10 @@ class RapidSerialization {
         
         switch subscription.channelID {
         case .name(let name):
-            json[ChannelSubscription.ChannelID.name] = try Validator.validate(identifier: name)
+            json[ChannelSubscription.ChannelID.name] = try RapidValidator.validate(identifier: name)
             
         case .prefix(let prefix):
-            json[ChannelSubscription.ChannelID.name] = [ChannelSubscription.ChannelID.Prefix.name: try Validator.validate(identifier: prefix)]
+            json[ChannelSubscription.ChannelID.name] = [ChannelSubscription.ChannelID.Prefix.name: try RapidValidator.validate(identifier: prefix)]
         }
         
         let resultDict: [AnyHashable: Any] = [ChannelSubscription.name: json]
@@ -388,17 +388,6 @@ class RapidSerialization {
     /// - Returns: JSON string
     /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
     class func serialize(acknowledgement: RapidClientAcknowledgement) throws -> String {
-        let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
-        return try resultDict.jsonString()
-    }
-    
-    /// Serialize an event acknowledgement into JSON string
-    ///
-    /// - Parameters:
-    ///   - acknowledgement: Acknowledgement object
-    /// - Returns: JSON string
-    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
-    class func serialize(acknowledgement: RapidServerAcknowledgement) throws -> String {
         let resultDict = [Acknowledgement.name: [EventID.name: acknowledgement.eventID]]
         return try resultDict.jsonString()
     }
@@ -468,10 +457,44 @@ class RapidSerialization {
         let resultDict = [Deauthorization.name: identifiers]
         return try resultDict.jsonString()
     }
+    
+    /// Serialize an on-disconnect action into JSON string
+    ///
+    /// - Parameters:
+    ///   - disconnectAction: On-disconnect action request
+    ///   - identifiers: Identifiers that are associated with the request
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(disconnectAction: RapidOnDisconnectAction, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[DisconnectAction.ActionID.name] = try RapidValidator.validate(identifier: disconnectAction.actionID)
+        
+        json[DisconnectAction.Action.name] = try disconnectAction.actionJSON()
+        
+        let resultDict = [DisconnectAction.name: json]
+        return try resultDict.jsonString()
+    }
+    
+    /// Serialize a cancel on-disconnect action into JSON string
+    ///
+    /// - Parameters:
+    ///   - disconnectAction: Cancel on-disconnect action request
+    ///   - identifiers: Identifiers that are associated with the request
+    /// - Returns: JSON string
+    /// - Throws: `JSONSerialization` and `RapidError.invalidData` errors
+    class func serialize(cancelDisconnectAction: RapidCancelOnDisconnectAction, withIdentifiers identifiers: [AnyHashable: Any]) throws -> String {
+        var json = identifiers
+        
+        json[CancelDisconnectAction.ActionID.name] = cancelDisconnectAction.actionID
+        
+        let resultDict = [CancelDisconnectAction.name: json]
+        return try resultDict.jsonString()
+    }
 }
 
-// MARK: Fileprivate methods
-fileprivate extension RapidSerialization {
+// MARK: internal methods
+internal extension RapidSerialization {
     
     /// Parse single event received from websocket
     ///
@@ -498,6 +521,9 @@ fileprivate extension RapidSerialization {
         }
         else if let ca = json[ChannelSubscriptionCancelled.name] as? [AnyHashable: Any] {
             return RapidSubscriptionCancelled(json: ca)
+        }
+        else if let caDisconnectAction = json[DisconnectActionCancelled.name] as? [AnyHashable: Any] {
+            return RapidOnDisconnectActionCancelled(json: caDisconnectAction)
         }
         else if let res = json[FetchValue.name] as? [AnyHashable: Any] {
             return RapidFetchResponse(withJSON: res)

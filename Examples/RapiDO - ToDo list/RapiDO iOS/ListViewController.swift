@@ -76,7 +76,7 @@ fileprivate extension ListViewController {
         tableView.reloadData()
         
         // Get Rapid.io collection reference with a given name
-        let collection = Rapid.collection(withName: Constants.collectionName)
+        let collection = Rapid.collection(named: Constants.collectionName)
         
         // If a filter is set, modify the collection reference with it
         if let filter = filter {

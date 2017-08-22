@@ -20,10 +20,10 @@ class RapidNetworkHandler {
     let socketURL: URL
     
     /// Websocket object
-    fileprivate let socket: WebSocket
+    internal let socket: WebSocket
     
     /// State of a websocket connection
-    fileprivate(set) var state: RapidConnectionState = .disconnected {
+    internal(set) var state: RapidConnectionState = .disconnected {
         didSet {
             if oldValue != state {
                 onConnectionStateChanged?(state)
@@ -32,17 +32,17 @@ class RapidNetworkHandler {
     }
     
     /// Socket was intentionally terminated
-    fileprivate var socketTerminated = false
+    internal var socketTerminated = false
     
     /// Timer that limits maximum time span when websocket connection is trying to be established
-    fileprivate var socketConnectTimer: Timer?
+    internal var socketConnectTimer: Timer?
     
     /// Error that led to forced websocket reconnection
-    fileprivate var reconnectionError: RapidError?
+    internal var reconnectionError: RapidError?
     
     /// Dedicated threads
-    fileprivate let parseQueue: DispatchQueue
-    fileprivate let mainQueue = DispatchQueue.main
+    internal let parseQueue: DispatchQueue
+    internal let mainQueue = DispatchQueue.main
     
     /// Network handler delegate
     weak var delegate: RapidNetworkHandlerDelegate?
@@ -126,7 +126,7 @@ class RapidNetworkHandler {
 }
 
 // MARK: Private methods
-fileprivate extension RapidNetworkHandler {
+internal extension RapidNetworkHandler {
     
     /// Create a websocket connection
     func createConnection() {
@@ -206,6 +206,11 @@ extension RapidNetworkHandler: WebSocketDelegate {
     
     func websocketDidConnect(socket: WebSocket) {
         mainQueue.async {
+            guard !self.socketTerminated else {
+                self.destroySocket()
+                return
+            }
+            
             RapidLogger.developerLog(message: "Socket did connect")
             
             // Invalidate connection timer

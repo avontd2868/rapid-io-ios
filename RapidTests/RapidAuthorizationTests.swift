@@ -46,11 +46,11 @@ extension RapidTests {
         waitForExpectations(timeout: 15, handler: nil)
     }
     
-    func testCollectionSubscriptionCancelAfterUnsubscription() {
+    func testCollectionSubscriptionCancelAfterDeauthorization() {
         let promise = expectation(description: "Authorization")
         
         var initialValue = true
-        
+
         rapid.collection(named: testCollectionName).subscribe(block: { result in
             if initialValue {
                 initialValue = false
@@ -77,7 +77,7 @@ extension RapidTests {
         waitForExpectations(timeout: 15, handler: nil)
     }
     
-    func testChannelSubscriptionCancelAfterUnsubscription() {
+    func testChannelSubscriptionCancelAfterDeauthorization() {
         let promise = expectation(description: "Authorization")
         
         var initialValue = true

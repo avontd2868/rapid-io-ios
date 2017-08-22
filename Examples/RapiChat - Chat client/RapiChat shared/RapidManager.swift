@@ -28,7 +28,7 @@ class RapidManager: NSObject {
         // Order it according to sent date
         // Limit number of messages to 250
         // Subscribe
-        let collection = Rapid.collection(withName: Constants.messagesCollection)
+        let collection = Rapid.collection(named: Constants.messagesCollection)
             .filter(by: RapidFilter.equal(keyPath: Message.channelID, value: channelID))
             .order(by: RapidOrdering(keyPath: Message.sentDate, ordering: .descending))
             .limit(to: 250)
@@ -42,7 +42,7 @@ class RapidManager: NSObject {
         // Get rapid.io collection reference
         // Order it according to document ID
         // Subscribe
-        let collection = Rapid.collection(withName: Constants.channelsCollection)
+        let collection = Rapid.collection(named: Constants.channelsCollection)
             .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
         
         subscriber.subscribe(forCollection: collection, with: handler)

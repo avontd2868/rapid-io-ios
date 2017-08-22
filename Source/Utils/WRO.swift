@@ -10,7 +10,7 @@ import Foundation
 
 /// Wrapper for weak reference
 class WRO<T: AnyObject>: Equatable where T: Hashable {
-    weak fileprivate(set) var object: T?
+    weak internal(set) var object: T?
     
     init(object: T?) {
         self.object = object

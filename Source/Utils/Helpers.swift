@@ -18,7 +18,7 @@ func runAfter(_ delay: TimeInterval, queue: DispatchQueue = DispatchQueue.main, 
         deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
 }
 
-class Generator {
+class RapidGenerator {
     
     /// Unique ID which can serve as a document or collection ID
     class var uniqueID: String {
@@ -81,7 +81,7 @@ class Generator {
 
 }
 
-class Decoder {
+class RapidValidator {
     
     /// Decode API key
     ///
@@ -89,17 +89,14 @@ class Decoder {
     /// - Returns: Tuple of decoded values
     class func decode(apiKey: String) -> URL? {
         if let data = Data(base64Encoded: apiKey),
-        let decodedString = String(data: data, encoding: .utf8),
-        !decodedString.isEmpty,
-        let url = URL(string: "wss://\(decodedString)") {
+            let decodedString = String(data: data, encoding: .utf8),
+            !decodedString.isEmpty,
+            let url = URL(string: "wss://\(decodedString)") {
             return url
         }
-
+        
         return nil
     }
-}
-
-class Validator {
     
     /// Check a document dictionary if it is valid
     ///
@@ -176,8 +173,8 @@ class Validator {
     /// - Returns: Validated identifier
     /// - Throws: `RapidError.invalidData`
     @discardableResult
-    class func validate(identifier: String) throws -> String {
-        if isValid(identifier: identifier) {
+    class func validate(identifier: String?) throws -> String {
+        if let identifier = identifier, isValid(identifier: identifier) {
             return identifier
         }
 

@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Logger singleton
 public class RapidLogger {
     
     /// Logging level

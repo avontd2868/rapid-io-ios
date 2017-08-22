@@ -26,13 +26,13 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     public let collectionName: String
     
     /// Filters assigned to the collection instance
-    public fileprivate(set) var subscriptionFilter: RapidFilter?
+    public internal(set) var subscriptionFilter: RapidFilter?
     
     /// Order descriptors assigned to the collection instance
-    public fileprivate(set) var subscriptionOrdering: [RapidOrdering]?
+    public internal(set) var subscriptionOrdering: [RapidOrdering]?
     
     /// Pagination information assigned to the collection instance
-    public fileprivate(set) var subscriptionPaging: RapidPaging?
+    public internal(set) var subscriptionPaging: RapidPaging?
 
     init(id: String, handler: RapidHandler!, filter: RapidFilter? = nil, ordering: [RapidOrdering]? = nil, paging: RapidPaging? = nil) {
         self.collectionName = id
@@ -42,14 +42,14 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
         self.subscriptionPaging = paging
     }
     
-    /// Create an instance of a Rapid document in the collection with a new unique ID
+    /// Get an instance of a Rapid document reference with a new unique ID in the collection
     ///
     /// - Returns: Instance of `RapidDocument` in the collection with a new unique ID
     open func newDocument() -> RapidDocumentRef {
         return document(withID: Rapid.uniqueID)
     }
     
-    /// Get an instance of a Rapid document in the collection with a specified ID
+    /// Get an instance of a Rapid document reference with a specified ID in the collection
     ///
     /// - Parameter id: Document ID
     /// - Returns: Instance of a `RapidDocument` in the collection with a specified ID

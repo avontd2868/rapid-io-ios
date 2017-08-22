@@ -58,119 +58,126 @@
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 88,
+      "line": 89,
       "symbol": "RapidError.permissionDenied",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 89,
+      "line": 90,
       "symbol": "RapidError.server",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 90,
+      "line": 91,
       "symbol": "RapidError.invalidRequest",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 91,
+      "line": 92,
       "symbol": "RapidError.connectionTerminated",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 92,
+      "line": 93,
       "symbol": "RapidError.invalidData",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 93,
+      "line": 94,
       "symbol": "RapidError.timeout",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 94,
+      "line": 95,
       "symbol": "RapidError.invalidAuthToken",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 95,
+      "line": 96,
       "symbol": "RapidError.executionFailed",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 96,
+      "line": 97,
+      "symbol": "RapidError.cancelled",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
+      "line": 98,
       "symbol": "RapidError.default",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 107,
+      "line": 109,
       "symbol": "RapidError.InvalidDataReason.serializationFailure",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 108,
+      "line": 110,
       "symbol": "RapidError.InvalidDataReason.invalidFilter",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 109,
+      "line": 111,
       "symbol": "RapidError.InvalidDataReason.invalidDocument",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 110,
+      "line": 112,
       "symbol": "RapidError.InvalidDataReason.invalidIdentifierFormat",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 111,
+      "line": 113,
       "symbol": "RapidError.InvalidDataReason.invalidKeyPath",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 112,
+      "line": 114,
       "symbol": "RapidError.InvalidDataReason.invalidLimit",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 120,
+      "line": 122,
       "symbol": "RapidError.ExecutionError.writeConflict",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidError.swift",
-      "line": 121,
+      "line": 123,
       "symbol": "RapidError.ExecutionError.aborted",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
@@ -275,35 +282,28 @@
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Utils/RapidLogger.swift",
-      "line": 11,
-      "symbol": "RapidLogger",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Utils/RapidLogger.swift",
-      "line": 20,
+      "line": 21,
       "symbol": "RapidLogger.Level.off",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Utils/RapidLogger.swift",
-      "line": 21,
+      "line": 22,
       "symbol": "RapidLogger.Level.critical",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Utils/RapidLogger.swift",
-      "line": 22,
+      "line": 23,
       "symbol": "RapidLogger.Level.info",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Utils/RapidLogger.swift",
-      "line": 23,
+      "line": 24,
       "symbol": "RapidLogger.Level.debug",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"

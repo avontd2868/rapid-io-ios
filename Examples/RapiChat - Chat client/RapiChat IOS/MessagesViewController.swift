@@ -133,7 +133,7 @@ fileprivate extension MessagesViewController {
     }
     
     func scrollToBottom(animated: Bool) {
-        if let count = manager.messages?.count {
+        if let count = manager.messages?.count, count > 0 {
             tableView.scrollToRow(at: IndexPath(row: count - 1, section: 0), at: .top, animated: animated)
         }
     }

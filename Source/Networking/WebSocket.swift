@@ -39,9 +39,9 @@ protocol WebSocketPongDelegate: class {
     func websocketDidReceivePong(socket: WebSocket, data: Data?)
 }
 
-class WebSocket : NSObject, StreamDelegate {
+class WebSocket: NSObject, StreamDelegate {
     
-    enum OpCode : UInt8 {
+    enum OpCode: UInt8 {
         case continueFrame = 0x0
         case textFrame = 0x1
         case binaryFrame = 0x2
@@ -52,7 +52,7 @@ class WebSocket : NSObject, StreamDelegate {
         // B-F reserved.
     }
     
-     enum CloseCode : UInt16 {
+     enum CloseCode: UInt16 {
         case normal                 = 1000
         case goingAway              = 1001
         case protocolError          = 1002
@@ -129,7 +129,7 @@ class WebSocket : NSObject, StreamDelegate {
      var headers = [String: String]()
      var voipEnabled = false
      var disableSSLCertValidation = false
-     var security: SSLTrustValidator?
+     var security: Any?
      var enabledSSLCipherSuites: [SSLCipherSuite]?
      var origin: String?
      var timeout = 5
@@ -393,9 +393,9 @@ class WebSocket : NSObject, StreamDelegate {
                     return // disconnectStream will be called.
                 }
             }
-            guard !sOperation.isCancelled, let s = self else { return }
+            guard !sOperation.isCancelled else { return }//, let s = self else { return }
             // Do the pinning now if needed
-            if let sec = s.security, !s.certValidated {
+            /*if let sec = s.security, !s.certValidated {
                 let trust = outStream.property(forKey: kCFStreamPropertySSLPeerTrust as Stream.PropertyKey) as! SecTrust
                 let domain = outStream.property(forKey: kCFStreamSSLPeerName as Stream.PropertyKey) as? String
                 s.certValidated = sec.isValid(trust, domain: domain)
@@ -406,7 +406,7 @@ class WebSocket : NSObject, StreamDelegate {
                     }
                     return
                 }
-            }
+            }*/
             outStream.write(bytes, maxLength: data.count)
         }
         writeQueue.addOperation(operation)
@@ -501,7 +501,7 @@ class WebSocket : NSObject, StreamDelegate {
                 } else {
                     processRawMessagesInBuffer(buffer, bufferLen: length)
                 }
-                inputQueue = inputQueue.filter{ $0 != data }
+                inputQueue = inputQueue.filter { $0 != data }
             }
         }
     }
@@ -938,7 +938,7 @@ class WebSocket : NSObject, StreamDelegate {
             guard let s = self else { return }
             s.onDisconnect?(error)
             s.delegate?.websocketDidDisconnect(socket: s, error: error)
-            let userInfo = error.map{ [WebsocketDisconnectionErrorKeyName: $0] }
+            let userInfo = error.map { [WebsocketDisconnectionErrorKeyName: $0] }
             s.notificationCenter.post(name: NSNotification.Name(WebsocketDidDisconnectNotification), object: self, userInfo: userInfo)
         }
     }
