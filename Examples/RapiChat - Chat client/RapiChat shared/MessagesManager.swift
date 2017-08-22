@@ -51,7 +51,7 @@ class MessagesManager: NSObject, RapidSubscriber {
             let referenceTime = TimeManager.shared.serverTime.timeIntervalSince1970
             
             // Get a new rapid.io document reference from the messages collection
-            let messageRef = Rapid.collection(withName: Constants.messagesCollection)
+            let messageRef = Rapid.collection(named: Constants.messagesCollection)
                 .newDocument()
             
             // Write the message to database
@@ -59,7 +59,7 @@ class MessagesManager: NSObject, RapidSubscriber {
             
             // Save the message to the channel as a last message, but only if the message is newer than a current last message
             // Use the execute function which guarantees optimistic concurrency mutations
-            Rapid.collection(withName: Constants.channelsCollection).document(withID: strongSelf.channelID).execute(block: { document -> RapidExecutionResult in
+            Rapid.collection(named: Constants.channelsCollection).document(withID: strongSelf.channelID).execute(block: { document -> RapidExecutionResult in
                 var value = document.value ?? [:]
                 let timestamp = ((value[Channel.lastMessage] as? [AnyHashable: Any])?[Message.sentDate] as? TimeInterval ?? 0) / 1000
                 

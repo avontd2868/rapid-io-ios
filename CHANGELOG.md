@@ -2,8 +2,27 @@
 All notable changes to this project will be documented in this file.
 
 #### 1.x Releases
-- `1.1.x` Releases - [1.1.0](#110) | [1.1.1](#111)
+- `1.1.x` Releases - [1.1.0](#110) | [1.1.1](#111) | [1.1.2](#112)
 - `1.0.x` Releases - [1.0.0](#100) | [1.0.1](#101) | [1.0.2](#102)
+
+---
+
+## [1.1.2](https://github.com/rapid-io/rapid-io-ios/releases/tag/1.1.2)
+Released on 2017-08-22.
+
+#### Added
+
+- Modify document on connect/disconnect
+
+- Cancel write requests
+
+#### Updated
+
+- Crash SDK when the shared singleton is configured with an invalid API key
+
+#### Fixed
+
+- Handling connection status
 
 ---
 

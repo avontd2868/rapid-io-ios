@@ -16,11 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Set log level
-        Rapid.logLevel = .debug
+        Rapid.logLevel = .info
+        
         // Configure shared singleton with API key
-        Rapid.configure(withApiKey: Constants.apiKey)
+        Rapid.configure(withApiKey: "<YOUR API KEY>")
+        
         // Enable data cache
         Rapid.isCacheEnabled = true
+        
         // Set timeout for requests
         Rapid.timeout = 10
 

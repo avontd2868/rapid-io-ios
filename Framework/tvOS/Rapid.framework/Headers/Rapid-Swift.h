@@ -229,12 +229,12 @@ SWIFT_CLASS("_TtC5Rapid18RapidCollectionRef")
 @interface RapidCollectionRef : NSObject
 /// Collection name
 @property (nonatomic, readonly, copy) NSString * _Nonnull collectionName;
-/// Create an instance of a Rapid document in the collection with a new unique ID
+/// Get an instance of a Rapid document reference with a new unique ID in the collection
 ///
 /// returns:
 /// Instance of <code>RapidDocument</code> in the collection with a new unique ID
 - (RapidDocumentRef * _Nonnull)newDocument SWIFT_WARN_UNUSED_RESULT;
-/// Get an instance of a Rapid document in the collection with a specified ID
+/// Get an instance of a Rapid document reference with a specified ID in the collection
 /// \param id Document ID
 ///
 ///
@@ -307,6 +307,12 @@ SWIFT_CLASS("_TtC5Rapid13RapidDocument")
 @end
 
 
+@interface RapidDocument (SWIFT_EXTENSION(Rapid))
+@end
+
+@class RapidDocumentRefOnConnect;
+@class RapidDocumentRefOnDisconnect;
+
 /// Class representing Rapid.io document
 SWIFT_CLASS("_TtC5Rapid16RapidDocumentRef")
 @interface RapidDocumentRef : NSObject
@@ -314,6 +320,20 @@ SWIFT_CLASS("_TtC5Rapid16RapidDocumentRef")
 @property (nonatomic, readonly, copy) NSString * _Nonnull collectionName;
 /// Document ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull documentID;
+/// Get an instance of Rapid document reference that is used to register
+/// actions that should be permormed when <code>Rapid</code> instance connects
+/// to a server
+///
+/// returns:
+/// Instance of <code>RapidDocumentRefOnConnect</code>
+- (RapidDocumentRefOnConnect * _Nonnull)onConnect SWIFT_WARN_UNUSED_RESULT;
+/// Get an instance of Rapid document reference that is used to register
+/// actions that should be permormed when <code>Rapid</code> instance disconnects
+/// from a server
+///
+/// returns:
+/// Instance of <code>RapidDocumentRefOnDisconnect</code>
+- (RapidDocumentRefOnDisconnect * _Nonnull)onDisconnect SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
@@ -323,6 +343,72 @@ SWIFT_CLASS("_TtC5Rapid16RapidDocumentRef")
 
 
 @interface RapidDocumentRef (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface RapidDocumentRef (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface RapidDocumentRef (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface RapidDocumentRef (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface RapidDocumentRef (SWIFT_EXTENSION(Rapid))
+@end
+
+
+/// Rapid.io document reference
+/// <code>RapidDocumentRefOnConnect</code> is used to register actions that should be performed
+/// when <code>Rapid</code> instance connects to a server
+SWIFT_CLASS("_TtC5Rapid25RapidDocumentRefOnConnect")
+@interface RapidDocumentRefOnConnect : NSObject
+/// Name of a collection to which the document belongs
+@property (nonatomic, readonly, copy) NSString * _Nonnull collectionName;
+/// Document ID
+@property (nonatomic, readonly, copy) NSString * _Nonnull documentID;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+@interface RapidDocumentRefOnConnect (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface RapidDocumentRefOnConnect (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface RapidDocumentRefOnConnect (SWIFT_EXTENSION(Rapid))
+@end
+
+
+/// Rapid.io document reference
+/// <code>RapidDocumentRefOnDisconnect</code> is used to register actions that should be performed
+/// when <code>Rapid</code> instance disconnects from a server
+SWIFT_CLASS("_TtC5Rapid28RapidDocumentRefOnDisconnect")
+@interface RapidDocumentRefOnDisconnect : NSObject
+/// Name of a collection to which the document belongs
+@property (nonatomic, readonly, copy) NSString * _Nonnull collectionName;
+/// Document ID
+@property (nonatomic, readonly, copy) NSString * _Nonnull documentID;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+@interface RapidDocumentRefOnDisconnect (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface RapidDocumentRefOnDisconnect (SWIFT_EXTENSION(Rapid))
+@end
+
+
+@interface RapidDocumentRefOnDisconnect (SWIFT_EXTENSION(Rapid))
 @end
 
 

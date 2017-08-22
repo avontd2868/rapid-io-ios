@@ -39,11 +39,14 @@ fileprivate extension ChannelsViewController {
     
     func setupRapid() {
         // Set log level
-        Rapid.logLevel = .debug
+        Rapid.logLevel = .info
+        
         // Configure shared singleton with API key
-        Rapid.configure(withApiKey: Constants.apiKey)
+        Rapid.configure(withApiKey: "<YOUR API KEY>")
+        
         // Enable data cache
         Rapid.isCacheEnabled = true
+        
         // Set timeout for requests
         Rapid.timeout = 10
         

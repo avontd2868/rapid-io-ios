@@ -129,11 +129,14 @@ fileprivate extension ListViewController {
     
     func setupRapid() {
         // Set log level
-        Rapid.logLevel = .debug
+        Rapid.logLevel = .info
+        
         // Configure shared singleton with API key
-        Rapid.configure(withApiKey: Constants.apiKey)
+        Rapid.configure(withApiKey: "<YOUR API KEY>")
+        
         // Enable data cache
         Rapid.isCacheEnabled = true
+        
         // Set timeout for requests
         Rapid.timeout = 10
     }
@@ -146,7 +149,7 @@ fileprivate extension ListViewController {
         tableView.reloadData()
         
         // Get Rapid.io collection reference with a given name
-        let collection = Rapid.collection(withName: Constants.collectionName)
+        let collection = Rapid.collection(named: Constants.collectionName)
         
         // If a filter is set, modify the collection reference with it
         if let filter = filter {
