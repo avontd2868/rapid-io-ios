@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/Rapid-Swift.h</key>
 		<data>
-		rTBR8sJvPLdRnLAqiUWT1u6T0fg=
+		P0y0ZK50EwexL0qSFNG9NCSfQW4=
 		</data>
 		<key>Headers/Rapid.h</key>
 		<data>
@@ -14,15 +14,15 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		TJD8Eaho6/ouGZ3+3gFgW1qz4/k=
+		ILxKiFYhZcsgeRP3Tlsuwi4GnZw=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		Emg87BJDrBmZDXMHabKHUQiSdgI=
+		tRyStdRnwjIn3IXTBIq9qidGgs4=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		65f6PfMUbSwUCvsnKre5BPC5Xqg=
+		4Bb61vWcV4uG0mWSDHYwDxfWz1w=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -35,11 +35,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			rTBR8sJvPLdRnLAqiUWT1u6T0fg=
+			P0y0ZK50EwexL0qSFNG9NCSfQW4=
 			</data>
 			<key>hash2</key>
 			<data>
-			uPJVD55GWe8ZU9nutjxvvZzCH5dSq0vaH/KRrvn6DiE=
+			iD+7rSvZ3j/xiA71bIF3NhASnmq3UxZu8S8mfZq0zqk=
 			</data>
 		</dict>
 		<key>Headers/Rapid.h</key>
@@ -57,22 +57,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Emg87BJDrBmZDXMHabKHUQiSdgI=
+			tRyStdRnwjIn3IXTBIq9qidGgs4=
 			</data>
 			<key>hash2</key>
 			<data>
-			GaqDYWSK0qydL4Rth+m4gfVl03moBtIHtp91s6XcTck=
+			g0ai43QYibf8+lrVuysAc9IxZaSq/PkbK2WZjR/d72A=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			65f6PfMUbSwUCvsnKre5BPC5Xqg=
+			4Bb61vWcV4uG0mWSDHYwDxfWz1w=
 			</data>
 			<key>hash2</key>
 			<data>
-			zUqJS8tVFJ8TM9RA6syPhXrG2dV/iueAonAgpDRh77Q=
+			5tsPNVbKwhIrPJJk7Qonn9DQ2wOWh6aLXCYY8WHLLJo=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

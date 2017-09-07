@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Enums  Reference</title>
+    <title>Extensions  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,7 +10,7 @@
     
   </head>
   <body>
-    <a title="Enums  Reference"></a>
+    <a title="Extensions  Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="index.html">Rapid Docs</a> (80% documented)</p>
@@ -20,7 +20,7 @@
       <p id="breadcrumbs">
         <a href="index.html">Rapid Reference</a>
         <img id="carat" src="img/carat.png" />
-        Enums  Reference
+        Extensions  Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -220,19 +220,26 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Enums</h1>
-            <p>The following enums are available globally.</p>
+            <h1>Extensions</h1>
+            <p>The following extensions are available globally.</p>
 
           </section>
           <section class="section task-group-section">
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Document%20opearaion"></a>
+                <a name="//apple_ref/swift/Section/Document opearaion" class="dashAnchor"></a>
+                <a href="#/Document%20opearaion">
+                  <h3 class="section-name">Document opearaion</h3>
+                </a>
+              </div>
               <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A5ErrorO"></a>
-                    <a name="//apple_ref/swift/Enum/RapidError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A5ErrorO">RapidError</a>
+                    <a name="/s:Sa"></a>
+                    <a name="//apple_ref/swift/Extension/Array" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa">Array</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -240,140 +247,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Errors which can be thrown by Rapid SDK</p>
-
-<ul>
-<li>permissionDenied: Client doesn&rsquo;t have permissons to read or write specified data</li>
-<li>server: Internal Rapid.io server error</li>
-<li>invalidRequest: Client sent an invalid request to Rapid.io server. Please update Rapid SDK. If your Rapid SDK is up to date, please report an issue at <a href="https://github.com/rapid-io/rapid-io-ios">https://github.com/rapid-io/rapid-io-ios</a></li>
-<li>connectionTerminated: Websocket connection expired and needs to be reestablished</li>
-<li>invalidData: Data provided by a developer (collection name, document ID, document mutation value etc.) are in an invalid format</li>
-<li>timeout: Request timeout</li>
-<li>invalidAuthToken: Authorization token is invalid</li>
-<li>executionFailed: Optimistic concurrency write to a document failed</li>
-<li>cancelled: Request cancelled</li>
-<li><code>default</code>: General error</li>
-</ul>
-
-                        <a href="Enums/RapidError.html" class="slightly-smaller">See more</a>
+                        
+                        <a href="Extensions/Array.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RapidError</span><span class="p">:</span> <span class="kt">Error</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A15ConnectionStateO"></a>
-                    <a name="//apple_ref/swift/Enum/RapidConnectionState" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A15ConnectionStateO">RapidConnectionState</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Possible connection states</p>
-
-<ul>
-<li>disconnected: Rapid instance is disconnected</li>
-<li>connecting: Rapid instance is connecting to server</li>
-<li>connected: Rapid instance is connected</li>
-</ul>
-
-                        <a href="Enums/RapidConnectionState.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RapidConnectionState</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A6ResultO"></a>
-                    <a name="//apple_ref/swift/Enum/RapidResult" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6ResultO">RapidResult</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Result of a request that is passed to a completion handler</p>
-
-<ul>
-<li>success: Request was proceeded without any error</li>
-<li>failure: An error occured</li>
-</ul>
-
-                        <a href="Enums/RapidResult.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RapidResult</span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A15ExecutionResultO"></a>
-                    <a name="//apple_ref/swift/Enum/RapidExecutionResult" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A15ExecutionResultO">RapidExecutionResult</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Return type for <code><a href="Typealiases.html#/s:5Rapid0A22DocumentExecutionBlocka">RapidDocumentExecutionBlock</a></code></p>
-
-<p><code>RapidExecutionResult</code> represents an action that should be performed based on a current value
-that is provided as an input parameter of <code><a href="Typealiases.html#/s:5Rapid0A22DocumentExecutionBlocka">RapidDocumentExecutionBlock</a></code></p>
-
-<ul>
-<li>write: Write new data</li>
-<li>delete: Delete a document</li>
-<li>abort: Abort process</li>
-</ul>
-
-                        <a href="Enums/RapidExecutionResult.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RapidExecutionResult</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Array</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">RandomAccessCollection</span><span class="p">,</span> <span class="kt">MutableCollection</span></code></pre>
 
                         </div>
                       </div>
