@@ -9,11 +9,11 @@
 
 ## Getting started
 
-- Get your unique demo identifier at rapid.io [website](https://www.rapid.io/demo)
+- Create your account at rapid.io [website](https://www.rapid.io/demo)
 - Clone or download [rapid.io SDK](https://github.com/rapid-io/rapid-io-ios)
-- Go to `Examples/RapidChat` folder and open `Info.plist` file
-- Copy your unique demo identifier and paste it next to a key called `RapidDemoIdentifier`
+- Go to `Examples/RapidChat` folder and open `RapiChat.xcodeproj` project in Xcode
+- Replace `<YOUR API KEY>` string either in `AppDelegate` class for iOS or in `ChannelsViewController` class for macOS with an API key from your rapid.io [dashboard](https://www.rapid.io/dashboard)
 
-And that's it! Now you can open `RapiChat.xcodeproj` in Xcode and run the project
+And that's it! Now you can run the project
 
-For testing realtime features you can visit [RapiChat for web](http://demo-chat.rapid.io) where you can enter your unique demo identifier and access your messages from a different client
+For testing realtime features you can visit [RapiChat for web](http://demo-chat.rapid.io) where you can enter your API key and access your messages from a different client

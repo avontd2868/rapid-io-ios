@@ -358,7 +358,7 @@ public extension Rapid {
     class func configure(withApiKey key: String) {
         sharedInstance = Rapid.getInstance(withApiKey: key)
         
-        assert(sharedInstance != nil, RapidInternalError.rapidInstanceNotInitialized.message)
+        _ = try! shared()
     }
     
     /// Create a new object representing Rapid.io collection

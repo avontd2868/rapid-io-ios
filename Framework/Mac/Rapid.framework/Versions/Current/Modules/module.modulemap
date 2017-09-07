@@ -7,5 +7,4 @@ framework module Rapid {
 
 module Rapid.Swift {
     header "Rapid-Swift.h"
-    requires objc
 }

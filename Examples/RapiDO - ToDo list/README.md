@@ -10,11 +10,11 @@
 
 ## Getting started
 
-- Get your unique demo identifier at rapid.io [website](https://www.rapid.io/demo)
+- Create your account at rapid.io [website](https://www.rapid.io/demo)
 - Clone or download [rapid.io SDK](https://github.com/rapid-io/rapid-io-ios)
-- Go to `Examples/RapiDO` folder and open `Info.plist` file
-- Copy your unique demo identifier and paste it next to a key called `RapidDemoIdentifier`
+- Go to `Examples/RapiDO` folder and open `RapiDO.xcodeproj` project in Xcode
+- Replace `<YOUR API KEY>` string either in `AppDelegate` class for iOS and tvOS or in `ListViewController` class for macOS with an API key from your rapid.io [dashboard](https://www.rapid.io/dashboard)
 
-And that's it! Now you can open `RapiDO.xcodeproj` in Xcode and run the project
+And that's it! Now you can run the project
 
-For testing realtime features you can visit [RapiDo for web](http://demo-todo.rapid.io) where you can enter your unique demo identifier and access your collection from a different client
+For testing realtime features you can visit [RapiDo for web](http://demo-todo.rapid.io) where you can enter your API key and access your collection from a different client
