@@ -3,3 +3,5 @@
 //
 
 #import "DateTools.h"
+#import <WindowsAzureMessaging/WindowsAzureMessaging.h>
+#import "AzureHubSender.h"

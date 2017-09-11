@@ -39,22 +39,3 @@ extension UIColor {
     static let appSeparator = UIColor("#EEEBF3")
 }
 
-extension UIImage {
-    
-    class func imageWithColor(_ color: UIColor, size: CGSize = CGSize(width:1, height: 1)) -> UIImage {
-        
-        let rect = CGRect(x: 0.0, y:  0.0, width:  size.width, height:  size.height)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()
-        
-        context?.setFillColor(color.cgColor)
-        context?.fill(rect)
-        
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image!
-        
-    }
-
-}

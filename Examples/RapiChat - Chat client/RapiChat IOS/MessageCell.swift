@@ -47,8 +47,8 @@ class MessageCell: UITableViewCell {
         }
     }
     
-    func configure(withMessage message: Message, myUsername: String) {
-        senderLabel.textColor = message.sender == myUsername ? UIColor.appRed : .appBlue
+    func configure(withMessage message: Message) {
+        senderLabel.textColor = message.isMyMessage ? UIColor.appRed : .appBlue
         senderLabel.text = message.sender
         
         messageTextLabel.text = message.text

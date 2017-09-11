@@ -8,8 +8,6 @@
 
 import UIKit
 
-fileprivate var registeredForObject: UIView?
-
 @objc protocol AdjustsToKeyboard: class {
     func animateWithKeyboard(height: CGFloat)
     @objc optional func completeKeyboardAnimation(height: CGFloat)
@@ -18,22 +16,11 @@ fileprivate var registeredForObject: UIView?
 extension UIViewController {
     
     func registerForKeyboardFrameChangeNotifications(object: UIView? = nil) {
-        if registeredForObject != nil {
-            registeredForObject = object
-            return
-        }
-        
-        registeredForObject = object
-        
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillChangeFrame(_:)), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
     func unregisterKeyboardFrameChangeNotifications(object: UIView? = nil) {
-        if registeredForObject == nil || registeredForObject == object {
-            NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
-            
-            registeredForObject = nil
-        }
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
     @objc fileprivate func keyboardWillChangeFrame(_ notification: NSNotification) {

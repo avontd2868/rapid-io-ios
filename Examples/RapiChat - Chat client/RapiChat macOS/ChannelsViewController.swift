@@ -17,7 +17,7 @@ class ChannelsViewController: NSViewController {
     @IBOutlet weak var activityIndicator: NSProgressIndicator!
 
     fileprivate var channelsManager: ChannelsManager!
-    fileprivate var username: String?
+    private var username = UserDefaultsManager.username
     fileprivate var selectedIndex: Int?
     
     override func viewDidLoad() {
@@ -27,6 +27,10 @@ class ChannelsViewController: NSViewController {
         
         setupRapid()
         setupController()
+
+        if username == nil {
+            enterUsername()
+        }
     }
     
     deinit {
@@ -46,20 +50,10 @@ fileprivate extension ChannelsViewController {
         
         // Enable data cache
         Rapid.isCacheEnabled = true
-        
-        // Set timeout for requests
-        Rapid.timeout = 10
-        
-        TimeManager.shared.initialize()
     }
     
     func setupController() {
         channelsManager = ChannelsManager(withDelegate: self)
-        
-        UserDefaultsManager.generateUsername { [weak self] username in
-            self?.username = username
-            self?.configureView()
-        }
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -76,12 +70,10 @@ fileprivate extension ChannelsViewController {
         if let username = username {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let normalText = [NSAttributedStringKey.foregroundColor: NSColor.appText, NSAttributedStringKey.font: NSFont.systemFont(ofSize: 13), NSAttributedStringKey.paragraphStyle: paragraphStyle]
-            let hightlightedText = [NSAttributedStringKey.foregroundColor: NSColor.appText, NSAttributedStringKey.font: NSFont.boldSystemFont(ofSize: 13), NSAttributedStringKey.paragraphStyle: paragraphStyle]
-            headerTitle.attributedStringValue = "Your username is\n\(username)".highlight(string: username, textAttributes: normalText, highlightedAttributes: hightlightedText)
+            headerTitle.stringValue = "Your username is\n\(username)"
         }
         
-        if channelsManager.channels == nil || username == nil {
+        if username == nil {
             activityIndicator.startAnimation(self)
             tableView.isHidden = true
         }
@@ -93,8 +85,24 @@ fileprivate extension ChannelsViewController {
         if let index = selectedIndex {
             tableView.selectRowIndexes(IndexSet(integer: index), byExtendingSelection: false)
         }
-        else if username != nil && (channelsManager.channels?.count ?? 0) > 0 {
+        else if username != nil && channelsManager.channels.count > 0 {
             tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+        }
+    }
+    
+    func enterUsername() {
+        let alert = NSAlert()
+        alert.messageText = "You need to choose your username"
+        alert.addButton(withTitle: "Done")
+        
+        let input = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
+        
+        alert.accessoryView = input
+        let button = alert.runModal()
+        if (button == NSApplication.ModalResponse.alertFirstButtonReturn) {
+            UserDefaultsManager.username = input.stringValue
+            username = UserDefaultsManager.username
+            configureView()
         }
     }
     
@@ -111,7 +119,7 @@ fileprivate extension ChannelsViewController {
 
 extension ChannelsViewController: ChannelsManagerDelegate {
     
-    func channelsChanged(_ manager: ChannelsManager) {
+    func channelsChanged() {
         reloadTable()
     }
 }
@@ -119,14 +127,12 @@ extension ChannelsViewController: ChannelsManagerDelegate {
 extension ChannelsViewController: NSTableViewDataSource, NSTableViewDelegate {
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return channelsManager.channels?.count ?? 0
+        return channelsManager.channels.count
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
-        guard let channel = channelsManager.channels?[row] else {
-            return nil
-        }
+        let channel = channelsManager.channels[row]
         
         let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ChannelCellID"), owner: nil)
         
@@ -153,9 +159,8 @@ extension ChannelsViewController: NSTableViewDataSource, NSTableViewDelegate {
         selectedIndex = row
         tableView.reloadData(forRowIndexes: IndexSet(integer: row), columnIndexes: IndexSet(integer: 0))
         
-        if let channel = channelsManager.channels?[row] {
-            presentChannel(channel)
-        }
+        let channel = channelsManager.channels[row]
+        presentChannel(channel)
     }
     
 }

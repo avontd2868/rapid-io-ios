@@ -55,7 +55,7 @@ class MessagesViewController: NSViewController {
     }
     
     @IBAction func sendMessage(_ sender: Any) {
-        manager?.sendMessage(textView.string ?? "")
+        manager?.sendMessage(textView.string)
         textView.string = ""
     }
 
@@ -143,7 +143,7 @@ fileprivate extension MessagesViewController {
     func configureInputBarHeight(withText text: String?) {
         let maxHeigth: CGFloat = 115
         
-        let newTextViewSize = textView.string.sizeWithFont(textView.font!, constraintWidth: textView.frame.width - 10) ?? CGSize.zero
+        let newTextViewSize = textView.string.sizeWithFont(textView.font!, constraintWidth: textView.frame.width - 10)
         
         let newInputBarHeight = newTextViewSize.height + 20
         
@@ -163,7 +163,7 @@ fileprivate extension MessagesViewController {
     }
     
     func scrollToBottom(animated: Bool) {
-        if let count = manager?.messages?.count {
+        if let count = manager?.messages.count, count > 0 {
             tableView.scrollRowToVisible(count - 1)
         }
     }
@@ -172,11 +172,11 @@ fileprivate extension MessagesViewController {
 
 extension MessagesViewController: MessagesManagerDelegate {
     
-    func messagesChanged(_ manager: MessagesManager) {
+    func messagesChanged() {
         tableView.reloadData()
         
-        if manager.channelID == channel?.name {
-            UserDefaultsManager.readMessage(withID: manager.messages?.last?.id ?? "", inChannel: manager.channelID)
+        if let manager = manager, manager.channelID == channel?.name {
+            UserDefaultsManager.readMessage(withID: manager.messages.last?.id ?? "", inChannel: manager.channelID)
             let previous = channel?.unread ?? false
             channel?.updateRead()
             let current = channel?.unread ?? false
@@ -193,12 +193,12 @@ extension MessagesViewController: MessagesManagerDelegate {
 extension MessagesViewController: NSTableViewDataSource, NSTableViewDelegate {
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return manager?.messages?.count ?? 0
+        return manager?.messages.count ?? 0
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
-        guard let message = manager?.messages?[row] else {
+        guard let message = manager?.messages[row] else {
             return nil
         }
         
@@ -212,7 +212,7 @@ extension MessagesViewController: NSTableViewDataSource, NSTableViewDelegate {
     }
     
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        guard let message = manager?.messages?[row] else {
+        guard let message = manager?.messages[row] else {
             return 55
         }
         
@@ -226,7 +226,7 @@ extension MessagesViewController: NSTableViewDataSource, NSTableViewDelegate {
 extension MessagesViewController: NSTextViewDelegate {
     
     func textView(_ textView: NSTextView, shouldChangeTextIn affectedCharRange: NSRange, replacementString: String?) -> Bool {
-        let text = ((textView.string ?? "") as NSString).replacingCharacters(in: affectedCharRange, with: replacementString ?? "")
+        let text = (textView.string as NSString).replacingCharacters(in: affectedCharRange, with: replacementString ?? "")
         
         configureSendButton(withText: text)
         configureTextViewPlacholder(withText: text)

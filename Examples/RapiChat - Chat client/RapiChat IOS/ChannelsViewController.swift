@@ -11,12 +11,12 @@ import UIKit
 class ChannelsViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var headerTitle: UILabel!
     
-    fileprivate var channelsManager: ChannelsManager!
-    fileprivate var username: String?
+    private var username = UserDefaultsManager.username
+    
+    private var channelsManager: ChannelsManager!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +28,10 @@ class ChannelsViewController: UIViewController {
         super.viewWillAppear(animated)
         
         tableView.reloadData()
+        
+        if username == nil {
+            enterUsername()
+        }
     }
 
 }
@@ -37,36 +41,35 @@ fileprivate extension ChannelsViewController {
     func setupController() {
         channelsManager = ChannelsManager(withDelegate: self)
         
-        UserDefaultsManager.generateUsername { [weak self] username in
-            self?.username = username
-            self?.configureView()
-        }
-        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorColor = .appSeparator
         
-        configureView()
-    }
-    
-    func configureView() {
         headerView.backgroundColor = .appRed
         headerTitle.textColor = .white
         
+        configureUsername()
+    }
+    
+    func configureUsername() {
         if let username = username {
-            let normalText = [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13)]
-            let hightlightedText = [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 13)]
-            headerTitle.attributedText = "Your username is \(username)".highlight(string: username, textAttributes: normalText, highlightedAttributes: hightlightedText)
+            headerTitle.text = "Your username is \(username)"
         }
+    }
+    
+    func enterUsername() {
+        let alert = UIAlertController(title: "Username", message: "You need to choose your username", preferredStyle: .alert)
         
-        if channelsManager.channels == nil || username == nil {
-            activityIndicator.startAnimating()
-            tableView.isHidden = true
+        alert.addTextField(configurationHandler: nil)
+        
+        let action = UIAlertAction(title: "Done", style: .default) { _ in
+            UserDefaultsManager.username = alert.textFields?.first?.text ?? ""
+            self.username = UserDefaultsManager.username
+            self.configureUsername()
         }
-        else {
-            activityIndicator.stopAnimating()
-            tableView.isHidden = false
-        }
+        alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
     }
     
     func presentMessages(forChannel channel: Channel) {
@@ -81,10 +84,8 @@ fileprivate extension ChannelsViewController {
 
 extension ChannelsViewController: ChannelsManagerDelegate {
     
-    func channelsChanged(_ manager: ChannelsManager) {
+    func channelsChanged() {
         tableView.reloadData()
-        
-        configureView()
     }
 }
 
@@ -96,15 +97,14 @@ extension ChannelsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return channelsManager.channels?.count ?? 0
+        return channelsManager.channels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChannelCell", for: indexPath) as! ChannelCell
         
-        if let channel = channelsManager.channels?[indexPath.row] {
-            cell.configure(withChannel: channel)
-        }
+        let channel = channelsManager.channels[indexPath.row]
+        cell.configure(withChannel: channel)
         
         return cell
     }
@@ -112,9 +112,8 @@ extension ChannelsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if let channel = channelsManager.channels?[indexPath.row] {
-            presentMessages(forChannel: channel)
-        }
+        let channel = channelsManager.channels[indexPath.row]
+        presentMessages(forChannel: channel)
     }
 
 }

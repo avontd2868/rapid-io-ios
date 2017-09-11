@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.17" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="GHN-ac-bxC">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13189.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="GHN-ac-bxC">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13165.3"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -98,24 +97,18 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="y9d-l5-brA">
-                                <rect key="frame" x="177" y="323" width="20" height="20"/>
-                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="bre-hp-Ecq" firstAttribute="bottom" secondItem="uLW-NV-ssb" secondAttribute="bottom" id="1bh-W2-0oD"/>
                             <constraint firstItem="uLW-NV-ssb" firstAttribute="leading" secondItem="bre-hp-Ecq" secondAttribute="leading" id="6av-5j-sBJ"/>
                             <constraint firstItem="uLW-NV-ssb" firstAttribute="top" secondItem="bre-hp-Ecq" secondAttribute="top" id="F26-Rk-fAF"/>
-                            <constraint firstItem="y9d-l5-brA" firstAttribute="centerX" secondItem="bre-hp-Ecq" secondAttribute="centerX" id="Gkg-CU-YbL"/>
                             <constraint firstItem="bre-hp-Ecq" firstAttribute="trailing" secondItem="uLW-NV-ssb" secondAttribute="trailing" id="mxb-QI-k9u"/>
-                            <constraint firstItem="y9d-l5-brA" firstAttribute="centerY" secondItem="Rsp-ey-u5s" secondAttribute="centerY" id="zro-H8-3Rh"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bre-hp-Ecq"/>
                     </view>
                     <navigationItem key="navigationItem" title="Channels" id="Cg8-U2-Paz"/>
                     <connections>
-                        <outlet property="activityIndicator" destination="y9d-l5-brA" id="vWA-2u-kdT"/>
                         <outlet property="headerTitle" destination="Mv9-oL-wZd" id="5L5-MP-68t"/>
                         <outlet property="headerView" destination="Dol-B1-kZT" id="ufD-KK-8ze"/>
                         <outlet property="tableView" destination="uLW-NV-ssb" id="hPD-mf-veC"/>
@@ -183,9 +176,6 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="vfd-6x-bX3">
-                                <rect key="frame" x="177.5" y="323" width="20" height="20"/>
-                            </activityIndicatorView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Fh-hX-mgh">
                                 <rect key="frame" x="0.0" y="617" width="375" height="50"/>
                                 <subviews>
@@ -209,23 +199,14 @@
                                             <constraint firstAttribute="height" id="vfH-KQ-W66"/>
                                         </constraints>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Write a message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rCb-NE-Iqf">
-                                        <rect key="frame" x="17" y="16" width="306" height="18"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="Dp8-GS-PA8" secondAttribute="trailing" constant="8" id="3ie-HU-T6S"/>
                                     <constraint firstAttribute="bottom" secondItem="Dp8-GS-PA8" secondAttribute="bottom" constant="10" id="4WW-Gy-6tQ"/>
-                                    <constraint firstItem="rCb-NE-Iqf" firstAttribute="leading" secondItem="MJJ-w4-tRg" secondAttribute="leading" constant="4" id="4uc-aL-g4X"/>
                                     <constraint firstItem="Sbr-Mr-G8L" firstAttribute="leading" secondItem="2Fh-hX-mgh" secondAttribute="leading" id="UM6-NJ-tGf"/>
                                     <constraint firstItem="Sbr-Mr-G8L" firstAttribute="top" secondItem="2Fh-hX-mgh" secondAttribute="top" id="YVX-Vr-0W8"/>
                                     <constraint firstAttribute="trailing" secondItem="Sbr-Mr-G8L" secondAttribute="trailing" id="a9u-4f-QY6"/>
-                                    <constraint firstItem="rCb-NE-Iqf" firstAttribute="top" secondItem="MJJ-w4-tRg" secondAttribute="top" constant="8" id="ban-ad-ReN"/>
-                                    <constraint firstItem="rCb-NE-Iqf" firstAttribute="width" secondItem="MJJ-w4-tRg" secondAttribute="width" id="buT-f8-taR"/>
                                     <constraint firstItem="MJJ-w4-tRg" firstAttribute="top" secondItem="2Fh-hX-mgh" secondAttribute="top" constant="8" id="mDO-WM-Mgk"/>
                                     <constraint firstAttribute="height" constant="50" id="qQw-0x-QbH"/>
                                     <constraint firstItem="MJJ-w4-tRg" firstAttribute="leading" secondItem="2Fh-hX-mgh" secondAttribute="leading" constant="13" id="suR-Rz-sQK"/>
@@ -237,23 +218,18 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="2Fh-hX-mgh" firstAttribute="leading" secondItem="Hu1-Hd-Tct" secondAttribute="leading" id="1Lb-PI-gvE"/>
-                            <constraint firstItem="vfd-6x-bX3" firstAttribute="centerY" secondItem="K9J-oZ-izE" secondAttribute="centerY" id="5Ia-qx-Mp7"/>
                             <constraint firstItem="zVp-3C-bLQ" firstAttribute="top" secondItem="Hu1-Hd-Tct" secondAttribute="top" id="FhM-3A-l30"/>
                             <constraint firstItem="Hu1-Hd-Tct" firstAttribute="trailing" secondItem="zVp-3C-bLQ" secondAttribute="trailing" id="Kmd-Sn-Amy"/>
                             <constraint firstItem="Hu1-Hd-Tct" firstAttribute="trailing" secondItem="2Fh-hX-mgh" secondAttribute="trailing" id="Wqk-Tm-zH3"/>
                             <constraint firstItem="zVp-3C-bLQ" firstAttribute="leading" secondItem="Hu1-Hd-Tct" secondAttribute="leading" id="XGa-vN-X36"/>
                             <constraint firstItem="Hu1-Hd-Tct" firstAttribute="bottom" secondItem="2Fh-hX-mgh" secondAttribute="bottom" id="rGO-cI-cag"/>
                             <constraint firstItem="2Fh-hX-mgh" firstAttribute="top" secondItem="zVp-3C-bLQ" secondAttribute="bottom" id="wkZ-of-1BA"/>
-                            <constraint firstItem="vfd-6x-bX3" firstAttribute="centerX" secondItem="Hu1-Hd-Tct" secondAttribute="centerX" id="yFW-od-pg6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Hu1-Hd-Tct"/>
                     </view>
                     <connections>
                         <outlet property="accessoryViewHeight" destination="qQw-0x-QbH" id="cH4-ix-8Iv"/>
-                        <outlet property="activityIndicator" destination="vfd-6x-bX3" id="1T4-zw-ZkD"/>
-                        <outlet property="placeholderLabel" destination="rCb-NE-Iqf" id="768-XG-E2i"/>
                         <outlet property="sendButton" destination="Dp8-GS-PA8" id="NLk-He-OGe"/>
-                        <outlet property="separatorHeight" destination="vfH-KQ-W66" id="ntE-yJ-bEV"/>
                         <outlet property="tableView" destination="zVp-3C-bLQ" id="7Gu-za-NXY"/>
                         <outlet property="textView" destination="MJJ-w4-tRg" id="Qw9-3u-KHR"/>
                     </connections>
@@ -262,12 +238,12 @@
             </objects>
             <point key="canvasLocation" x="1440.8" y="196.55172413793105"/>
         </scene>
-        <!--App Navigation Controller-->
+        <!--Navigation Controller-->
         <scene sceneID="OrY-8S-wzZ">
             <objects>
-                <navigationController id="GHN-ac-bxC" customClass="AppNavigationController" customModule="RapiChat_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController id="GHN-ac-bxC" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="gab-ra-Jw1">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>

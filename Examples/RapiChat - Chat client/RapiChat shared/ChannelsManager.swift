@@ -10,37 +10,47 @@ import Foundation
 import Rapid
 
 protocol ChannelsManagerDelegate: class {
-    func channelsChanged(_ manager: ChannelsManager)
+    func channelsChanged()
 }
 
-class ChannelsManager: NSObject, RapidSubscriber {
+class ChannelsManager {
     
-    var rapidSubscriptions: [RapidSubscription]?
+    private var subscription: RapidSubscription?
     
-    fileprivate weak var delegate: ChannelsManagerDelegate?
-    fileprivate(set) var channels: [Channel]?
+    private weak var delegate: ChannelsManagerDelegate?
+    private(set) var channels: [Channel] = []
     
     init(withDelegate delegate: ChannelsManagerDelegate) {
-        super.init()
-        
         self.delegate = delegate
         
         subscribeToChannels()
     }
     
     deinit {
-        RapidManager.shared.unsubscribe(self)
+        subscription?.unsubscribe()
     }
 }
 
 fileprivate extension ChannelsManager {
     
     func subscribeToChannels() {
-        RapidManager.shared.channels(for: self) { [weak self] documents in
-            self?.channels = documents.flatMap({ Channel(withDocument: $0) })
-            if let strongSelf = self {
-                self?.delegate?.channelsChanged(strongSelf)
+        // Get rapid.io collection reference
+        // Order it according to document ID
+        // Subscribe
+        let collection = Rapid.collection(named: "channels")
+            .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+        
+        subscription = collection.subscribe { [weak self] result in
+            switch result {
+            case .success(let documents):
+                self?.channels = documents.flatMap({ Channel(withDocument: $0) })
+                
+            case .failure:
+                self?.channels = []
             }
+            
+            PNManager.shared.listenToChannels(withNames: self?.channels.map({ $0.name }) ?? [])
+            self?.delegate?.channelsChanged()
         }
     }
 }

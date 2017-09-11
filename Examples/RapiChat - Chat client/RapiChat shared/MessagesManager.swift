@@ -10,21 +10,22 @@ import Foundation
 import Rapid
 
 protocol MessagesManagerDelegate: class {
-    func messagesChanged(_ manager: MessagesManager)
+    func messagesChanged()
 }
 
-class MessagesManager: NSObject, RapidSubscriber {
+class MessagesManager {
     
-    var rapidSubscriptions: [RapidSubscription]?
-
-    fileprivate weak var delegate: MessagesManagerDelegate?
-    fileprivate(set) var messages: [Message]?
     let channelID: String
+
+    private var subscription: RapidSubscription?
+
+    private weak var delegate: MessagesManagerDelegate?
+    private(set) var messages: [Message] = []
+    
+    private let username = UserDefaultsManager.username
     
     init(forChannel channelID: String, withDelegate delegate: MessagesManagerDelegate) {
         self.channelID = channelID
-        
-        super.init()
         
         self.delegate = delegate
         
@@ -32,59 +33,55 @@ class MessagesManager: NSObject, RapidSubscriber {
     }
     
     deinit {
-        RapidManager.shared.unsubscribe(self)
+        subscription?.unsubscribe()
     }
     
     func sendMessage(_ text: String) {
-        UserDefaultsManager.generateUsername { [weak self] username in
-            guard let strongSelf = self else {
-                return
-            }
-            
-            // Compose a dictionary with a message
-            var message: [AnyHashable: Any] = [
-                Message.channelID: strongSelf.channelID,
-                Message.sender: username,
-                Message.sentDate: Rapid.serverTimestamp,
-                Message.text: text
-            ]
-            let referenceTime = TimeManager.shared.serverTime.timeIntervalSince1970
-            
-            // Get a new rapid.io document reference from the messages collection
-            let messageRef = Rapid.collection(named: Constants.messagesCollection)
-                .newDocument()
-            
-            // Write the message to database
-            messageRef.mutate(value: message)
-            
-            // Save the message to the channel as a last message, but only if the message is newer than a current last message
-            // Use the execute function which guarantees optimistic concurrency mutations
-            Rapid.collection(named: Constants.channelsCollection).document(withID: strongSelf.channelID).execute(block: { document -> RapidExecutionResult in
-                var value = document.value ?? [:]
-                let timestamp = ((value[Channel.lastMessage] as? [AnyHashable: Any])?[Message.sentDate] as? TimeInterval ?? 0) / 1000
-                
-                if timestamp <= referenceTime {
-                    message[Channel.lastMessageID] = messageRef.documentID
-                    value[Channel.lastMessage] = message
-                    
-                    return .write(value: value)
-                }
-                else {
-                    return .abort
-                }
-            })
-        }
+        // Compose a dictionary with a message
+        var message: [AnyHashable: Any] = [
+            Message.channelID: self.channelID,
+            Message.sender: username ?? "",
+            Message.sentDate: Rapid.serverTimestamp,
+            Message.text: text
+        ]
+        
+        // Get a new rapid.io document reference from the messages collection
+        let messageRef = Rapid.collection(named: "messages")
+            .newDocument()
+        
+        // Write the message to database
+        messageRef.mutate(value: message)
+        
+        // Write last message to the channel
+        message[Channel.lastMessageID] = messageRef.documentID
+        Rapid.collection(named: "channels").document(withID: channelID).merge(value: message)
+        
     }
 }
 
 fileprivate extension MessagesManager {
     
     func subscribeToMessages() {
-        RapidManager.shared.messages(for: self, channelID: channelID) { [weak self] documents in
-            self?.messages = documents.flatMap({ Message.initialize(withDocument: $0) }).reversed()
-            if let strongSelf = self {
-                self?.delegate?.messagesChanged(strongSelf)
+        // Get rapid.io collection reference
+        // Filter it according to channel ID
+        // Order it according to sent date
+        // Limit number of messages to 250
+        // Subscribe
+        let collection = Rapid.collection(named: "messages")
+            .filter(by: RapidFilter.equal(keyPath: Message.channelID, value: channelID))
+            .order(by: RapidOrdering(keyPath: Message.sentDate, ordering: .descending))
+            .limit(to: 250)
+        
+        subscription = collection.subscribe { [weak self] result in
+            switch result {
+            case .success(let documents):
+                self?.messages = documents.flatMap({ Message.initialize(withDocument: $0) }).reversed()
+                
+            case .failure:
+                self?.messages = []
             }
+            
+            self?.delegate?.messagesChanged()
         }
     }
 }

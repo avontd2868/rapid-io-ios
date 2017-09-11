@@ -13,10 +13,7 @@ class MessagesViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var textView: UITextView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var placeholderLabel: UILabel!
     @IBOutlet weak var accessoryViewHeight: NSLayoutConstraint!
-    @IBOutlet weak var separatorHeight: NSLayoutConstraint!
     
     var channel: Channel!
     var username: String!
@@ -38,6 +35,7 @@ class MessagesViewController: UIViewController {
     // MARK: Actions
     @IBAction func sendMessage(_ sender: Any) {
         manager.sendMessage(textView.text)
+        PNManager.shared.sendNotification(toChannel: channel.name, withText: textView.text)
         textView.text = ""
     }
     
@@ -67,8 +65,6 @@ fileprivate extension MessagesViewController {
         tableView.estimatedRowHeight = 80
         tableView.separatorColor = .appSeparator
         
-        separatorHeight.constant = 0.5
-        
         sendButton.setTitleColor(.appRed, for: .normal)
         sendButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         
@@ -76,38 +72,25 @@ fileprivate extension MessagesViewController {
     }
     
     func configureView() {
-        configureActivityIndicator()
         configureSendButton()
-        configureTextViewPlacholder()
         configureInputBarHeight()
-    }
-    
-    func configureActivityIndicator() {
-        if manager.messages == nil {
-            activityIndicator.startAnimating()
-        }
-        else {
-            activityIndicator.stopAnimating()
-        }
     }
     
     func configureSendButton() {
         UIView.animate(withDuration: 0.2, animations: {
             self.sendButton.alpha = self.textView.text.isEmpty ? 0.5 : 1
         }, completion: { _ in
-            let messagesLoaded = self.manager.messages != nil
-            let empty = self.textView.text.isEmpty
-            
-            self.sendButton.isEnabled = !empty && messagesLoaded
+            self.sendButton.isEnabled = !self.textView.text.isEmpty
         })
     }
     
-    func configureTextViewPlacholder() {
-        placeholderLabel.isHidden = textView.text.characters.count > 0
-    }
-    
     func configureInputBarHeight() {
-        let maxHeigth = (view.frame.height - additionalSafeAreaInsets.bottom) / 2
+        let maxHeigth: CGFloat
+        if #available(iOS 11.0, *) {
+            maxHeigth = (view.frame.height - additionalSafeAreaInsets.bottom) / 2
+        } else {
+            maxHeigth = view.frame.height
+        }
         
         let newTextViewSize = textView.sizeThatFits(CGSize(width: textView.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
         
@@ -132,8 +115,8 @@ fileprivate extension MessagesViewController {
     }
     
     func scrollToBottom(animated: Bool) {
-        if let count = manager.messages?.count, count > 0 {
-            tableView.scrollToRow(at: IndexPath(row: count - 1, section: 0), at: .top, animated: animated)
+        if manager.messages.count > 0 {
+            tableView.scrollToRow(at: IndexPath(row: manager.messages.count - 1, section: 0), at: .top, animated: animated)
         }
     }
     
@@ -145,10 +128,10 @@ fileprivate extension MessagesViewController {
 
 extension MessagesViewController: MessagesManagerDelegate {
     
-    func messagesChanged(_ manager: MessagesManager) {
+    func messagesChanged() {
         tableView.reloadData()
         
-        UserDefaultsManager.readMessage(withID: manager.messages?.last?.id ?? "", inChannel: channel.name)
+        UserDefaultsManager.readMessage(withID: manager.messages.last?.id ?? "", inChannel: channel.name)
         channel.updateRead()
         
         configureView()
@@ -163,15 +146,14 @@ extension MessagesViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return manager.messages?.count ?? 0
+        return manager.messages.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath) as! MessageCell
         
-        if let message = manager.messages?[indexPath.row] {
-            cell.configure(withMessage: message, myUsername: username)
-        }
+        let message = manager.messages[indexPath.row]
+        cell.configure(withMessage: message)
         
         return cell
     }
@@ -180,9 +162,7 @@ extension MessagesViewController: UITableViewDelegate, UITableViewDataSource {
 extension MessagesViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
-        configureSendButton()
-        configureTextViewPlacholder()
-        configureInputBarHeight()
+        configureView()
     }
     
 }
@@ -191,7 +171,11 @@ extension MessagesViewController: UITextViewDelegate {
 extension MessagesViewController: AdjustsToKeyboard {
     
     func animateWithKeyboard(height: CGFloat) {
-        additionalSafeAreaInsets.bottom = height
+        if #available(iOS 11.0, *) {
+            additionalSafeAreaInsets.bottom = height
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     func completeKeyboardAnimation(height: CGFloat) {
