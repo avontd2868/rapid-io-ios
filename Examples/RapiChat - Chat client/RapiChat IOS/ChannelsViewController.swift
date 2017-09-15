@@ -40,6 +40,8 @@ private extension ChannelsViewController {
         
         navigationItem.title = "Channels"
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.enterChannelName))
+        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -72,6 +74,35 @@ private extension ChannelsViewController {
             
             self?.tableView.reloadData()
         }
+    }
+    
+    @objc func enterChannelName() {
+        let alert = UIAlertController(title: "Channel name", message: nil, preferredStyle: .alert)
+        
+        alert.addTextField(configurationHandler: nil)
+        
+        let action = UIAlertAction(title: "Done", style: .default) { _ in
+            let name = alert.textFields?.first?.text ?? ""
+            self.addChannel(named: name)
+        }
+        alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
+    }
+
+    func addChannel(named: String) {
+        var message = [
+            Message.channelID: named,
+            Message.sender: "admin",
+            Message.text: "#\(named) was created",
+            Message.sentDate: Rapid.serverTimestamp
+        ]
+        
+        let reference = Rapid.collection(named: "messages").newDocument()
+        reference.mutate(value: message)
+        
+        message[Channel.lastMessageID] = reference.documentID
+        Rapid.collection(named: "channels").document(withID: named).mutate(value: [Channel.lastMessage: message])
     }
 }
 

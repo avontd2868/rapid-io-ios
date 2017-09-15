@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Rapid.logLevel = .info
         
         // Configure shared singleton with API key
-        Rapid.configure(withApiKey: "MTQwdDAxZTFqNm5vZnh0dC5hcHAtcmFwaWQuaW8=")
+        Rapid.configure(withApiKey: "<YOUR API KEY>")
         // Enable data cache
         Rapid.isCacheEnabled = true
         

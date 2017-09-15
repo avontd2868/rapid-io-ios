@@ -38,7 +38,7 @@ class MessagesViewController: UIViewController {
 
     // MARK: Actions
     @IBAction func sendMessage(_ sender: Any) {
-        sendMessage(textView.text)
+        send(textView.text)
         textView.text = ""
     }
     
@@ -103,7 +103,7 @@ private extension MessagesViewController {
         view.endEditing(true)
     }
     
-    func sendMessage(_ text: String) {
+    func send(_ text: String) {
         // Compose a dictionary with a message
         var message: [AnyHashable: Any] = [
             Message.channelID: channel.name,
