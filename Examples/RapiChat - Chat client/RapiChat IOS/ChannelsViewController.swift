@@ -7,16 +7,13 @@
 //
 
 import UIKit
+import Rapid
 
-class ChannelsViewController: UIViewController {
+class ChannelsViewController: UITableViewController {
     
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var headerView: UIView!
-    @IBOutlet weak var headerTitle: UILabel!
+    private var subscription: RapidSubscription?
     
-    private var username = UserDefaultsManager.username
-    
-    private var channelsManager: ChannelsManager!
+    private(set) var channels: [Channel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,91 +25,78 @@ class ChannelsViewController: UIViewController {
         super.viewWillAppear(animated)
         
         tableView.reloadData()
-        
-        if username == nil {
-            enterUsername()
-        }
+    }
+    
+    deinit {
+        subscription?.unsubscribe()
     }
 
 }
 
-fileprivate extension ChannelsViewController {
+private extension ChannelsViewController {
     
     func setupController() {
-        channelsManager = ChannelsManager(withDelegate: self)
+        UserDefaultsManager.username = "Jan Schwarz"
+        
+        navigationItem.title = "Channels"
         
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorColor = .appSeparator
         
-        headerView.backgroundColor = .appRed
-        headerTitle.textColor = .white
-        
-        configureUsername()
-    }
-    
-    func configureUsername() {
-        if let username = username {
-            headerTitle.text = "Your username is \(username)"
-        }
-    }
-    
-    func enterUsername() {
-        let alert = UIAlertController(title: "Username", message: "You need to choose your username", preferredStyle: .alert)
-        
-        alert.addTextField(configurationHandler: nil)
-        
-        let action = UIAlertAction(title: "Done", style: .default) { _ in
-            UserDefaultsManager.username = alert.textFields?.first?.text ?? ""
-            self.username = UserDefaultsManager.username
-            self.configureUsername()
-        }
-        alert.addAction(action)
-        
-        present(alert, animated: true, completion: nil)
+        subscribeToChannels()
     }
     
     func presentMessages(forChannel channel: Channel) {
         let controller = self.storyboard?.instantiateViewController(withIdentifier: "MessagesViewController") as! MessagesViewController
         
         controller.channel = channel
-        controller.username = username
         
         navigationController?.pushViewController(controller, animated: true)
     }
-}
-
-extension ChannelsViewController: ChannelsManagerDelegate {
     
-    func channelsChanged() {
-        tableView.reloadData()
+    func subscribeToChannels() {
+        // Get rapid.io collection reference
+        // Order it according to document ID
+        // Subscribe
+        let collection = Rapid.collection(named: "channels")
+            .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+        
+        subscription = collection.subscribe { [weak self] result in
+            switch result {
+            case .success(let documents):
+                self?.channels = documents.flatMap({ Channel(withDocument: $0) })
+                
+            case .failure:
+                self?.channels = []
+            }
+            
+            self?.tableView.reloadData()
+        }
     }
 }
 
 // MARK: - Table view data source
-extension ChannelsViewController: UITableViewDelegate, UITableViewDataSource {
+extension ChannelsViewController {
 
-    func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return channelsManager.channels.count
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return channels.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChannelCell", for: indexPath) as! ChannelCell
         
-        let channel = channelsManager.channels[indexPath.row]
+        let channel = channels[indexPath.row]
         cell.configure(withChannel: channel)
         
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        let channel = channelsManager.channels[indexPath.row]
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let channel = channels[indexPath.row]
         presentMessages(forChannel: channel)
     }
 

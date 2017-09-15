@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Rapid
 
 class MessagesViewController: UIViewController {
     
@@ -16,9 +17,10 @@ class MessagesViewController: UIViewController {
     @IBOutlet weak var accessoryViewHeight: NSLayoutConstraint!
     
     var channel: Channel!
-    var username: String!
     
-    fileprivate var manager: MessagesManager!
+    private var subscription: RapidSubscription?
+
+    private(set) var messages: [Message] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,68 +31,45 @@ class MessagesViewController: UIViewController {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        unregisterKeyboardFrameChangeNotifications()
+        
+        subscription?.unsubscribe()
     }
 
     // MARK: Actions
     @IBAction func sendMessage(_ sender: Any) {
-        manager.sendMessage(textView.text)
-        PNManager.shared.sendNotification(toChannel: channel.name, withText: textView.text)
+        sendMessage(textView.text)
         textView.text = ""
     }
     
 }
 
-fileprivate extension MessagesViewController {
+private extension MessagesViewController {
     
     func setupController() {
-        manager = MessagesManager(forChannel: channel.name, withDelegate: self)
-        textView.delegate = self
-        
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.hideKeyboard))
         tap.cancelsTouchesInView = false
         tableView.addGestureRecognizer(tap)
-        
-        setupUI()
-    }
-    
-    func setupUI() {
+
         navigationItem.title = channel.name
+        
+        textView.delegate = self
         
         tableView.tableFooterView = UIView()
         tableView.dataSource = self
-        tableView.delegate = self
         
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80
-        tableView.separatorColor = .appSeparator
-        
-        sendButton.setTitleColor(.appRed, for: .normal)
-        sendButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         
         configureView()
+        
+        subscribeToMessages()
     }
     
     func configureView() {
-        configureSendButton()
-        configureInputBarHeight()
-    }
-    
-    func configureSendButton() {
-        UIView.animate(withDuration: 0.2, animations: {
-            self.sendButton.alpha = self.textView.text.isEmpty ? 0.5 : 1
-        }, completion: { _ in
-            self.sendButton.isEnabled = !self.textView.text.isEmpty
-        })
-    }
-    
-    func configureInputBarHeight() {
-        let maxHeigth: CGFloat
-        if #available(iOS 11.0, *) {
-            maxHeigth = (view.frame.height - additionalSafeAreaInsets.bottom) / 2
-        } else {
-            maxHeigth = view.frame.height
-        }
+        self.sendButton.isEnabled = !self.textView.text.isEmpty
+
+        let maxHeigth = (view.frame.height - additionalSafeAreaInsets.bottom) / 2
         
         let newTextViewSize = textView.sizeThatFits(CGSize(width: textView.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
         
@@ -115,28 +94,69 @@ fileprivate extension MessagesViewController {
     }
     
     func scrollToBottom(animated: Bool) {
-        if manager.messages.count > 0 {
-            tableView.scrollToRow(at: IndexPath(row: manager.messages.count - 1, section: 0), at: .top, animated: animated)
+        if messages.count > 0 {
+            tableView.scrollToRow(at: IndexPath(row: messages.count - 1, section: 0), at: .top, animated: animated)
         }
     }
     
     @objc func hideKeyboard() {
         view.endEditing(true)
     }
-
-}
-
-extension MessagesViewController: MessagesManagerDelegate {
+    
+    func sendMessage(_ text: String) {
+        // Compose a dictionary with a message
+        var message: [AnyHashable: Any] = [
+            Message.channelID: channel.name,
+            Message.sender: UserDefaultsManager.username,
+            Message.sentDate: Rapid.serverTimestamp,
+            Message.text: text
+        ]
+        
+        // Get a new rapid.io document reference from the messages collection
+        let messageRef = Rapid.collection(named: "messages")
+            .newDocument()
+        
+        // Write the message to database
+        messageRef.mutate(value: message)
+        
+        // Write last message to the channel
+        message[Channel.lastMessageID] = messageRef.documentID
+        Rapid.collection(named: "channels").document(withID: channel.name).merge(value: [Channel.lastMessage: message])
+    }
+    
+    func subscribeToMessages() {
+        // Get rapid.io collection reference
+        // Filter it according to channel ID
+        // Order it according to sent date
+        // Limit number of messages to 250
+        // Subscribe
+        let collection = Rapid.collection(named: "messages")
+            .filter(by: RapidFilter.equal(keyPath: Message.channelID, value: channel.name))
+            .order(by: RapidOrdering(keyPath: Message.sentDate, ordering: .descending))
+            .limit(to: 250)
+        
+        subscription = collection.subscribe { [weak self] result in
+            switch result {
+            case .success(let documents):
+                self?.messages = documents.flatMap({ Message.initialize(withDocument: $0) }).reversed()
+                
+            case .failure:
+                self?.messages = []
+            }
+            
+            self?.messagesChanged()
+        }
+    }
     
     func messagesChanged() {
         tableView.reloadData()
         
-        UserDefaultsManager.readMessage(withID: manager.messages.last?.id ?? "", inChannel: channel.name)
-        channel.updateRead()
+        UserDefaultsManager.readMessage(withID: messages.last?.id ?? "", inChannel: channel.name)
         
         configureView()
         scrollToBottom(animated: true)
     }
+
 }
 
 extension MessagesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -146,13 +166,13 @@ extension MessagesViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return manager.messages.count
+        return messages.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath) as! MessageCell
         
-        let message = manager.messages[indexPath.row]
+        let message = messages[indexPath.row]
         cell.configure(withMessage: message)
         
         return cell
@@ -168,14 +188,37 @@ extension MessagesViewController: UITextViewDelegate {
 }
 
 // MARK: - Adjust to keyboard
-extension MessagesViewController: AdjustsToKeyboard {
+private extension MessagesViewController {
+    
+    func registerForKeyboardFrameChangeNotifications(object: UIView? = nil) {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillChangeFrame(_:)), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
+    }
+    
+    func unregisterKeyboardFrameChangeNotifications(object: UIView? = nil) {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
+    }
+    
+    @objc func keyboardWillChangeFrame(_ notification: NSNotification) {
+        
+        if let userInfo = notification.userInfo,
+            let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue,
+            let curve = (userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber)?.intValue,
+            let endFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            
+            let options = UIViewAnimationOptions(rawValue: UInt(curve << 16))
+            let height = UIScreen.main.bounds.height - endFrame.origin.y
+            
+            UIView.animate(withDuration: duration, delay: 0, options: options, animations: { () -> Void in
+                self.animateWithKeyboard(height: height)
+                self.view.layoutIfNeeded()
+            }, completion: { (_) -> Void in
+                self.completeKeyboardAnimation(height: height)
+            })
+        }
+    }
     
     func animateWithKeyboard(height: CGFloat) {
-        if #available(iOS 11.0, *) {
-            additionalSafeAreaInsets.bottom = height
-        } else {
-            // Fallback on earlier versions
-        }
+        additionalSafeAreaInsets.bottom = height
     }
     
     func completeKeyboardAnimation(height: CGFloat) {
@@ -183,4 +226,5 @@ extension MessagesViewController: AdjustsToKeyboard {
             scrollToBottom(animated: true)
         }
     }
+
 }

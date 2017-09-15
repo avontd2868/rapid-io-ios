@@ -8,10 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AD4BFC8F1F041AAC00C26F94 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4BFC8E1F041AAC00C26F94 /* MessagesViewController.swift */; };
-		C18E569A1F62BA8700E14D14 /* WindowsAzureMessaging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C18E56991F62B98500E14D14 /* WindowsAzureMessaging.framework */; };
 		C1A2DBAB1F04067E00C5B00B /* ChannelCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2DBAA1F04067E00C5B00B /* ChannelCellView.swift */; };
 		C1A2DBAD1F04EBD200C5B00B /* MessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2DBAC1F04EBD200C5B00B /* MessageCellView.swift */; };
-		C1AF7E2D1F62B9E800D34878 /* PNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1AF7E2C1F62B9E800D34878 /* PNManager.swift */; };
 		C1DFC1CE1F0281B90077A495 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */; };
 		C1DFC1D31F0281B90077A495 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC1D11F0281B90077A495 /* Main.storyboard */; };
 		C1DFC1D51F0281B90077A495 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC1D41F0281B90077A495 /* Assets.xcassets */; };
@@ -20,14 +18,11 @@
 		C1DFC1E31F02874B0077A495 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1E21F02874B0077A495 /* Channel.swift */; };
 		C1DFC1EF1F028F890077A495 /* Rapid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1ED1F028F7E0077A495 /* Rapid.framework */; };
 		C1DFC1F01F028F890077A495 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC1ED1F028F7E0077A495 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C1DFC1F21F0292E10077A495 /* ChannelsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */; };
-		C1DFC1FA1F0298310077A495 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F91F0298310077A495 /* Helpers.swift */; };
-		C1DFC1FC1F029B950077A495 /* MessagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1FB1F029B950077A495 /* MessagesManager.swift */; };
+		C1DFC1FA1F0298310077A495 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F91F0298310077A495 /* UserDefaultsManager.swift */; };
 		C1DFC1FE1F029DC50077A495 /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1FD1F029DC50077A495 /* ChannelsViewController.swift */; };
 		C1DFC2001F029EA30077A495 /* ChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1FF1F029EA30077A495 /* ChannelCell.swift */; };
 		C1DFC2331F02AB4D0077A495 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */; };
 		C1DFC2351F02AF0D0077A495 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2341F02AF0D0077A495 /* MessageCell.swift */; };
-		C1DFC2371F02AFE80077A495 /* UIViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */; };
 		C1DFC2491F02BB610077A495 /* DateTools.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC23A1F02BB610077A495 /* DateTools.bundle */; };
 		C1DFC24A1F02BB610077A495 /* DTError.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC23E1F02BB610077A495 /* DTError.m */; };
 		C1DFC24B1F02BB610077A495 /* DTTimePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2401F02BB610077A495 /* DTTimePeriod.m */; };
@@ -35,7 +30,6 @@
 		C1DFC24D1F02BB610077A495 /* DTTimePeriodCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2441F02BB610077A495 /* DTTimePeriodCollection.m */; };
 		C1DFC24E1F02BB610077A495 /* DTTimePeriodGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */; };
 		C1DFC24F1F02BB610077A495 /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */; };
-		C1DFC2511F03A3E10077A495 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */; };
 		C1DFC25B1F03F2A60077A495 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC25A1F03F2A60077A495 /* AppDelegate.swift */; };
 		C1DFC25D1F03F2A60077A495 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC25C1F03F2A60077A495 /* ViewController.swift */; };
 		C1DFC2621F03F2A60077A495 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC2601F03F2A60077A495 /* Main.storyboard */; };
@@ -43,10 +37,8 @@
 		C1DFC26E1F03F4260077A495 /* Rapid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1DFC2681F03F4180077A495 /* Rapid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C1DFC2731F03F4C30077A495 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1DFC1D41F0281B90077A495 /* Assets.xcassets */; };
 		C1DFC2741F03F4EA0077A495 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1E21F02874B0077A495 /* Channel.swift */; };
-		C1DFC2751F03F4EE0077A495 /* ChannelsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */; };
-		C1DFC2771F03F4F70077A495 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F91F0298310077A495 /* Helpers.swift */; };
+		C1DFC2771F03F4F70077A495 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1F91F0298310077A495 /* UserDefaultsManager.swift */; };
 		C1DFC2781F03F4FE0077A495 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1E01F0287400077A495 /* Message.swift */; };
-		C1DFC2791F03F5010077A495 /* MessagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC1FB1F029B950077A495 /* MessagesManager.swift */; };
 		C1DFC27C1F03F5400077A495 /* DTError.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC23E1F02BB610077A495 /* DTError.m */; };
 		C1DFC27D1F03F5460077A495 /* DTTimePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2401F02BB610077A495 /* DTTimePeriod.m */; };
 		C1DFC27E1F03F5490077A495 /* DTTimePeriodChain.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2421F02BB610077A495 /* DTTimePeriodChain.m */; };
@@ -56,7 +48,6 @@
 		C1DFC2821F03F55C0077A495 /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */; };
 		C1DFC2841F03FB370077A495 /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2831F03FB370077A495 /* ChannelsViewController.swift */; };
 		C1DFC2861F03FE430077A495 /* CocoaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1DFC2851F03FE430077A495 /* CocoaExtensions.swift */; };
-		C1FCCF421F62CEB200F37DE2 /* AzureHubSender.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FCCF411F62CEB200F37DE2 /* AzureHubSender.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -86,11 +77,9 @@
 
 /* Begin PBXFileReference section */
 		AD4BFC8E1F041AAC00C26F94 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
-		C18E56991F62B98500E14D14 /* WindowsAzureMessaging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WindowsAzureMessaging.framework; sourceTree = "<group>"; };
 		C1A2DBAA1F04067E00C5B00B /* ChannelCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCellView.swift; sourceTree = "<group>"; };
 		C1A2DBAC1F04EBD200C5B00B /* MessageCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
 		C1A2DBAF1F0520AB00C5B00B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C1AF7E2C1F62B9E800D34878 /* PNManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNManager.swift; sourceTree = "<group>"; };
 		C1DFC1CA1F0281B90077A495 /* RapiChat iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiChat iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DFC1CD1F0281B90077A495 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DFC1D21F0281B90077A495 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -99,14 +88,11 @@
 		C1DFC1E01F0287400077A495 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C1DFC1E21F02874B0077A495 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		C1DFC1ED1F028F7E0077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/iOS/Rapid.framework; sourceTree = "<group>"; };
-		C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelsManager.swift; sourceTree = "<group>"; };
-		C1DFC1F91F0298310077A495 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		C1DFC1FB1F029B950077A495 /* MessagesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesManager.swift; sourceTree = "<group>"; };
+		C1DFC1F91F0298310077A495 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		C1DFC1FD1F029DC50077A495 /* ChannelsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		C1DFC1FF1F029EA30077A495 /* ChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCell.swift; sourceTree = "<group>"; };
 		C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		C1DFC2341F02AF0D0077A495 /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
-		C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RapiChat-Bridging-Header.h"; sourceTree = "<group>"; };
 		C1DFC23A1F02BB610077A495 /* DateTools.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DateTools.bundle; sourceTree = "<group>"; };
 		C1DFC23B1F02BB610077A495 /* DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateTools.h; sourceTree = "<group>"; };
@@ -123,7 +109,6 @@
 		C1DFC2461F02BB610077A495 /* DTTimePeriodGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTTimePeriodGroup.m; sourceTree = "<group>"; };
 		C1DFC2471F02BB610077A495 /* NSDate+DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateTools.h"; sourceTree = "<group>"; };
 		C1DFC2481F02BB610077A495 /* NSDate+DateTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateTools.m"; sourceTree = "<group>"; };
-		C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		C1DFC2581F03F2A60077A495 /* RapiChat macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RapiChat macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1DFC25A1F03F2A60077A495 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C1DFC25C1F03F2A60077A495 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -131,9 +116,6 @@
 		C1DFC2681F03F4180077A495 /* Rapid.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rapid.framework; path = ../../Framework/Mac/Rapid.framework; sourceTree = "<group>"; };
 		C1DFC2831F03FB370077A495 /* ChannelsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		C1DFC2851F03FE430077A495 /* CocoaExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExtensions.swift; sourceTree = "<group>"; };
-		C1FCCF3D1F62C22E00F37DE2 /* RapiChat iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "RapiChat iOS.entitlements"; path = "RapiChat iOS/RapiChat iOS.entitlements"; sourceTree = "<group>"; };
-		C1FCCF401F62CEB200F37DE2 /* AzureHubSender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AzureHubSender.h; sourceTree = "<group>"; };
-		C1FCCF411F62CEB200F37DE2 /* AzureHubSender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AzureHubSender.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,7 +124,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1DFC1EF1F028F890077A495 /* Rapid.framework in Frameworks */,
-				C18E569A1F62BA8700E14D14 /* WindowsAzureMessaging.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,7 +141,6 @@
 		C1DFC1C11F0281B90077A495 = {
 			isa = PBXGroup;
 			children = (
-				C1FCCF3D1F62C22E00F37DE2 /* RapiChat iOS.entitlements */,
 				C1A2DBAF1F0520AB00C5B00B /* Info.plist */,
 				C1DFC1E41F028EAE0077A495 /* Frameworks */,
 				C1DFC1CB1F0281B90077A495 /* Products */,
@@ -190,11 +170,6 @@
 				C1DFC1D11F0281B90077A495 /* Main.storyboard */,
 				C1DFC2341F02AF0D0077A495 /* MessageCell.swift */,
 				C1DFC2321F02AB4D0077A495 /* MessagesViewController.swift */,
-				C1DFC2501F03A3E10077A495 /* UIKitExtensions.swift */,
-				C1DFC2361F02AFE80077A495 /* UIViewController+Keyboard.swift */,
-				C1AF7E2C1F62B9E800D34878 /* PNManager.swift */,
-				C1FCCF401F62CEB200F37DE2 /* AzureHubSender.h */,
-				C1FCCF411F62CEB200F37DE2 /* AzureHubSender.m */,
 			);
 			path = "RapiChat IOS";
 			sourceTree = "<group>";
@@ -204,10 +179,8 @@
 			children = (
 				C1DFC1D41F0281B90077A495 /* Assets.xcassets */,
 				C1DFC1E21F02874B0077A495 /* Channel.swift */,
-				C1DFC1F11F0292E10077A495 /* ChannelsManager.swift */,
-				C1DFC1F91F0298310077A495 /* Helpers.swift */,
 				C1DFC1E01F0287400077A495 /* Message.swift */,
-				C1DFC1FB1F029B950077A495 /* MessagesManager.swift */,
+				C1DFC1F91F0298310077A495 /* UserDefaultsManager.swift */,
 				C1DFC2391F02BB600077A495 /* RapiChat-Bridging-Header.h */,
 			);
 			path = "RapiChat shared";
@@ -216,7 +189,6 @@
 		C1DFC1E41F028EAE0077A495 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C18E56991F62B98500E14D14 /* WindowsAzureMessaging.framework */,
 				C1DFC1ED1F028F7E0077A495 /* Rapid.framework */,
 				C1DFC2681F03F4180077A495 /* Rapid.framework */,
 			);
@@ -311,12 +283,11 @@
 				TargetAttributes = {
 					C1DFC1C91F0281B90077A495 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = B4866X7S79;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -375,26 +346,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1AF7E2D1F62B9E800D34878 /* PNManager.swift in Sources */,
 				C1DFC24A1F02BB610077A495 /* DTError.m in Sources */,
 				C1DFC1FE1F029DC50077A495 /* ChannelsViewController.swift in Sources */,
 				C1DFC24B1F02BB610077A495 /* DTTimePeriod.m in Sources */,
 				C1DFC2001F029EA30077A495 /* ChannelCell.swift in Sources */,
 				C1DFC24C1F02BB610077A495 /* DTTimePeriodChain.m in Sources */,
 				C1DFC24D1F02BB610077A495 /* DTTimePeriodCollection.m in Sources */,
-				C1DFC2511F03A3E10077A495 /* UIKitExtensions.swift in Sources */,
 				C1DFC1E11F0287400077A495 /* Message.swift in Sources */,
 				C1DFC2331F02AB4D0077A495 /* MessagesViewController.swift in Sources */,
 				C1DFC2351F02AF0D0077A495 /* MessageCell.swift in Sources */,
-				C1DFC2371F02AFE80077A495 /* UIViewController+Keyboard.swift in Sources */,
 				C1DFC24E1F02BB610077A495 /* DTTimePeriodGroup.m in Sources */,
-				C1DFC1FA1F0298310077A495 /* Helpers.swift in Sources */,
-				C1FCCF421F62CEB200F37DE2 /* AzureHubSender.m in Sources */,
-				C1DFC1F21F0292E10077A495 /* ChannelsManager.swift in Sources */,
+				C1DFC1FA1F0298310077A495 /* UserDefaultsManager.swift in Sources */,
 				C1DFC1E31F02874B0077A495 /* Channel.swift in Sources */,
 				C1DFC1CE1F0281B90077A495 /* AppDelegate.swift in Sources */,
 				C1DFC24F1F02BB610077A495 /* NSDate+DateTools.m in Sources */,
-				C1DFC1FC1F029B950077A495 /* MessagesManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,15 +371,13 @@
 				C1DFC2861F03FE430077A495 /* CocoaExtensions.swift in Sources */,
 				C1DFC2841F03FB370077A495 /* ChannelsViewController.swift in Sources */,
 				C1DFC25D1F03F2A60077A495 /* ViewController.swift in Sources */,
-				C1DFC2771F03F4F70077A495 /* Helpers.swift in Sources */,
+				C1DFC2771F03F4F70077A495 /* UserDefaultsManager.swift in Sources */,
 				C1DFC2741F03F4EA0077A495 /* Channel.swift in Sources */,
 				C1DFC2801F03F5520077A495 /* DTTimePeriodGroup.m in Sources */,
 				C1A2DBAB1F04067E00C5B00B /* ChannelCellView.swift in Sources */,
 				C1DFC27C1F03F5400077A495 /* DTError.m in Sources */,
 				C1DFC27F1F03F54E0077A495 /* DTTimePeriodCollection.m in Sources */,
-				C1DFC2751F03F4EE0077A495 /* ChannelsManager.swift in Sources */,
 				C1DFC2821F03F55C0077A495 /* NSDate+DateTools.m in Sources */,
-				C1DFC2791F03F5010077A495 /* MessagesManager.swift in Sources */,
 				AD4BFC8F1F041AAC00C26F94 /* MessagesViewController.swift in Sources */,
 				C1DFC2781F03F4FE0077A495 /* Message.swift in Sources */,
 				C1DFC25B1F03F2A60077A495 /* AppDelegate.swift in Sources */,
@@ -503,7 +466,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -553,7 +516,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -566,8 +529,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "RapiChat iOS/RapiChat iOS.entitlements";
-				DEVELOPMENT_TEAM = B4866X7S79;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"${PROJECT_DIR}/../../Framework/iOS",
 					"$(PROJECT_DIR)",
@@ -589,8 +551,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "RapiChat iOS/RapiChat iOS.entitlements";
-				DEVELOPMENT_TEAM = B4866X7S79;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"${PROJECT_DIR}/../../Framework/iOS",
 					"$(PROJECT_DIR)",

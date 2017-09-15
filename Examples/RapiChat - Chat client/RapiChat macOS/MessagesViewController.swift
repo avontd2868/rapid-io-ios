@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import Rapid
 
 class PlaceholderTextField: NSTextField {
     
@@ -32,10 +33,11 @@ class MessagesViewController: NSViewController {
             setupController()
         }
     }
-    var username: String?
     
-    fileprivate var manager: MessagesManager?
+    private var subscription: RapidSubscription?
     
+    private(set) var messages: [Message]?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,32 +57,35 @@ class MessagesViewController: NSViewController {
     }
     
     @IBAction func sendMessage(_ sender: Any) {
-        manager?.sendMessage(textView.string)
-        textView.string = ""
+        if let channel = channel {
+            sendMessage(textView.string, toChannel: channel)
+            textView.string = ""
+        }
     }
 
     @objc func channelSelected(_ notification: Notification) {
         if let channel = notification.object as? Channel {
             self.channel = channel
         }
-        if let username = notification.userInfo?["username"] as? String {
-            self.username = username
-        }
     }
 }
 
-fileprivate extension MessagesViewController {
+private extension MessagesViewController {
     
     func setupController() {
-        if let channel = channel {
-            manager = MessagesManager(forChannel: channel.name, withDelegate: self)
-        }
         textView.delegate = self
         
         tableView.dataSource = self
         tableView.delegate = self
         
         setupUI()
+        
+        subscription?.unsubscribe()
+        messages = nil
+        
+        if let channel = channel {
+            subscribeToMessages(inChannel: channel)
+        }
     }
     
     func setupUI() {
@@ -119,7 +124,7 @@ fileprivate extension MessagesViewController {
     }
     
     func configureActivityIndicator() {
-        if manager?.messages == nil {
+        if messages == nil {
             activityIndicator.isHidden = false
             activityIndicator.startAnimation(nil)
         }
@@ -130,7 +135,7 @@ fileprivate extension MessagesViewController {
     }
     
     func configureSendButton(withText text: String?) {
-        let messagesLoaded = self.manager?.messages != nil
+        let messagesLoaded = messages != nil
         let empty = text?.isEmpty ?? true
         
         self.sendButton.isEnabled = !empty && messagesLoaded
@@ -163,23 +168,63 @@ fileprivate extension MessagesViewController {
     }
     
     func scrollToBottom(animated: Bool) {
-        if let count = manager?.messages.count, count > 0 {
+        if let count = messages?.count, count > 0 {
             tableView.scrollRowToVisible(count - 1)
         }
     }
-
-}
-
-extension MessagesViewController: MessagesManagerDelegate {
     
-    func messagesChanged() {
+    func sendMessage(_ text: String, toChannel channel: Channel) {
+        // Compose a dictionary with a message
+        var message: [AnyHashable: Any] = [
+            Message.channelID: channel.name,
+            Message.sender: UserDefaultsManager.username,
+            Message.sentDate: Rapid.serverTimestamp,
+            Message.text: text
+        ]
+        
+        // Get a new rapid.io document reference from the messages collection
+        let messageRef = Rapid.collection(named: "messages")
+            .newDocument()
+        
+        // Write the message to database
+        messageRef.mutate(value: message)
+        
+        // Write last message to the channel
+        message[Channel.lastMessageID] = messageRef.documentID
+        Rapid.collection(named: "channels").document(withID: channel.name).merge(value: [Channel.lastMessage: message])
+    }
+    
+    func subscribeToMessages(inChannel channel: Channel) {
+        // Get rapid.io collection reference
+        // Filter it according to channel ID
+        // Order it according to sent date
+        // Limit number of messages to 250
+        // Subscribe
+        let collection = Rapid.collection(named: "messages")
+            .filter(by: RapidFilter.equal(keyPath: Message.channelID, value: channel.name))
+            .order(by: RapidOrdering(keyPath: Message.sentDate, ordering: .descending))
+            .limit(to: 250)
+        
+        subscription = collection.subscribe { [weak self] result in
+            switch result {
+            case .success(let documents):
+                self?.messages = documents.flatMap({ Message.initialize(withDocument: $0) }).reversed()
+                
+            case .failure:
+                self?.messages = []
+            }
+            
+            self?.messagesChanged(inChannel: channel)
+        }
+    }
+
+    func messagesChanged(inChannel channel: Channel) {
         tableView.reloadData()
         
-        if let manager = manager, manager.channelID == channel?.name {
-            UserDefaultsManager.readMessage(withID: manager.messages.last?.id ?? "", inChannel: manager.channelID)
-            let previous = channel?.unread ?? false
-            channel?.updateRead()
-            let current = channel?.unread ?? false
+        if let currentChannel = self.channel, currentChannel.name == channel.name {
+            let previous = isUnread(channel: currentChannel)
+            UserDefaultsManager.readMessage(withID: messages?.last?.id ?? "", inChannel: currentChannel.name)
+            let current = isUnread(channel: currentChannel)
             if previous != current {
                 NotificationCenter.default.post(name: Notification.Name("ReadMessagesUpdated"), object: nil)
             }
@@ -188,31 +233,40 @@ extension MessagesViewController: MessagesManagerDelegate {
         configureView()
         scrollToBottom(animated: true)
     }
+    
+    private func isUnread(channel: Channel) -> Bool {
+        if let messageID = channel.lastMessage?.id {
+            return messageID != UserDefaultsManager.lastReadMessage(inChannel: channel.name)
+        }
+        else {
+            return false
+        }
+    }
 }
 
 extension MessagesViewController: NSTableViewDataSource, NSTableViewDelegate {
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return manager?.messages.count ?? 0
+        return messages?.count ?? 0
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
-        guard let message = manager?.messages[row] else {
+        guard let message = messages?[row] else {
             return nil
         }
         
         let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "MessageCellID"), owner: nil)
         
         if let cell = view as? MessageCellView {
-            cell.configure(withMessage: message, myUsername: username)
+            cell.configure(withMessage: message)
         }
         
         return view
     }
     
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        guard let message = manager?.messages[row] else {
+        guard let message = messages?[row] else {
             return 55
         }
         

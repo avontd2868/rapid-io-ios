@@ -7,28 +7,16 @@
 //
 
 import Foundation
-import Rapid
 
 struct UserDefaultsManager {
     
-    static var username: String? {
+    static var username: String {
         get {
-            return UserDefaults.standard.string(forKey: "RapiChatUsername")
+            return UserDefaults.standard.string(forKey: "RapiChatUsername") ?? ""
         }
         
         set {
             UserDefaults.standard.set(newValue, forKey: "RapiChatUsername")
-            UserDefaults.standard.synchronize()
-        }
-    }
-    
-    static var deviceToken: Data? {
-        get {
-            return UserDefaults.standard.object(forKey: "deviceToken") as? Data
-        }
-        
-        set {
-            UserDefaults.standard.set(newValue, forKey: "deviceToken")
             UserDefaults.standard.synchronize()
         }
     }
