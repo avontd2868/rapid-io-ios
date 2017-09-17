@@ -36,6 +36,27 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
+      "line": 245,
+      "symbol": "RapidDocument.decode(toType:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
+      "line": 351,
+      "symbol": "Array.decode(toType:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
+      "line": 355,
+      "symbol": "Array.flatDecode(toType:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocumentRef.swift",
       "line": 41,
       "symbol": "RapidExecutionResult.write",
@@ -180,6 +201,13 @@
       "line": 123,
       "symbol": "RapidError.ExecutionError.aborted",
       "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidProtocols.swift",
+      "line": 73,
+      "symbol": "RapidMutationReference.mutate(encodableValue:completion:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {

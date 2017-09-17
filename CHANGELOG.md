@@ -2,8 +2,24 @@
 All notable changes to this project will be documented in this file.
 
 #### 1.x Releases
+- `1.2.x` Releases - [1.2.0](#120)
 - `1.1.x` Releases - [1.1.0](#110) | [1.1.1](#111) | [1.1.2](#112)
 - `1.0.x` Releases - [1.0.0](#100) | [1.0.1](#101) | [1.0.2](#102)
+
+---
+
+## [1.2.0](https://github.com/rapid-io/rapid-io-ios/releases/tag/1.2.0)
+Released on 2017-09-18.
+
+#### Added
+
+- Swift 4
+
+- Deserialize `RapidDocument` to an object that conforms to Codable
+
+#### Updated
+
+- Simplify example chat app
 
 ---
 

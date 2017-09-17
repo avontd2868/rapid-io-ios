@@ -42,11 +42,12 @@ class ChannelCellView: NSTableCellView {
             timeLabel.stringValue = ""
         }
         
-        nameLabel.font = channel.unread ? nameFontUnread : nameFont
-        messageTextLabel.font = channel.unread ? textFontUnread : textFont
-        timeLabel.font = channel.unread ? dateFontUnread : dateFont
-        unreadView.isHidden = !channel.unread
-        nameLeading.constant = channel.unread ? 30 : 15
+        let unread = isUnread(channel: channel)
+        nameLabel.font = unread ? nameFontUnread : nameFont
+        messageTextLabel.font = unread ? textFontUnread : textFont
+        timeLabel.font = unread ? dateFontUnread : dateFont
+        unreadView.isHidden = !unread
+        nameLeading.constant = unread ? 30 : 15
         
         nameLabel.textColor = selected ? NSColor.white : .textColor
         messageTextLabel.textColor = selected ? NSColor.white : .textColor
@@ -56,4 +57,13 @@ class ChannelCellView: NSTableCellView {
         layer?.backgroundColor = selected ? NSColor.appRed.cgColor : NSColor.clear.cgColor
     }
     
+    private func isUnread(channel: Channel) -> Bool {
+        if let messageID = channel.lastMessage?.id {
+            return messageID != UserDefaultsManager.lastReadMessage(inChannel: channel.name)
+        }
+        else {
+            return false
+        }
+    }
+
 }

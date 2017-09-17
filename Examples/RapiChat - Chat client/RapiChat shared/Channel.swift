@@ -13,7 +13,6 @@ class Channel {
     
     let name: String
     let lastMessage: Message?
-    fileprivate(set) var unread: Bool
     
     init(withDocument document: RapidDocument) {
         self.name = document.id
@@ -23,22 +22,6 @@ class Channel {
         }
         else {
             self.lastMessage = nil
-        }
-        
-        if let messageID = lastMessage?.id {
-            self.unread = messageID != UserDefaultsManager.lastReadMessage(inChannel: self.name)
-        }
-        else {
-            self.unread = false
-        }
-    }
-    
-    func updateRead() {
-        if let messageID = lastMessage?.id {
-            self.unread = messageID != UserDefaultsManager.lastReadMessage(inChannel: self.name)
-        }
-        else {
-            self.unread = false
         }
     }
 }

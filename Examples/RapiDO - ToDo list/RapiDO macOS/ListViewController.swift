@@ -75,13 +75,13 @@ class ListViewController: NSViewController {
         
         // Create filter for selected tags
         var tags = [RapidFilter]()
-        if homeCheckBox.state > 0 {
+        if homeCheckBox.state.rawValue > 0 {
             tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.home.rawValue))
         }
-        if workCheckBox.state > 0 {
+        if workCheckBox.state.rawValue > 0 {
             tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.work.rawValue))
         }
-        if otherCheckBox.state > 0 {
+        if otherCheckBox.state.rawValue > 0 {
             tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.other.rawValue))
         }
         // Combine single tag filters with logical "OR" operator
@@ -110,7 +110,7 @@ fileprivate extension ListViewController {
         tableView.doubleAction = #selector(self.tableViewDoubleClick(_:))
         
         for column in tableView.tableColumns {
-            let columnID = ColumnIdentifier(rawValue: column.identifier)
+            let columnID = ColumnIdentifier(rawValue: column.identifier.rawValue)
             
             switch columnID {
             case .some(.priority), .some(.title), .some(.completed), .some(.created):
@@ -200,11 +200,11 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
         
         let task = tasks[row]
 
-        guard let id = tableColumn?.identifier, let column = ColumnIdentifier(rawValue: id) else {
+        guard let id = tableColumn?.identifier, let column = ColumnIdentifier(rawValue: id.rawValue) else {
             return nil
         }
 
-        let view = tableView.make(withIdentifier: column.cellIdentifier, owner: nil)
+        let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: column.cellIdentifier), owner: nil)
         
         if let cell = view as? NSTableCellView {
         switch column {
@@ -212,7 +212,7 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
             if let cell = view as? CheckBoxCellView {
                 cell.delegate = self
                 cell.textField?.stringValue = ""
-                cell.checkBox.state = task.completed ? 1 : 0
+                cell.checkBox.state = NSControl.StateValue(rawValue: task.completed ? 1 : 0)
             }
             
         case .title:
@@ -237,7 +237,7 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
         return view
     }
     
-    func tableViewDoubleClick(_ sender: AnyObject) {
+    @objc func tableViewDoubleClick(_ sender: AnyObject) {
         let row = tableView.selectedRow
         
         guard row >= 0 else {
@@ -245,7 +245,7 @@ extension ListViewController: NSTableViewDataSource, NSTableViewDelegate {
         }
         
         let task = tasks[row]
-        let delegate = NSApplication.shared().delegate as? AppDelegate
+        let delegate = NSApplication.shared.delegate as? AppDelegate
         delegate?.updateTask(task)
     }
     

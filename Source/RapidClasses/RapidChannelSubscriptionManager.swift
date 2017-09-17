@@ -68,7 +68,7 @@ extension RapidChanSubManager: RapidSerializable {
             return try subscription.serialize(withIdentifiers: idef)
         }
         else {
-            throw RapidError.invalidData(reason: .serializationFailure)
+            throw RapidError.invalidData(reason: .serializationFailure(message: "No subscription to serialize"))
         }
     }
     

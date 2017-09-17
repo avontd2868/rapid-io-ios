@@ -16,7 +16,7 @@ class TimerTarget: NSObject {
         self.block = block
     }
     
-    func timerFired(_ timer: Timer) {
+    @objc func timerFired(_ timer: Timer) {
         block(timer.userInfo)
     }
 }

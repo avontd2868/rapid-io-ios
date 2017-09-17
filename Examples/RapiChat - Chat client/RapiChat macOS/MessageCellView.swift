@@ -50,8 +50,8 @@ class MessageCellView: NSTableCellView {
         }
     }
     
-    func configure(withMessage message: Message, myUsername: String?) {
-        senderLabel.textColor = message.sender == myUsername ? NSColor.appRed : .appBlue
+    func configure(withMessage message: Message) {
+        senderLabel.textColor = message.isMyMessage ? NSColor.appRed : .appBlue
         senderLabel.stringValue = message.sender
 
         messageTextLabel.stringValue = message.text

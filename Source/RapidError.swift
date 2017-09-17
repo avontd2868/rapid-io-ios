@@ -106,7 +106,7 @@ public enum RapidError: Error {
     /// - invalidKeyPath: Invalid key path format
     /// - invalidLimit: Limit is greater than `RapidPaging.takeLimit`
     public enum InvalidDataReason {
-        case serializationFailure
+        case serializationFailure(message: String?)
         case invalidFilter(filter: RapidFilter)
         case invalidDocument(document: [AnyHashable: Any])
         case invalidIdentifierFormat(identifier: Any?)
