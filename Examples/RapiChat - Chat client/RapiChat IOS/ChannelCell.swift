@@ -21,7 +21,7 @@ class ChannelCell: UITableViewCell {
         textLabel?.attributedText = title
         
         let unread = isUnread(channel: channel)
-        backgroundColor = unread ? .lightGray : .white
+        backgroundColor = unread ? .yellow : .white
     }
     
     private func isUnread(channel: Channel) -> Bool {
