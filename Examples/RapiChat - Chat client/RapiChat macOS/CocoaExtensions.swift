@@ -43,7 +43,7 @@ extension NSColor {
 extension String {
     
     func sizeWithFont(_ font: NSFont, constraintWidth: CGFloat = CGFloat(MAXFLOAT), constraintHeight: CGFloat = CGFloat(MAXFLOAT)) -> CGSize {
-        let attributes = [NSFontAttributeName: font]
+        let attributes = [NSAttributedStringKey.font: font]
         var rect = (self as NSString).boundingRect(with: CGSize(width: constraintWidth, height: constraintHeight), options:.usesLineFragmentOrigin, attributes:attributes, context:nil)
         
         rect.size.height = CGFloat(ceilf(Float(rect.height)))

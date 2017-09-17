@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/Rapid-Swift.h</key>
 		<data>
-		Msc02vUA2CWIwuhJbVfW60s39+s=
+		8E1ytuwVTPj5BUupxDU5J/sQP0M=
 		</data>
 		<key>Headers/Rapid.h</key>
 		<data>
@@ -14,27 +14,27 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		ve7Hni+e6gwBFZPl/dL2mBPGPxQ=
+		gTJs01nr2A/RXEXBXHZMKiMeTmk=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm.swiftdoc</key>
 		<data>
-		f7yTWoXKhRNhAV/yUEuYoZkHgNc=
+		UImErje0yxezuZUD35doUlcEtoA=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm.swiftmodule</key>
 		<data>
-		AL0bfsokHYvoS4+A7PSPa4PyxoU=
+		pDvjCytJTAvSJg2bMwFBdT92vBY=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		LyWSnSZ4XipGlnlSZAy/tPgcGlk=
+		i2HGjSkFDqoFCBt3iepysmhu9M8=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		qxfqQKNwCbuUSVy80Zn42Qrwu0g=
+		8wD/M2HCklvS6BwK9IIgdNY6CO0=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		+/lmsj1Q6kv+tr7zOhOxvcuGi6I=
+		MA+auaSjrWEdLi5+SYVzvrH8sww=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -43,11 +43,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Msc02vUA2CWIwuhJbVfW60s39+s=
+			8E1ytuwVTPj5BUupxDU5J/sQP0M=
 			</data>
 			<key>hash2</key>
 			<data>
-			6Dh8hxh0ttXK1sEky4wOyADZKNGyItPDQr2KTKOmQqY=
+			9pohooVfIjOcu9oPS5VqbIvYq0LnRH2iej81nuiqjjg=
 			</data>
 		</dict>
 		<key>Headers/Rapid.h</key>
@@ -65,55 +65,55 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			f7yTWoXKhRNhAV/yUEuYoZkHgNc=
+			UImErje0yxezuZUD35doUlcEtoA=
 			</data>
 			<key>hash2</key>
 			<data>
-			OfT9+gkCd2ld//mNNYhfsBJ3NB+fMzXpSSkB+s9ceJ4=
+			rZnxPB3misUNm9+xuZDEi9uvZ7MDHn9roG1omFYacJA=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			AL0bfsokHYvoS4+A7PSPa4PyxoU=
+			pDvjCytJTAvSJg2bMwFBdT92vBY=
 			</data>
 			<key>hash2</key>
 			<data>
-			NXliP5KEjhGz2u+1CiHqNXWUAlPLr+TSxri7yUAP9Js=
+			Okg304TAyk6leVGBpGMTlHQXWCGyPeBOsoSmG7ddKbY=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			LyWSnSZ4XipGlnlSZAy/tPgcGlk=
+			i2HGjSkFDqoFCBt3iepysmhu9M8=
 			</data>
 			<key>hash2</key>
 			<data>
-			c2mPZ+dRbwZ0iX62AzTpWwi5/bdhUQvEgSkdV+y9xeo=
+			ApCNYfktEYzAwX1CUttZAm5jf+iC59QWmWhAlcBE9HI=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			qxfqQKNwCbuUSVy80Zn42Qrwu0g=
+			8wD/M2HCklvS6BwK9IIgdNY6CO0=
 			</data>
 			<key>hash2</key>
 			<data>
-			aFfQ2Mpjgvd4W4g5LtkfTrCx0fPAAiFd4tP0NgYARPM=
+			C+xlGDKkwXV53sdR7qtvJ/y7Tmva83OCcJZZdnAqeOo=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			+/lmsj1Q6kv+tr7zOhOxvcuGi6I=
+			MA+auaSjrWEdLi5+SYVzvrH8sww=
 			</data>
 			<key>hash2</key>
 			<data>
-			iVnnpRYOVRmXCsx1UZ/Hn+vJcSiZPpNWOWy2fYB+wYQ=
+			GNuyx+gnwCDI7vCOoB50uWXaF0WBbHGLt9Kpavgilts=
 			</data>
 		</dict>
 	</dict>

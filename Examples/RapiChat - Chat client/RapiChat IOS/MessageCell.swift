@@ -18,13 +18,11 @@ class MessageCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel! {
         didSet {
             timeLabel.font = UIFont.systemFont(ofSize: 13)
-            timeLabel.textColor = .appText
         }
     }
     @IBOutlet weak var messageTextLabel: UILabel! {
         didSet {
             messageTextLabel.font = UIFont.systemFont(ofSize: 16)
-            messageTextLabel.textColor = .appText
         }
     }
     
@@ -47,8 +45,8 @@ class MessageCell: UITableViewCell {
         }
     }
     
-    func configure(withMessage message: Message, myUsername: String) {
-        senderLabel.textColor = message.sender == myUsername ? UIColor.appRed : .appBlue
+    func configure(withMessage message: Message) {
+        senderLabel.textColor = message.isMyMessage ? UIColor.red : .blue
         senderLabel.text = message.sender
         
         messageTextLabel.text = message.text

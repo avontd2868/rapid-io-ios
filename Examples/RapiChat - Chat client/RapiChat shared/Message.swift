@@ -17,6 +17,10 @@ struct Message {
     let sender: String
     let sentDate: Date
     
+    var isMyMessage: Bool {
+        return sender == UserDefaultsManager.username
+    }
+    
     static func initialize(withDocument document: RapidDocument) -> Message? {
         guard let dict = document.value else {
             return nil

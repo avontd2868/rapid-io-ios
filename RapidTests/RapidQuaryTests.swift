@@ -330,7 +330,6 @@ extension RapidTests {
                         
                     default:
                         XCTFail("More updates")
-                        promise.fulfill()
                     }
                     
                     numberOfDocuments = documents.count

@@ -16,7 +16,7 @@ class TaskWindowController: NSWindowController, NSWindowDelegate {
         window?.delegate = self
     }
     
-    func windowShouldClose(_ sender: Any) -> Bool {
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
         if let window = window {
             AppDelegate.windowClosed(window)
         }

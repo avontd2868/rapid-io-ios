@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name = 'Rapid'
-  s.version = '1.1.2'
+  s.version = '1.2.0'
   s.license = 'MIT'
   s.summary = 'iOS, macOS and tvOS client for rapid.io realtime database'
   s.homepage = 'https://www.rapid.io'

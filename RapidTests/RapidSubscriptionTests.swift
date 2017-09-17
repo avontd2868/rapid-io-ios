@@ -1430,7 +1430,82 @@ extension RapidTests {
         
         waitForExpectations(timeout: 15, handler: nil)
     }
-
+    
+    func testDecodableDocument() {
+        let promise = expectation(description: "Subscription update")
+        
+        mutate(documentID: "1", value: ["name": "First document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch { result in
+                guard case .success(let document) = result, document.value != nil else {
+                    XCTFail("Error")
+                    promise.fulfill()
+                    return
+                }
+                
+                let testStruct = try? document.decode(toType: RapidTestStruct.self)
+                
+                XCTAssertEqual(testStruct?.name, "First document", "Wrong document")
+                XCTAssertEqual(testStruct?.id, document.id)
+                XCTAssertEqual(testStruct?.collection, document.collectionName)
+                XCTAssertEqual(testStruct?.etag, document.etag)
+                XCTAssertEqual(testStruct?.createdAt, document.createdAt)
+                XCTAssertEqual(testStruct?.modifiedAt, document.modifiedAt)
+                
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testDecodableDocumentArray() {
+        let promise = expectation(description: "Subscription update")
+        
+        mutate(documentID: "1", value: ["name": "First document"])
+        mutate(documentID: "2", value: ["name": "Second document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by:
+                    RapidFilter.or(
+                        [
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"),
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
+                        ]
+                )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+                .fetch { result in
+                    guard case .success(let documents) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    guard documents.count == 2 else {
+                        XCTFail("Wrong number of documents")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    let testArray = try? documents.decode(toType: RapidTestStruct.self)
+                    let testFlatArray = documents.flatDecode(toType: RapidTestStruct.self)
+                    
+                    XCTAssertEqual(testArray?[0].name, "First document", "Wrong document")
+                    XCTAssertEqual(testArray?[1].name, "Second document", "Wrong document")
+                    
+                    if testFlatArray.count == 2 {
+                        XCTAssertEqual(testFlatArray[0].name, "First document", "Wrong document")
+                        XCTAssertEqual(testFlatArray[1].name, "Second document", "Wrong document")
+                    }
+                    else {
+                        XCTFail("Document array not flattened correctly")
+                    }
+                    
+                    promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
 }
 
 // MARK: Helper methods
@@ -1448,6 +1523,50 @@ extension RapidTests {
         }
     }
     
+}
+
+struct RapidTestStruct: Codable {
+    enum CodingKeys: String, CodingKey {
+        case name = "name"
+        case id = "$documentId"
+        case collection = "$collectionName"
+        case createdAt = "$createdAt"
+        case modifiedAt = "$modifiedAt"
+        case etag = "$etag"
+    }
+    
+    let name: String
+    let id: String
+    let collection: String
+    let createdAt: Date
+    let modifiedAt: Date
+    let etag: String
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        name = try container.decode(String.self, forKey: .name)
+        id = try container.decode(String.self, forKey: .id)
+        collection = try container.decode(String.self, forKey: .collection)
+        createdAt = Date(timeIntervalSince1970: try container.decode(TimeInterval.self, forKey: .createdAt))
+        modifiedAt = Date(timeIntervalSince1970: try container.decode(TimeInterval.self, forKey: .modifiedAt))
+        etag = try container.decode(String.self, forKey: .etag)
+        
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+    }
+    
+    init(name: String) {
+        self.name = name
+        self.id = Rapid.uniqueID
+        self.etag = Rapid.uniqueID
+        self.collection = "collection"
+        self.createdAt = Date()
+        self.modifiedAt = Date()
+    }
 }
 
 // MARK: Mock subscription handler delegate

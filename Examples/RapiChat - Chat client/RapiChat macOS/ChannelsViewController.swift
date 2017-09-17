@@ -16,9 +16,11 @@ class ChannelsViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var activityIndicator: NSProgressIndicator!
 
-    fileprivate var channelsManager: ChannelsManager!
-    fileprivate var username: String?
-    fileprivate var selectedIndex: Int?
+    private var subscription: RapidSubscription?
+    
+    private(set) var channels: [Channel] = []
+    
+    private var selectedIndex: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,11 +33,13 @@ class ChannelsViewController: NSViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        
+        subscription?.unsubscribe()
     }
     
 }
 
-fileprivate extension ChannelsViewController {
+private extension ChannelsViewController {
     
     func setupRapid() {
         // Set log level
@@ -46,54 +50,54 @@ fileprivate extension ChannelsViewController {
         
         // Enable data cache
         Rapid.isCacheEnabled = true
-        
-        // Set timeout for requests
-        Rapid.timeout = 10
-        
-        TimeManager.shared.initialize()
     }
     
     func setupController() {
-        channelsManager = ChannelsManager(withDelegate: self)
-        
-        UserDefaultsManager.generateUsername { [weak self] username in
-            self?.username = username
-            self?.configureView()
-        }
+        UserDefaultsManager.username = "Jan Schwarz"
         
         tableView.delegate = self
         tableView.dataSource = self
         tableView.gridColor = .appSeparator
         tableView.selectionHighlightStyle = .none
         
-        configureView()
+        subscribeToChannels()
     }
     
+    func subscribeToChannels() {
+        // Get rapid.io collection reference
+        // Order it according to document ID
+        // Subscribe
+        let collection = Rapid.collection(named: "channels")
+            .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+        
+        subscription = collection.subscribe { [weak self] result in
+            switch result {
+            case .success(let documents):
+                self?.channels = documents.flatMap({ Channel(withDocument: $0) })
+                
+            case .failure:
+                self?.channels = []
+            }
+            
+            self?.reloadTable()
+        }
+    }
+
     func configureView() {
         headerView.wantsLayer = true
         headerView.layer?.backgroundColor = NSColor.white.cgColor
         
-        if let username = username {
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = .center
-            let normalText = [NSForegroundColorAttributeName: NSColor.appText, NSFontAttributeName: NSFont.systemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
-            let hightlightedText = [NSForegroundColorAttributeName: NSColor.appText, NSFontAttributeName: NSFont.boldSystemFont(ofSize: 13), NSParagraphStyleAttributeName: paragraphStyle]
-            headerTitle.attributedStringValue = "Your username is\n\(username)".highlight(string: username, textAttributes: normalText, highlightedAttributes: hightlightedText)
-        }
-        
-        if channelsManager.channels == nil || username == nil {
-            activityIndicator.startAnimation(self)
-            tableView.isHidden = true
-        }
-        else {
-            activityIndicator.stopAnimation(self)
-            tableView.isHidden = false
-        }
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        headerTitle.stringValue = "Your username is\n\(UserDefaultsManager.username)"
+
+        activityIndicator.stopAnimation(self)
+        tableView.isHidden = false
         
         if let index = selectedIndex {
             tableView.selectRowIndexes(IndexSet(integer: index), byExtendingSelection: false)
         }
-        else if username != nil && (channelsManager.channels?.count ?? 0) > 0 {
+        else if channels.count > 0 {
             tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
         }
     }
@@ -105,30 +109,21 @@ fileprivate extension ChannelsViewController {
     }
     
     func presentChannel(_ channel: Channel) {
-        NotificationCenter.default.post(name: Notification.Name("ChannelSelectedNotification"), object: channel, userInfo: ["username": username ?? ""])
-    }
-}
-
-extension ChannelsViewController: ChannelsManagerDelegate {
-    
-    func channelsChanged(_ manager: ChannelsManager) {
-        reloadTable()
+        NotificationCenter.default.post(name: Notification.Name("ChannelSelectedNotification"), object: channel, userInfo: ["username": UserDefaultsManager.username])
     }
 }
 
 extension ChannelsViewController: NSTableViewDataSource, NSTableViewDelegate {
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return channelsManager.channels?.count ?? 0
+        return channels.count
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
-        guard let channel = channelsManager.channels?[row] else {
-            return nil
-        }
+        let channel = channels[row]
         
-        let view = tableView.make(withIdentifier: "ChannelCellID", owner: nil)
+        let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "ChannelCellID"), owner: nil)
         
         if let cell = view as? ChannelCellView {
             cell.configure(withChannel: channel, selected: tableView.selectedRow == row)
@@ -153,9 +148,8 @@ extension ChannelsViewController: NSTableViewDataSource, NSTableViewDelegate {
         selectedIndex = row
         tableView.reloadData(forRowIndexes: IndexSet(integer: row), columnIndexes: IndexSet(integer: 0))
         
-        if let channel = channelsManager.channels?[row] {
-            presentChannel(channel)
-        }
+        let channel = channels[row]
+        presentChannel(channel)
     }
     
 }

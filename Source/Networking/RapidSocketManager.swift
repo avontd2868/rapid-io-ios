@@ -309,20 +309,14 @@ internal extension RapidSocketManager {
         }
         
         // Re-register all on-disconnect actions
-        let reregister = onDisconnectActions.map({ $0.value })
-        for handler in reregister {
-            eventQueue.append(handler)
-        }
+        let reregister = onDisconnectActions.map({ $0.value }) as [Event]
+        eventQueue.append(contentsOf: reregister)
 
         // Then append requests that had been sent, but they were still waiting for an acknowledgement
-        for event in sortedPendingArray {
-            eventQueue.append(event)
-        }
+        eventQueue.append(contentsOf: sortedPendingArray)
 
         // Finally append events that were waiting to be sent
-        for event in currentQueue {
-            eventQueue.append(event)
-        }
+        eventQueue.append(contentsOf: currentQueue)
         
         // Create new connection
         networkHandler.goOnline()
@@ -476,7 +470,7 @@ internal extension RapidSocketManager {
             // Generate unique event ID
             let eventID = Rapid.uniqueID
             
-            if let request = event as? RapidClientRequest {
+            if let request = event as? Request {
                 registerPendingRequest(request, withID: eventID)
             }
             
@@ -492,10 +486,8 @@ internal extension RapidSocketManager {
     /// - Parameters:
     ///   - request: Sent request
     ///   - eventID: Event ID associated with the request
-    func registerPendingRequest(_ request: RapidClientRequest, withID eventID: String) {
-        if let request = request as? Request {
-            pendingRequests[eventID] = (request, Date().timeIntervalSince1970)
-        }
+    func registerPendingRequest(_ request: Request, withID eventID: String) {
+        pendingRequests[eventID] = (request, Date().timeIntervalSince1970)
     }
     
     /// Handle an event sent from the server
