@@ -20,7 +20,7 @@ public protocol RapidSubscription {
 /// Protocol describing Rapid.io reference that defines data subscription
 public protocol RapidSubscriptionReference {
     associatedtype SubscriptionResult
-    
+
     /// Subscribe for listening to data changes
     ///
     /// - Parameter block: Subscription handler that provides a client either with an error or with up-to-date data
@@ -32,7 +32,7 @@ public protocol RapidSubscriptionReference {
 /// Protocol describing Rapid.io reference that defines data fetch
 public protocol RapidFetchReference {
     associatedtype FetchResult
-    
+
     /// Fetch data
     ///
     /// - Parameter completion: Completion handler that provides a client either with an error or with data

@@ -102,7 +102,7 @@ open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
 }
 
 extension RapidDocumentRef: RapidSubscriptionReference {
-    
+
     /// Subscribe for listening to document changes
     ///
     /// - Parameter block: Subscription handler that provides a client either with an error or with any new document content
@@ -116,6 +116,29 @@ extension RapidDocumentRef: RapidSubscriptionReference {
         return subscription
     }
     
+    /// Subscribe for listening to data changes
+    ///
+    /// - Parameter objectType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter block: Subscription handler that provides a client either with an error or with up-to-date data
+    /// - Returns: Subscription object which can be used for unsubscribing
+    @discardableResult
+    open func subscribe<T>(objectType type: T.Type, block: @escaping (_ result: RapidResult<T>) -> Void) -> RapidSubscription where T: Decodable {
+        return self.subscribe { result in
+            switch result {
+            case .failure(let error):
+                block(RapidResult.failure(error: error))
+                
+            case .success(let document):
+                do {
+                    let object = try document.decode(toType: type)
+                    block(RapidResult.success(value: object))
+                }
+                catch let error {
+                    block(RapidResult.failure(error: RapidError.decodingFailed(messaage: error.localizedDescription)))
+                }
+            }
+        }
+    }
 }
 
 extension RapidDocumentRef: RapidFetchReference {
@@ -129,6 +152,27 @@ extension RapidDocumentRef: RapidFetchReference {
         socketManager.fetch(fetch)
     }
     
+    /// Fetch data
+    ///
+    /// - Parameter objectType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter completion: Completion handler that provides a client either with an error or with data
+    open func fetch<T>(objectType type: T.Type, completion: @escaping (_ result: RapidResult<T>) -> Void) where T : Decodable {
+        self.fetch { result in
+            switch result {
+            case .failure(let error):
+                completion(RapidResult.failure(error: error))
+                
+            case .success(let document):
+                do {
+                    let object = try document.decode(toType: type)
+                    completion(RapidResult.success(value: object))
+                }
+                catch let error {
+                    completion(RapidResult.failure(error: RapidError.decodingFailed(messaage: error.localizedDescription)))
+                }
+            }
+        }
+    }
 }
 
 extension RapidDocumentRef: RapidMutationReference {

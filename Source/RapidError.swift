@@ -76,12 +76,13 @@ struct RapidErrorInstance: RapidServerResponse {
 ///
 /// - permissionDenied: Client doesn't have permissons to read or write specified data
 /// - server: Internal Rapid.io server error
-/// - invalidRequest: Client sent an invalid request to Rapid.io server. Please update Rapid SDK. If your Rapid SDK is up to date, please report an issue at https://github.com/rapid-io/rapid-io-ios
+/// - invalidRequest: Client sent an invalid request to Rapid.io server.
 /// - connectionTerminated: Websocket connection expired and needs to be reestablished
 /// - invalidData: Data provided by a developer (collection name, document ID, document mutation value etc.) are in an invalid format
 /// - timeout: Request timeout
 /// - invalidAuthToken: Authorization token is invalid
 /// - executionFailed: Optimistic concurrency write to a document failed
+/// - decodingFailed: Deserialization from JSON to decodable object failed
 /// - cancelled: Request cancelled
 /// - `default`: General error
 public enum RapidError: Error {
@@ -94,6 +95,7 @@ public enum RapidError: Error {
     case timeout
     case invalidAuthToken(message: String?)
     case executionFailed(reason: ExecutionError)
+    case decodingFailed(messaage: String)
     case cancelled
     case `default`
     

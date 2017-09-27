@@ -206,6 +206,32 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
+    /// - Parameter objectType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter block: Subscription handler that provides a client either with an error or with an array of documents
+    /// - Returns: Subscription object which can be used for unsubscribing
+    @discardableResult
+    open func subscribe<T>(objectType type: T.Type, block: @escaping (_ result: RapidResult<[T]>) -> Void) -> RapidSubscription where T: Decodable {
+        return self.subscribe { result in
+            switch result {
+            case .failure(let error):
+                block(RapidResult.failure(error: error))
+                
+            case .success(let documents):
+                do {
+                    let object = try documents.decode(toType: type)
+                    block(RapidResult.success(value: object))
+                }
+                catch let error {
+                    block(RapidResult.failure(error: RapidError.decodingFailed(messaage: error.localizedDescription)))
+                }
+            }
+        }
+    }
+
+    /// Subscribe for listening to the collection changes
+    ///
+    /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
+    ///
     /// - Parameter block: Subscription handler that provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
@@ -216,7 +242,36 @@ extension RapidCollectionRef: RapidSubscriptionReference {
         
         return subscription
     }
-    
+
+    /// Subscribe for listening to the collection changes
+    ///
+    /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
+    ///
+    /// - Parameter objectType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter block: Subscription handler that provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
+    /// - Returns: Subscription object which can be used for unsubscribing
+    @discardableResult
+    open func subscribeWithChanges<T>(objectType type: T.Type, block: @escaping (_ result: RapidResult<(documents: [T], added: [T], updated: [T], removed: [T])>) -> Void) -> RapidSubscription where T: Decodable {
+        return self.subscribeWithChanges { result in
+            switch result {
+            case .failure(let error):
+                block(RapidResult.failure(error: error))
+                
+            case .success(let tuple):
+                do {
+                    let documents = try tuple.documents.decode(toType: type)
+                    let added = try tuple.added.decode(toType: type)
+                    let updated = try tuple.updated.decode(toType: type)
+                    let removed = try tuple.removed.decode(toType: type)
+                    block(RapidResult.success(value: (documents, added, updated, removed)))
+                }
+                catch let error {
+                    block(RapidResult.failure(error: RapidError.decodingFailed(messaage: error.localizedDescription)))
+                }
+            }
+        }
+    }
+
 }
 
 extension RapidCollectionRef: RapidFetchReference {
@@ -230,6 +285,30 @@ extension RapidCollectionRef: RapidFetchReference {
         let fetch = RapidCollectionFetch(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, completion: completion)
         
         socketManager.fetch(fetch)
+    }
+    
+    /// Fetch collection
+    ///
+    /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
+    ///
+    /// - Parameter objectType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter completion: Fetch completion handler that provides a client either with an error or with an array of documents
+    open func fetch<T>(objectType type: T.Type, completion: @escaping (_ result: RapidResult<[T]>) -> Void) where T : Decodable {
+        self.fetch { result in
+            switch result {
+            case .failure(let error):
+                completion(RapidResult.failure(error: error))
+                
+            case .success(let documents):
+                do {
+                    let object = try documents.decode(toType: type)
+                    completion(RapidResult.success(value: object))
+                }
+                catch let error {
+                    completion(RapidResult.failure(error: RapidError.decodingFailed(messaage: error.localizedDescription)))
+                }
+            }
+        }
     }
 
 }
