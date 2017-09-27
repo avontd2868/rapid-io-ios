@@ -1464,7 +1464,7 @@ extension RapidTests {
         
         mutate(documentID: "1", value: ["name": "First document"]) { _ in
             
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(objectType: RapidTestStruct.self) { result in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(decodableType: RapidTestStruct.self) { result in
                 guard case .success(let testStruct) = result else {
                     XCTFail("Error")
                     promise.fulfill()
@@ -1490,7 +1490,7 @@ extension RapidTests {
         
         mutate(documentID: "1", value: ["noName": "First document"]) { _ in
             
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(objectType: RapidTestStruct.self) { result in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(decodableType: RapidTestStruct.self) { result in
                 guard case .failure(let error) = result else {
                     XCTFail("Succeeded")
                     promise.fulfill()
@@ -1515,7 +1515,7 @@ extension RapidTests {
         
         mutate(documentID: "1", value: ["name": "First document"]) { _ in
             var initialValue = true
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(objectType: RapidTestStruct.self) { result in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(decodableType: RapidTestStruct.self) { result in
                 guard initialValue else {
                     return
                 }
@@ -1547,7 +1547,7 @@ extension RapidTests {
         
         mutate(documentID: "1", value: ["noName": "First document"]) { _ in
             var initialValue = true
-            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(objectType: RapidTestStruct.self) { result in
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(decodableType: RapidTestStruct.self) { result in
                 guard initialValue else {
                     return
                 }
@@ -1635,7 +1635,7 @@ extension RapidTests {
                             RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
                         ]
                 )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
-                .fetch(objectType: RapidTestStruct.self) { result in
+                .fetch(decodableType: RapidTestStruct.self) { result in
                     guard case .success(let testArray) = result else {
                         XCTFail("Error")
                         promise.fulfill()
@@ -1672,7 +1672,7 @@ extension RapidTests {
                             RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
                         ]
                 )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
-                .fetch(objectType: RapidTestStruct.self) { result in
+                .fetch(decodableType: RapidTestStruct.self) { result in
                     guard case .failure(let error) = result else {
                         XCTFail("Error")
                         promise.fulfill()
@@ -1708,7 +1708,7 @@ extension RapidTests {
                             RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
                         ]
                 )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
-                .subscribe(objectType: RapidTestStruct.self) { result in
+                .subscribe(decodableType: RapidTestStruct.self) { result in
                     guard initial else {
                         return
                     }
@@ -1753,7 +1753,7 @@ extension RapidTests {
                             RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
                         ]
                 )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
-                .subscribeWithChanges(objectType: RapidTestStruct.self) { result in
+                .subscribeWithChanges(decodableType: RapidTestStruct.self) { result in
                     guard initial else {
                         return
                     }
@@ -1798,7 +1798,7 @@ extension RapidTests {
                             RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
                         ]
                 )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
-                .subscribe(objectType: RapidTestStruct.self) { result in
+                .subscribe(decodableType: RapidTestStruct.self) { result in
                     guard initial else {
                         return
                     }
@@ -1840,7 +1840,7 @@ extension RapidTests {
                             RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
                         ]
                 )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
-                .subscribeWithChanges(objectType: RapidTestStruct.self) { result in
+                .subscribeWithChanges(decodableType: RapidTestStruct.self) { result in
                     guard initial else {
                         return
                     }

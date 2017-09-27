@@ -588,10 +588,6 @@ internal extension RapidSocketManager {
 // MARK: Subscription handler delegate
 extension RapidSocketManager: RapidSubscriptionManagerDelegate {
     
-    var authorization: RapidAuthorization? {
-        return auth
-    }
-    
     func unsubscribe(handler: RapidUnsubscriptionManager) {
         websocketQueue.async { [weak self] in
             self?.unsubscribe(handler)

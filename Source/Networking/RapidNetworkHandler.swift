@@ -108,6 +108,29 @@ class RapidNetworkHandler {
             do {
                 let jsonString = try event.serialize(withIdentifiers: [RapidSerialization.EventID.name: eventID])
                 
+                let sizeLimit: Int
+                switch event {
+                case is RapidChannelPublish:
+                    sizeLimit = 3072
+                    
+                default:
+                    sizeLimit = 10240
+                }
+                
+                let size = jsonString.data(using: .utf8)?.count ?? 0
+                
+                guard size <= sizeLimit else {
+                    let message: String
+                    switch event {
+                    case is RapidChannelPublish:
+                        message = "Message is too large - \(size) B. Message size limit is \(Int(sizeLimit/1024)) kB"
+                        
+                    default:
+                        message = "Document is too large - \(size) B. Document size limit is \(Int(sizeLimit/1024)) kB"
+                    }
+                    throw RapidError.invalidRequest(message: message)
+                }
+                
                 RapidLogger.developerLog(message: "Write request \(jsonString)")
                 
                 self?.mainQueue.async {

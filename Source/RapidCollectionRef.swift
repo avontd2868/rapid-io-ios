@@ -206,11 +206,11 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
-    /// - Parameter objectType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
     /// - Parameter block: Subscription handler that provides a client either with an error or with an array of documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribe<T>(objectType type: T.Type, block: @escaping (_ result: RapidResult<[T]>) -> Void) -> RapidSubscription where T: Decodable {
+    open func subscribe<T>(decodableType type: T.Type, block: @escaping (_ result: RapidResult<[T]>) -> Void) -> RapidSubscription where T: Decodable {
         return self.subscribe { result in
             switch result {
             case .failure(let error):
@@ -247,11 +247,11 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
-    /// - Parameter objectType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
     /// - Parameter block: Subscription handler that provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribeWithChanges<T>(objectType type: T.Type, block: @escaping (_ result: RapidResult<(documents: [T], added: [T], updated: [T], removed: [T])>) -> Void) -> RapidSubscription where T: Decodable {
+    open func subscribeWithChanges<T>(decodableType type: T.Type, block: @escaping (_ result: RapidResult<(documents: [T], added: [T], updated: [T], removed: [T])>) -> Void) -> RapidSubscription where T: Decodable {
         return self.subscribeWithChanges { result in
             switch result {
             case .failure(let error):
@@ -291,9 +291,9 @@ extension RapidCollectionRef: RapidFetchReference {
     ///
     /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
     ///
-    /// - Parameter objectType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
     /// - Parameter completion: Fetch completion handler that provides a client either with an error or with an array of documents
-    open func fetch<T>(objectType type: T.Type, completion: @escaping (_ result: RapidResult<[T]>) -> Void) where T : Decodable {
+    open func fetch<T>(decodableType type: T.Type, completion: @escaping (_ result: RapidResult<[T]>) -> Void) where T : Decodable {
         self.fetch { result in
             switch result {
             case .failure(let error):

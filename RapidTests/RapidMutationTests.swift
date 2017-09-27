@@ -548,4 +548,22 @@ extension RapidTests {
         
         waitForExpectations(timeout: 15, handler: nil)
     }
+    
+    func testMutationDocumentTooLarge() {
+        let promise = expectation(description: "Mutation too large")
+        
+        let longString = Array(0...5000).map({ String($0) }).reduce("", { $0 + $1 })
+
+        rapid.collection(named: "users").newDocument().mutate(value: ["name": "Jan", "desc": longString]) { result in
+            if case .failure(let error) = result, case .invalidRequest(let message) = error {
+                XCTAssertNotNil(message, "No message")
+            }
+            else {
+                XCTFail("Request did not timed out")
+            }
+            promise.fulfill()
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
 }

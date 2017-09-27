@@ -83,8 +83,6 @@ protocol RapidSubscriptionManagerDelegate: class {
     /// Cache handler
     var cacheHandler: RapidCacheHandler? { get }
     
-    var authorization: RapidAuthorization? { get }
-    
     /// Method for unregistering a subscription
     ///
     /// - Parameter handler: Unsubscription handler
