@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Compare two docuements
+/// Compare two documents
 ///
 /// Compera ids, etags and dictionaries
 ///
@@ -29,7 +29,7 @@ public func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
     return false
 }
 
-/// Class representing Rapid.io document
+/// Structure representing Rapid.io document
 public struct RapidDocument: Codable, Equatable {
     
     enum CodingKeys: String, CodingKey {

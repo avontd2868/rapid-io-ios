@@ -195,7 +195,7 @@ class RapidSerialization {
     ///
     /// - Parameter filter: Filter object
     /// - Returns: JSON dictionary
-    class func serialize(filter: RapidFilter?) throws -> [AnyHashable: Any]? {
+    class func serialize(filter: RapidFilterDescriptor?) throws -> [AnyHashable: Any]? {
         if let filter = filter {
             switch filter {
             case let filter as RapidFilterSimple:

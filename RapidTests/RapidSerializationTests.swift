@@ -339,11 +339,11 @@ extension RapidTests {
     func testSubscriptionComplexFilter() {
         let collection = self.rapid.collection(named: "users")
             .filter(by:
-                RapidFilterCompound.and([
-                    RapidFilterCompound.or([
+                RapidFilter.and([
+                    RapidFilter.or([
                         RapidFilter.equal(keyPath: "sender", value: "john123"),
-                        RapidFilterSimple.greaterThanOrEqual(keyPath: "urgency", value: 1),
-                        RapidFilterSimple.lessThanOrEqual(keyPath: "priority", value: 2)
+                        RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
+                        RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
                         ]),
                     RapidFilter.not(RapidFilter.isNull(keyPath: "receiver"))
                     ]))
@@ -529,8 +529,8 @@ extension RapidTests {
     func testSubscriptionHashes() {
         let collection = self.rapid.collection(named: testCollectionName)
             .filter(by:
-                RapidFilterCompound.and([
-                    RapidFilterCompound.or([
+                RapidFilter.and([
+                    RapidFilter.or([
                         RapidFilter.equal(keyPath: "sender", value: "john123"),
                         RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
                         RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
@@ -557,8 +557,8 @@ extension RapidTests {
     func testSubscriptionHashComparison() {
         let collection1 = self.rapid.collection(named: testCollectionName)
             .filter(by:
-                RapidFilterCompound.and([
-                    RapidFilterCompound.or([
+                RapidFilter.and([
+                    RapidFilter.or([
                         RapidFilter.equal(keyPath: "sender", value: "john123"),
                         RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
                         RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
@@ -578,9 +578,9 @@ extension RapidTests {
                     RapidFilter.greaterThan(keyPath: "urgency", value: 2)
                     ]))
             .filter(by:
-                RapidFilterCompound.and([
+                RapidFilter.and([
                     RapidFilter.not(RapidFilter.isNull(keyPath: "receiver")),
-                    RapidFilterCompound.or([
+                    RapidFilter.or([
                         RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
                         RapidFilter.equal(keyPath: "sender", value: "john123"),
                         RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)

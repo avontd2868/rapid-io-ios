@@ -17,7 +17,7 @@ class RapidCollectionSub {
     let collectionID: String
     
     /// Subscription filter
-    let filter: RapidFilter?
+    let filter: RapidFilterDescriptor?
     
     /// Subscription ordering
     let ordering: [RapidOrdering]?
@@ -43,7 +43,7 @@ class RapidCollectionSub {
     ///   - paging: Subscription paging
     ///   - handler: Subscription handler
     ///   - handlerWithChanges: Subscription handler with lists of changes
-    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, handler: RapidCollectionSubscriptionHandler?, handlerWithChanges: RapidCollectionSubscriptionHandlerWithChanges?) {
+    init(collectionID: String, filter: RapidFilterDescriptor?, ordering: [RapidOrdering]?, paging: RapidPaging?, handler: RapidCollectionSubscriptionHandler?, handlerWithChanges: RapidCollectionSubscriptionHandlerWithChanges?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
@@ -66,7 +66,7 @@ extension RapidCollectionSub: RapidColSubInstance {
     
     /// Subscription identifier
     var subscriptionHash: String {
-        return "collection#\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
+        return "collection#\(collectionID)#\(filter?.filterHash ?? "")#\(ordering?.map({ $0.orderingHash }).joined(separator: "|") ?? "")#\(paging?.pagingHash ?? "")"
     }
     
     var subscriptionTake: Int? {
@@ -144,7 +144,7 @@ class RapidDocumentSub {
         self.documentID = documentID
         self.handler = handler
         
-        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
+        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
     }
 }
 

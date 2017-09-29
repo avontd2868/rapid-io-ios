@@ -8,8 +8,8 @@
 
 import Foundation
 
-/// Class representing Rapid.io channel message that is returned from a subscription handler
-open class RapidChannelMessage: RapidServerEvent {
+/// Structure representing Rapid.io channel message that is returned from a subscription handler
+public struct RapidChannelMessage: RapidServerEvent {
     
     internal var eventIDsToAcknowledge: [String]
     internal let subscriptionID: String

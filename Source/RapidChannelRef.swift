@@ -15,7 +15,7 @@ public typealias RapidChannelSubscriptionHandler = (_ result: RapidResult<RapidC
 public typealias RapidPublishCompletion = (_ result: RapidResult<Any?>) -> Void
 
 /// Reference to a single channel identified by its full channel name
-open class RapidChannelRef: RapidInstanceWithSocketManager {
+public struct RapidChannelRef: RapidInstanceWithSocketManager {
     
     /// Channel name
     public let channelName: String
@@ -32,7 +32,7 @@ open class RapidChannelRef: RapidInstanceWithSocketManager {
     /// - Parameters:
     ///   - message: Message that should be published
     ///   - completion: Publish completion handler which provides a client with an error if any occurs
-    open func publish(message: [AnyHashable: Any], completion: RapidPublishCompletion? = nil) {
+    public func publish(message: [AnyHashable: Any], completion: RapidPublishCompletion? = nil) {
         let publish = RapidChannelPublish(channelID: channelName, value: message, completion: completion)
         
         socketManager.publish(publishRequest: publish)
@@ -47,7 +47,7 @@ extension RapidChannelRef: RapidSubscriptionReference {
     /// - Parameter block: Subscription handler which provides a client either with an error or with a new message
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribe(block: @escaping RapidChannelSubscriptionHandler) -> RapidSubscription {
+    public func subscribe(block: @escaping RapidChannelSubscriptionHandler) -> RapidSubscription {
         let subscription = RapidChannelSub(channelID: .name(channelName), handler: block)
         
         socketManager.subscribe(toChannel: subscription)
@@ -58,7 +58,7 @@ extension RapidChannelRef: RapidSubscriptionReference {
 }
 
 /// Reference to multiple channels identified by their channel name prefix
-open class RapidChannelsRef: RapidInstanceWithSocketManager {
+public struct RapidChannelsRef: RapidInstanceWithSocketManager {
     
     /// Channel name prefix
     public let channelPrefix: String
@@ -79,7 +79,7 @@ extension RapidChannelsRef: RapidSubscriptionReference {
     /// - Parameter block: Subscription handler which provides a client either with an error or with a new message
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribe(block: @escaping RapidChannelSubscriptionHandler) -> RapidSubscription {
+    public func subscribe(block: @escaping RapidChannelSubscriptionHandler) -> RapidSubscription {
         let subscription = RapidChannelSub(channelID: .prefix(channelPrefix), handler: block)
         
         socketManager.subscribe(toChannel: subscription)

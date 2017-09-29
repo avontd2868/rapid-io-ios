@@ -37,6 +37,19 @@ public enum RapidResult<Value> {
     case failure(error: RapidError)
 }
 
+/// Logging level
+///
+/// - off: Logging is completely turned off
+/// - critical: Show only critical messages e.g. reason of Rapid SDK intentional crash
+/// - info: Show info about what is going on in Rapid SDK
+/// - debug: Show info about what is going on in Rapid SDK along with I/O data description
+public enum RapidLogLevel: Int {
+    case off
+    case critical
+    case info
+    case debug
+}
+
 /// Class representing a connection to Rapid.io database
 open class Rapid: NSObject {
     
@@ -252,7 +265,7 @@ public extension Rapid {
     }
     
     /// Log level
-    class var logLevel: RapidLogger.Level {
+    class var logLevel: RapidLogLevel {
         get {
             return RapidLogger.level
         }
