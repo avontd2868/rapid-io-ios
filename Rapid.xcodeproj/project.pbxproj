@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		ADB1C9E41ECCB37900A29271 /* RapidFetches.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB1C9E31ECCB37900A29271 /* RapidFetches.swift */; };
 		ADB1C9E51ECCB37900A29271 /* RapidFetches.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB1C9E31ECCB37900A29271 /* RapidFetches.swift */; };
+		C10B8CBE1F7BD26900BA926A /* CodingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10B8CBD1F7BD26900BA926A /* CodingExtension.swift */; };
+		C10B8CBF1F7BD26900BA926A /* CodingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10B8CBD1F7BD26900BA926A /* CodingExtension.swift */; };
+		C10B8CC01F7BD26900BA926A /* CodingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10B8CBD1F7BD26900BA926A /* CodingExtension.swift */; };
 		C12692201E82BC37002577B2 /* RapidCollectionSubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C126921F1E82BC37002577B2 /* RapidCollectionSubscriptionManager.swift */; };
 		C12692221E82D27A002577B2 /* RapidSubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692211E82D27A002577B2 /* RapidSubscriptionEvent.swift */; };
 		C12692241E83D6F4002577B2 /* DictionaryJSONExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */; };
@@ -197,6 +200,7 @@
 
 /* Begin PBXFileReference section */
 		ADB1C9E31ECCB37900A29271 /* RapidFetches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidFetches.swift; sourceTree = "<group>"; };
+		C10B8CBD1F7BD26900BA926A /* CodingExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingExtension.swift; sourceTree = "<group>"; };
 		C126921F1E82BC37002577B2 /* RapidCollectionSubscriptionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidCollectionSubscriptionManager.swift; sourceTree = "<group>"; };
 		C12692211E82D27A002577B2 /* RapidSubscriptionEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapidSubscriptionEvent.swift; sourceTree = "<group>"; };
 		C12692231E83D6F4002577B2 /* DictionaryJSONExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryJSONExtension.swift; sourceTree = "<group>"; };
@@ -435,6 +439,7 @@
 				C1D2A1ED1E9E2A94009444B3 /* Extensions.swift */,
 				C1D6E9AC1E7BFED2007589FC /* WRO.swift */,
 				C14F274B1EAA02150079093E /* RapidLogger.swift */,
+				C10B8CBD1F7BD26900BA926A /* CodingExtension.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -795,6 +800,7 @@
 				C13EAB721EF8218900264F4E /* RapidServerEvents.swift in Sources */,
 				C13EAB7A1EF821A900264F4E /* RapidResponse.swift in Sources */,
 				C1375A811F190078009A45BF /* RapidDocumentDeletion.swift in Sources */,
+				C10B8CC01F7BD26900BA926A /* CodingExtension.swift in Sources */,
 				C13EAB751EF8219400264F4E /* RapidChannelPublish.swift in Sources */,
 				C13EAB771EF8219C00264F4E /* RapidDocumentMutation.swift in Sources */,
 				C13EAB681EF8210D00264F4E /* RapidError.swift in Sources */,
@@ -845,6 +851,7 @@
 				C142DCE81EC9E1C5000B9617 /* RapidCollectionSubscriptionManager.swift in Sources */,
 				C142DCEB1EC9E1CD000B9617 /* RapidSerialization.swift in Sources */,
 				C142DCED1EC9E1D2000B9617 /* RapidConnectionRequests.swift in Sources */,
+				C10B8CBF1F7BD26900BA926A /* CodingExtension.swift in Sources */,
 				C1375A801F190078009A45BF /* RapidDocumentDeletion.swift in Sources */,
 				C142DCF11EC9E1DC000B9617 /* RapidMutationProtocols.swift in Sources */,
 				C16067F51EE8158600B118D4 /* RapidChannelSubscriptionManager.swift in Sources */,
@@ -895,6 +902,7 @@
 				C12692201E82BC37002577B2 /* RapidCollectionSubscriptionManager.swift in Sources */,
 				C1B9C2C21E9D37D7008F7A7B /* RapidNetworkHandler.swift in Sources */,
 				C1D6E9A91E7BECA4007589FC /* RapidResponse.swift in Sources */,
+				C10B8CBE1F7BD26900BA926A /* CodingExtension.swift in Sources */,
 				C1375A7F1F190078009A45BF /* RapidDocumentDeletion.swift in Sources */,
 				C1D6E9951E7ADC78007589FC /* RapidCollectionRef.swift in Sources */,
 				C16067F41EE8158600B118D4 /* RapidChannelSubscriptionManager.swift in Sources */,

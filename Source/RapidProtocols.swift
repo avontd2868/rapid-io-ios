@@ -64,7 +64,7 @@ public protocol RapidMutationReference {
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    func mutate(value: [AnyHashable: Any], completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest
+    func mutate(value: [String: Any], completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest
 }
 
 extension RapidMutationReference {

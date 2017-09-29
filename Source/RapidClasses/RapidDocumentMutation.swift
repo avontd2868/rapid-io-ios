@@ -21,7 +21,7 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     let alwaysTimeout = false
     
     /// Document JSON
-    let value: [AnyHashable: Any]
+    let value: [String: Any]
     
     /// Collection ID
     let collectionID: String
@@ -38,7 +38,7 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     internal var requestTimeoutTimer: Timer?
     
     /// Cache handler
-    internal weak var cacheHandler: RapidCacheHandler?
+    internal weak var cacheHandler: RapidDocCacheHandler?
     
     internal weak var requestDelegate: RapidMutationRequestDelegate?
     
@@ -52,7 +52,7 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: Document JSON
     ///   - completion: Mutation completion
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidDocumentMutationCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], cache: RapidDocCacheHandler?, completion: RapidDocumentMutationCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
@@ -81,7 +81,7 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated", level: .info)
             
             self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
-                if let oldDoc = object as? RapidDocument,
+                if let oldDoc = object,
                     let document = RapidDocument(document: oldDoc, newValue: self.value) {
                     
                     self.cacheHandler?.storeObject(document)
@@ -121,7 +121,7 @@ class RapidDocumentOnConnectMutation: NSObject {
     internal(set) var actionID: String?
     internal(set) weak var delegate: RapidOnConnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], completion: RapidDocumentRegisterOnConnectActionCompletion?) {
         self.completion = completion
         
         self.mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)
@@ -192,7 +192,7 @@ class RapidDocumentOnDisconnectMutation: NSObject {
     internal(set) var actionID: String?
     internal(set) weak var delegate: RapidOnDisconnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
         self.completion = completion
         
         self.mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)

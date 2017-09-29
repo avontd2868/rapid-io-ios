@@ -81,7 +81,7 @@ protocol RapidSubscriptionManagerDelegate: class {
     var parseQueue: OperationQueue { get }
     
     /// Cache handler
-    var cacheHandler: RapidCacheHandler? { get }
+    var cacheHandler: RapidDocCacheHandler? { get }
     
     /// Method for unregistering a subscription
     ///

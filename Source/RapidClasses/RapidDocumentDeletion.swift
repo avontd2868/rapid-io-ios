@@ -31,7 +31,7 @@ class RapidDocumentDelete: NSObject, RapidMutationRequest {
     internal var requestTimeoutTimer: Timer?
     
     /// Cache handler
-    internal weak var cacheHandler: RapidCacheHandler?
+    internal weak var cacheHandler: RapidDocCacheHandler?
     
     internal weak var requestDelegate: RapidMutationRequestDelegate?
     
@@ -44,7 +44,7 @@ class RapidDocumentDelete: NSObject, RapidMutationRequest {
     ///   - collectionID: Collection ID
     ///   - documentID: Document ID
     ///   - completion: Delete completion handler
-    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDocumentDeletionCompletion?) {
+    init(collectionID: String, documentID: String, cache: RapidDocCacheHandler?, completion: RapidDocumentDeletionCompletion?) {
         self.collectionID = collectionID
         self.documentID = documentID
         self.completion = completion

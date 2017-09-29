@@ -27,7 +27,7 @@ class RapidCollectionFetch: NSObject {
     let completion: RapidCollectionFetchCompletion?
     
     /// Cache handler
-    internal weak var cacheHandler: RapidCacheHandler?
+    internal weak var cacheHandler: RapidDocCacheHandler?
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
@@ -48,7 +48,7 @@ class RapidCollectionFetch: NSObject {
     ///   - paging: Subscription paging
     ///   - cache: Cache handler
     ///   - completion: Completion handler
-    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, completion: RapidCollectionFetchCompletion?) {
+    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidDocCacheHandler?, completion: RapidCollectionFetchCompletion?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
@@ -120,7 +120,7 @@ class RapidDocumentFetch: NSObject {
     let completion: RapidDocumentFetchCompletion?
     
     /// Cache handler
-    internal weak var cacheHandler: RapidCacheHandler?
+    internal weak var cacheHandler: RapidDocCacheHandler?
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
@@ -141,7 +141,7 @@ class RapidDocumentFetch: NSObject {
     ///   - documentID: Document ID
     ///   - cache: Cache handler
     ///   - completion: Completion handler
-    init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDocumentFetchCompletion?) {
+    init(collectionID: String, documentID: String, cache: RapidDocCacheHandler?, completion: RapidDocumentFetchCompletion?) {
         let filter = RapidFilterSimple(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID)
         self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, cache: nil, completion: nil)
         

@@ -46,7 +46,7 @@ extension RapidDocumentRefOnConnect: RapidMutationReference {
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func mutate(value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion? = nil) -> RapidWriteRequest {
+    open func mutate(value: [String: Any], completion: RapidDocumentRegisterOnConnectActionCompletion? = nil) -> RapidWriteRequest {
         let mutation = RapidDocumentOnConnectMutation(collectionID: collectionName, documentID: documentID, value: value, completion: completion)
         socketManager.registerOnConnectAction(mutation)
         return mutation
@@ -68,7 +68,7 @@ extension RapidDocumentRefOnConnect: RapidMergeReference {
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func merge(value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion? = nil) -> RapidWriteRequest {
+    open func merge(value: [String: Any], completion: RapidDocumentRegisterOnConnectActionCompletion? = nil) -> RapidWriteRequest {
         let merge = RapidDocumentOnConnectMerge(collectionID: collectionName, documentID: documentID, value: value, completion: completion)
         socketManager.registerOnConnectAction(merge)
         return merge
@@ -129,7 +129,7 @@ extension RapidDocumentRefOnDisconnect: RapidMutationReference {
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func mutate(value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion? = nil) -> RapidWriteRequest {
+    open func mutate(value: [String: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion? = nil) -> RapidWriteRequest {
         let mutation = RapidDocumentOnDisconnectMutation(collectionID: collectionName, documentID: documentID, value: value, completion: completion)
         socketManager.registerOnDisconnectAction(mutation)
         return mutation
@@ -151,7 +151,7 @@ extension RapidDocumentRefOnDisconnect: RapidMergeReference {
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func merge(value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion? = nil) -> RapidWriteRequest {
+    open func merge(value: [String: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion? = nil) -> RapidWriteRequest {
         let merge = RapidDocumentOnDisconnectMerge(collectionID: collectionName, documentID: documentID, value: value, completion: completion)
         socketManager.registerOnDisconnectAction(merge)
         return merge

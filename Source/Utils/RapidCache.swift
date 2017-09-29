@@ -7,14 +7,97 @@
 //
 import Foundation
 
-protocol RapidCachableObject: NSCoding {
+protocol RapidCachableObject: Codable {
     var objectID: String { get }
     var groupID: String { get }
 }
 
 /// Class for handling data cache
-class RapidCache: NSObject {
+class RapidCache<Element: RapidCachableObject> {
     
+    enum CodingKeys: String, CodingKey {
+        case info
+    }
+    
+    internal struct Unit: Codable {
+        let data: Element
+    }
+
+    internal struct Page: Codable {
+        
+        var info: [String: Data]
+        
+        init() {
+            info = [:]
+        }
+        
+    }
+
+    internal struct Link: Codable {
+        
+        var info: [String: [[String]]]
+        
+        init() {
+            info = [:]
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            info = try container.decode([String: Any].self, forKey: .info) as? [String: [[String]]] ?? [:]
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            
+            try container.encode(info as [String: Any], forKey: .info)
+        }
+        
+    }
+
+    internal struct Lookup: Codable {
+        
+        var info: [String: [String: TimeInterval]]
+        
+        init() {
+            info = [:]
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            info = try container.decode([String: Any].self, forKey: .info) as? [String: [String: TimeInterval]] ?? [:]
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            
+            try container.encode(info as [String: Any], forKey: .info)
+        }
+
+    }
+    
+    internal class ReferenceCount: Codable {
+        
+        var info: [String: [String: Int]]
+        
+        init() {
+            info = [:]
+        }
+
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            info = try container.decode([String: Any].self, forKey: .info) as? [String: [String: Int]] ?? [:]
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            
+            try container.encode(info as [String: Any], forKey: .info)
+        }
+        
+    }
+
     /// URL of a file with info about cached data
     internal var cacheInfoURL: URL {
         return cacheDir.appendingPathComponent("00.dat")
@@ -47,11 +130,25 @@ class RapidCache: NSObject {
     /// Dictionary with info about cached data
     ///
     /// It stores modification time for every piece of data
-    internal var cacheInfo: [String: [String: TimeInterval]]
+    internal var lookup: Lookup
     
     /// Dictionary with info about data reference counts
-    internal var referenceCountInfo: [String: [String: Int]]
+    internal var referenceCount: ReferenceCount
     
+    internal lazy var encoder: JSONEncoder = {
+        let enc = JSONEncoder()
+        enc.dateEncodingStrategy = .secondsSince1970
+        enc.dataEncodingStrategy = .base64
+        return enc
+    }()
+    
+    internal lazy var decoder: JSONDecoder = {
+        let dec = JSONDecoder()
+        dec.dateDecodingStrategy = .secondsSince1970
+        dec.dataDecodingStrategy = .base64
+        return dec
+    }()
+
     /// Initialize `RapidCache`
     ///
     /// - Parameters:
@@ -102,24 +199,26 @@ class RapidCache: NSObject {
         }
         
         // Load info about cached data
-        if let data = try? Data(contentsOf: cacheDir.appendingPathComponent("00.dat")), let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: [String: TimeInterval]] {
-            cacheInfo = info
+        if let data = try? Data(contentsOf: cacheDir.appendingPathComponent("00.dat")),
+            let info = try? JSONDecoder().decode(Lookup.self, from: data) {
+            
+            lookup = info
         }
         else {
-            cacheInfo = [:]
+            lookup = Lookup()
         }
         
         // Load info about reference counts
-        if let data = try? Data(contentsOf: cacheDir.appendingPathComponent("01.dat")), let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: [String: Int]] {
-            referenceCountInfo = info
+        if let data = try? Data(contentsOf: cacheDir.appendingPathComponent("01.dat")),
+            let info = try? JSONDecoder().decode(ReferenceCount.self, from: data) {
+            
+            referenceCount = info
         }
         else {
-            referenceCountInfo = [:]
+            referenceCount = ReferenceCount()
         }
         
         diskQueue = DispatchQueue(label: "io.rapid.cache.disk", qos: .utility)
-        
-        super.init()
         
         // Prune cached data
         diskQueue.async {
@@ -166,7 +265,7 @@ class RapidCache: NSObject {
     func hasData(forKey key: String, completion: @escaping (Bool) -> Void) {
         diskQueue.async {
             let hash = self.hash(forKey: key)
-            completion(self.cacheInfo[hash]?[key] != nil)
+            completion(self.lookup.info[hash]?[key] != nil)
         }
     }
     
@@ -176,7 +275,7 @@ class RapidCache: NSObject {
     ///   - key: Cache key
     ///   - secret: Secret key for data decryption
     ///   - completion: Completion handler. If there are any cached data for the key they are passed in the completion handler parameter.
-    func loadDataset(forKey key: String, secret: String? = nil, completion: @escaping ([RapidCachableObject]?) -> Void) {
+    func loadDataset(forKey key: String, secret: String? = nil, completion: @escaping ([Element]?) -> Void) {
         diskQueue.async {
             completion(self.loadDataset(forKey: key, secret: secret))
         }
@@ -185,11 +284,11 @@ class RapidCache: NSObject {
     /// Get cached object with given group ID and object ID
     ///
     /// - Parameters:
-    ///   - groupID: `RapidCachableObject` group ID
-    ///   - objectID: `RapidCachableObject` object ID
+    ///   - groupID: `Element` group ID
+    ///   - objectID: `Element` object ID
     ///   - secret: Secret key for data decryption
     ///   - completion: Completion handler. If there is any cached object for the ids it is passed in the completion handler parameter.
-    func loadObject(withGroupID groupID: String, objectID: String, secret: String? = nil, completion: @escaping (RapidCachableObject?) -> Void) {
+    func loadObject(withGroupID groupID: String, objectID: String, secret: String? = nil, completion: @escaping (Element?) -> Void) {
         diskQueue.async {
             completion(self.loadObjects(forGroupID: groupID, objectIDs: [objectID], secret: secret).first)
         }
@@ -201,7 +300,7 @@ class RapidCache: NSObject {
     ///   - data: Data to be cached
     ///   - key: Cache key
     ///   - secret: Secret key for data encryption
-    func save(dataset: [RapidCachableObject], forKey key: String, secret: String? = nil) {
+    func save(dataset: [Element], forKey key: String, secret: String? = nil) {
         diskQueue.async {
             self.saveDataset(dataset, forKey: key, secret: secret)
         }
@@ -210,9 +309,9 @@ class RapidCache: NSObject {
     /// Store cachable object with a given group ID and object ID
     ///
     /// - Parameters:
-    ///   - object: `RapidCachableObject` to be cached
+    ///   - object: `Element` to be cached
     ///   - secret: Secret key for data encryption
-    func save(object: RapidCachableObject, withSecret secret: String? = nil) {
+    func save(object: Element, withSecret secret: String? = nil) {
         diskQueue.async {
             self.saveObjects(objects: [object], withSecret: secret)
         }
@@ -221,8 +320,8 @@ class RapidCache: NSObject {
     /// Remove cached object from all cached dataset
     ///
     /// - Parameters:
-    ///   - groupID: Group ID of `RapidCachableObject` that should be removed
-    ///   - objectID: Object ID of `RapidCachableObject` that should be removed
+    ///   - groupID: Group ID of `Element` that should be removed
+    ///   - objectID: Object ID of `Element` that should be removed
     func removeObject(withGroupID groupID: String, objectID: String) {
         diskQueue.async {
             self.removeObject(withGroupID: groupID, objectIDs: [objectID])
@@ -316,27 +415,26 @@ internal extension RapidCache {
     ///   - objectIDs: Array of object IDs
     ///   - secret: Secret key for data decryption
     /// - Returns: Array of cached objects
-    func loadObjects(forGroupID groupID: String, objectIDs: [String], secret: String?) -> [RapidCachableObject] {
-        guard let fileDict = loadObjectsDictionary(forGroupID: groupID) else {
+    func loadObjects(forGroupID groupID: String, objectIDs: [String], secret: String?) -> [Element] {
+        guard let page = loadObjectsDictionary(forGroupID: groupID) else {
             return []
         }
-        
-        var cachedObjects = [RapidCachableObject]()
+        var cachedObjects = [Element]()
         
         for objectID in objectIDs {
-            if let data = fileDict[objectID] {
-                let cachedObject: RapidCachableObject?
+            if let data = page.info[objectID] {
+                let cachedObject: Unit?
                 
                 if let secret = secret {
                     let cache = byteXor(data: data, secret: secret)
-                    cachedObject = NSKeyedUnarchiver.unarchiveObject(with: cache) as? RapidCachableObject
+                    cachedObject = try? decoder.decode(Unit.self, from: cache)
                 }
                 else {
-                    cachedObject = NSKeyedUnarchiver.unarchiveObject(with: data) as? RapidCachableObject
+                    cachedObject = try? decoder.decode(Unit.self, from: data)
                 }
                 
                 if let cachedObject = cachedObject {
-                    cachedObjects.append(cachedObject)
+                    cachedObjects.append(cachedObject.data)
                 }
             }
         }
@@ -348,7 +446,7 @@ internal extension RapidCache {
     ///
     /// - Parameter groupID: Shared group ID of cached objects
     /// - Returns: Dictionary with cached objects
-    func loadObjectsDictionary(forGroupID groupID: String) -> [String: Data]? {
+    func loadObjectsDictionary(forGroupID groupID: String) -> Page? {
         let groupHash = self.hash(forKey: groupID, unique: true)
         
         return objectsDictionary(forHash: groupHash)
@@ -360,17 +458,17 @@ internal extension RapidCache {
     ///   - key: Cache key
     ///   - secret: Secret key for data decryption
     /// - Returns: Cached data if there are any
-    func loadDataset(forKey key: String, secret: String?) -> [RapidCachableObject]? {
+    func loadDataset(forKey key: String, secret: String?) -> [Element]? {
         let hash = self.hash(forKey: key)
 
         // Check in-memory cache info first
-        if self.cacheInfo[hash]?[key] == nil {
+        if self.lookup.info[hash]?[key] == nil {
             return nil
         }
 
         // Get array of object IDs, otherwise return nil
-        let linkDict = self.linkDictionary(forHash: hash)
-        guard let linkArray = linkDict[key] else {
+        let link = self.linkDictionary(forHash: hash)
+        guard let linkArray = link.info[key] else {
             return nil
         }
         
@@ -386,45 +484,46 @@ internal extension RapidCache {
     /// Get lists of IDs of cached objects for all keys with a same hash value
     ///
     /// - Parameter hash: Hash value of a cache key
-    /// - Returns: Dictionary with arrays of IDs of cached `RapidCachableObjects`
-    func linkDictionary(forHash hash: String) -> [String: [[String]]] {
+    /// - Returns: Dictionary with arrays of IDs of cached `Elements`
+    func linkDictionary(forHash hash: String) -> Link {
         let url = self.url(forHash: hash)
-        
         do {
             let data = try Data(contentsOf: url)
-            return NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: [[String]]] ?? [:]
+            let link = try? decoder.decode(Link.self, from: data)
+            return link ?? Link()
         }
         catch {
-            return [:]
+            return Link()
         }
     }
     
     /// Get cached objects for all keys with a same hash value
     ///
-    /// - Parameter hash: Hash value of a `RapidCachableObject` group ID
+    /// - Parameter hash: Hash value of a `Element` group ID
     /// - Returns: Dictionary with cached pieces of data
-    func objectsDictionary(forHash hash: String) -> [String: Data] {
+    func objectsDictionary(forHash hash: String) -> Page {
         let url = self.url(forHash: hash, linkFile: false)
         
         do {
             let data = try Data(contentsOf: url)
-            return NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Data] ?? [:]
+            let page = try? decoder.decode(Page.self, from: data)
+            return page ?? Page()
         }
         catch {
-            return [:]
+            return Page()
         }
     }
     
     /// Store objects for a given dataset to the cache
     ///
     /// - Parameters:
-    ///   - objects: Array of `RapidCachableObject`
+    ///   - objects: Array of `Element`
     ///   - pointers: List of object IDs that were previously associated with the given dataset
     ///   - secret: Secret key for data encryption
-    func saveObjects(objects: [RapidCachableObject], pointers: [[String]]? = nil, withSecret secret: String? = nil) {
+    func saveObjects(objects: [Element], pointers: [[String]]? = nil, withSecret secret: String? = nil) {
         var mutPointers = pointers ?? []
         
-        // Get shared `RapidCachableObject` group ID
+        // Get shared `Element` group ID
         // `objects` array can be empty
         let key: String?
         if let object = objects.first {
@@ -435,16 +534,16 @@ internal extension RapidCache {
         }
         
         let hash: String?
-        var fileDict: [String: Data]
+        var page: Page
         var referenceCounts: [String: Int]
         if let key = key {
             let groupHash = self.hash(forKey: key, unique: true)
-            fileDict = objectsDictionary(forHash: groupHash)
-            referenceCounts = referenceCountInfo[groupHash] ?? [:]
+            page = objectsDictionary(forHash: groupHash)
+            referenceCounts = referenceCount.info[groupHash] ?? [:]
             hash = groupHash
         }
         else {
-            fileDict = [:]
+            page = Page()
             referenceCounts = [:]
             hash = nil
         }
@@ -475,25 +574,29 @@ internal extension RapidCache {
         
         // Store objects to the dictionary
         for object in objects {
-            let data = NSKeyedArchiver.archivedData(withRootObject: object)
+            let unit = Unit(data: object)
+            guard let data = try? encoder.encode(unit) else {
+                continue
+            }
+            
             if let secret = secret {
-                fileDict[object.objectID] = byteXor(data: data, secret: secret)
+                page.info[object.objectID] = byteXor(data: data, secret: secret)
             }
             else {
-                fileDict[object.objectID] = data
+                page.info[object.objectID] = data
             }
         }
         
         // Remove objects that have zero reference counts
         for id in removeIDs {
-            fileDict[id] = nil
+            page.info[id] = nil
         }
         
         // Save to disk
         if let hash = hash {
-            referenceCountInfo[hash] = referenceCounts
+            referenceCount.info[hash] = referenceCounts
             saveReferenceCountInfo()
-            saveFile(fileDict, forHash: hash, linkFile: false)
+            saveCodableObject(page, forHash: hash, linkFile: false)
         }
     }
     
@@ -503,39 +606,38 @@ internal extension RapidCache {
     ///   - cache: Data to be stored
     ///   - key: Cache key
     ///   - secret: Secret for data encryption
-    func saveDataset(_ cache: [RapidCachableObject], forKey key: String, secret: String?) {
+    func saveDataset(_ cache: [Element], forKey key: String, secret: String?) {
         let hash = self.hash(forKey: key)
         
         // Add data to the cache
-        var linkDict = linkDictionary(forHash: hash)
+        var link = linkDictionary(forHash: hash)
         
-        saveObjects(objects: cache, pointers: linkDict[key], withSecret: secret)
+        saveObjects(objects: cache, pointers: link.info[key], withSecret: secret)
         
-        linkDict[key] = cache.map({ [$0.groupID, $0.objectID] })
+        link.info[key] = cache.map({ [$0.groupID, $0.objectID] })
 
         // Put down a timestamp of data modification
-        if var dict = cacheInfo[hash] {
+        if var dict = lookup.info[hash] {
             dict[key] = Date().timeIntervalSince1970
-            cacheInfo[hash] = dict
+            lookup.info[hash] = dict
         }
         else {
-            cacheInfo[hash] = [key: Date().timeIntervalSince1970]
+            lookup.info[hash] = [key: Date().timeIntervalSince1970]
         }
         
         saveCacheInfo()
-        saveFile(linkDict, forHash: hash)
+        saveCodableObject(link, forHash: hash)
     }
     
     /// Write cache file to a disk
     ///
     /// - Parameters:
-    ///   - cache: Dictionary of cached pieces of data
+    ///   - file: Dictionary of cached pieces of data
     ///   - hash: Hash value of keys associated with data in this cache file
     ///   - linkFile: `true` if `cache` is a dictionary with object IDs not physical data
-    func saveFile(_ cache: [AnyHashable: Any], forHash hash: String, linkFile: Bool = true) {
+    func saveCodableObject<File: Codable>(_ file: File, forHash hash: String, linkFile: Bool = true) {
         do {
-            let data = NSKeyedArchiver.archivedData(withRootObject: cache)
-            
+            let data = try encoder.encode(file)
             try data.write(to: self.url(forHash: hash, linkFile: linkFile))
         }
         catch {
@@ -546,8 +648,7 @@ internal extension RapidCache {
     /// Write info about cached data to a disk
     func saveCacheInfo() {
         do {
-            let data = NSKeyedArchiver.archivedData(withRootObject: cacheInfo)
-            
+            let data = try encoder.encode(lookup)
             try data.write(to: cacheInfoURL)
         }
         catch {
@@ -558,7 +659,7 @@ internal extension RapidCache {
     /// Write info about reference counts to a disk
     func saveReferenceCountInfo() {
         do {
-            let data = NSKeyedArchiver.archivedData(withRootObject: referenceCountInfo)
+            let data = try encoder.encode(referenceCount)
             
             try data.write(to: referenceCountInfoURL)
         }
@@ -570,8 +671,8 @@ internal extension RapidCache {
     /// Remove cache directory from a disk
     func removeCache() {
         do {
-            self.cacheInfo.removeAll()
-            self.referenceCountInfo.removeAll()
+            self.lookup.info.removeAll()
+            self.referenceCount.info.removeAll()
             
             try self.fileManager.removeItem(at: self.cacheDir)
         }
@@ -586,18 +687,18 @@ internal extension RapidCache {
     func removeDataset(forKey key: String) {
         let hash = self.hash(forKey: key)
         
-        self.cacheInfo[hash]?[key] = nil
+        self.lookup.info[hash]?[key] = nil
         
-        var linkDict = self.linkDictionary(forHash: hash)
+        var link = self.linkDictionary(forHash: hash)
         
-        let links = linkDict[key] ?? []
+        let links = link.info[key] ?? []
         
         // Process referenced objects
         if let groupID = links.first?.first {
             let groupHash = self.hash(forKey: groupID, unique: true)
             
             var removeIDs = [String]()
-            var referenceCounts = referenceCountInfo[groupHash] ?? [:]
+            var referenceCounts = referenceCount.info[groupHash] ?? [:]
             
             // Decrease reference counts
             for link in links {
@@ -609,7 +710,7 @@ internal extension RapidCache {
                 }
             }
             
-            referenceCountInfo[groupHash] = referenceCounts
+            referenceCount.info[groupHash] = referenceCounts
             
             // Remove objects with zero reference counts
             removeObject(withGroupID: groupID, objectIDs: removeIDs)
@@ -617,10 +718,10 @@ internal extension RapidCache {
         
         // If there are still any data stored under the same hash value save the updated file
         // Otherwise remove the cache file
-        if (self.cacheInfo[hash]?.keys.count ?? 0) > 0 {
-            linkDict[key] = nil
+        if (self.lookup.info[hash]?.keys.count ?? 0) > 0 {
+            link.info[key] = nil
             
-            self.saveFile(linkDict, forHash: hash)
+            self.saveCodableObject(link, forHash: hash)
         }
         else {
             self.removeFile(forHash: hash)
@@ -633,29 +734,29 @@ internal extension RapidCache {
     /// Remove cached objects with given group ID and object IDs
     ///
     /// - Parameters:
-    ///   - groupID: Shared `RapidCachableObject` group ID
-    ///   - objectIDs: Array of `RapidCachableObject` object IDs
+    ///   - groupID: Shared `Element` group ID
+    ///   - objectIDs: Array of `Element` object IDs
     func removeObject(withGroupID groupID: String, objectIDs: [String]) {
-        guard var fileDict = loadObjectsDictionary(forGroupID: groupID) else {
+        guard var page = loadObjectsDictionary(forGroupID: groupID) else {
             return
         }
         
         let hash = self.hash(forKey: groupID, unique: true)
-        var references = referenceCountInfo[hash] ?? [:]
+        var references = referenceCount.info[hash] ?? [:]
         
         for id in objectIDs {
-            fileDict[id] = nil
+            page.info[id] = nil
             references["\(groupID)/\(id)"] = nil
         }
         
         if references.keys.count > 0 {
-            saveFile(fileDict, forHash: hash, linkFile: false)
+            saveCodableObject(page, forHash: hash, linkFile: false)
         }
         else {
             removeFile(forHash: hash, linkFile: false)
         }
         
-        referenceCountInfo[hash] = references
+        referenceCount.info[hash] = references
         saveReferenceCountInfo()
     }
     
@@ -698,7 +799,7 @@ internal extension RapidCache {
         
         let referenceTimestamp = Date().timeIntervalSince1970 - ttl
         
-        for (_, caches) in cacheInfo {
+        for (_, caches) in lookup.info {
             for (key, timestamp) in caches where timestamp < referenceTimestamp {
                 RapidLogger.log(message: "Outdated cache removed - key: \(key)", level: .debug)
                 
@@ -714,7 +815,7 @@ internal extension RapidCache {
         }
         
         // Sort cached data according to their time of modification
-        var sortedValues = cacheInfo
+        var sortedValues = lookup.info
             .values
             .reduce([(String, TimeInterval)](), { temp, dict in
                 let tuples = dict.map({ tuple in tuple })

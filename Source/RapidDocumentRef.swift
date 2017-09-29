@@ -38,7 +38,7 @@ public typealias RapidDocumentExecutionCompletion = RapidDocumentMutationComplet
 /// - delete: Delete a document
 /// - abort: Abort process
 public enum RapidExecutionResult {
-    case write(value: [AnyHashable: Any])
+    case write(value: [String: Any])
     case delete
     case abort
 }
@@ -186,7 +186,7 @@ extension RapidDocumentRef: RapidMutationReference {
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func mutate(value: [AnyHashable: Any], completion: RapidDocumentMutationCompletion? = nil) -> RapidWriteRequest {
+    open func mutate(value: [String: Any], completion: RapidDocumentMutationCompletion? = nil) -> RapidWriteRequest {
         let mutation = RapidDocumentMutation(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         socketManager.mutate(mutationRequest: mutation)
         return mutation
@@ -205,7 +205,7 @@ extension RapidDocumentRef: RapidMutationReference {
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func mutate(value: [AnyHashable: Any], etag: String?, completion: RapidDocumentMutationCompletion? = nil) -> RapidWriteRequest {
+    open func mutate(value: [String: Any], etag: String?, completion: RapidDocumentMutationCompletion? = nil) -> RapidWriteRequest {
         let mutation = RapidDocumentMutation(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         mutation.etag = etag ?? Rapid.nilValue
         socketManager.mutate(mutationRequest: mutation)
@@ -227,7 +227,7 @@ extension RapidDocumentRef: RapidMergeReference {
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func merge(value: [AnyHashable: Any], completion: RapidDocumentMergeCompletion? = nil) -> RapidWriteRequest {
+    open func merge(value: [String: Any], completion: RapidDocumentMergeCompletion? = nil) -> RapidWriteRequest {
         let merge = RapidDocumentMerge(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         socketManager.mutate(mutationRequest: merge)
         return merge
@@ -250,7 +250,7 @@ extension RapidDocumentRef: RapidMergeReference {
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    open func merge(value: [AnyHashable: Any], etag: String?, completion: RapidDocumentMergeCompletion? = nil) -> RapidWriteRequest {
+    open func merge(value: [String: Any], etag: String?, completion: RapidDocumentMergeCompletion? = nil) -> RapidWriteRequest {
         let merge = RapidDocumentMerge(collectionID: collectionName, documentID: documentID, value: value, cache: handler, completion: completion)
         merge.etag = etag ?? Rapid.nilValue
         socketManager.mutate(mutationRequest: merge)

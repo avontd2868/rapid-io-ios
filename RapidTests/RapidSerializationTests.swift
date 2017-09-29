@@ -32,12 +32,6 @@ extension RapidTests {
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
     
-    func testJSONalidationInvalidKey() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], cache: nil, completion: nil)
-        
-        XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
-    }
-    
     func testJSONValidationInvalidKeyPath() {
         let sub = RapidCollectionSub(
             collectionID: testCollectionName,
@@ -272,7 +266,7 @@ extension RapidTests {
     func testCollectionSubscription() {
         let subscription = RapidCollectionSub(collectionID: "users", filter: nil, ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
         
-        let json: [AnyHashable: Any] = [
+        let json: [String: Any] = [
             "sub": [
                 "col-id": subscription.collectionID
             ]
@@ -296,7 +290,7 @@ extension RapidTests {
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let json: [AnyHashable: Any] = [
+        let json: [String: Any] = [
             "sub": [
                 "col-id": sub.collectionID,
                 "filter": ["text": "texty text"]
@@ -321,7 +315,7 @@ extension RapidTests {
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let json: [AnyHashable: Any] = [
+        let json: [String: Any] = [
             "sub": [
                 "col-id": sub.collectionID,
                 "order": [
@@ -365,7 +359,7 @@ extension RapidTests {
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let json: [AnyHashable: Any] = [
+        let json: [String: Any] = [
             "sub": [
                 "col-id": sub.collectionID,
                 "filter": [

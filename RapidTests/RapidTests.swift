@@ -9,7 +9,7 @@
 import XCTest
 @testable import Rapid
 
-func ==(lhs: [AnyHashable: Any], rhs: [AnyHashable: Any] ) -> Bool {
+func ==(lhs: [String: Any], rhs: [String: Any] ) -> Bool {
     return NSDictionary(dictionary: lhs).isEqual(to: rhs)
 }
 
@@ -682,7 +682,7 @@ class RapidTests: XCTestCase {
     }
     
     func testDictionaryMerge() {
-        var dictionary: [AnyHashable: Any] = [
+        var dictionary: [String: Any] = [
             "att1": "val",
             "att2": [1,2,3],
             "att3": [

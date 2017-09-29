@@ -1870,7 +1870,7 @@ extension RapidTests {
 // MARK: Helper methods
 extension RapidTests {
     
-    func mutate(documentID: String?, value: [AnyHashable: Any]?, completion: RapidDocumentMutationCompletion? = nil) {
+    func mutate(documentID: String?, value: [String: Any]?, completion: RapidDocumentMutationCompletion? = nil) {
         if let id = documentID, let value = value {
             self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value, completion: completion)
         }
@@ -1929,15 +1929,15 @@ struct RapidTestStruct: Codable {
 }
 
 // MARK: Mock subscription handler delegate
-class MockSubHandlerDelegate: RapidSubscriptionManagerDelegate, RapidCacheHandler {
+class MockSubHandlerDelegate: RapidSubscriptionManagerDelegate, RapidDocCacheHandler {
     
     let websocketQueue: OperationQueue
     let parseQueue: OperationQueue
-    var cache: RapidCache?
+    var cache: RapidCache<RapidDocument>?
     let unsubscriptionHandler: (_ handler: RapidUnsubscriptionManager) -> Void
     var authorization: RapidAuthorization?
     
-    var cacheHandler: RapidCacheHandler? {
+    var cacheHandler: RapidDocCacheHandler? {
         return self
     }
     
@@ -1958,19 +1958,19 @@ class MockSubHandlerDelegate: RapidSubscriptionManagerDelegate, RapidCacheHandle
         self.unsubscriptionHandler(handler)
     }
     
-    func loadSubscriptionValue(forSubscription subscription: RapidColSubManager, completion: @escaping ([RapidCachableObject]?) -> Void) {
+    func loadSubscriptionValue(forSubscription subscription: RapidColSubManager, completion: @escaping ([RapidDocument]?) -> Void) {
         cache?.loadDataset(forKey: subscription.subscriptionHash, secret: authorization?.token, completion: completion)
     }
     
-    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHashable) {
+    func storeDataset(_ dataset: [RapidDocument], forSubscription subscription: RapidSubscriptionHashable) {
         cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: authorization?.token)
     }
     
-    func storeObject(_ object: RapidCachableObject) {
+    func storeObject(_ object: RapidDocument) {
         cache?.save(object: object, withSecret: authorization?.token)
     }
     
-    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidCachableObject?) -> Void) {
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidDocument?) -> Void) {
         cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: authorization?.token, completion: completion)
     }
     
