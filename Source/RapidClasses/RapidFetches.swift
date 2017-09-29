@@ -9,7 +9,7 @@
 import Foundation
 
 /// Collection fetch object
-class RapidCollectionFetch: NSObject {
+class RapidCollectionFetch {
     
     /// Collection ID
     let collectionID: String
@@ -103,7 +103,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
 // MARK: Document fetch
 
 /// Document fetch object
-class RapidDocumentFetch: NSObject {
+class RapidDocumentFetch {
     
     /// Document identifier
     let documentID: String

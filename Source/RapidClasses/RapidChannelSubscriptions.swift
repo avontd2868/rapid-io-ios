@@ -18,7 +18,7 @@ enum RapidChannelIdentifier {
 }
 
 /// Channel subscription object
-class RapidChannelSub: NSObject {
+class RapidChannelSub {
     
     /// Channel ID
     let channelID: RapidChannelIdentifier

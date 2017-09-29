@@ -11,7 +11,7 @@ import Foundation
 // MARK: Collection subscription
 
 /// Collection subscription object
-class RapidCollectionSub: NSObject {
+class RapidCollectionSub {
     
     /// Collection ID
     let collectionID: String
@@ -116,7 +116,7 @@ extension RapidCollectionSub: RapidSubscription {
 /// Document subscription object
 ///
 /// The class is a wrapper for `RapidCollectionSub`. Internally, it creates collection subscription filtered by `RapidFilterSimple.documentIdKey` = `documentID`
-class RapidDocumentSub: NSObject {
+class RapidDocumentSub {
     
     /// Collection ID
     let collectionID: String
@@ -143,8 +143,6 @@ class RapidDocumentSub: NSObject {
         self.collectionID = collectionID
         self.documentID = documentID
         self.handler = handler
-        
-        super.init()
         
         self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
     }

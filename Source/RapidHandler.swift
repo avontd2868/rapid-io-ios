@@ -68,7 +68,7 @@ extension RapidInstanceWithSocketManager {
 }
 
 /// General dependency object containing managers
-class RapidHandler: NSObject {
+class RapidHandler {
     
     let apiKey: String
     
@@ -130,8 +130,6 @@ class RapidHandler: NSObject {
         }
         
         self.apiKey = apiKey
-        
-        super.init()
         
         socketManager.cacheHandler = self
     }

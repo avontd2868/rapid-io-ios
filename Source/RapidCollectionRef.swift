@@ -18,7 +18,7 @@ public typealias RapidCollectionSubscriptionHandlerWithChanges = (_ result: Rapi
 public typealias RapidCollectionFetchCompletion = RapidCollectionSubscriptionHandler
 
 /// Class representing Rapid.io collection
-open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
+open class RapidCollectionRef: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     

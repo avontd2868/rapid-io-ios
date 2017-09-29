@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TimerTarget: NSObject {
+class TimerTarget {
     
     let block: (_ userInfo: Any?) -> Void
     

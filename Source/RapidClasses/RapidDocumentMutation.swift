@@ -15,7 +15,7 @@ struct RapidEmptyWriteRequest: RapidWriteRequest {
 // MARK: Document mutation
 
 /// Document mutation request
-class RapidDocumentMutation: NSObject, RapidMutationRequest {
+class RapidDocumentMutation: RapidMutationRequest {
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
@@ -112,7 +112,7 @@ extension RapidDocumentMutation: RapidWriteRequest {
 
 // MARK: On-connect mutation
 
-class RapidDocumentOnConnectMutation: NSObject {
+class RapidDocumentOnConnectMutation {
     
     let mutation: RapidDocumentMutation!
     
@@ -183,7 +183,7 @@ extension RapidDocumentOnConnectMutation: RapidWriteRequest {
 
 // MARK: On-disconnect mutation
 
-class RapidDocumentOnDisconnectMutation: NSObject {
+class RapidDocumentOnDisconnectMutation {
     
     let mutation: RapidDocumentMutation!
     

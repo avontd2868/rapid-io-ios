@@ -44,7 +44,7 @@ public enum RapidExecutionResult {
 }
 
 /// Class representing Rapid.io document
-open class RapidDocumentRef: NSObject, RapidInstanceWithSocketManager {
+open class RapidDocumentRef: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     

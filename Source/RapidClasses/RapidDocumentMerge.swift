@@ -11,7 +11,7 @@ import Foundation
 // MARK: Document merge
 
 /// Document merge request
-class RapidDocumentMerge: NSObject, RapidMutationRequest {
+class RapidDocumentMerge: RapidMutationRequest {
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
@@ -108,7 +108,7 @@ extension RapidDocumentMerge: RapidWriteRequest {
 
 // MARK: On-connect merge
 
-class RapidDocumentOnConnectMerge: NSObject {
+class RapidDocumentOnConnectMerge {
     
     let merge: RapidDocumentMerge!
     
@@ -179,7 +179,7 @@ extension RapidDocumentOnConnectMerge: RapidWriteRequest {
 
 // MARK: On-disconnect merge
 
-class RapidDocumentOnDisconnectMerge: NSObject {
+class RapidDocumentOnDisconnectMerge {
     
     let merge: RapidDocumentMerge!
     

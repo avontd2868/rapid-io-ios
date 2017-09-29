@@ -17,7 +17,7 @@ public typealias RapidDocumentRegisterOnConnectActionCompletion = (_ result: Rap
 ///
 /// `RapidDocumentRefOnConnect` is used to register actions that should be performed
 /// when `Rapid` instance connects to a server
-open class RapidDocumentRefOnConnect: NSObject, RapidInstanceWithSocketManager {
+open class RapidDocumentRefOnConnect: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     
@@ -100,7 +100,7 @@ public typealias RapidDocumentRegisterOnDisonnectActionCompletion = (_ result: R
 ///
 /// `RapidDocumentRefOnDisconnect` is used to register actions that should be performed
 /// when `Rapid` instance disconnects from a server
-open class RapidDocumentRefOnDisconnect: NSObject, RapidInstanceWithSocketManager {
+open class RapidDocumentRefOnDisconnect: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     
