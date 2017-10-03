@@ -14,7 +14,7 @@ class ChannelCell: UITableViewCell {
         let title = NSMutableAttributedString(string: channel.name, attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 15)])
         
         if let lastMessage = channel.lastMessage {
-            let detail = NSAttributedString(string: " - \(lastMessage.sender): \(lastMessage.text)", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13)])
+            let detail = NSAttributedString(string: " - \(lastMessage.sender): \(lastMessage.text ?? "")", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13)])
             title.append(detail)
         }
         

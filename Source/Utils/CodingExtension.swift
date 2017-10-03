@@ -31,14 +31,14 @@ extension KeyedEncodingContainer where K == JSONCodingKeys {
                 continue
             }
             
-            if let intValue = value as? Int {
+            if let boolValue = value as? Bool {
+                try self.encode(boolValue, forKey: codingKey)
+            }
+            else if let intValue = value as? Int {
                 try self.encode(intValue, forKey: codingKey)
             }
             else if let stringValue = value as? String {
                 try self.encode(stringValue, forKey: codingKey)
-            }
-            else if let boolValue = value as? Bool {
-                try self.encode(boolValue, forKey: codingKey)
             }
             else if let doubleValue = value as? Double {
                 try self.encode(doubleValue, forKey: codingKey)
@@ -112,14 +112,14 @@ extension KeyedDecodingContainer {
         var dictionary = [String: Any]()
         
         for key in allKeys {
-            if let intValue = try? decode(Int.self, forKey: key) {
+            if let boolValue = try? decode(Bool.self, forKey: key) {
+                dictionary[key.stringValue] = boolValue
+            }
+            else if let intValue = try? decode(Int.self, forKey: key) {
                 dictionary[key.stringValue] = intValue
             }
             else if let stringValue = try? decode(String.self, forKey: key) {
                 dictionary[key.stringValue] = stringValue
-            }
-            else if let boolValue = try? decode(Bool.self, forKey: key) {
-                dictionary[key.stringValue] = boolValue
             }
             else if let doubleValue = try? decode(Double.self, forKey: key) {
                 dictionary[key.stringValue] = doubleValue

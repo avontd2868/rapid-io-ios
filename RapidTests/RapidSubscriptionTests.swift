@@ -1929,15 +1929,15 @@ struct RapidTestStruct: Codable {
 }
 
 // MARK: Mock subscription handler delegate
-class MockSubHandlerDelegate: RapidSubscriptionManagerDelegate, RapidDocCacheHandler {
+class MockSubHandlerDelegate: RapidSubscriptionManagerDelegate, RapidCacheHandler {
     
     let websocketQueue: OperationQueue
     let parseQueue: OperationQueue
-    var cache: RapidCache<RapidDocument>?
+    var cache: RapidCache?
     let unsubscriptionHandler: (_ handler: RapidUnsubscriptionManager) -> Void
     var authorization: RapidAuthorization?
     
-    var cacheHandler: RapidDocCacheHandler? {
+    var cacheHandler: RapidCacheHandler? {
         return self
     }
     
@@ -1958,19 +1958,19 @@ class MockSubHandlerDelegate: RapidSubscriptionManagerDelegate, RapidDocCacheHan
         self.unsubscriptionHandler(handler)
     }
     
-    func loadSubscriptionValue(forSubscription subscription: RapidColSubManager, completion: @escaping ([RapidDocument]?) -> Void) {
+    func loadSubscriptionValue(forSubscription subscription: RapidColSubManager, completion: @escaping ([RapidCachableObject]?) -> Void) {
         cache?.loadDataset(forKey: subscription.subscriptionHash, secret: authorization?.token, completion: completion)
     }
     
-    func storeDataset(_ dataset: [RapidDocument], forSubscription subscription: RapidSubscriptionHashable) {
+    func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHashable) {
         cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: authorization?.token)
     }
     
-    func storeObject(_ object: RapidDocument) {
+    func storeObject(_ object: RapidCachableObject) {
         cache?.save(object: object, withSecret: authorization?.token)
     }
     
-    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidDocument?) -> Void) {
+    func loadObject(withGroupID groupID: String, objectID: String, completion: @escaping (RapidCachableObject?) -> Void) {
         cache?.loadObject(withGroupID: groupID, objectID: objectID, secret: authorization?.token, completion: completion)
     }
     

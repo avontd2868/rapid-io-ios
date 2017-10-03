@@ -105,7 +105,7 @@ private extension MessagesViewController {
     
     func send(_ text: String) {
         // Compose a dictionary with a message
-        var message: [AnyHashable: Any] = [
+        var message: [String: Any] = [
             Message.channelID: channel.name,
             Message.sender: UserDefaultsManager.username,
             Message.sentDate: Rapid.serverTimestamp,
@@ -135,17 +135,17 @@ private extension MessagesViewController {
             .order(by: RapidOrdering(keyPath: Message.sentDate, ordering: .descending))
             .limit(to: 250)
         
-        subscription = collection.subscribe { [weak self] result in
+        subscription = collection.subscribe(decodableType: Message.self, block: { [weak self] result in
             switch result {
-            case .success(let documents):
-                self?.messages = documents.flatMap({ Message.initialize(withDocument: $0) }).reversed()
+            case .success(let messages):
+                self?.messages = messages.reversed()
                 
             case .failure:
                 self?.messages = []
             }
             
             self?.messagesChanged()
-        }
+        })
     }
     
     func messagesChanged() {

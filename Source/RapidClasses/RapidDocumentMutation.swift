@@ -38,7 +38,7 @@ class RapidDocumentMutation: RapidMutationRequest {
     internal var requestTimeoutTimer: Timer?
     
     /// Cache handler
-    internal weak var cacheHandler: RapidDocCacheHandler?
+    internal weak var cacheHandler: RapidCacheHandler?
     
     internal weak var requestDelegate: RapidMutationRequestDelegate?
     
@@ -52,7 +52,7 @@ class RapidDocumentMutation: RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: Document JSON
     ///   - completion: Mutation completion
-    init(collectionID: String, documentID: String, value: [String: Any], cache: RapidDocCacheHandler?, completion: RapidDocumentMutationCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], cache: RapidCacheHandler?, completion: RapidDocumentMutationCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
@@ -81,7 +81,7 @@ extension RapidDocumentMutation: RapidTimeoutRequest {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) mutated", level: .info)
             
             self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
-                if let oldDoc = object,
+                if let oldDoc = object as? RapidDocument,
                     let document = RapidDocument(document: oldDoc, newValue: self.value) {
                     
                     self.cacheHandler?.storeObject(document)

@@ -115,7 +115,7 @@ internal extension RapidColSubManager {
     func loadCachedData() {
         delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, completion: { [weak self] (cachedValue) in
             self?.delegate?.parseQueue.async {
-                if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedDocuments = cachedValue {
+                if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedDocuments = cachedValue as? [RapidDocument] {
                     let batch = RapidSubscriptionBatch(withSubscriptionID: subscriptionID, collection: cachedDocuments)
                     self?.receivedNewValue(batch)
                 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>RapidDocument Struct Reference</title>
+    <title>RapidDocument Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/RapidDocument" class="dashAnchor"></a>
-    <a title="RapidDocument Struct Reference"></a>
+    <a name="//apple_ref/swift/Class/RapidDocument" class="dashAnchor"></a>
+    <a title="RapidDocument Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Rapid Docs</a> (79% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Rapid Reference</a>
         <img id="carat" src="../img/carat.png" />
-        RapidDocument Struct Reference
+        RapidDocument Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -32,6 +32,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Classes/Rapid.html">Rapid</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidDocument.html">RapidDocument</a>
               </li>
             </ul>
           </li>
@@ -73,7 +76,7 @@
             <a href="../Functions.html">Functions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Functions.html#/s:5Rapid2eeoiSbAA0A8DocumentV_ADtF">==(_:_:)</a>
+                <a href="../Functions.html#/s:5Rapid2eeoiSbAA0A8DocumentC_ADtF">==(_:_:)</a>
               </li>
             </ul>
           </li>
@@ -129,9 +132,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/RapidCollectionRef.html">RapidCollectionRef</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/RapidDocument.html">RapidDocument</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/RapidDocumentRef.html">RapidDocumentRef</a>
@@ -232,11 +232,11 @@
             <h1>RapidDocument</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RapidDocument</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Equatable</span></code></pre>
+                  <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidDocument</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">NSCoding</span></code></pre>
 
                 </div>
               </div>
-            <p>Structure representing Rapid.io document</p>
+            <p>Class representing Rapid.io document</p>
 
           </section>
           <section class="section task-group-section">
@@ -245,9 +245,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A8DocumentV2idSSv"></a>
+                    <a name="/s:5Rapid0A8DocumentC2idSSv"></a>
                     <a name="//apple_ref/swift/Property/id" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A8DocumentV2idSSv">id</a>
+                    <a class="token" href="#/s:5Rapid0A8DocumentC2idSSv">id</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -272,9 +272,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A8DocumentV14collectionNameSSv"></a>
+                    <a name="/s:5Rapid0A8DocumentC14collectionNameSSv"></a>
                     <a name="//apple_ref/swift/Property/collectionName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A8DocumentV14collectionNameSSv">collectionName</a>
+                    <a class="token" href="#/s:5Rapid0A8DocumentC14collectionNameSSv">collectionName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -299,9 +299,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A8DocumentV5values10DictionaryVySSypGSgv"></a>
+                    <a name="/s:5Rapid0A8DocumentC5values10DictionaryVySSypGSgv"></a>
                     <a name="//apple_ref/swift/Property/value" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A8DocumentV5values10DictionaryVySSypGSgv">value</a>
+                    <a class="token" href="#/s:5Rapid0A8DocumentC5values10DictionaryVySSypGSgv">value</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -326,9 +326,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A8DocumentV4etagSSSgv"></a>
+                    <a name="/s:5Rapid0A8DocumentC4etagSSSgv"></a>
                     <a name="//apple_ref/swift/Property/etag" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A8DocumentV4etagSSSgv">etag</a>
+                    <a class="token" href="#/s:5Rapid0A8DocumentC4etagSSSgv">etag</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -353,9 +353,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A8DocumentV9createdAt10Foundation4DateVSgv"></a>
+                    <a name="/s:5Rapid0A8DocumentC9createdAt10Foundation4DateVSgv"></a>
                     <a name="//apple_ref/swift/Property/createdAt" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A8DocumentV9createdAt10Foundation4DateVSgv">createdAt</a>
+                    <a class="token" href="#/s:5Rapid0A8DocumentC9createdAt10Foundation4DateVSgv">createdAt</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -380,9 +380,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A8DocumentV10modifiedAt10Foundation4DateVSgv"></a>
+                    <a name="/s:5Rapid0A8DocumentC10modifiedAt10Foundation4DateVSgv"></a>
                     <a name="//apple_ref/swift/Property/modifiedAt" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A8DocumentV10modifiedAt10Foundation4DateVSgv">modifiedAt</a>
+                    <a class="token" href="#/s:5Rapid0A8DocumentC10modifiedAt10Foundation4DateVSgv">modifiedAt</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -407,9 +407,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:s9DecodablePxs7Decoder_p4from_tKcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(from:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s9DecodablePxs7Decoder_p4from_tKcfc">init(from:)</a>
+                    <a name="/c:@M@Rapid@objc(cs)RapidDocument(im)initWithCoder:"></a>
+                    <a name="//apple_ref/swift/Method/init(coder:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@Rapid@objc(cs)RapidDocument(im)initWithCoder:">init(coder:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -417,13 +417,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Returns an object initialized from data in a given unarchiver</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">from</span> <span class="nv">decoder</span><span class="p">:</span> <span class="kt">Decoder</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">required</span> <span class="kd">public</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -434,12 +435,12 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>decoder</em>
+                                <em>aDecoder</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  
+                                  <p>An unarchiver object</p>
                                 </div>
                               </td>
                             </tr>
@@ -452,9 +453,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:s9EncodableP6encodeys7Encoder_p2to_tKF"></a>
-                    <a name="//apple_ref/swift/Method/encode(to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s9EncodableP6encodeys7Encoder_p2to_tKF">encode(to:)</a>
+                    <a name="/c:@M@Rapid@objc(cs)RapidDocument(im)encodeWithCoder:"></a>
+                    <a name="//apple_ref/swift/Method/encode(with:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@Rapid@objc(cs)RapidDocument(im)encodeWithCoder:">encode(with:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -462,13 +463,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Encode the document using a given archiver</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">encode</span><span class="p">(</span><span class="n">to</span> <span class="nv">encoder</span><span class="p">:</span> <span class="kt">Encoder</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">encode</span><span class="p">(</span><span class="n">with</span> <span class="nv">aCoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -479,12 +481,12 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>encoder</em>
+                                <em>aCoder</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  
+                                  <p>An archiver object</p>
                                 </div>
                               </td>
                             </tr>
@@ -497,9 +499,86 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A8DocumentV6decodexxm6toType_tKs9DecodableRzlF"></a>
+                    <a name="/c:@M@Rapid@objc(cs)RapidDocument(im)isEqual:"></a>
+                    <a name="//apple_ref/swift/Method/isEqual(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@Rapid@objc(cs)RapidDocument(im)isEqual:">isEqual(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Determine whether the document is equal to a given object</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">override</span> <span class="n">open</span> <span class="kd">func</span> <span class="nf">isEqual</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>object</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>An object for comparison</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p><code>true</code> if the document is equal to the object</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@Rapid@objc(cs)RapidDocument(py)description"></a>
+                    <a name="//apple_ref/swift/Property/description" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@Rapid@objc(cs)RapidDocument(py)description">description</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Document description</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">override</span> <span class="n">open</span> <span class="k">var</span> <span class="nv">description</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid0A8DocumentC6decodexxm6toType_tKs9DecodableRzlF"></a>
                     <a name="//apple_ref/swift/Method/decode(toType:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A8DocumentV6decodexxm6toType_tKs9DecodableRzlF">decode(toType:)</a>
+                    <a class="token" href="#/s:5Rapid0A8DocumentC6decodexxm6toType_tKs9DecodableRzlF">decode(toType:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -514,7 +593,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RapidDocument</span><span class="p">:</span> <span class="kt">Codable</span><span class="p">,</span> <span class="kt">Equatable</span></code></pre>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">class</span> <span class="kt">RapidDocument</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -526,7 +605,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-09-29)</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-03)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

@@ -13,10 +13,10 @@ import XCTest
 extension RapidTests {
     
     func testCacheForEmptyString() {
-        XCTAssertNil(RapidCache<RapidDocument>(apiKey: ""), "Cache created")
-        XCTAssertNil(RapidCache<RapidDocument>(apiKey: apiKey, timeToLive: -1), "Cache created")
-        XCTAssertNil(RapidCache<RapidDocument>(apiKey: apiKey, maxSize: -5), "Cache created")
-        XCTAssertNotNil(RapidCache<RapidDocument>(apiKey: apiKey, timeToLive: nil, maxSize: nil), "Cache not created")
+        XCTAssertNil(RapidCache(apiKey: ""), "Cache created")
+        XCTAssertNil(RapidCache(apiKey: apiKey, timeToLive: -1), "Cache created")
+        XCTAssertNil(RapidCache(apiKey: apiKey, maxSize: -5), "Cache created")
+        XCTAssertNotNil(RapidCache(apiKey: apiKey, timeToLive: nil, maxSize: nil), "Cache not created")
     }
     
     func testRemoteURLSize() {
@@ -117,7 +117,7 @@ extension RapidTests {
     }
     
     func testCreateCacheDir() {
-        let cacheURL = RapidCache<RapidDocument>.cacheURL(forApiKey: apiKey)!
+        let cacheURL = RapidCache.cacheURL(forApiKey: apiKey)!
         
         do {
             try FileManager.default.removeItem(at: cacheURL)
@@ -128,7 +128,7 @@ extension RapidTests {
             }
         }
         
-        _ = RapidCache<RapidDocument>(apiKey: apiKey)
+        _ = RapidCache(apiKey: apiKey)
         
         if !FileManager.default.fileExists(atPath: cacheURL.path) {
             XCTFail("Cache not created")
@@ -136,7 +136,7 @@ extension RapidTests {
     }
     
     func testOverrideFileWithCacheDir() {
-        let cacheURL = RapidCache<RapidDocument>.cacheURL(forApiKey: apiKey)!
+        let cacheURL = RapidCache.cacheURL(forApiKey: apiKey)!
         
         do {
             try FileManager.default.removeItem(at: cacheURL)
@@ -156,8 +156,8 @@ extension RapidTests {
         else {
             XCTFail("File not created")
         }
-
-        _ = RapidCache<RapidDocument>(apiKey: apiKey)
+        
+        _ = RapidCache(apiKey: apiKey)
         
         if FileManager.default.fileExists(atPath: cacheURL.path, isDirectory: &isDir) {
             XCTAssertTrue(isDir.boolValue, "Directory not created")
@@ -170,12 +170,12 @@ extension RapidTests {
     func testSaveCache() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["testString"], forKey: "testKey")
+        cache?.save(dataset: ["testString" as NSString], forKey: "testKey")
         
         cache?.loadDataset(forKey: "testKey", completion: { (value) in
-            if let arr = value, let value = arr.first, value == "testString" && arr.count == 1 {
+            if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "testString") && arr.count == 1 {
                 promise.fulfill()
             }
             else{
@@ -190,13 +190,13 @@ extension RapidTests {
     func testOverwriteCache() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["testString"], forKey: "testKey")
-        cache?.save(dataset: ["testtest"], forKey: "testKey")
+        cache?.save(dataset: ["testString" as NSString], forKey: "testKey")
+        cache?.save(dataset: ["testtest" as NSString], forKey: "testKey")
         
         cache?.loadDataset(forKey: "testKey", completion: { (value) in
-            if let arr = value, let value = arr.first, value == "testtest" && arr.count == 1 {
+            if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "testtest") && arr.count == 1 {
                 promise.fulfill()
             }
             else{
@@ -211,10 +211,10 @@ extension RapidTests {
     func testHasCache() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["testString"], forKey: "testKey")
-        cache?.save(dataset: ["testString2"], forKey: "testKey2")
+        cache?.save(dataset: ["testString" as NSString], forKey: "testKey")
+        cache?.save(dataset: ["testString2" as NSString], forKey: "testKey2")
         
         cache?.hasData(forKey: "testKey", completion: { (has) in
             XCTAssertTrue(has, "No cache")
@@ -244,10 +244,10 @@ extension RapidTests {
     func testClearCache() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["testString"], forKey: "testKey")
-        cache?.save(dataset: ["testString2"], forKey: "testKey2")
+        cache?.save(dataset: ["testString" as NSString], forKey: "testKey")
+        cache?.save(dataset: ["testString2" as NSString], forKey: "testKey2")
         
         cache?.clearCache(forKey: "testKey")
         
@@ -276,12 +276,12 @@ extension RapidTests {
     func testClearCacheClassMethod() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["testString"], forKey: "testKey")
-        cache?.save(dataset: ["testString2"], forKey: "testKey2")
+        cache?.save(dataset: ["testString" as NSString], forKey: "testKey")
+        cache?.save(dataset: ["testString2" as NSString], forKey: "testKey2")
         
-        RapidCache<String>.clearCache(forApiKey: apiKey)
+        RapidCache.clearCache(forApiKey: apiKey)
         
         cache?.loadDataset(forKey: "testKey", completion: { (value) in
             if value != nil {
@@ -305,7 +305,7 @@ extension RapidTests {
     }
     
     func testHashFunction() {
-        let cache = RapidCache<RapidDocument>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
         let numberOfTests = 10000
         let maxLength = 100
@@ -340,7 +340,7 @@ extension RapidTests {
     }
     
     func testHashFunctionForUnique() {
-        let cache = RapidCache<RapidDocument>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
         let numberOfTests = 10000
         let maxLength = 100
@@ -377,25 +377,25 @@ extension RapidTests {
     func testCollidingKeys() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
         let key1 = "`]cCyVAlN^]h>x,>&nE_iE,0x;\"[jF1j0Biu0*ew3D/dl^V1}J~S]X]\\wrxr/6Y./N8}*0Yrw$K]37n%3H^Vscg50hary>"
         let key2 = ".de:3uKF:L5{Y;§gq@g,J\"KWp}h~>GN{(+^M$?_k#@ZcwMkMz|Uv2,90±TaQID9'aE6]S~_EL6VvknU<~+0^"
         
         XCTAssertEqual(cache?.hash(forKey: key1), cache?.hash(forKey: key2))
         
-        cache?.save(dataset: ["test1"], forKey: key1)
-        cache?.save(dataset: ["test2"], forKey: key2)
+        cache?.save(dataset: ["test1" as NSString], forKey: key1)
+        cache?.save(dataset: ["test2" as NSString], forKey: key2)
         
         cache?.loadDataset(forKey: key1, completion: { (value) in
-            guard let arr = value, let value = arr.first, value == "test1" && arr.count == 1 else {
+            guard let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "test1") && arr.count == 1 else {
                 XCTFail("Cache not loaded")
                 return
             }
         })
         
         cache?.loadDataset(forKey: key2, completion: { (value) in
-            if let arr = value, let value = arr.first, value == "test2" && arr.count == 1 {
+            if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "test2") && arr.count == 1 {
                 promise.fulfill()
             }
             else{
@@ -410,20 +410,20 @@ extension RapidTests {
     func testRemoveCollidingKeys() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
         let key1 = "`]cCyVAlN^]h>x,>&nE_iE,0x;\"[jF1j0Biu0*ew3D/dl^V1}J~S]X]\\wrxr/6Y./N8}*0Yrw$K]37n%3H^Vscg50hary>"
         let key2 = ".de:3uKF:L5{Y;§gq@g,J\"KWp}h~>GN{(+^M$?_k#@ZcwMkMz|Uv2,90±TaQID9'aE6]S~_EL6VvknU<~+0^"
         
         XCTAssertEqual(cache?.hash(forKey: key1), cache?.hash(forKey: key2))
         
-        cache?.save(dataset: ["test1"], forKey: key1)
-        cache?.save(dataset: ["test2"], forKey: key2)
+        cache?.save(dataset: ["test1" as NSString], forKey: key1)
+        cache?.save(dataset: ["test2" as NSString], forKey: key2)
         
         cache?.clearCache(forKey: key1)
         
         cache?.loadDataset(forKey: key2, completion: { (value) in
-            if let arr = value, let value = arr.first, value == "test2" && arr.count == 1 {
+            if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "test2") && arr.count == 1 {
                 promise.fulfill()
             }
             else{
@@ -438,12 +438,12 @@ extension RapidTests {
     func testRemoveJustSoftLinkWhenRCNot0() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
         let key1 = "`]cCyVAlN^]h>x,>&nE_iE,0x;\"[jF1j0Biu0*ew3D/dl^V1}J~S]X]\\wrxr/6Y./N8}*0Yrw$K]37n%3H^Vscg50hary>"
         let key2 = ".de:3uKF:L5{Y;§gq@g,J\"KWp}h~>GN{(+^M$?_k#@ZcwMkMz|Uv2,90±TaQID9'aE6]S~_EL6VvknU<~+0^"
         
-        let testData = "test1"
+        let testData = "test1" as NSString
         
         XCTAssertEqual(cache?.hash(forKey: key1), cache?.hash(forKey: key2))
         
@@ -453,7 +453,7 @@ extension RapidTests {
         cache?.clearCache(forKey: key1)
         
         cache?.loadDataset(forKey: key2, completion: { (value) in
-            if let arr = value, let value = arr.first, value == "test1" && arr.count == 1 {
+            if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "test1") && arr.count == 1 {
                 promise.fulfill()
             }
             else{
@@ -468,19 +468,19 @@ extension RapidTests {
     func testOutdatedFilesPruning() {
         let promise = expectation(description: "Load cache")
         
-        var cache = RapidCache<String>(apiKey: apiKey)
+        var cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["test1"], forKey: "testKey")
+        cache?.save(dataset: ["test1" as NSString], forKey: "testKey")
         
         runAfter(2) {
             cache = RapidCache(apiKey: self.apiKey, timeToLive: 1)
             
             cache?.loadDataset(forKey: "testKey", completion: { (value) in
                 if value == nil {
-                    cache?.save(dataset: ["test1"], forKey: "testKey")
+                    cache?.save(dataset: ["test1" as NSString], forKey: "testKey")
                     
                     cache?.loadDataset(forKey: "testKey", completion: { (value) in
-                        if let arr = value, let value = arr.first, value == "test1" && arr.count == 1 {
+                        if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "test1") && arr.count == 1 {
                             promise.fulfill()
                         }
                         else {
@@ -502,20 +502,20 @@ extension RapidTests {
     func testSizePruning() {
         let promise = expectation(description: "Load cache")
         
-        var cache = RapidCache<String>(apiKey: apiKey)
+        var cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["test1"], forKey: "testKey")
-        cache?.save(dataset: ["test2"], forKey: "testKey2")
+        cache?.save(dataset: ["test1" as NSString], forKey: "testKey")
+        cache?.save(dataset: ["test2" as NSString], forKey: "testKey2")
         
         runAfter(1.5) {
             cache = RapidCache(apiKey: self.apiKey, maxSize: 0.000000000000001)
             
             cache?.loadDataset(forKey: "testKey", completion: { (value) in
                 if value == nil {
-                    cache?.save(dataset: ["test1"], forKey: "testKey")
+                    cache?.save(dataset: ["test1" as NSString], forKey: "testKey")
                     
                     cache?.loadDataset(forKey: "testKey", completion: { (value) in
-                        if let arr = value, let value = arr.first, value == "test1" && arr.count == 1 {
+                        if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "test1") && arr.count == 1 {
                             promise.fulfill()
                         }
                         else{
@@ -537,13 +537,13 @@ extension RapidTests {
     func testSaveEncryptedCache() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         let secret = Rapid.uniqueID
         
-        cache?.save(dataset: ["testString"], forKey: "testKey", secret: secret)
+        cache?.save(dataset: ["testString" as NSString], forKey: "testKey", secret: secret)
         
         cache?.loadDataset(forKey: "testKey", secret: secret, completion: { (value) in
-            if let arr = value, let value = arr.first, value == "testString" && arr.count == 1 {
+            if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "testString") && arr.count == 1 {
                 promise.fulfill()
             }
             else{
@@ -558,9 +558,9 @@ extension RapidTests {
     func testLoadEncryptedCacheError() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["testString"], forKey: "testKey", secret: Rapid.uniqueID)
+        cache?.save(dataset: ["testString" as NSString], forKey: "testKey", secret: Rapid.uniqueID)
         
         cache?.loadDataset(forKey: "testKey", secret: Rapid.uniqueID, completion: { (value) in
             if value == nil || value?.count == 0 {
@@ -578,13 +578,13 @@ extension RapidTests {
     func testLoadAndRemoveCachedObject() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
-        let testString = "testString"
+        let cache = RapidCache(apiKey: apiKey)
+        let testString = "testString" as NSString
         
         cache?.save(dataset: [testString], forKey: "testKey")
         
         cache?.loadObject(withGroupID: testString.groupID, objectID: testString.objectID, completion: { (object) in
-            if let string = object, string.isEqual("testString") {
+            if let string = object as? NSString, string.isEqual("testString") {
                 cache?.removeObject(withGroupID: testString.groupID, objectID: testString.objectID)
                 cache?.loadObject(withGroupID: testString.groupID, objectID: testString.objectID, completion: { (object) in
                     if object == nil {
@@ -608,12 +608,12 @@ extension RapidTests {
     func testUpdateCacheWithEmptyArray() {
         let promise = expectation(description: "Load cache")
         
-        let cache = RapidCache<String>(apiKey: apiKey)
+        let cache = RapidCache(apiKey: apiKey)
         
-        cache?.save(dataset: ["testString"], forKey: "testKey")
+        cache?.save(dataset: ["testString" as NSString], forKey: "testKey")
         
         cache?.loadDataset(forKey: "testKey", completion: { (value) in
-            if let arr = value, let value = arr.first, value == "testString" && arr.count == 1 {
+            if let arr = value as? [NSString], let value = arr.first, value.isEqual(to: "testString") && arr.count == 1 {
                 cache?.save(dataset: [], forKey: "testKey")
                 
                 cache?.loadDataset(forKey: "testKey", completion: { (value) in
@@ -643,8 +643,34 @@ extension RapidTests {
         
         XCTAssertEqual(rapid.isCacheEnabled, true)
         
+        var val: [String: Any] = [
+            "name": "testLoadingSubscriptionFromCache",
+            "count": 1,
+            "frequency": 1.0,
+            "truthness": true,
+            "nestedArray": [
+                [
+                    "string": "ahoj",
+                    "double": 0.0,
+                    "integer": 0,
+                    "boolean": false
+                ]
+            ],
+            "nestaedDict": [
+                "intArray": [
+                    [1, 3, 5]
+                ],
+                "doubleArray": [
+                    [1.0, 3.4, 5.6]
+                ],
+                "boolArray": [
+                    [true, false, true, true]
+                ]
+            ]
+        ]
+        
         var socketManager: RapidSocketManager!
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testLoadingSubscriptionFromCache"]) { _ in
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: val) { _ in
             
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribe(block: { result in
@@ -682,8 +708,14 @@ extension RapidTests {
                                         if let index = cachedDocuments.index(where: { $0.id == document.id }) {
                                             let cached = cachedDocuments[index]
                                             if cached.id == "1" {
-                                                XCTAssertEqual(cached.value?["name"] as? String, document.value?["name"] as? String, "Merge failed")
-                                                XCTAssertEqual(cached.value?["desc"] as? String, "Description", "Cache not updated")
+                                                let cachedVal = cached.value ?? [:]
+                                                print(cachedVal)
+                                                XCTAssertEqual(cachedVal["desc"] as? String, "Description", "Cache not updated")
+                                                val["desc"] = "Description"
+                                                XCTAssertTrue(NSDictionary(dictionary: val).isEqual(to: cachedVal), "Documents not equal")
+                                                XCTAssertEqual(val["count"] as? Int, cachedVal["count"] as? Int, "Wrong value")
+                                                XCTAssertEqual(val["frequency"] as? Double, cachedVal["frequency"] as? Double, "Wrong value")
+                                                XCTAssertEqual(val["truthness"] as? Bool, cachedVal["truthness"] as? Bool, "Wrong value")
                                             }
                                             else {
                                                 XCTAssertTrue(cached == document, "Documents not equal")
@@ -789,12 +821,12 @@ extension RapidTests {
     
 }
 
-extension String: RapidCachableObject {
+extension NSString: RapidCachableObject {
     public var groupID: String {
-        return self
+        return self as String
     }
     
     public var objectID: String {
-        return self
+        return self as String
     }
 }

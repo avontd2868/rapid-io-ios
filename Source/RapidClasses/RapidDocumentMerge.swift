@@ -34,7 +34,7 @@ class RapidDocumentMerge: RapidMutationRequest {
     internal var requestTimeoutTimer: Timer?
     
     /// Cache handler
-    internal weak var cacheHandler: RapidDocCacheHandler?
+    internal weak var cacheHandler: RapidCacheHandler?
     
     internal weak var requestDelegate: RapidMutationRequestDelegate?
     
@@ -48,7 +48,7 @@ class RapidDocumentMerge: RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: JSON with values to be merged
     ///   - completion: Merge completion
-    init(collectionID: String, documentID: String, value: [String: Any], cache: RapidDocCacheHandler?, completion: RapidDocumentMergeCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], cache: RapidCacheHandler?, completion: RapidDocumentMergeCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
@@ -77,7 +77,7 @@ extension RapidDocumentMerge: RapidTimeoutRequest {
             RapidLogger.log(message: "Rapid document \(self.documentID) in collection \(self.collectionID) merged", level: .info)
             
             self.cacheHandler?.loadObject(withGroupID: self.collectionID, objectID: self.documentID, completion: { (object) in
-                if let oldDoc = object, var value = oldDoc.value {
+                if let oldDoc = object as? RapidDocument, var value = oldDoc.value {
                     value.merge(with: self.value)
                     if let document = RapidDocument(document: oldDoc, newValue: value) {
                         self.cacheHandler?.storeObject(document)

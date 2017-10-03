@@ -17,7 +17,7 @@ class RapidSocketManager {
     /// Network communication handler
     let networkHandler: RapidNetworkHandler
     
-    weak var cacheHandler: RapidDocCacheHandler?
+    weak var cacheHandler: RapidCacheHandler?
     
     /// Optional timeout for timeoutable requests
     var timeout: TimeInterval?

@@ -196,6 +196,33 @@ SWIFT_CLASS("_TtC5Rapid5Rapid")
 
 
 
+@class NSCoder;
+
+/// Class representing Rapid.io document
+SWIFT_CLASS("_TtC5Rapid13RapidDocument")
+@interface RapidDocument : NSObject <NSCoding>
+/// Returns an object initialized from data in a given unarchiver
+/// \param aDecoder An unarchiver object
+///
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+/// Encode the document using a given archiver
+/// \param aCoder An archiver object
+///
+- (void)encodeWithCoder:(NSCoder * _Nonnull)aCoder;
+/// Determine whether the document is equal to a given object
+/// \param object An object for comparison
+///
+///
+/// returns:
+/// <code>true</code> if the document is equal to the object
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
+/// Document description
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+
 
 
 SWIFT_MODULE_NAMESPACE_POP

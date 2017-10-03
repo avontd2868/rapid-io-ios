@@ -29,19 +29,8 @@ public func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
     return false
 }
 
-/// Structure representing Rapid.io document
-public struct RapidDocument: Codable, Equatable {
-    
-    enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case collectionName = "col-id"
-        case createdAt = "crt-ts"
-        case modifiedAt = "mod-ts"
-        case etag = "etag"
-        case sortValue = "crt"
-        case sortKeys = "skey"
-        case value = "body"
-    }
+/// Class representing Rapid.io document
+open class RapidDocument: NSObject, NSCoding {
     
     /// Document ID
     public let id: String
@@ -69,34 +58,8 @@ public struct RapidDocument: Codable, Equatable {
     /// Value is computed by Rapid.io database based on sort descriptors in a subscription
     let sortKeys: [String]
     
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        id = try container.decode(String.self, forKey: .id)
-        collectionName = try container.decode(String.self, forKey: .collectionName)
-        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
-        modifiedAt = try container.decodeIfPresent(Date.self, forKey: .modifiedAt)
-        etag = try container.decodeIfPresent(String.self, forKey: .etag)
-        sortKeys = try container.decodeIfPresent([String].self, forKey: .sortKeys) ?? []
-        sortValue = try container.decode(String.self, forKey: .sortValue)
-        value = try container.decodeIfPresent([String: Any].self, forKey: .value)
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encode(id, forKey: .id)
-        try container.encode(collectionName, forKey: .collectionName)
-        try container.encodeIfPresent(createdAt, forKey: .createdAt)
-        try container.encodeIfPresent(modifiedAt, forKey: .modifiedAt)
-        try container.encodeIfPresent(etag, forKey: .etag)
-        try container.encode(sortValue, forKey: .sortValue)
-        try container.encode(sortKeys, forKey: .sortKeys)
-        try container.encodeIfPresent(value, forKey: .value)
-    }
-
     init?(existingDocJson json: Any?, collectionID: String) {
-        guard let dict = json as? [String: Any] else {
+        guard let dict = json as? [AnyHashable: Any] else {
             return nil
         }
         
@@ -134,7 +97,7 @@ public struct RapidDocument: Codable, Equatable {
     }
     
     init?(removedDocJson json: Any?, collectionID: String) {
-        guard let dict = json as? [String: Any] else {
+        guard let dict = json as? [AnyHashable: Any] else {
             return nil
         }
         
@@ -177,7 +140,109 @@ public struct RapidDocument: Codable, Equatable {
         self.value = newValue
     }
     
-    public func decode<T>(toType type: T.Type) throws -> T where T : Decodable {
+    /// Returns an object initialized from data in a given unarchiver
+    ///
+    /// - Parameter aDecoder: An unarchiver object
+    required public init?(coder aDecoder: NSCoder) {
+        guard let id = aDecoder.decodeObject(forKey: "id") as? String else {
+            return nil
+        }
+        
+        guard let collectionID = aDecoder.decodeObject(forKey: "collectionID") as? String else {
+            return nil
+        }
+        
+        guard let sortKeys = aDecoder.decodeObject(forKey: "sortKeys") as? [String] else {
+            return nil
+        }
+        
+        guard let sortValue = aDecoder.decodeObject(forKey: "sortValue") as? String else {
+            return nil
+        }
+        
+        self.id = id
+        self.collectionName = collectionID
+        self.sortKeys = sortKeys
+        self.sortValue = sortValue
+        do {
+            self.value = try (aDecoder.decodeObject(forKey: "value") as? String)?.json()
+        }
+        catch {
+            self.value = nil
+        }
+        
+        if let etag = aDecoder.decodeObject(forKey: "etag") as? String {
+            self.etag = etag
+        }
+        else {
+            self.etag = nil
+        }
+        
+        if let createdAt = aDecoder.decodeObject(forKey: "createdAt") as? Date {
+            self.createdAt = createdAt
+        }
+        else {
+            self.createdAt = nil
+        }
+        
+        if let modifiedAt = aDecoder.decodeObject(forKey: "modifiedAt") as? Date {
+            self.modifiedAt = modifiedAt
+        }
+        else {
+            self.modifiedAt = nil
+        }
+    }
+    
+    /// Encode the document using a given archiver
+    ///
+    /// - Parameter aCoder: An archiver object
+    public func encode(with aCoder: NSCoder) {
+        aCoder.encode(id, forKey: "id")
+        aCoder.encode(collectionName, forKey: "collectionID")
+        aCoder.encode(etag, forKey: "etag")
+        aCoder.encode(sortKeys, forKey: "sortKeys")
+        aCoder.encode(sortValue, forKey: "sortValue")
+        aCoder.encode(createdAt, forKey: "createdAt")
+        aCoder.encode(modifiedAt, forKey: "modifiedAt")
+        do {
+            aCoder.encode(try value?.jsonString(), forKey: "value")
+        }
+        catch {}
+    }
+    
+    /// Determine whether the document is equal to a given object
+    ///
+    /// - Parameter object: An object for comparison
+    /// - Returns: `true` if the document is equal to the object
+    override open func isEqual(_ object: Any?) -> Bool {
+        if let document = object as? RapidDocument {
+            return self == document
+        }
+        
+        return false
+    }
+    
+    /// Document description
+    override open var description: String {
+        var dict: [AnyHashable: Any] = [
+            "id": id,
+            "etag": String(describing: etag),
+            "collectionID": collectionName,
+            "value": String(describing: value)
+        ]
+        
+        if let created = createdAt {
+            dict["createdAt"] = created
+        }
+        
+        if let modified = modifiedAt {
+            dict["modifiedAt"] = modified
+        }
+        
+        return dict.description
+    }
+    
+    open func decode<T>(toType type: T.Type) throws -> T where T : Decodable {
         var enrichedDict = value ?? [:]
         
         enrichedDict["$documentId"] = self.id
@@ -281,7 +346,7 @@ struct RapidDocumentOperationSet: Sequence {
     }
 }
 
-extension Array where Element == RapidDocument {
+extension Array where Element: RapidDocument {
     
     public func decode<T>(toType type: T.Type) throws -> [T] where T : Decodable {
         return try self.map({ try $0.decode(toType: type) })

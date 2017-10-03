@@ -17,7 +17,7 @@ class Channel {
     init(withDocument document: RapidDocument) {
         self.name = document.id
         
-        if let dict = document.value?[Channel.lastMessage] as? [AnyHashable: Any], let id = dict[Channel.lastMessageID] as? String {
+        if let dict = document.value?[Channel.lastMessage] as? [String: Any], let id = dict[Channel.lastMessageID] as? String {
             self.lastMessage = Message(withID: id, dictionary: dict)
         }
         else {

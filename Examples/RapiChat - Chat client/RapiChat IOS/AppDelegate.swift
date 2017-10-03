@@ -8,20 +8,18 @@
 
 import UIKit
 import Rapid
-import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Set log level
         Rapid.logLevel = .info
         
         // Configure shared singleton with API key
-        Rapid.configure(withApiKey: "<YOUR API KEY>")
+        Rapid.configure(withApiKey: "MnI4OHk5YzIweTdqNzR3ZmZoYi5hcHAtcmFwaWQuaW8=")
         // Enable data cache
         Rapid.isCacheEnabled = true
         

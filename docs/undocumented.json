@@ -65,21 +65,21 @@
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
-      "line": 180,
+      "line": 245,
       "symbol": "RapidDocument.decode(toType:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
-      "line": 286,
+      "line": 351,
       "symbol": "Array.decode(toType:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
-      "line": 290,
+      "line": 355,
       "symbol": "Array.flatDecode(toType:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

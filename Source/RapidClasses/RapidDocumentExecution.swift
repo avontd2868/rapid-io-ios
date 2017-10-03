@@ -26,7 +26,7 @@ class RapidDocumentExecution: RapidExecution {
     weak var delegate: RapidExectuionDelegate?
     
     /// Cache handler
-    weak var cacheHandler: RapidDocCacheHandler?
+    weak var cacheHandler: RapidCacheHandler?
     
     /// Execution block that returns a client action based on current data
     let executionBlock: RapidDocumentExecutionBlock
