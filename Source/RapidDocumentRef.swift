@@ -48,6 +48,11 @@ public struct RapidDocumentRef: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     
+    /// Default JSON encoder
+    public var encoder: RapidJSONEncoder {
+        return handler?.encoder ?? RapidJSONEncoder()
+    }
+    
     /// Name of a collection to which the document belongs
     public let collectionName: String
     
@@ -119,10 +124,11 @@ extension RapidDocumentRef: RapidSubscriptionReference {
     /// Subscribe for listening to data changes
     ///
     /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decoder: JSON decoder that should be used instead of a default one
     /// - Parameter block: Subscription handler that provides a client either with an error or with up-to-date data
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    public func subscribe<T>(decodableType type: T.Type, block: @escaping (_ result: RapidResult<T>) -> Void) -> RapidSubscription where T: Decodable {
+    public func subscribe<T>(decodableType type: T.Type, decoder: JSONDecoder? = nil, block: @escaping (_ result: RapidResult<T>) -> Void) -> RapidSubscription where T: Decodable {
         return self.subscribe { result in
             switch result {
             case .failure(let error):
@@ -130,7 +136,8 @@ extension RapidDocumentRef: RapidSubscriptionReference {
                 
             case .success(let document):
                 do {
-                    let object = try document.decode(toType: type)
+                    let dec = decoder ?? self.handler?.decoder
+                    let object = try document.decode(toType: type, decoder: dec)
                     block(RapidResult.success(value: object))
                 }
                 catch let error {
@@ -155,8 +162,9 @@ extension RapidDocumentRef: RapidFetchReference {
     /// Fetch data
     ///
     /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decoder: JSON decoder that should be used instead of a default one
     /// - Parameter completion: Completion handler that provides a client either with an error or with data
-    public func fetch<T>(decodableType type: T.Type, completion: @escaping (_ result: RapidResult<T>) -> Void) where T : Decodable {
+    public func fetch<T>(decodableType type: T.Type, decoder: JSONDecoder? = nil, completion: @escaping (_ result: RapidResult<T>) -> Void) where T : Decodable {
         self.fetch { result in
             switch result {
             case .failure(let error):
@@ -164,7 +172,8 @@ extension RapidDocumentRef: RapidFetchReference {
                 
             case .success(let document):
                 do {
-                    let object = try document.decode(toType: type)
+                    let dec = decoder ?? self.handler?.decoder
+                    let object = try document.decode(toType: type, decoder: dec)
                     completion(RapidResult.success(value: object))
                 }
                 catch let error {

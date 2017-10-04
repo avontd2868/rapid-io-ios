@@ -242,17 +242,26 @@ open class RapidDocument: NSObject, NSCoding {
         return dict.description
     }
     
-    open func decode<T>(toType type: T.Type) throws -> T where T : Decodable {
+    open func decode<T>(toType type: T.Type, decoder: JSONDecoder? = nil) throws -> T where T : Decodable {
         var enrichedDict = value ?? [:]
         
-        enrichedDict["$documentId"] = self.id
-        enrichedDict["$collectionName"] = self.collectionName
-        enrichedDict["$createdAt"] = self.createdAt?.timeIntervalSince1970
-        enrichedDict["$modifiedAt"] = self.modifiedAt?.timeIntervalSince1970
-        enrichedDict["$etag"] = self.etag
+        let keys: RapidJSONDecoder.RapidDocumentDecodingKeys
+        if let dec = decoder as? RapidJSONDecoder {
+            keys = dec.rapidDocumentDecodingKeys
+        }
+        else {
+            keys = RapidJSONDecoder.RapidDocumentDecodingKeys()
+        }
         
+        enrichedDict[keys.documentIdKey] = self.id
+        enrichedDict[keys.collectionNameKey] = self.collectionName
+        enrichedDict[keys.createdAtKey] = self.createdAt?.timeIntervalSince1970
+        enrichedDict[keys.modifiedAtKey] = self.modifiedAt?.timeIntervalSince1970
+        enrichedDict[keys.etagKey] = self.etag
+        
+        let dec = decoder ?? JSONDecoder()
         let data = try (enrichedDict).jsonString().data(using: .utf8)
-        return try JSONDecoder().decode(type, from: data ?? Data())
+        return try dec.decode(type, from: data ?? Data())
     }
 }
 
@@ -348,12 +357,12 @@ struct RapidDocumentOperationSet: Sequence {
 
 extension Array where Element: RapidDocument {
     
-    public func decode<T>(toType type: T.Type) throws -> [T] where T : Decodable {
-        return try self.map({ try $0.decode(toType: type) })
+    public func decode<T>(toType type: T.Type, decoder: JSONDecoder? = nil) throws -> [T] where T : Decodable {
+        return try self.map({ try $0.decode(toType: type, decoder: decoder) })
     }
     
-    public func flatDecode<T>(toType type: T.Type) -> [T] where T : Decodable {
-        return self.flatMap({ try? $0.decode(toType: type) })
+    public func flatDecode<T>(toType type: T.Type, decoder: JSONDecoder? = nil) -> [T] where T : Decodable {
+        return self.flatMap({ try? $0.decode(toType: type, decoder: decoder) })
     }
     
 }

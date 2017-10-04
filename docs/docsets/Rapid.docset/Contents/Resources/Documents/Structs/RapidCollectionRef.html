@@ -14,7 +14,7 @@
     <a title="RapidCollectionRef Struct Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Rapid Docs</a> (79% documented)</p>
+        <p><a href="../index.html">Rapid Docs</a> (76% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -35,6 +35,15 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/RapidDocument.html">RapidDocument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidJSONDecoder.html">RapidJSONDecoder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidJSONDecoder/RapidDocumentDecodingKeys.html">– RapidDocumentDecodingKeys</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidJSONEncoder.html">RapidJSONEncoder</a>
               </li>
             </ul>
           </li>
@@ -801,9 +810,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A13CollectionRefV9subscribeAA0A12Subscription_pxm13decodableType_yAA0A6ResultOySayxGGc5blockts9DecodableRzlF"></a>
-                    <a name="//apple_ref/swift/Method/subscribe(decodableType:block:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A13CollectionRefV9subscribeAA0A12Subscription_pxm13decodableType_yAA0A6ResultOySayxGGc5blockts9DecodableRzlF">subscribe(decodableType:block:)</a>
+                    <a name="/s:5Rapid0A13CollectionRefV9subscribeAA0A12Subscription_pxm13decodableType_10Foundation11JSONDecoderCSg7decoderyAA0A6ResultOySayxGGc5blockts9DecodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/subscribe(decodableType:decoder:block:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A13CollectionRefV9subscribeAA0A12Subscription_pxm13decodableType_10Foundation11JSONDecoderCSg7decoderyAA0A6ResultOySayxGGc5blockts9DecodableRzlF">subscribe(decodableType:decoder:block:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -820,7 +829,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">subscribe</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">decodableType</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">block</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="n">_</span> <span class="nv">result</span><span class="p">:</span> <span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="p">[</span><span class="kt">T</span><span class="p">]</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidSubscription.html">RapidSubscription</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">subscribe</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">decodableType</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">decoder</span><span class="p">:</span> <span class="kt">JSONDecoder</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">block</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="n">_</span> <span class="nv">result</span><span class="p">:</span> <span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="p">[</span><span class="kt">T</span><span class="p">]</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidSubscription.html">RapidSubscription</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
 
                         </div>
                       </div>
@@ -837,6 +846,18 @@
                               <td>
                                 <div>
                                   <p>Type of object to which should be json coming from Rapid server deserialized</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>decoder</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>JSON decoder that should be used instead of a default one</p>
                                 </div>
                               </td>
                             </tr>
@@ -917,9 +938,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A13CollectionRefV20subscribeWithChangesAA0A12Subscription_pxm13decodableType_yAA0A6ResultOySayxG9documents_AI5addedAI7updatedAI7removedtGc5blockts9DecodableRzlF"></a>
-                    <a name="//apple_ref/swift/Method/subscribeWithChanges(decodableType:block:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A13CollectionRefV20subscribeWithChangesAA0A12Subscription_pxm13decodableType_yAA0A6ResultOySayxG9documents_AI5addedAI7updatedAI7removedtGc5blockts9DecodableRzlF">subscribeWithChanges(decodableType:block:)</a>
+                    <a name="/s:5Rapid0A13CollectionRefV20subscribeWithChangesAA0A12Subscription_pxm13decodableType_10Foundation11JSONDecoderCSg7decoderyAA0A6ResultOySayxG9documents_AN5addedAN7updatedAN7removedtGc5blockts9DecodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/subscribeWithChanges(decodableType:decoder:block:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A13CollectionRefV20subscribeWithChangesAA0A12Subscription_pxm13decodableType_10Foundation11JSONDecoderCSg7decoderyAA0A6ResultOySayxG9documents_AN5addedAN7updatedAN7removedtGc5blockts9DecodableRzlF">subscribeWithChanges(decodableType:decoder:block:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -936,7 +957,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">subscribeWithChanges</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">decodableType</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">block</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="n">_</span> <span class="nv">result</span><span class="p">:</span> <span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="p">(</span><span class="nv">documents</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">],</span> <span class="nv">added</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">],</span> <span class="nv">updated</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">],</span> <span class="nv">removed</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidSubscription.html">RapidSubscription</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">subscribeWithChanges</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">decodableType</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">decoder</span><span class="p">:</span> <span class="kt">JSONDecoder</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">block</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="n">_</span> <span class="nv">result</span><span class="p">:</span> <span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="p">(</span><span class="nv">documents</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">],</span> <span class="nv">added</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">],</span> <span class="nv">updated</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">],</span> <span class="nv">removed</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidSubscription.html">RapidSubscription</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
 
                         </div>
                       </div>
@@ -953,6 +974,18 @@
                               <td>
                                 <div>
                                   <p>Type of object to which should be json coming from Rapid server deserialized</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>decoder</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>JSON decoder that should be used instead of a default one</p>
                                 </div>
                               </td>
                             </tr>
@@ -1033,9 +1066,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A13CollectionRefV5fetchyxm13decodableType_yAA0A6ResultOySayxGGc10completionts9DecodableRzlF"></a>
-                    <a name="//apple_ref/swift/Method/fetch(decodableType:completion:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A13CollectionRefV5fetchyxm13decodableType_yAA0A6ResultOySayxGGc10completionts9DecodableRzlF">fetch(decodableType:completion:)</a>
+                    <a name="/s:5Rapid0A13CollectionRefV5fetchyxm13decodableType_10Foundation11JSONDecoderCSg7decoderyAA0A6ResultOySayxGGc10completionts9DecodableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/fetch(decodableType:decoder:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A13CollectionRefV5fetchyxm13decodableType_10Foundation11JSONDecoderCSg7decoderyAA0A6ResultOySayxGGc10completionts9DecodableRzlF">fetch(decodableType:decoder:completion:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1052,7 +1085,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">fetch</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">decodableType</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="n">_</span> <span class="nv">result</span><span class="p">:</span> <span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="p">[</span><span class="kt">T</span><span class="p">]</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Decodable</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">fetch</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">decodableType</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="nv">decoder</span><span class="p">:</span> <span class="kt">JSONDecoder</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="n">_</span> <span class="nv">result</span><span class="p">:</span> <span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="p">[</span><span class="kt">T</span><span class="p">]</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Decodable</span></code></pre>
 
                         </div>
                       </div>
@@ -1069,6 +1102,18 @@
                               <td>
                                 <div>
                                   <p>Type of object to which should be json coming from Rapid server deserialized</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>decoder</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>JSON decoder that should be used instead of a default one</p>
                                 </div>
                               </td>
                             </tr>
@@ -1095,7 +1140,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-03)</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-04)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

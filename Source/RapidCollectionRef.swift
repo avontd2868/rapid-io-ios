@@ -207,10 +207,11 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
     /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decoder: JSON decoder that should be used instead of a default one
     /// - Parameter block: Subscription handler that provides a client either with an error or with an array of documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    public func subscribe<T>(decodableType type: T.Type, block: @escaping (_ result: RapidResult<[T]>) -> Void) -> RapidSubscription where T: Decodable {
+    public func subscribe<T>(decodableType type: T.Type, decoder: JSONDecoder? = nil, block: @escaping (_ result: RapidResult<[T]>) -> Void) -> RapidSubscription where T: Decodable {
         return self.subscribe { result in
             switch result {
             case .failure(let error):
@@ -218,7 +219,8 @@ extension RapidCollectionRef: RapidSubscriptionReference {
                 
             case .success(let documents):
                 do {
-                    let object = try documents.decode(toType: type)
+                    let dec = decoder ?? self.handler?.decoder
+                    let object = try documents.decode(toType: type, decoder: dec)
                     block(RapidResult.success(value: object))
                 }
                 catch let error {
@@ -248,10 +250,11 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
     /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decoder: JSON decoder that should be used instead of a default one
     /// - Parameter block: Subscription handler that provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    public func subscribeWithChanges<T>(decodableType type: T.Type, block: @escaping (_ result: RapidResult<(documents: [T], added: [T], updated: [T], removed: [T])>) -> Void) -> RapidSubscription where T: Decodable {
+    public func subscribeWithChanges<T>(decodableType type: T.Type, decoder: JSONDecoder? = nil, block: @escaping (_ result: RapidResult<(documents: [T], added: [T], updated: [T], removed: [T])>) -> Void) -> RapidSubscription where T: Decodable {
         return self.subscribeWithChanges { result in
             switch result {
             case .failure(let error):
@@ -259,10 +262,11 @@ extension RapidCollectionRef: RapidSubscriptionReference {
                 
             case .success(let tuple):
                 do {
-                    let documents = try tuple.documents.decode(toType: type)
-                    let added = try tuple.added.decode(toType: type)
-                    let updated = try tuple.updated.decode(toType: type)
-                    let removed = try tuple.removed.decode(toType: type)
+                    let dec = decoder ?? self.handler?.decoder
+                    let documents = try tuple.documents.decode(toType: type, decoder: dec)
+                    let added = try tuple.added.decode(toType: type, decoder: dec)
+                    let updated = try tuple.updated.decode(toType: type, decoder: dec)
+                    let removed = try tuple.removed.decode(toType: type, decoder: dec)
                     block(RapidResult.success(value: (documents, added, updated, removed)))
                 }
                 catch let error {
@@ -292,8 +296,9 @@ extension RapidCollectionRef: RapidFetchReference {
     /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
     ///
     /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decoder: JSON decoder that should be used instead of a default one
     /// - Parameter completion: Fetch completion handler that provides a client either with an error or with an array of documents
-    public func fetch<T>(decodableType type: T.Type, completion: @escaping (_ result: RapidResult<[T]>) -> Void) where T : Decodable {
+    public func fetch<T>(decodableType type: T.Type, decoder: JSONDecoder? = nil, completion: @escaping (_ result: RapidResult<[T]>) -> Void) where T : Decodable {
         self.fetch { result in
             switch result {
             case .failure(let error):
@@ -301,7 +306,8 @@ extension RapidCollectionRef: RapidFetchReference {
                 
             case .success(let documents):
                 do {
-                    let object = try documents.decode(toType: type)
+                    let dec = decoder ?? self.handler?.decoder
+                    let object = try documents.decode(toType: type, decoder: dec)
                     completion(RapidResult.success(value: object))
                 }
                 catch let error {

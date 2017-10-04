@@ -54,7 +54,7 @@ class MessageCellView: NSTableCellView {
         senderLabel.textColor = message.isMyMessage ? NSColor.appRed : .appBlue
         senderLabel.stringValue = message.sender
 
-        messageTextLabel.stringValue = message.text
+        messageTextLabel.stringValue = message.text ?? ""
         
         updateDateFormatterStyleWithDate(message.sentDate)
         timeLabel.stringValue = dateFormatter.string(from: message.sentDate)

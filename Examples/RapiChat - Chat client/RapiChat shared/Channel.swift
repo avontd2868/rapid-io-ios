@@ -9,24 +9,27 @@
 import Foundation
 import Rapid
 
-class Channel {
+struct Channel: Codable {
     
     let name: String
-    let lastMessage: Message?
+    var lastMessage: Message?
     
-    init(withDocument document: RapidDocument) {
-        self.name = document.id
-        
-        if let dict = document.value?[Channel.lastMessage] as? [String: Any], let id = dict[Channel.lastMessageID] as? String {
-            self.lastMessage = Message(withID: id, dictionary: dict)
-        }
-        else {
-            self.lastMessage = nil
-        }
+    enum CodingKeys : String, CodingKey {
+        case name = "id"
+        case lastMessage = "lastMessage"
     }
-}
+    
+    init(name: String, lastMessage: Message?) {
+        self.name = name
+        self.lastMessage = lastMessage
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        name = try container.decode(String.self, forKey: .name)
+        lastMessage = try container.decodeIfPresent(Message.self, forKey: .lastMessage)
+        
+    }
 
-extension Channel {
-    static let lastMessageID = "id"
-    static let lastMessage = "lastMessage"
 }

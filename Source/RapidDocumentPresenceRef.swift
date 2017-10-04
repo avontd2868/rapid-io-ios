@@ -21,6 +21,11 @@ public struct RapidDocumentRefOnConnect: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     
+    /// Default JSON encoder
+    public var encoder: RapidJSONEncoder {
+        return handler?.encoder ?? RapidJSONEncoder()
+    }
+
     /// Name of a collection to which the document belongs
     public let collectionName: String
     
@@ -104,6 +109,11 @@ public struct RapidDocumentRefOnDisconnect: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     
+    /// Default JSON encoder
+    public var encoder: RapidJSONEncoder {
+        return handler?.encoder ?? RapidJSONEncoder()
+    }
+
     /// Name of a collection to which the document belongs
     public let collectionName: String
     

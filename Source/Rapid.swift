@@ -100,6 +100,14 @@ open class Rapid: NSObject {
         }
     }
     
+    public var encoder: RapidJSONEncoder {
+        return handler.encoder
+    }
+    
+    public var decoder: RapidJSONDecoder {
+        return handler.decoder
+    }
+
     /// Current connection state of Rapid instance
     public var connectionState: RapidConnectionState {
         return handler.state
@@ -302,6 +310,16 @@ public extension Rapid {
         }
     }
     
+    class var encoder: RapidJSONEncoder {
+        let instance = try! shared()
+        return instance.encoder
+    }
+    
+    class var decoder: RapidJSONDecoder {
+        let instance = try! shared()
+        return instance.decoder
+    }
+
     /// Current connection state of shared Rapid instance
     class var connectionState: RapidConnectionState {
         return try! shared().connectionState

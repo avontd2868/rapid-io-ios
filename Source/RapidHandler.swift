@@ -108,6 +108,14 @@ class RapidHandler {
         }
     }
     
+    lazy var encoder: RapidJSONEncoder = {
+        return RapidJSONEncoder()
+    }()
+    
+    lazy var decoder: RapidJSONDecoder = {
+        return RapidJSONDecoder()
+    }()
+
     var timeout: TimeInterval? {
         get {
             return socketManager.timeout

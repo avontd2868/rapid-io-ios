@@ -19,9 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Rapid.logLevel = .info
         
         // Configure shared singleton with API key
-        Rapid.configure(withApiKey: "MnI4OHk5YzIweTdqNzR3ZmZoYi5hcHAtcmFwaWQuaW8=")
+        Rapid.configure(withApiKey: "<YOUR API KEY>")
         // Enable data cache
         Rapid.isCacheEnabled = true
+        
+        Rapid.decoder.rapidDocumentDecodingKeys.documentIdKey = "id"
+        Rapid.decoder.dateDecodingStrategy = .millisecondsSince1970
+        Rapid.encoder.dateEncodingStrategy = .millisecondsSince1970
         
         return true
     }

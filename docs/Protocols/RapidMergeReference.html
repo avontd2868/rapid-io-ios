@@ -14,7 +14,7 @@
     <a title="RapidMergeReference Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Rapid Docs</a> (79% documented)</p>
+        <p><a href="../index.html">Rapid Docs</a> (76% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -35,6 +35,15 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/RapidDocument.html">RapidDocument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidJSONDecoder.html">RapidJSONDecoder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidJSONDecoder/RapidDocumentDecodingKeys.html">– RapidDocumentDecodingKeys</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RapidJSONEncoder.html">RapidJSONEncoder</a>
               </li>
             </ul>
           </li>
@@ -245,9 +254,36 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A14MergeReferenceP5mergeAA0A12WriteRequest_p0B5ValueQz5value_yAA0A6ResultOy0bI0QzGcSg10completiontF"></a>
+                    <a name="/s:5Rapid0A14MergeReferenceP7encoderAA0A11JSONEncoderCv"></a>
+                    <a name="//apple_ref/swift/Property/encoder" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A14MergeReferenceP7encoderAA0A11JSONEncoderCv">encoder</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Default JSON encoder</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">encoder</span><span class="p">:</span> <span class="kt"><a href="../Classes/RapidJSONEncoder.html">RapidJSONEncoder</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid0A14MergeReferenceP5mergeAA0A12WriteRequest_ps10DictionaryVySSypG5value_yAA0A6ResultOy0bI0QzGcSg10completiontF"></a>
                     <a name="//apple_ref/swift/Method/merge(value:completion:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A14MergeReferenceP5mergeAA0A12WriteRequest_p0B5ValueQz5value_yAA0A6ResultOy0bI0QzGcSg10completiontF">merge(value:completion:)</a>
+                    <a class="token" href="#/s:5Rapid0A14MergeReferenceP5mergeAA0A12WriteRequest_ps10DictionaryVySSypG5value_yAA0A6ResultOy0bI0QzGcSg10completiontF">merge(value:completion:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -262,7 +298,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">merge</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="kt">MergeValue</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="kt">MergeResult</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidWriteRequest.html">RapidWriteRequest</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">merge</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">],</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="kt">MergeResult</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidWriteRequest.html">RapidWriteRequest</a></span></code></pre>
 
                         </div>
                       </div>
@@ -306,10 +342,91 @@
                 </li>
               </ul>
             </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid0A14MergeReferencePAAE5mergeAA0A12WriteRequest_pqd__14encodableValue_10Foundation11JSONEncoderCSg7encoderyAA0A6ResultOy0bL0QzGcSg10completionts9EncodableRd__lF"></a>
+                    <a name="//apple_ref/swift/Method/merge(encodableValue:encoder:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A14MergeReferencePAAE5mergeAA0A12WriteRequest_pqd__14encodableValue_10Foundation11JSONEncoderCSg7encoderyAA0A6ResultOy0bL0QzGcSg10completionts9EncodableRd__lF">merge(encodableValue:encoder:completion:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Merge current data with a provided data</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">merge</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">encodableValue</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="nv">encoder</span><span class="p">:</span> <span class="kt">JSONEncoder</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Enums/RapidResult.html">RapidResult</a></span><span class="o">&lt;</span><span class="kt">MergeResult</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidWriteRequest.html">RapidWriteRequest</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Encodable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>encodableValue</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Encodable object with new data</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>encoder</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>JSON encoder that should be used instead of a default one</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Merge completion handler which provides a client with an error if any error occurs</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p><code><a href="../Protocols/RapidWriteRequest.html">RapidWriteRequest</a></code> instance</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-03)</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapid.io" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-04)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
