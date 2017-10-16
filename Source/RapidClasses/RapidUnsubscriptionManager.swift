@@ -11,7 +11,7 @@ import Foundation
 // MARK: Unsubscription manager
 
 // Wrapper for `RapidSubscriptionManager` that handles unsubscription
-class RapidUnsubscriptionManager: NSObject {
+class RapidUnsubscriptionManager {
     
     let shouldSendOnReconnect = false
     

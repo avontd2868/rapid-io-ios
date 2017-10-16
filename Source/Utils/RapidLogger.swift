@@ -9,25 +9,12 @@
 import Foundation
 
 /// Logger singleton
-public class RapidLogger {
-    
-    /// Logging level
-    ///
-    /// - off: Logging is completely turned off
-    /// - critical: Show only critical messages e.g. reason of Rapid SDK intentional crash
-    /// - info: Show info about what is going on in Rapid SDK
-    /// - debug: Show info about what is going on in Rapid SDK along with I/O data description
-    public enum Level: Int {
-        case off
-        case critical
-        case info
-        case debug
-    }
+class RapidLogger {
     
     static let developerLogging = false
-    static var level: Level = .critical
+    static var level: RapidLogLevel = .critical
     
-    class func log(message: String, level: Level) {
+    class func log(message: String, level: RapidLogLevel) {
         if level.rawValue <= self.level.rawValue {
             NSLog("RapidSDK - \(message)")
         }

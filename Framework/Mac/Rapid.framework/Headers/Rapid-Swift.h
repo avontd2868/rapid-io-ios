@@ -196,19 +196,6 @@ SWIFT_CLASS("_TtC5Rapid5Rapid")
 
 
 
-
-/// Class representing Rapid.io collection
-SWIFT_CLASS("_TtC5Rapid18RapidCollectionRef")
-@interface RapidCollectionRef : NSObject
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-@end
-
-
-
-
-
-
-
 @class NSCoder;
 
 /// Class representing Rapid.io document
@@ -233,55 +220,6 @@ SWIFT_CLASS("_TtC5Rapid13RapidDocument")
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
-
-
-
-
-/// Class representing Rapid.io document
-SWIFT_CLASS("_TtC5Rapid16RapidDocumentRef")
-@interface RapidDocumentRef : NSObject
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-@end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/// Rapid.io document reference
-/// <code>RapidDocumentRefOnConnect</code> is used to register actions that should be performed
-/// when <code>Rapid</code> instance connects to a server
-SWIFT_CLASS("_TtC5Rapid25RapidDocumentRefOnConnect")
-@interface RapidDocumentRefOnConnect : NSObject
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-@end
-
-
-
-
-
-
-
-
-/// Rapid.io document reference
-/// <code>RapidDocumentRefOnDisconnect</code> is used to register actions that should be performed
-/// when <code>Rapid</code> instance disconnects from a server
-SWIFT_CLASS("_TtC5Rapid28RapidDocumentRefOnDisconnect")
-@interface RapidDocumentRefOnDisconnect : NSObject
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-@end
-
-
-
-
 
 
 

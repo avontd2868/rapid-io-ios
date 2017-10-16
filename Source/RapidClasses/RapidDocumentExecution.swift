@@ -131,7 +131,7 @@ class RapidDocumentExecution: RapidExecution {
     /// - Parameters:
     ///   - value: Value to be written
     ///   - document: `RapidDocument` returned from fetch
-    internal func write(value: [AnyHashable: Any], forDocument document: RapidDocument) {
+    internal func write(value: [String: Any], forDocument document: RapidDocument) {
         let request = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: cacheHandler, completion: { [weak self] result in
             switch result {
             case .failure(let error):

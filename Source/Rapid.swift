@@ -37,6 +37,19 @@ public enum RapidResult<Value> {
     case failure(error: RapidError)
 }
 
+/// Logging level
+///
+/// - off: Logging is completely turned off
+/// - critical: Show only critical messages e.g. reason of Rapid SDK intentional crash
+/// - info: Show info about what is going on in Rapid SDK
+/// - debug: Show info about what is going on in Rapid SDK along with I/O data description
+public enum RapidLogLevel: Int {
+    case off
+    case critical
+    case info
+    case debug
+}
+
 /// Class representing a connection to Rapid.io database
 open class Rapid: NSObject {
     
@@ -87,6 +100,16 @@ open class Rapid: NSObject {
         }
     }
     
+    /// Default `JSONEncoder` used to encode objects in mutations and merges
+    public var encoder: RapidJSONEncoder {
+        return handler.encoder
+    }
+    
+    /// Default `JSONDecoder` used to decode JSONs in subscriptions and fetches
+    public var decoder: RapidJSONDecoder {
+        return handler.decoder
+    }
+
     /// Current connection state of Rapid instance
     public var connectionState: RapidConnectionState {
         return handler.state
@@ -252,7 +275,7 @@ public extension Rapid {
     }
     
     /// Log level
-    class var logLevel: RapidLogger.Level {
+    class var logLevel: RapidLogLevel {
         get {
             return RapidLogger.level
         }
@@ -289,6 +312,18 @@ public extension Rapid {
         }
     }
     
+    /// Default `JSONEncoder` used to encode objects in mutations and merges
+    class var encoder: RapidJSONEncoder {
+        let instance = try! shared()
+        return instance.encoder
+    }
+    
+    /// Default `JSONDecoder` used to decode JSONs in subscriptions and fetches
+    class var decoder: RapidJSONDecoder {
+        let instance = try! shared()
+        return instance.decoder
+    }
+
     /// Current connection state of shared Rapid instance
     class var connectionState: RapidConnectionState {
         return try! shared().connectionState

@@ -156,7 +156,7 @@ extension RapidTests {
         else {
             XCTFail("File not created")
         }
-
+        
         _ = RapidCache(apiKey: apiKey)
         
         if FileManager.default.fileExists(atPath: cacheURL.path, isDirectory: &isDir) {
@@ -643,8 +643,34 @@ extension RapidTests {
         
         XCTAssertEqual(rapid.isCacheEnabled, true)
         
+        var val: [String: Any] = [
+            "name": "testLoadingSubscriptionFromCache",
+            "count": 1,
+            "frequency": 1.0,
+            "truthness": true,
+            "nestedArray": [
+                [
+                    "string": "ahoj",
+                    "double": 0.0,
+                    "integer": 0,
+                    "boolean": false
+                ]
+            ],
+            "nestaedDict": [
+                "intArray": [
+                    [1, 3, 5]
+                ],
+                "doubleArray": [
+                    [1.0, 3.4, 5.6]
+                ],
+                "boolArray": [
+                    [true, false, true, true]
+                ]
+            ]
+        ]
+        
         var socketManager: RapidSocketManager!
-        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: ["name": "testLoadingSubscriptionFromCache"]) { _ in
+        rapid.collection(named: testCollectionName).document(withID: "1").mutate(value: val) { _ in
             
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).subscribe(block: { result in
@@ -682,8 +708,14 @@ extension RapidTests {
                                         if let index = cachedDocuments.index(where: { $0.id == document.id }) {
                                             let cached = cachedDocuments[index]
                                             if cached.id == "1" {
-                                                XCTAssertEqual(cached.value?["name"] as? String, document.value?["name"] as? String, "Merge failed")
-                                                XCTAssertEqual(cached.value?["desc"] as? String, "Description", "Cache not updated")
+                                                let cachedVal = cached.value ?? [:]
+                                                print(cachedVal)
+                                                XCTAssertEqual(cachedVal["desc"] as? String, "Description", "Cache not updated")
+                                                val["desc"] = "Description"
+                                                XCTAssertTrue(NSDictionary(dictionary: val).isEqual(to: cachedVal), "Documents not equal")
+                                                XCTAssertEqual(val["count"] as? Int, cachedVal["count"] as? Int, "Wrong value")
+                                                XCTAssertEqual(val["frequency"] as? Double, cachedVal["frequency"] as? Double, "Wrong value")
+                                                XCTAssertEqual(val["truthness"] as? Bool, cachedVal["truthness"] as? Bool, "Wrong value")
                                             }
                                             else {
                                                 XCTAssertTrue(cached == document, "Documents not equal")

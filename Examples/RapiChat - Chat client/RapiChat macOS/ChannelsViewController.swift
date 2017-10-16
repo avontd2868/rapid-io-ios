@@ -50,6 +50,10 @@ private extension ChannelsViewController {
         
         // Enable data cache
         Rapid.isCacheEnabled = true
+        
+        Rapid.decoder.rapidDocumentDecodingKeys.documentIdKey = "id"
+        Rapid.decoder.dateDecodingStrategy = .millisecondsSince1970
+        Rapid.encoder.dateEncodingStrategy = .millisecondsSince1970
     }
     
     func setupController() {
@@ -70,10 +74,10 @@ private extension ChannelsViewController {
         let collection = Rapid.collection(named: "channels")
             .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
         
-        subscription = collection.subscribe { [weak self] result in
+        subscription = collection.subscribe(decodableType: Channel.self) { [weak self] result in
             switch result {
-            case .success(let documents):
-                self?.channels = documents.flatMap({ Channel(withDocument: $0) })
+            case .success(let channels):
+                self?.channels = channels
                 
             case .failure:
                 self?.channels = []

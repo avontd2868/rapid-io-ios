@@ -11,13 +11,13 @@ import Foundation
 // MARK: Document merge
 
 /// Document merge request
-class RapidDocumentMerge: NSObject, RapidMutationRequest {
+class RapidDocumentMerge: RapidMutationRequest {
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
     
     /// JSON with values to be merged
-    let value: [AnyHashable: Any]
+    let value: [String: Any]
     
     /// Collection ID
     let collectionID: String
@@ -48,7 +48,7 @@ class RapidDocumentMerge: NSObject, RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: JSON with values to be merged
     ///   - completion: Merge completion
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidDocumentMergeCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], cache: RapidCacheHandler?, completion: RapidDocumentMergeCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
@@ -108,7 +108,7 @@ extension RapidDocumentMerge: RapidWriteRequest {
 
 // MARK: On-connect merge
 
-class RapidDocumentOnConnectMerge: NSObject {
+class RapidDocumentOnConnectMerge {
     
     let merge: RapidDocumentMerge!
     
@@ -117,7 +117,7 @@ class RapidDocumentOnConnectMerge: NSObject {
     internal(set) var actionID: String?
     internal(set) weak var delegate: RapidOnConnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], completion: RapidDocumentRegisterOnConnectActionCompletion?) {
         self.completion = completion
         
         self.merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)
@@ -179,7 +179,7 @@ extension RapidDocumentOnConnectMerge: RapidWriteRequest {
 
 // MARK: On-disconnect merge
 
-class RapidDocumentOnDisconnectMerge: NSObject {
+class RapidDocumentOnDisconnectMerge {
     
     let merge: RapidDocumentMerge!
     
@@ -188,7 +188,7 @@ class RapidDocumentOnDisconnectMerge: NSObject {
     internal(set) var actionID: String?
     internal(set) weak var delegate: RapidOnDisconnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
         self.completion = completion
         
         self.merge = RapidDocumentMerge(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)

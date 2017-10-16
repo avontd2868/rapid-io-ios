@@ -9,7 +9,7 @@
 import Foundation
 
 /// Class that handles all collection subscriptions which listen to the same dataset
-class RapidColSubManager: NSObject, RapidSubscriptionManager {
+class RapidColSubManager: RapidSubscriptionManager {
     
     /// Hash that identifies subscriptions handled by the class
     ///
@@ -61,8 +61,6 @@ class RapidColSubManager: NSObject, RapidSubscriptionManager {
     init(withSubscriptionID subscriptionID: String, subscription: RapidColSubInstance, delegate: RapidSubscriptionManagerDelegate?) {
         self.subscriptionID = subscriptionID
         self.delegate = delegate
-        
-        super.init()
         
         state = .registering
         appendSubscription(subscription)
@@ -117,8 +115,8 @@ internal extension RapidColSubManager {
     func loadCachedData() {
         delegate?.cacheHandler?.loadSubscriptionValue(forSubscription: self, completion: { [weak self] (cachedValue) in
             self?.delegate?.parseQueue.async {
-                if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedValue = cachedValue as? [RapidDocument] {
-                    let batch = RapidSubscriptionBatch(withSubscriptionID: subscriptionID, collection: cachedValue)
+                if let subscriptionID = self?.subscriptionID, self?.value == nil, let cachedDocuments = cachedValue as? [RapidDocument] {
+                    let batch = RapidSubscriptionBatch(withSubscriptionID: subscriptionID, collection: cachedDocuments)
                     self?.receivedNewValue(batch)
                 }
             }

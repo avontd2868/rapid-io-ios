@@ -9,13 +9,13 @@
 import Foundation
 
 /// Collection fetch object
-class RapidCollectionFetch: NSObject {
+class RapidCollectionFetch {
     
     /// Collection ID
     let collectionID: String
     
     /// Fetch filter
-    let filter: RapidFilter?
+    let filter: RapidFilterDescriptor?
     
     /// Fetch ordering
     let ordering: [RapidOrdering]?
@@ -48,7 +48,7 @@ class RapidCollectionFetch: NSObject {
     ///   - paging: Subscription paging
     ///   - cache: Cache handler
     ///   - completion: Completion handler
-    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, completion: RapidCollectionFetchCompletion?) {
+    init(collectionID: String, filter: RapidFilterDescriptor?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, completion: RapidCollectionFetchCompletion?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
@@ -72,7 +72,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
     
     /// Subscription identifier
     var subscriptionHash: String {
-        return "collection#\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
+        return "collection#\(collectionID)#\(filter?.filterHash ?? "")#\(ordering?.map({ $0.orderingHash }).joined(separator: "|") ?? "")#\(paging?.pagingHash ?? "")"
     }
 
     func receivedData(_ documents: [RapidDocument]) {
@@ -103,7 +103,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
 // MARK: Document fetch
 
 /// Document fetch object
-class RapidDocumentFetch: NSObject {
+class RapidDocumentFetch {
     
     /// Document identifier
     let documentID: String

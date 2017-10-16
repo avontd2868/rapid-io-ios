@@ -29,9 +29,9 @@ extension RapidQuery {
     }
 }
 
-/// Subscription filter
-open class RapidFilter: RapidSubscriptionHashable, RapidQuery {
-    internal var subscriptionHash: String { return "" }
+/// Protocol discribing a filter instance
+public protocol RapidFilterDescriptor {
+    var filterHash: String { get }
 }
 
 /// Protocol describing data types that can be used in filter for comparison purposes
@@ -49,7 +49,8 @@ extension Float: RapidComparable {}
 extension CGFloat: RapidComparable {}
 extension Bool: RapidComparable {}
 
-public extension RapidFilter {
+/// Subscription filter
+public struct RapidFilter: RapidQuery {
     
     // MARK: Compound filters
     
@@ -57,7 +58,7 @@ public extension RapidFilter {
     ///
     /// - Parameter filter: Filter to be negated
     /// - Returns: Negated filter
-    class func not(_ filter: RapidFilter) -> RapidFilter {
+    public static func not(_ filter: RapidFilterDescriptor) -> RapidFilterDescriptor {
         return RapidFilterCompound(compoundOperator: .not, operands: [filter])
     }
     
@@ -65,7 +66,7 @@ public extension RapidFilter {
     ///
     /// - Parameter operands: Filters to be combined
     /// - Returns: Compound filter
-    class func and(_ operands: [RapidFilter]) -> RapidFilter {
+    public static func and(_ operands: [RapidFilterDescriptor]) -> RapidFilterDescriptor {
         return RapidFilterCompound(compoundOperator: .and, operands: operands)
     }
     
@@ -73,7 +74,7 @@ public extension RapidFilter {
     ///
     /// - Parameter operands: Filters to be combined
     /// - Returns: Compound filter
-    class func or(_ operands: [RapidFilter]) -> RapidFilter {
+    public static func or(_ operands: [RapidFilterDescriptor]) -> RapidFilterDescriptor {
         return RapidFilterCompound(compoundOperator: .or, operands: operands)
     }
     
@@ -85,7 +86,7 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - value: Property value
     /// - Returns: Filter for key path equal to value
-    class func equal(keyPath: String, value: RapidComparable) -> RapidFilter {
+    public static func equal(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .equal, value: value)
     }
     
@@ -93,7 +94,7 @@ public extension RapidFilter {
     ///
     /// - Parameter keyPath: Document property key path
     /// - Returns: Filter for key path equal to null
-    class func isNull(keyPath: String) -> RapidFilter {
+    public static func isNull(keyPath: String) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .equal)
     }
     
@@ -103,7 +104,7 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - value: Property value
     /// - Returns: Filter for key path greater than value
-    class func greaterThan(keyPath: String, value: RapidComparable) -> RapidFilter {
+    public static func greaterThan(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .greaterThan, value: value)
     }
     
@@ -113,7 +114,7 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - value: Property value
     /// - Returns: Filter for key path greater than or equal to value
-    class func greaterThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
+    public static func greaterThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .greaterThanOrEqual, value: value)
     }
     
@@ -123,7 +124,7 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - value: Property value
     /// - Returns: Filter for key path less than value
-    class func lessThan(keyPath: String, value: RapidComparable) -> RapidFilter {
+    public static func lessThan(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .lessThan, value: value)
     }
     
@@ -133,7 +134,7 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - value: Property value
     /// - Returns: Filter for key path less than or equal to value
-    class func lessThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
+    public static func lessThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .lessThanOrEqual, value: value)
     }
     
@@ -143,7 +144,7 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - subString: Property value substring
     /// - Returns: Filter for string at key path contains a substring
-    class func contains(keyPath: String, subString: String) -> RapidFilter {
+    public static func contains(keyPath: String, subString: String) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .contains, value: subString)
     }
     
@@ -153,7 +154,7 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - prefix: Property value prefix
     /// - Returns: Filter for string at key path starts with a prefix
-    class func startsWith(keyPath: String, prefix: String) -> RapidFilter {
+    public static func startsWith(keyPath: String, prefix: String) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .startsWith, value: prefix)
     }
     
@@ -163,7 +164,7 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - suffix: Property value suffix
     /// - Returns: Filter for string at key path ends with a suffix
-    class func endsWith(keyPath: String, suffix: String) -> RapidFilter {
+    public static func endsWith(keyPath: String, suffix: String) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .endsWith, value: suffix)
     }
     
@@ -173,15 +174,15 @@ public extension RapidFilter {
     ///   - keyPath: Document property key path
     ///   - value: Value that should be present in a property array
     /// - Returns: Filter for array at key path that contains a value
-    class func arrayContains(keyPath: String, value: RapidComparable) -> RapidFilter {
+    public static func arrayContains(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
         return RapidFilterSimple(keyPath: keyPath, relation: .arrayContains, value: value)
     }
 }
 
-/// Class that describes simple subscription filter
+/// Structure that describes simple subscription filter
 ///
 /// Simple filter can contain only a name of a filtering document property, its reference value and a relation to the value.
-open class RapidFilterSimple: RapidFilter {
+public struct RapidFilterSimple: RapidFilterDescriptor {
     
     /// Type of relation to a specified value
     ///
@@ -269,16 +270,16 @@ open class RapidFilterSimple: RapidFilter {
         self.value = nil
     }
     
-    override var subscriptionHash: String {
+    public var filterHash: String {
         return "\(keyPath)-\(relation.hash)-\(value ?? "null")"
     }
 }
 
-/// Class that describes compound subscription filter
+/// Structure that describes compound subscription filter
 ///
 /// Compound filter consists of one or more filters that are combined together with one of logical operators.
 /// Compound filter with the logical NOT operator must contain only one operand.
-open class RapidFilterCompound: RapidFilter {
+public struct RapidFilterCompound: RapidFilterDescriptor {
     
     /// Type of logical operator
     ///
@@ -307,7 +308,7 @@ open class RapidFilterCompound: RapidFilter {
     /// Logical operator
     public let compoundOperator: Operator
     /// Array of filters
-    public let operands: [RapidFilter]
+    public let operands: [RapidFilterDescriptor]
     /// Subscription Hash
     internal let storedHash: String
     
@@ -316,21 +317,21 @@ open class RapidFilterCompound: RapidFilter {
     /// - Parameters:
     ///   - compoundOperator: Logical operator
     ///   - operands: Array of filters that are combined together with the `compoundOperator`
-    init(compoundOperator: Operator, operands: [RapidFilter]) {
+    init(compoundOperator: Operator, operands: [RapidFilterDescriptor]) {
         self.compoundOperator = compoundOperator
         self.operands = operands
         
-        let hash = operands.sorted(by: { $0.subscriptionHash > $1.subscriptionHash }).flatMap({ $0.subscriptionHash }).joined(separator: "|")
+        let hash = operands.sorted(by: { $0.filterHash > $1.filterHash }).flatMap({ $0.filterHash }).joined(separator: "|")
         self.storedHash = "\(compoundOperator.hash)(\(hash))"
     }
 
-    override var subscriptionHash: String {
+    public var filterHash: String {
         return storedHash
     }
 }
 
 /// Structure that describes subscription ordering
-public struct RapidOrdering: RapidSubscriptionHashable, RapidQuery {
+public struct RapidOrdering: RapidQuery {
     
     /// Type of ordering
     ///
@@ -367,14 +368,14 @@ public struct RapidOrdering: RapidSubscriptionHashable, RapidQuery {
         self.ordering = ordering
     }
     
-    var subscriptionHash: String {
+    var orderingHash: String {
         return "o-\(keyPath)-\(ordering.hash)"
     }
 
 }
 
 /// Structure that contains subscription paging values
-public struct RapidPaging: RapidSubscriptionHashable {
+public struct RapidPaging {
     
     /// Maximum value of `take`
     public static let takeLimit = 500
@@ -387,7 +388,7 @@ public struct RapidPaging: RapidSubscriptionHashable {
     /// Max. value is 500
     public let take: Int
     
-    var subscriptionHash: String {
+    var pagingHash: String {
         let hash = "t\(take)"
         
         //TODO: Implement skip

@@ -63,10 +63,10 @@ private extension ChannelsViewController {
         let collection = Rapid.collection(named: "channels")
             .order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
         
-        subscription = collection.subscribe { [weak self] result in
+        subscription = collection.subscribe(decodableType: Channel.self, decoder: Rapid.decoder) { [weak self] result in
             switch result {
-            case .success(let documents):
-                self?.channels = documents.flatMap({ Channel(withDocument: $0) })
+            case .success(let channels):
+                self?.channels = channels
                 
             case .failure:
                 self?.channels = []
@@ -91,18 +91,13 @@ private extension ChannelsViewController {
     }
 
     func addChannel(named: String) {
-        var message = [
-            Message.channelID: named,
-            Message.sender: "admin",
-            Message.text: "#\(named) was created",
-            Message.sentDate: Rapid.serverTimestamp
-        ]
-        
         let reference = Rapid.collection(named: "messages").newDocument()
-        reference.mutate(value: message)
+        let message = Message(id: reference.documentID, channelID: named, text: "#\(named) was created", sender: "admin", sentDate: Date())
+        let channel = Channel(name: named, lastMessage: message)
         
-        message[Channel.lastMessageID] = reference.documentID
-        Rapid.collection(named: "channels").document(withID: named).mutate(value: [Channel.lastMessage: message])
+        reference.mutate(encodableValue: message, completion: nil)
+        
+        Rapid.collection(named: "channels").document(withID: named).mutate(encodableValue: channel, completion: nil)
     }
 }
 

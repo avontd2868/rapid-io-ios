@@ -30,7 +30,7 @@ extension String {
     ///
     /// - Returns: JSON dictionary
     /// - Throws: `JSONSerialization` errors
-    func json() throws -> [AnyHashable: Any]? {
+    func json() throws -> [String: Any]? {
         return try self.data(using: .utf8)?.json()
     }
 }
@@ -41,8 +41,8 @@ extension Data {
     ///
     /// - Returns: JSON dictionary
     /// - Throws: `JSONSerialization` errors
-    func json() throws -> [AnyHashable: Any]? {
+    func json() throws -> [String: Any]? {
         let object = try JSONSerialization.jsonObject(with: self, options: [])
-        return object as? [AnyHashable: Any]
+        return object as? [String: Any]
     }
 }

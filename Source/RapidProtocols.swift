@@ -55,6 +55,9 @@ public protocol RapidMutationReference {
     //associatedtype MutationValue
     associatedtype MutationResult
     
+    /// Default JSON encoder
+    var encoder: RapidJSONEncoder { get }
+    
     /// Mutate data
     ///
     /// Current data are deleted and replaced by the provided data
@@ -64,17 +67,32 @@ public protocol RapidMutationReference {
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    func mutate(value: [AnyHashable: Any], completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest
+    func mutate(value: [String: Any], completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest
 }
 
 extension RapidMutationReference {
     
+    /// Mutate data
+    ///
+    /// Current data are deleted and replaced by the provided data
+    ///
+    /// - Parameters:
+    ///   - encodableValue: Encodable object with new data
+    ///   - encoder: JSON encoder that should be used instead of a default one
+    ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    public func mutate<T>(encodableValue: T, completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest where T: Encodable {
+    public func mutate<T>(encodableValue: T, encoder: JSONEncoder? = nil, completion: ((RapidResult<MutationResult>) -> Void)? = nil) -> RapidWriteRequest where T: Encodable {
         do {
-            let data = try JSONEncoder().encode(encodableValue)
-            let dict = try data.json() ?? [:]
-            return mutate(value: dict, completion: completion)
+            let enc = encoder ?? self.encoder
+            let data = try enc.encode(encodableValue)
+            var dict = try data.json() ?? [:]
+            
+            if let rapidEncoder = enc as? RapidJSONEncoder {
+                rapidEncoder.rapidDocumentStripoffKeys.forEach({ dict.removeValue(forKey: $0) })
+            }
+
+            return self.mutate(value: dict, completion: completion)
         }
         catch let error {
             completion?(RapidResult.failure(error: RapidError.invalidData(reason: RapidError.InvalidDataReason.serializationFailure(message: error.localizedDescription))))
@@ -85,9 +103,11 @@ extension RapidMutationReference {
 
 /// Protocol describing Rapid.io reference that defines data merge
 public protocol RapidMergeReference {
-    associatedtype MergeValue
     associatedtype MergeResult
     
+    /// Default JSON encoder
+    var encoder: RapidJSONEncoder { get }
+
     /// Merge current data with a provided data
     ///
     /// - Parameters:
@@ -95,7 +115,36 @@ public protocol RapidMergeReference {
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    func merge(value: MergeValue, completion: ((RapidResult<MergeResult>) -> Void)?) -> RapidWriteRequest
+    func merge(value: [String: Any], completion: ((RapidResult<MergeResult>) -> Void)?) -> RapidWriteRequest
+}
+
+extension RapidMergeReference {
+    
+    /// Merge current data with a provided data
+    ///
+    /// - Parameters:
+    ///   - encodableValue: Encodable object with new data
+    ///   - encoder: JSON encoder that should be used instead of a default one
+    ///   - completion: Merge completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
+    @discardableResult
+    public func merge<T>(encodableValue: T, encoder: JSONEncoder? = nil, completion: ((RapidResult<MergeResult>) -> Void)? = nil) -> RapidWriteRequest where T: Encodable {
+        do {
+            let enc = encoder ?? self.encoder
+            let data = try enc.encode(encodableValue)
+            var dict = try data.json() ?? [:]
+            
+            if let rapidEncoder = enc as? RapidJSONEncoder {
+                rapidEncoder.rapidDocumentStripoffKeys.forEach({ dict.removeValue(forKey: $0) })
+            }
+            
+            return self.merge(value: dict, completion: completion)
+        }
+        catch let error {
+            completion?(RapidResult.failure(error: RapidError.invalidData(reason: RapidError.InvalidDataReason.serializationFailure(message: error.localizedDescription))))
+            return RapidEmptyWriteRequest()
+        }
+    }
 }
 
 /// Protocol describing Rapid.io reference that defines data deletion

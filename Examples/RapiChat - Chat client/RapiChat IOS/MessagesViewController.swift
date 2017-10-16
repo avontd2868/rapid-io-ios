@@ -104,24 +104,19 @@ private extension MessagesViewController {
     }
     
     func send(_ text: String) {
-        // Compose a dictionary with a message
-        var message: [AnyHashable: Any] = [
-            Message.channelID: channel.name,
-            Message.sender: UserDefaultsManager.username,
-            Message.sentDate: Rapid.serverTimestamp,
-            Message.text: text
-        ]
-        
         // Get a new rapid.io document reference from the messages collection
         let messageRef = Rapid.collection(named: "messages")
             .newDocument()
         
+        // Compose a dictionary with a message
+        let message = Message(id: messageRef.documentID, channelID: channel.name, text: text, sender: UserDefaultsManager.username, sentDate: Date())
+        channel.lastMessage = message
+        
         // Write the message to database
-        messageRef.mutate(value: message)
+        messageRef.mutate(encodableValue: message, completion: nil)
         
         // Write last message to the channel
-        message[Channel.lastMessageID] = messageRef.documentID
-        Rapid.collection(named: "channels").document(withID: channel.name).merge(value: [Channel.lastMessage: message])
+        Rapid.collection(named: "channels").document(withID: channel.name).merge(encodableValue: channel)
     }
     
     func subscribeToMessages() {
@@ -131,21 +126,21 @@ private extension MessagesViewController {
         // Limit number of messages to 250
         // Subscribe
         let collection = Rapid.collection(named: "messages")
-            .filter(by: RapidFilter.equal(keyPath: Message.channelID, value: channel.name))
-            .order(by: RapidOrdering(keyPath: Message.sentDate, ordering: .descending))
+            .filter(by: RapidFilter.equal(keyPath: Message.CodingKeys.channelID.rawValue, value: channel.name))
+            .order(by: RapidOrdering(keyPath: Message.CodingKeys.sentDate.rawValue, ordering: .descending))
             .limit(to: 250)
         
-        subscription = collection.subscribe { [weak self] result in
+        subscription = collection.subscribe(decodableType: Message.self, block: { [weak self] result in
             switch result {
-            case .success(let documents):
-                self?.messages = documents.flatMap({ Message.initialize(withDocument: $0) }).reversed()
+            case .success(let messages):
+                self?.messages = messages.reversed()
                 
             case .failure:
                 self?.messages = []
             }
             
             self?.messagesChanged()
-        }
+        })
     }
     
     func messagesChanged() {

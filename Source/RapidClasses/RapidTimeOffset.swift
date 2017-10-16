@@ -9,7 +9,7 @@
 import Foundation
 
 /// Server time offset object
-class RapidTimeOffset: NSObject {
+class RapidTimeOffset {
     
     /// Completion handler
     let completion: RapidTimeOffsetHandler

@@ -186,7 +186,7 @@ extension RapidTests {
         
             self.rapid.collection(named: self.testCollectionName)
                 .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
-                .subscribe(block: { result in
+                .fetch(completion: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
                         promise.fulfill()
