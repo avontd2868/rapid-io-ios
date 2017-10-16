@@ -3,7 +3,7 @@
 //  RapiChat
 //
 //  Created by Jan on 28/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Cocoa
@@ -68,7 +68,7 @@ private extension ChannelsViewController {
     }
     
     func subscribeToChannels() {
-        // Get rapid.io collection reference
+        // Get Rapid collection reference
         // Order it according to document ID
         // Subscribe
         let collection = Rapid.collection(named: "channels")

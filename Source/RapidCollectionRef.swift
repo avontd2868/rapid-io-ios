@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 16/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -17,7 +17,7 @@ public typealias RapidCollectionSubscriptionHandlerWithChanges = (_ result: Rapi
 /// Collection fetch completion handler which provides a client either with an error or with an array of documents
 public typealias RapidCollectionFetchCompletion = RapidCollectionSubscriptionHandler
 
-/// Rapid.io collection reference
+/// Rapid collection reference
 public struct RapidCollectionRef: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?

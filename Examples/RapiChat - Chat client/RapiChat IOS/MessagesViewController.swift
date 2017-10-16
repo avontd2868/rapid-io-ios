@@ -3,7 +3,7 @@
 //  RapiChat
 //
 //  Created by Jan on 27/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import UIKit
@@ -104,7 +104,7 @@ private extension MessagesViewController {
     }
     
     func send(_ text: String) {
-        // Get a new rapid.io document reference from the messages collection
+        // Get a new Rapid document reference from the messages collection
         let messageRef = Rapid.collection(named: "messages")
             .newDocument()
         
@@ -120,7 +120,7 @@ private extension MessagesViewController {
     }
     
     func subscribeToMessages() {
-        // Get rapid.io collection reference
+        // Get Rapid collection reference
         // Filter it according to channel ID
         // Order it according to sent date
         // Limit number of messages to 250

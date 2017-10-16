@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 17/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -37,7 +37,7 @@ public protocol RapidFilterDescriptor {
 /// Protocol describing data types that can be used in filter for comparison purposes
 ///
 /// Data types that conform to `RapidComparable` defaultly are guaranteed to be
-/// compatible with Rapid.io database
+/// compatible with Rapid database
 ///
 /// When developer explicitly adds a conformance of another data type to `RapidComparable`
 /// we cannot guarantee any behavior

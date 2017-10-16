@@ -3,7 +3,7 @@
 //  ExampleApp
 //
 //  Created by Jan on 10/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation

@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 16/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -75,8 +75,8 @@ struct RapidErrorInstance: RapidServerResponse {
 /// Errors which can be thrown by Rapid SDK
 ///
 /// - permissionDenied: Client doesn't have permissons to read or write specified data
-/// - server: Internal Rapid.io server error
-/// - invalidRequest: Client sent an invalid request to Rapid.io server.
+/// - server: Internal Rapid server error
+/// - invalidRequest: Client sent an invalid request to Rapid server.
 /// - connectionTerminated: Websocket connection expired and needs to be reestablished
 /// - invalidData: Data provided by a developer (collection name, document ID, document mutation value etc.) are in an invalid format
 /// - timeout: Request timeout

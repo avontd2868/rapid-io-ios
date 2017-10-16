@@ -64,41 +64,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 21,
-      "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.documentIdKey",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 22,
-      "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.collectionNameKey",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 23,
-      "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.createdAtKey",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 24,
-      "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.modifiedAtKey",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 25,
-      "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.etagKey",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocumentRef.swift",
       "line": 41,
       "symbol": "RapidExecutionResult.write",

@@ -3,7 +3,7 @@
 //  RapiDO
 //
 //  Created by Jan on 16/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Cocoa
@@ -74,7 +74,7 @@ class TaskViewController: NSViewController {
         let tags = selectedTags.map({$0.rawValue})
         
         // Create task dictionary
-        let dict: [AnyHashable: Any] = [
+        let dict: [String: Any] = [
             Task.titleAttributeName: title,
             Task.descriptionAttributeName: description,
             Task.createdAttributeName: self.task?.createdAt.isoString ?? Date().isoString,

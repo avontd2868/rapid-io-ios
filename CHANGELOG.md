@@ -105,7 +105,7 @@ Released on 2017-06-02
 
 #### Added
 
-- Connect to Rapid.io database
+- Connect to Rapid database
 - Subscribe to changes
 - Mutate database
 - Authenticate

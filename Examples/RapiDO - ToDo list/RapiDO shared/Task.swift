@@ -3,7 +3,7 @@
 //  ExampleApp
 //
 //  Created by Jan on 05/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -134,7 +134,7 @@ struct Task {
         Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).merge(value: [Task.completedAttributeName: completed])
     }
     
-    func update(withValue value: [AnyHashable: Any]) {
+    func update(withValue value: [String: Any]) {
         // Update whole task, overwrite the existing one
         Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).mutate(value: value)
     }
@@ -144,7 +144,7 @@ struct Task {
         Rapid.collection(named: Constants.collectionName).document(withID: self.taskID).delete()
     }
     
-    static func create(withValue value: [AnyHashable: Any]) {
+    static func create(withValue value: [String: Any]) {
         // Create a task
         // Get a reference to a new document with a random unique identifier and mutate it with a new value
         Rapid.collection(named: Constants.collectionName).newDocument().mutate(value: value)

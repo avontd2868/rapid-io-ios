@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 13/07/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -17,7 +17,7 @@ public protocol RapidSubscription {
     func unsubscribe()
 }
 
-/// Protocol describing Rapid.io reference that defines data subscription
+/// Protocol describing Rapid reference that defines data subscription
 public protocol RapidSubscriptionReference {
     associatedtype SubscriptionResult
 
@@ -29,7 +29,7 @@ public protocol RapidSubscriptionReference {
     func subscribe(block: @escaping (RapidResult<SubscriptionResult>) -> Void) -> RapidSubscription
 }
 
-/// Protocol describing Rapid.io reference that defines data fetch
+/// Protocol describing Rapid reference that defines data fetch
 public protocol RapidFetchReference {
     associatedtype FetchResult
 
@@ -39,7 +39,7 @@ public protocol RapidFetchReference {
     func fetch(completion: @escaping (RapidResult<FetchResult>) -> Void)
 }
 
-/// Protocol describing Rapid.io request that modifies data in a database
+/// Protocol describing Rapid request that modifies data in a database
 public protocol RapidWriteRequest {
     /// Cancel the request
     ///
@@ -50,7 +50,7 @@ public protocol RapidWriteRequest {
     func cancel()
 }
 
-/// Protocol describing Rapid.io reference that defines data mutation
+/// Protocol describing Rapid reference that defines data mutation
 public protocol RapidMutationReference {
     //associatedtype MutationValue
     associatedtype MutationResult
@@ -101,7 +101,7 @@ extension RapidMutationReference {
     }
 }
 
-/// Protocol describing Rapid.io reference that defines data merge
+/// Protocol describing Rapid reference that defines data merge
 public protocol RapidMergeReference {
     associatedtype MergeResult
     
@@ -147,7 +147,7 @@ extension RapidMergeReference {
     }
 }
 
-/// Protocol describing Rapid.io reference that defines data deletion
+/// Protocol describing Rapid reference that defines data deletion
 public protocol RapidDeletionReference {
     associatedtype DeletionResult
     

@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 16/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -43,7 +43,7 @@ public enum RapidExecutionResult {
     case abort
 }
 
-/// Rapid.io document reference
+/// Rapid document reference
 public struct RapidDocumentRef: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?

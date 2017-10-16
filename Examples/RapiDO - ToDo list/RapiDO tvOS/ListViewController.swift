@@ -3,7 +3,7 @@
 //  RapiDO tvOS
 //
 //  Created by Jan on 20/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import UIKit
@@ -19,7 +19,7 @@ class ListViewController: UIViewController {
     
     fileprivate var subscription: RapidSubscription?
     fileprivate var ordering = RapidOrdering(keyPath: Task.createdAttributeName, ordering: .descending)
-    fileprivate var filter: RapidFilter?
+    fileprivate var filter: RapidFilterDescriptor?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,8 +63,8 @@ fileprivate extension ListViewController {
         tasks.removeAll()
         tableView.reloadData()
         
-        // Get Rapid.io collection reference with a given name
-        let collection = Rapid.collection(named: Constants.collectionName)
+        // Get Rapid collection reference with a given name
+        var collection = Rapid.collection(named: Constants.collectionName)
         
         // If a filter is set, modify the collection reference with it
         if let filter = filter {
@@ -202,7 +202,7 @@ extension ListViewController: FilterViewControllerDelegate {
         controller.dismiss(animated: true, completion: nil)
     }
     
-    func filterViewControllerDidFinish(_ controller: FilterViewController, withFilter filter: RapidFilter?) {
+    func filterViewControllerDidFinish(_ controller: FilterViewController, withFilter filter: RapidFilterDescriptor?) {
         self.filter = filter
         subscribe()
         controller.dismiss(animated: true, completion: nil)

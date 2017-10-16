@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 14/07/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -13,7 +13,7 @@ import Foundation
 /// Register on-connect action completion handler which informs a client about the operation result
 public typealias RapidDocumentRegisterOnConnectActionCompletion = (_ result: RapidResult<Any?>) -> Void
 
-/// Rapid.io document reference
+/// Rapid document reference
 ///
 /// `RapidDocumentRefOnConnect` is used to register actions that should be performed
 /// when `Rapid` instance connects to a server
@@ -101,7 +101,7 @@ extension RapidDocumentRefOnConnect: RapidDeletionReference {
 /// Register on-disconnect action completion handler which informs a client about the operation result
 public typealias RapidDocumentRegisterOnDisonnectActionCompletion = (_ result: RapidResult<Any?>) -> Void
 
-/// Rapid.io document reference
+/// Rapid document reference
 ///
 /// `RapidDocumentRefOnDisconnect` is used to register actions that should be performed
 /// when `Rapid` instance disconnects from a server

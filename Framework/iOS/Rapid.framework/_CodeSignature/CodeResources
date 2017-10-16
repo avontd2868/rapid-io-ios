@@ -6,11 +6,11 @@
 	<dict>
 		<key>Headers/Rapid-Swift.h</key>
 		<data>
-		5Q0wBSzU1v65xLEF5ifngngn6Jw=
+		NmZx9rqnLV5xEog+OmSTKGX2p7U=
 		</data>
 		<key>Headers/Rapid.h</key>
 		<data>
-		m1ZkOgkjJY6P4p66KIoTV3an1iY=
+		FWSCp0RwdC4o++PJ0oWFtNN8HKM=
 		</data>
 		<key>Info.plist</key>
 		<data>
@@ -18,7 +18,7 @@
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm.swiftdoc</key>
 		<data>
-		zdj3KX9FTRbfqmTxLjVJKsbtI+c=
+		eKKwUM04cQu2Q15ysllodI+iYOw=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm.swiftmodule</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		xGqIcDBDz8ybZhTUrs/cHjFmel4=
+		5U2R9u0yuTOcQRyfYAkG6+lMDa4=
 		</data>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>
 		<data>
@@ -43,33 +43,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			5Q0wBSzU1v65xLEF5ifngngn6Jw=
+			NmZx9rqnLV5xEog+OmSTKGX2p7U=
 			</data>
 			<key>hash2</key>
 			<data>
-			9E19Lxhz/zsCsgjiJ4z4JFZl4rSRYoZDf9p9j5+lNfw=
+			zOo40zOU9h8j3jGHJzhXmf7zlr5Bvot/wOyLhlx4Ad4=
 			</data>
 		</dict>
 		<key>Headers/Rapid.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			m1ZkOgkjJY6P4p66KIoTV3an1iY=
+			FWSCp0RwdC4o++PJ0oWFtNN8HKM=
 			</data>
 			<key>hash2</key>
 			<data>
-			SK5axrANoLY+hK5eZv0Y5DmSs4a4zbH/1MuHosGiQIY=
+			aUHNTov87gImsgNlQOT8nmLkwIKb6HFE3QmYIx7O360=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			zdj3KX9FTRbfqmTxLjVJKsbtI+c=
+			eKKwUM04cQu2Q15ysllodI+iYOw=
 			</data>
 			<key>hash2</key>
 			<data>
-			gpJMxG/1t0U9rTYhSAhe4nXsRQhK/AU8m/LqhlCoRV4=
+			LHgXstxvm6+xqzDojOctwZcV5WLNygvZq5wMWtlieHY=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm.swiftmodule</key>
@@ -87,11 +87,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			xGqIcDBDz8ybZhTUrs/cHjFmel4=
+			5U2R9u0yuTOcQRyfYAkG6+lMDa4=
 			</data>
 			<key>hash2</key>
 			<data>
-			kimDmCY2K/WNxhjpZED3GEgSGNjdKTNwsQy6ryMlkRE=
+			0cp960ZQYXzMSdjPu0VGu1sSaBqIMXhxg1oyD/gNofo=
 			</data>
 		</dict>
 		<key>Modules/Rapid.swiftmodule/arm64.swiftmodule</key>

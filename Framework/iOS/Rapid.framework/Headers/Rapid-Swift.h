@@ -188,7 +188,7 @@ SWIFT_MODULE_NAMESPACE_PUSH("Rapid")
 
 
 
-/// Class representing a connection to Rapid.io database
+/// Class representing a connection to Rapid database
 SWIFT_CLASS("_TtC5Rapid5Rapid")
 @interface Rapid : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -198,7 +198,7 @@ SWIFT_CLASS("_TtC5Rapid5Rapid")
 
 @class NSCoder;
 
-/// Class representing Rapid.io document
+/// Class representing Rapid document
 SWIFT_CLASS("_TtC5Rapid13RapidDocument")
 @interface RapidDocument : NSObject <NSCoding>
 /// Returns an object initialized from data in a given unarchiver

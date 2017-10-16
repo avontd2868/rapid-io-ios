@@ -3,7 +3,7 @@
 //  ExampleMacOSApp
 //
 //  Created by Jan on 15/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Cocoa
@@ -24,7 +24,7 @@ class ListViewController: NSViewController {
     
     fileprivate var subscription: RapidSubscription?
     fileprivate var ordering: RapidOrdering?
-    fileprivate var filter: RapidFilter?
+    fileprivate var filter: RapidFilterDescriptor?
     
     lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -60,7 +60,7 @@ class ListViewController: NSViewController {
     }
 
     @IBAction func filter(_ sender: AnyObject) {
-        var operands = [RapidFilter]()
+        var operands = [RapidFilterDescriptor]()
         
         if let item = completionPopUp.selectedItem {
             let index = completionPopUp.index(of: item)
@@ -74,7 +74,7 @@ class ListViewController: NSViewController {
         }
         
         // Create filter for selected tags
-        var tags = [RapidFilter]()
+        var tags = [RapidFilterDescriptor]()
         if homeCheckBox.state.rawValue > 0 {
             tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.home.rawValue))
         }
@@ -148,8 +148,8 @@ fileprivate extension ListViewController {
         tasks.removeAll()
         tableView.reloadData()
         
-        // Get Rapid.io collection reference with a given name
-        let collection = Rapid.collection(named: Constants.collectionName)
+        // Get Rapid collection reference with a given name
+        var collection = Rapid.collection(named: Constants.collectionName)
         
         // If a filter is set, modify the collection reference with it
         if let filter = filter {

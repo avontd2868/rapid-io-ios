@@ -3,7 +3,7 @@
 //  ExampleApp
 //
 //  Created by Jan on 05/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import UIKit
@@ -11,13 +11,13 @@ import Rapid
 
 protocol FilterViewControllerDelegate: class {
     func filterViewControllerDidCancel(_ controller: FilterViewController)
-    func filterViewControllerDidFinish(_ controller: FilterViewController, withFilter filter: RapidFilter?)
+    func filterViewControllerDidFinish(_ controller: FilterViewController, withFilter filter: RapidFilterDescriptor?)
 }
 
 class FilterViewController: UIViewController {
     
     weak var delegate: FilterViewControllerDelegate?
-    var filter: RapidFilter?
+    var filter: RapidFilterDescriptor?
     
     @IBOutlet weak var segmentedControl: UISegmentedControl! {
         didSet {
@@ -57,7 +57,7 @@ class FilterViewController: UIViewController {
     }
     
     @IBAction func done(_ sender: Any) {
-        var operands = [RapidFilter]()
+        var operands = [RapidFilterDescriptor]()
         
         // Segmented control selected index equal to 1 means "show all tasks regardless completion state", so no filter is needed
         // Otherwise, create filter for either completed or incompleted tasks
@@ -69,7 +69,7 @@ class FilterViewController: UIViewController {
         // Create filter for selected tags
         let selectedTags = tagsTableView.selectedTags
         if selectedTags.count > 0 {
-            var tagFilters = [RapidFilter]()
+            var tagFilters = [RapidFilterDescriptor]()
             
             for tag in selectedTags {
                 tagFilters.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: tag.rawValue))
@@ -80,7 +80,7 @@ class FilterViewController: UIViewController {
         }
         
         // If there are any filters combine them with logical "AND"
-        let filter: RapidFilter?
+        let filter: RapidFilterDescriptor?
         if operands.count > 0 {
             filter = RapidFilter.and(operands)
         }

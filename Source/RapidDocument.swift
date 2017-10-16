@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 30/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -29,7 +29,7 @@ public func == (lhs: RapidDocument, rhs: RapidDocument) -> Bool {
     return false
 }
 
-/// Class representing Rapid.io document
+/// Class representing Rapid document
 open class RapidDocument: NSObject, NSCoding {
     
     /// Document ID
@@ -55,7 +55,7 @@ open class RapidDocument: NSObject, NSCoding {
     
     /// Value that serves to order documents
     ///
-    /// Value is computed by Rapid.io database based on sort descriptors in a subscription
+    /// Value is computed by Rapid database based on sort descriptors in a subscription
     let sortKeys: [String]
     
     init?(existingDocJson json: Any?, collectionID: String) {
