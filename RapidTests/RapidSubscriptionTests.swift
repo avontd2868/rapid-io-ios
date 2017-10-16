@@ -1443,7 +1443,7 @@ extension RapidTests {
                     return
                 }
                 
-                let testStruct = try? document.decode(toType: RapidTestStruct.self)
+                let testStruct = try? document.decode(toType: RapidTestStruct.self, decoder: RapidTestStruct.decoder)
                 
                 XCTAssertEqual(testStruct?.name, "First document", "Wrong document")
                 XCTAssertEqual(testStruct?.id, document.id)
@@ -1461,6 +1461,8 @@ extension RapidTests {
     
     func testFetchDecodableDocument() {
         let promise = expectation(description: "Subscription update")
+        
+        updateDecoderForTestStruct()
         
         mutate(documentID: "1", value: ["name": "First document"]) { _ in
             
@@ -1488,6 +1490,8 @@ extension RapidTests {
     func testFetchDecodableDocumentUndecodable() {
         let promise = expectation(description: "Subscription update")
         
+        updateDecoderForTestStruct()
+
         mutate(documentID: "1", value: ["noName": "First document"]) { _ in
             
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(decodableType: RapidTestStruct.self) { result in
@@ -1513,6 +1517,8 @@ extension RapidTests {
     func testSubscribeToDecodableDocument() {
         let promise = expectation(description: "Subscription update")
         
+        updateDecoderForTestStruct()
+
         mutate(documentID: "1", value: ["name": "First document"]) { _ in
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(decodableType: RapidTestStruct.self) { result in
@@ -1545,7 +1551,7 @@ extension RapidTests {
     func testSubscribeToDecodableDocumentUndecodable() {
         let promise = expectation(description: "Subscription update")
         
-        mutate(documentID: "1", value: ["noName": "First document"]) { _ in
+        mutate(documentID: "1", value: ["name": "First document"]) { _ in
             var initialValue = true
             self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(decodableType: RapidTestStruct.self) { result in
                 guard initialValue else {
@@ -1575,7 +1581,7 @@ extension RapidTests {
 
     func testDecodableDocumentArray() {
         let promise = expectation(description: "Subscription update")
-        
+
         mutate(documentID: "1", value: ["name": "First document"])
         mutate(documentID: "2", value: ["name": "Second document"]) { _ in
             
@@ -1600,8 +1606,8 @@ extension RapidTests {
                         return
                     }
                     
-                    let testArray = try? documents.decode(toType: RapidTestStruct.self)
-                    let testFlatArray = documents.flatDecode(toType: RapidTestStruct.self)
+                    let testArray = try? documents.decode(toType: RapidTestStruct.self, decoder: RapidTestStruct.decoder)
+                    let testFlatArray = documents.flatDecode(toType: RapidTestStruct.self, decoder: RapidTestStruct.decoder)
                     
                     XCTAssertEqual(testArray?[0].name, "First document", "Wrong document")
                     XCTAssertEqual(testArray?[1].name, "Second document", "Wrong document")
@@ -1624,6 +1630,8 @@ extension RapidTests {
     func testFetchDecodableCollection() {
         let promise = expectation(description: "Subscription update")
         
+        updateDecoderForTestStruct()
+
         mutate(documentID: "1", value: ["name": "First document"])
         mutate(documentID: "2", value: ["name": "Second document"]) { _ in
             
@@ -1661,6 +1669,8 @@ extension RapidTests {
     func testFetchDecodableCollectionUndecodable() {
         let promise = expectation(description: "Subscription update")
         
+        updateDecoderForTestStruct()
+
         mutate(documentID: "1", value: ["noName": "First document"])
         mutate(documentID: "2", value: ["noName": "Second document"]) { _ in
             
@@ -1697,6 +1707,8 @@ extension RapidTests {
         
         var initial = true
         
+        updateDecoderForTestStruct()
+
         mutate(documentID: "1", value: ["name": "First document"])
         mutate(documentID: "2", value: ["name": "Second document"]) { _ in
             
@@ -1742,6 +1754,8 @@ extension RapidTests {
         
         var initial = true
         
+        updateDecoderForTestStruct()
+
         mutate(documentID: "1", value: ["name": "First document"])
         mutate(documentID: "2", value: ["name": "Second document"]) { _ in
             
@@ -1787,6 +1801,8 @@ extension RapidTests {
         
         var initial = true
         
+        updateDecoderForTestStruct()
+
         mutate(documentID: "1", value: ["noName": "First document"])
         mutate(documentID: "2", value: ["noName": "Second document"]) { _ in
             
@@ -1829,6 +1845,8 @@ extension RapidTests {
         
         var initial = true
         
+        updateDecoderForTestStruct()
+
         mutate(documentID: "1", value: ["noName": "First document"])
         mutate(documentID: "2", value: ["noName": "Second document"]) { _ in
             
@@ -1882,41 +1900,31 @@ extension RapidTests {
         }
     }
     
+    func updateDecoderForTestStruct() {
+        self.rapid.decoder.dateDecodingStrategy = .secondsSince1970
+        self.rapid.decoder.rapidDocumentDecodingKeys = RapidTestStruct.metadataKeys
+    }
+    
 }
 
 struct RapidTestStruct: Codable {
-    enum CodingKeys: String, CodingKey {
-        case name = "name"
-        case id = "$documentId"
-        case collection = "$collectionName"
-        case createdAt = "$createdAt"
-        case modifiedAt = "$modifiedAt"
-        case etag = "$etag"
-    }
     
+    static let metadataKeys = RapidJSONDecoder.RapidDocumentDecodingKeys(documentIdKey: "id", collectionNameKey: "collection", createdAtKey: "createdAt", modifiedAtKey: "modifiedAt", etagKey: "etag")
+    static let stripoffKeys = ["id", "collection", "createdAt", "modifiedAt", "etag"]
+    
+    static var decoder: RapidJSONDecoder {
+        let dec = RapidJSONDecoder()
+        dec.rapidDocumentDecodingKeys = metadataKeys
+        dec.dateDecodingStrategy = .secondsSince1970
+        return dec
+    }
+
     let name: String
     let id: String
     let collection: String
     let createdAt: Date
     let modifiedAt: Date
     let etag: String
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        name = try container.decode(String.self, forKey: .name)
-        id = try container.decode(String.self, forKey: .id)
-        collection = try container.decode(String.self, forKey: .collection)
-        createdAt = Date(timeIntervalSince1970: try container.decode(TimeInterval.self, forKey: .createdAt))
-        modifiedAt = Date(timeIntervalSince1970: try container.decode(TimeInterval.self, forKey: .modifiedAt))
-        etag = try container.decode(String.self, forKey: .etag)
-        
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(name, forKey: .name)
-    }
     
     init(name: String) {
         self.name = name

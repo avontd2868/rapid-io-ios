@@ -100,10 +100,12 @@ open class Rapid: NSObject {
         }
     }
     
+    /// Default `JSONEncoder` used to encode objects in mutations and merges
     public var encoder: RapidJSONEncoder {
         return handler.encoder
     }
     
+    /// Default `JSONDecoder` used to decode JSONs in subscriptions and fetches
     public var decoder: RapidJSONDecoder {
         return handler.decoder
     }
@@ -310,11 +312,13 @@ public extension Rapid {
         }
     }
     
+    /// Default `JSONEncoder` used to encode objects in mutations and merges
     class var encoder: RapidJSONEncoder {
         let instance = try! shared()
         return instance.encoder
     }
     
+    /// Default `JSONDecoder` used to decode JSONs in subscriptions and fetches
     class var decoder: RapidJSONDecoder {
         let instance = try! shared()
         return instance.decoder

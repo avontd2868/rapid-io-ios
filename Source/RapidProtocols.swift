@@ -86,7 +86,12 @@ extension RapidMutationReference {
         do {
             let enc = encoder ?? self.encoder
             let data = try enc.encode(encodableValue)
-            let dict = try data.json() ?? [:]
+            var dict = try data.json() ?? [:]
+            
+            if let rapidEncoder = enc as? RapidJSONEncoder {
+                rapidEncoder.rapidDocumentStripoffKeys.forEach({ dict.removeValue(forKey: $0) })
+            }
+
             return self.mutate(value: dict, completion: completion)
         }
         catch let error {
@@ -127,7 +132,12 @@ extension RapidMergeReference {
         do {
             let enc = encoder ?? self.encoder
             let data = try enc.encode(encodableValue)
-            let dict = try data.json() ?? [:]
+            var dict = try data.json() ?? [:]
+            
+            if let rapidEncoder = enc as? RapidJSONEncoder {
+                rapidEncoder.rapidDocumentStripoffKeys.forEach({ dict.removeValue(forKey: $0) })
+            }
+            
             return self.merge(value: dict, completion: completion)
         }
         catch let error {

@@ -242,6 +242,21 @@ open class RapidDocument: NSObject, NSCoding {
         return dict.description
     }
     
+    /// Decode `RapidDocument` into a specified type that conforms to `Decodable`
+    ///
+    /// JSON that is used for decoding is `RapidDocument` `value`.
+    /// This dictionary is, just for sake of decoding, enriched with attributes
+    /// that contain document ID, collection name, timestamp of creation, timestamp of modification and etag.
+    /// Keys of these attributes are defined by `RapidJSONDecoder.RapidDocumentDecodingKeys`.
+    /// When you provide this method with a decoder that is an instance of `RapidJSONDecoder`
+    /// then the keys are taken from `rapidDocumentDecodingKeys` property of the decoder.
+    /// Otherwise, default keys of `RapidJSONDecoder.RapidDocumentDecodingKeys` are used.
+    ///
+    /// - Parameters:
+    ///   - type: Data type that conforms to `Decodable`
+    ///   - decoder: `JSONDecoder` that should be used for decoding. If `nil` a default `JSONDecoder()` is used
+    /// - Returns: Decoded instance of the specified type
+    /// - Throws: Errors thrown by `JSONDecoder`
     open func decode<T>(toType type: T.Type, decoder: JSONDecoder? = nil) throws -> T where T : Decodable {
         var enrichedDict = value ?? [:]
         
@@ -357,10 +372,28 @@ struct RapidDocumentOperationSet: Sequence {
 
 extension Array where Element: RapidDocument {
     
+    /// Decode an array of `RapidDocument`s into an array of a specified type that conforms to `Decodable`
+    ///
+    /// This is just a convenience method that calls `decode` method on each instance of `RapidDocument`
+    ///
+    /// - Parameters:
+    ///   - type: Data type that conforms to `Decodable`
+    ///   - decoder: `JSONDecoder` that should be used for decoding. If `nil` a default `JSONDecoder()` is used
+    /// - Returns: Array of decodeded instances of the specified type
+    /// - Throws: Errors thrown by `JSONDecoder`
     public func decode<T>(toType type: T.Type, decoder: JSONDecoder? = nil) throws -> [T] where T : Decodable {
         return try self.map({ try $0.decode(toType: type, decoder: decoder) })
     }
     
+    /// Decode an array of `RapidDocument`s into an array of a specified type that conforms to `Decodable`
+    /// Instances of `RapidDocument` that cannot be decoded are not present in the returned array
+    ///
+    /// This is just a convenience method that calls `decode` method on each instance of `RapidDocument`
+    ///
+    /// - Parameters:
+    ///   - type: Data type that conforms to `Decodable`
+    ///   - decoder: `JSONDecoder` that should be used for decoding. If `nil` a default `JSONDecoder()` is used
+    /// - Returns: Array of decodeded instances of the specified type
     public func flatDecode<T>(toType type: T.Type, decoder: JSONDecoder? = nil) -> [T] where T : Decodable {
         return self.flatMap({ try? $0.decode(toType: type, decoder: decoder) })
     }

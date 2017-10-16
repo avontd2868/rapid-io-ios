@@ -64,122 +64,38 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Rapid.swift",
-      "line": 103,
-      "symbol": "Rapid.encoder",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Rapid.swift",
-      "line": 107,
-      "symbol": "Rapid.decoder",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Rapid.swift",
-      "line": 313,
-      "symbol": "Rapid.encoder",
-      "symbol_kind": "source.lang.swift.decl.var.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/Rapid.swift",
-      "line": 318,
-      "symbol": "Rapid.decoder",
-      "symbol_kind": "source.lang.swift.decl.var.class",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 11,
-      "symbol": "RapidJSONDecoder",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 13,
-      "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 14,
+      "line": 21,
       "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.documentIdKey",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 15,
+      "line": 22,
       "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.collectionNameKey",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 16,
+      "line": 23,
       "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.createdAtKey",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 17,
+      "line": 24,
       "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.modifiedAtKey",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 18,
+      "line": 25,
       "symbol": "RapidJSONDecoder.RapidDocumentDecodingKeys.etagKey",
       "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 21,
-      "symbol": "RapidJSONDecoder.rapidDocumentDecodingKeys",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 24,
-      "symbol": "RapidJSONEncoder",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidCodable.swift",
-      "line": 26,
-      "symbol": "RapidJSONEncoder.rapidDocumentStripoffKeys",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
-      "line": 245,
-      "symbol": "RapidDocument.decode(toType:decoder:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
-      "line": 360,
-      "symbol": "Array.decode(toType:decoder:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/janschwarz1/Documents/XCode/RapidSDK/Source/RapidDocument.swift",
-      "line": 364,
-      "symbol": "Array.flatDecode(toType:decoder:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
