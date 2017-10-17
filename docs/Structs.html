@@ -13,7 +13,7 @@
     <a title="Structs  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Rapid Docs</a> (82% documented)</p>
+        <p><a href="index.html">Rapid Docs</a> (81% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -101,9 +101,6 @@
                 <a href="Protocols/RapidFetchReference.html">RapidFetchReference</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Protocols/RapidMergeReference.html">RapidMergeReference</a>
               </li>
               <li class="nav-group-task">
@@ -154,16 +151,13 @@
                 <a href="Structs/RapidFilter.html">RapidFilter</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs/RapidFilterCompound.html">RapidFilterCompound</a>
+                <a href="Structs/RapidFilter/Expression.html">– Expression</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs/RapidFilterCompound/Operator.html">– Operator</a>
+                <a href="Structs/RapidFilter/Operator.html">– Operator</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs/RapidFilterSimple.html">RapidFilterSimple</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Structs/RapidFilterSimple/Relation.html">– Relation</a>
+                <a href="Structs/RapidFilter/Relation.html">– Relation</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/RapidOrdering.html">RapidOrdering</a>
@@ -341,7 +335,7 @@ when <code><a href="Classes/Rapid.html">Rapid</a></code> instance disconnects fr
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Subscription filter</p>
+                        <p>Structure that describes subscription filter</p>
 
                         <a href="Structs/RapidFilter.html" class="slightly-smaller">See more</a>
                       </div>
@@ -350,67 +344,6 @@ when <code><a href="Classes/Rapid.html">Rapid</a></code> instance disconnects fr
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RapidFilter</span><span class="p">:</span> <span class="kt"><a href="Protocols/RapidQuery.html">RapidQuery</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV"></a>
-                    <a name="//apple_ref/swift/Struct/RapidFilterSimple" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV">RapidFilterSimple</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Structure that describes simple subscription filter</p>
-
-<p>Simple filter can contain only a name of a filtering document property, its reference value and a relation to the value.</p>
-
-                        <a href="Structs/RapidFilterSimple.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RapidFilterSimple</span><span class="p">:</span> <span class="kt"><a href="Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A14FilterCompoundV"></a>
-                    <a name="//apple_ref/swift/Struct/RapidFilterCompound" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A14FilterCompoundV">RapidFilterCompound</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Structure that describes compound subscription filter</p>
-
-<p>Compound filter consists of one or more filters that are combined together with one of logical operators.
-Compound filter with the logical NOT operator must contain only one operand.</p>
-
-                        <a href="Structs/RapidFilterCompound.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RapidFilterCompound</span><span class="p">:</span> <span class="kt"><a href="Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
 
                         </div>
                       </div>
@@ -458,7 +391,7 @@ Compound filter with the logical NOT operator must contain only one operand.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Structure that contains subscription paging values</p>
+                        <p>Structure that describes subscription paging values</p>
 
                         <a href="Structs/RapidPaging.html" class="slightly-smaller">See more</a>
                       </div>
@@ -666,7 +599,7 @@ Compound filter with the logical NOT operator must contain only one operand.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="https://www.rapidrealtime.com" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-16)</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapidrealtime.com" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-17)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

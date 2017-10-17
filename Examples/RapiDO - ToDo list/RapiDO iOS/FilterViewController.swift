@@ -11,13 +11,13 @@ import Rapid
 
 protocol FilterViewControllerDelegate: class {
     func filterViewControllerDidCancel(_ controller: FilterViewController)
-    func filterViewControllerDidFinish(_ controller: FilterViewController, withFilter filter: RapidFilterDescriptor?)
+    func filterViewControllerDidFinish(_ controller: FilterViewController, withFilter filter: RapidFilter?)
 }
 
 class FilterViewController: UIViewController {
     
     weak var delegate: FilterViewControllerDelegate?
-    var filter: RapidFilterDescriptor?
+    var filter: RapidFilter?
     
     @IBOutlet weak var segmentedControl: UISegmentedControl! {
         didSet {
@@ -57,7 +57,7 @@ class FilterViewController: UIViewController {
     }
     
     @IBAction func done(_ sender: Any) {
-        var operands = [RapidFilterDescriptor]()
+        var operands = [RapidFilter]()
         
         // Segmented control selected index equal to 1 means "show all tasks regardless completion state", so no filter is needed
         // Otherwise, create filter for either completed or incompleted tasks
@@ -69,7 +69,7 @@ class FilterViewController: UIViewController {
         // Create filter for selected tags
         let selectedTags = tagsTableView.selectedTags
         if selectedTags.count > 0 {
-            var tagFilters = [RapidFilterDescriptor]()
+            var tagFilters = [RapidFilter]()
             
             for tag in selectedTags {
                 tagFilters.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: tag.rawValue))
@@ -80,7 +80,7 @@ class FilterViewController: UIViewController {
         }
         
         // If there are any filters combine them with logical "AND"
-        let filter: RapidFilterDescriptor?
+        let filter: RapidFilter?
         if operands.count > 0 {
             filter = RapidFilter.and(operands)
         }
@@ -97,30 +97,31 @@ fileprivate extension FilterViewController {
     /// Setup UI according to filter
     func setupUI() {
         
-        if let filter = filter as? RapidFilterCompound {
+        if let expression = filter?.expression, case .compound(_, let operands) = expression {
             var tagsSet = false
             var completionSet = false
             
-            for operand in filter.operands {
-                if let doneFilter = operand as? RapidFilterSimple {
+            for operand in operands {
+                switch operand {
+                case .simple(_, _, let value):
                     completionSet = true
                     
-                    let done = doneFilter.value as? Bool ?? false
+                    let done = value as? Bool ?? false
                     let index = done ? 0 : 2
                     segmentedControl.selectedSegmentIndex = index
-                }
-                else if let tagOrFilter = operand as? RapidFilterCompound {
+                    
+                case .compound(_, let operands):
                     tagsSet = true
                     
                     var tags = [Tag]()
-                    for case let tagFilter as RapidFilterSimple in tagOrFilter.operands {
-                        switch tagFilter.value as? String {
+                    for case .simple(_, _, let value) in operands {
+                        switch value as? String {
                         case .some(Tag.home.rawValue):
                             tags.append(.home)
                             
                         case .some(Tag.work.rawValue):
                             tags.append(.work)
-
+                            
                         case .some(Tag.other.rawValue):
                             tags.append(.other)
                             

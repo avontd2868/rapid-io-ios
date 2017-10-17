@@ -9,7 +9,6 @@
 import Foundation
 import CoreGraphics
 
-/// Protocol that describes a subscription query
 public protocol RapidQuery {}
 extension RapidQuery {
     
@@ -29,11 +28,6 @@ extension RapidQuery {
     }
 }
 
-/// Protocol discribing a filter instance
-public protocol RapidFilterDescriptor {
-    var filterHash: String { get }
-}
-
 /// Protocol describing data types that can be used in filter for comparison purposes
 ///
 /// Data types that conform to `RapidComparable` defaultly are guaranteed to be
@@ -49,141 +43,42 @@ extension Float: RapidComparable {}
 extension CGFloat: RapidComparable {}
 extension Bool: RapidComparable {}
 
-/// Subscription filter
+/// Structure that describes subscription filter
 public struct RapidFilter: RapidQuery {
     
-    // MARK: Compound filters
-    
-    /// Negate filter
+    /// Type of filter
     ///
-    /// - Parameter filter: Filter to be negated
-    /// - Returns: Negated filter
-    public static func not(_ filter: RapidFilterDescriptor) -> RapidFilterDescriptor {
-        return RapidFilterCompound(compoundOperator: .not, operands: [filter])
+    /// - compound: Filter that combines one or more `Expression`s with a logical operator
+    /// - simple: Filter that describes simple relation between an attribute and a specified value
+    public indirect enum Expression {
+        case compound(operator: Operator, operands: [Expression])
+        case simple(keyPath: String, relation: Relation, value: Any?)
     }
     
-    /// Combine filters with logical AND
+    /// Type of logical operator
     ///
-    /// - Parameter operands: Filters to be combined
-    /// - Returns: Compound filter
-    public static func and(_ operands: [RapidFilterDescriptor]) -> RapidFilterDescriptor {
-        return RapidFilterCompound(compoundOperator: .and, operands: operands)
+    /// - and: Logical AND
+    /// - or: Logical OR
+    /// - not: Logical NOT
+    public enum Operator {
+        case and
+        case or
+        case not
+        
+        var hash: String {
+            switch self {
+            case .and:
+                return "and"
+                
+            case .or:
+                return "or"
+                
+            case .not:
+                return "not"
+            }
+        }
     }
-    
-    /// Combine filters with logical OR
-    ///
-    /// - Parameter operands: Filters to be combined
-    /// - Returns: Compound filter
-    public static func or(_ operands: [RapidFilterDescriptor]) -> RapidFilterDescriptor {
-        return RapidFilterCompound(compoundOperator: .or, operands: operands)
-    }
-    
-    // MARK: Simple filters
-    
-    /// Create equality filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - value: Property value
-    /// - Returns: Filter for key path equal to value
-    public static func equal(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .equal, value: value)
-    }
-    
-    /// Create equal to null filter
-    ///
-    /// - Parameter keyPath: Document property key path
-    /// - Returns: Filter for key path equal to null
-    public static func isNull(keyPath: String) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .equal)
-    }
-    
-    /// Create greater than filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - value: Property value
-    /// - Returns: Filter for key path greater than value
-    public static func greaterThan(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .greaterThan, value: value)
-    }
-    
-    /// Create greater than or equal filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - value: Property value
-    /// - Returns: Filter for key path greater than or equal to value
-    public static func greaterThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .greaterThanOrEqual, value: value)
-    }
-    
-    /// Create less than filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - value: Property value
-    /// - Returns: Filter for key path less than value
-    public static func lessThan(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .lessThan, value: value)
-    }
-    
-    /// Create less than or equal filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - value: Property value
-    /// - Returns: Filter for key path less than or equal to value
-    public static func lessThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .lessThanOrEqual, value: value)
-    }
-    
-    /// Create string contains filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - subString: Property value substring
-    /// - Returns: Filter for string at key path contains a substring
-    public static func contains(keyPath: String, subString: String) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .contains, value: subString)
-    }
-    
-    /// Create string starts with filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - prefix: Property value prefix
-    /// - Returns: Filter for string at key path starts with a prefix
-    public static func startsWith(keyPath: String, prefix: String) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .startsWith, value: prefix)
-    }
-    
-    /// Create string ends with filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - suffix: Property value suffix
-    /// - Returns: Filter for string at key path ends with a suffix
-    public static func endsWith(keyPath: String, suffix: String) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .endsWith, value: suffix)
-    }
-    
-    /// Create array contains filter
-    ///
-    /// - Parameters:
-    ///   - keyPath: Document property key path
-    ///   - value: Value that should be present in a property array
-    /// - Returns: Filter for array at key path that contains a value
-    public static func arrayContains(keyPath: String, value: RapidComparable) -> RapidFilterDescriptor {
-        return RapidFilterSimple(keyPath: keyPath, relation: .arrayContains, value: value)
-    }
-}
 
-/// Structure that describes simple subscription filter
-///
-/// Simple filter can contain only a name of a filtering document property, its reference value and a relation to the value.
-public struct RapidFilterSimple: RapidFilterDescriptor {
-    
     /// Type of relation to a specified value
     ///
     /// - equal: Property value is equal to a reference value
@@ -238,15 +133,23 @@ public struct RapidFilterSimple: RapidFilterDescriptor {
         }
     }
     
-    /// Name of a document property
-    public let keyPath: String
-    
-    /// Ralation to a reference value
-    public let relation: Relation
-    
-    /// Reference value
-    public let value: Any?
-    
+    /// Array of filters
+    public let expression: Expression
+    /// Filter hash
+    public let filterHash: String
+
+    /// Compound filter initializer
+    ///
+    /// - Parameters:
+    ///   - compoundOperator: Logical operator
+    ///   - operands: Array of filters that are combined together with the `compoundOperator`
+    init(compoundOperator: Operator, operands: [RapidFilter]) {
+        self.expression = Expression.compound(operator: compoundOperator, operands: operands.map({ $0.expression }))
+        
+        let hash = operands.sorted(by: { $0.filterHash > $1.filterHash }).flatMap({ $0.filterHash }).joined(separator: "|")
+        self.filterHash = "\(compoundOperator.hash)(\(hash))"
+    }
+
     /// Simple filter initializer
     ///
     /// - Parameters:
@@ -254,9 +157,9 @@ public struct RapidFilterSimple: RapidFilterDescriptor {
     ///   - relation: Ralation to the `value`
     ///   - value: Reference value
     init(keyPath: String, relation: Relation, value: RapidComparable) {
-        self.keyPath = keyPath
-        self.relation = relation
-        self.value = value
+        self.expression = Expression.simple(keyPath: keyPath, relation: relation, value: value)
+        
+        self.filterHash = "\(keyPath)-\(relation.hash)-\(value)"
     }
     
     /// Simple filter initializer
@@ -265,68 +168,135 @@ public struct RapidFilterSimple: RapidFilterDescriptor {
     ///   - keyPath: Name of a document parameter
     ///   - relation: Ralation to the `value`
     init(keyPath: String, relation: Relation) {
-        self.keyPath = keyPath
-        self.relation = relation
-        self.value = nil
-    }
-    
-    public var filterHash: String {
-        return "\(keyPath)-\(relation.hash)-\(value ?? "null")"
-    }
-}
-
-/// Structure that describes compound subscription filter
-///
-/// Compound filter consists of one or more filters that are combined together with one of logical operators.
-/// Compound filter with the logical NOT operator must contain only one operand.
-public struct RapidFilterCompound: RapidFilterDescriptor {
-    
-    /// Type of logical operator
-    ///
-    /// - and: Logical AND
-    /// - or: Logical OR
-    /// - not: Logical NOT
-    public enum Operator {
-        case and
-        case or
-        case not
+        self.expression = Expression.simple(keyPath: keyPath, relation: relation, value: nil)
         
-        var hash: String {
-            switch self {
-            case .and:
-                return "and"
-                
-            case .or:
-                return "or"
-                
-            case .not:
-                return "not"
-            }
-        }
+        self.filterHash = "\(keyPath)-\(relation.hash)-null"
+    }
+
+    // MARK: Compound filters
+    
+    /// Negate filter
+    ///
+    /// - Parameter filter: Filter to be negated
+    /// - Returns: Negated filter
+    public static func not(_ filter: RapidFilter) -> RapidFilter {
+        return RapidFilter(compoundOperator: .not, operands: [filter])
     }
     
-    /// Logical operator
-    public let compoundOperator: Operator
-    /// Array of filters
-    public let operands: [RapidFilterDescriptor]
-    /// Subscription Hash
-    internal let storedHash: String
+    /// Combine filters with logical AND
+    ///
+    /// - Parameter operands: Filters to be combined
+    /// - Returns: Compound filter
+    public static func and(_ operands: [RapidFilter]) -> RapidFilter {
+        return RapidFilter(compoundOperator: .and, operands: operands)
+    }
     
-    /// Compound filter initializer
+    /// Combine filters with logical OR
+    ///
+    /// - Parameter operands: Filters to be combined
+    /// - Returns: Compound filter
+    public static func or(_ operands: [RapidFilter]) -> RapidFilter {
+        return RapidFilter(compoundOperator: .or, operands: operands)
+    }
+    
+    // MARK: Simple filters
+    
+    /// Create equality filter
     ///
     /// - Parameters:
-    ///   - compoundOperator: Logical operator
-    ///   - operands: Array of filters that are combined together with the `compoundOperator`
-    init(compoundOperator: Operator, operands: [RapidFilterDescriptor]) {
-        self.compoundOperator = compoundOperator
-        self.operands = operands
-        
-        let hash = operands.sorted(by: { $0.filterHash > $1.filterHash }).flatMap({ $0.filterHash }).joined(separator: "|")
-        self.storedHash = "\(compoundOperator.hash)(\(hash))"
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
+    /// - Returns: Filter for key path equal to value
+    public static func equal(keyPath: String, value: RapidComparable) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .equal, value: value)
     }
-
-    public var filterHash: String {
-        return storedHash
+    
+    /// Create equal to null filter
+    ///
+    /// - Parameter keyPath: Document property key path
+    /// - Returns: Filter for key path equal to null
+    public static func isNull(keyPath: String) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .equal)
+    }
+    
+    /// Create greater than filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
+    /// - Returns: Filter for key path greater than value
+    public static func greaterThan(keyPath: String, value: RapidComparable) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .greaterThan, value: value)
+    }
+    
+    /// Create greater than or equal filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
+    /// - Returns: Filter for key path greater than or equal to value
+    public static func greaterThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .greaterThanOrEqual, value: value)
+    }
+    
+    /// Create less than filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
+    /// - Returns: Filter for key path less than value
+    public static func lessThan(keyPath: String, value: RapidComparable) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .lessThan, value: value)
+    }
+    
+    /// Create less than or equal filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Document property key path
+    ///   - value: Property value
+    /// - Returns: Filter for key path less than or equal to value
+    public static func lessThanOrEqual(keyPath: String, value: RapidComparable) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .lessThanOrEqual, value: value)
+    }
+    
+    /// Create string contains filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Document property key path
+    ///   - subString: Property value substring
+    /// - Returns: Filter for string at key path contains a substring
+    public static func contains(keyPath: String, subString: String) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .contains, value: subString)
+    }
+    
+    /// Create string starts with filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Document property key path
+    ///   - prefix: Property value prefix
+    /// - Returns: Filter for string at key path starts with a prefix
+    public static func startsWith(keyPath: String, prefix: String) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .startsWith, value: prefix)
+    }
+    
+    /// Create string ends with filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Document property key path
+    ///   - suffix: Property value suffix
+    /// - Returns: Filter for string at key path ends with a suffix
+    public static func endsWith(keyPath: String, suffix: String) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .endsWith, value: suffix)
+    }
+    
+    /// Create array contains filter
+    ///
+    /// - Parameters:
+    ///   - keyPath: Document property key path
+    ///   - value: Value that should be present in a property array
+    /// - Returns: Filter for array at key path that contains a value
+    public static func arrayContains(keyPath: String, value: RapidComparable) -> RapidFilter {
+        return RapidFilter(keyPath: keyPath, relation: .arrayContains, value: value)
     }
 }
 
@@ -374,7 +344,7 @@ public struct RapidOrdering: RapidQuery {
 
 }
 
-/// Structure that contains subscription paging values
+/// Structure that describes subscription paging values
 public struct RapidPaging {
     
     /// Maximum value of `take`

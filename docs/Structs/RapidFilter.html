@@ -14,7 +14,7 @@
     <a title="RapidFilter Struct Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Rapid Docs</a> (82% documented)</p>
+        <p><a href="../index.html">Rapid Docs</a> (81% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -102,9 +102,6 @@
                 <a href="../Protocols/RapidFetchReference.html">RapidFetchReference</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Protocols/RapidMergeReference.html">RapidMergeReference</a>
               </li>
               <li class="nav-group-task">
@@ -155,16 +152,13 @@
                 <a href="../Structs/RapidFilter.html">RapidFilter</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RapidFilterCompound.html">RapidFilterCompound</a>
+                <a href="../Structs/RapidFilter/Expression.html">– Expression</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RapidFilterCompound/Operator.html">– Operator</a>
+                <a href="../Structs/RapidFilter/Operator.html">– Operator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RapidFilterSimple.html">RapidFilterSimple</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/RapidFilterSimple/Relation.html">– Relation</a>
+                <a href="../Structs/RapidFilter/Relation.html">– Relation</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/RapidOrdering.html">RapidOrdering</a>
@@ -245,10 +239,175 @@
 
                 </div>
               </div>
-            <p>Subscription filter</p>
+            <p>Structure that describes subscription filter</p>
 
           </section>
           <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid0A6FilterV10ExpressionO"></a>
+                    <a name="//apple_ref/swift/Enum/Expression" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV10ExpressionO">Expression</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Type of filter</p>
+
+<ul>
+<li>compound: Filter that combines one or more <code>Expression</code>s with a logical operator</li>
+<li>simple: Filter that describes simple relation between an attribute and a specified value</li>
+</ul>
+
+                        <a href="../Structs/RapidFilter/Expression.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">Expression</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid0A6FilterV8OperatorO"></a>
+                    <a name="//apple_ref/swift/Enum/Operator" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV8OperatorO">Operator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Type of logical operator</p>
+
+<ul>
+<li>and: Logical AND</li>
+<li>or: Logical OR</li>
+<li>not: Logical NOT</li>
+</ul>
+
+                        <a href="../Structs/RapidFilter/Operator.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Operator</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid0A6FilterV8RelationO"></a>
+                    <a name="//apple_ref/swift/Enum/Relation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV8RelationO">Relation</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Type of relation to a specified value</p>
+
+<ul>
+<li>equal: Property value is equal to a reference value</li>
+<li>greaterThanOrEqual: Property value is greater than or equal to a reference value</li>
+<li>lessThanOrEqual: Property value is less than or equal to a reference value</li>
+<li>greaterThan: Parameter value is greater than a reference value</li>
+<li>lessThan: Property value is less than a reference value</li>
+<li>contains: Property value contains a reference value as a substring</li>
+<li>startsWith: Property value starts with a reference value</li>
+<li>endsWith: Property value ends with a reference value</li>
+<li>arrayContains: Property array contains a reference value</li>
+</ul>
+
+                        <a href="../Structs/RapidFilter/Relation.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid0A6FilterV10expressionAC10ExpressionOv"></a>
+                    <a name="//apple_ref/swift/Property/expression" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV10expressionAC10ExpressionOv">expression</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Array of filters</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">expression</span><span class="p">:</span> <span class="kt"><a href="../Structs/RapidFilter/Expression.html">Expression</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Rapid0A6FilterV10filterHashSSv"></a>
+                    <a name="//apple_ref/swift/Property/filterHash" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV10filterHashSSv">filterHash</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Filter hash</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">filterHash</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
             <div class="task-group">
               <div class="task-name-container">
                 <a name="/Compound%20filters"></a>
@@ -261,9 +420,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV3notAA0aB10Descriptor_pAaE_pFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV3notA2CFZ"></a>
                     <a name="//apple_ref/swift/Method/not(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV3notAA0aB10Descriptor_pAaE_pFZ">not(_:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV3notA2CFZ">not(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -278,7 +437,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">not</span><span class="p">(</span><span class="n">_</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">not</span><span class="p">(</span><span class="n">_</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt">RapidFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -311,9 +470,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV3andAA0aB10Descriptor_pSayAaE_pGFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV3andACSayACGFZ"></a>
                     <a name="//apple_ref/swift/Method/and(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV3andAA0aB10Descriptor_pSayAaE_pGFZ">and(_:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV3andACSayACGFZ">and(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -328,7 +487,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">and</span><span class="p">(</span><span class="n">_</span> <span class="nv">operands</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">and</span><span class="p">(</span><span class="n">_</span> <span class="nv">operands</span><span class="p">:</span> <span class="p">[</span><span class="kt">RapidFilter</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -361,9 +520,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV2orAA0aB10Descriptor_pSayAaE_pGFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV2orACSayACGFZ"></a>
                     <a name="//apple_ref/swift/Method/or(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV2orAA0aB10Descriptor_pSayAaE_pGFZ">or(_:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV2orACSayACGFZ">or(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -378,7 +537,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">or</span><span class="p">(</span><span class="n">_</span> <span class="nv">operands</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">or</span><span class="p">(</span><span class="n">_</span> <span class="nv">operands</span><span class="p">:</span> <span class="p">[</span><span class="kt">RapidFilter</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -422,9 +581,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV5equalAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV5equalACSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
                     <a name="//apple_ref/swift/Method/equal(keyPath:value:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV5equalAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ">equal(keyPath:value:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV5equalACSS7keyPath_AA0A10Comparable_p5valuetFZ">equal(keyPath:value:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -439,7 +598,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">equal</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">equal</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -484,9 +643,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV6isNullAA0aB10Descriptor_pSS7keyPath_tFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV6isNullACSS7keyPath_tFZ"></a>
                     <a name="//apple_ref/swift/Method/isNull(keyPath:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV6isNullAA0aB10Descriptor_pSS7keyPath_tFZ">isNull(keyPath:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV6isNullACSS7keyPath_tFZ">isNull(keyPath:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -501,7 +660,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">isNull</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">isNull</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -534,9 +693,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV11greaterThanAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV11greaterThanACSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
                     <a name="//apple_ref/swift/Method/greaterThan(keyPath:value:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV11greaterThanAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ">greaterThan(keyPath:value:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV11greaterThanACSS7keyPath_AA0A10Comparable_p5valuetFZ">greaterThan(keyPath:value:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -551,7 +710,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">greaterThan</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">greaterThan</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -596,9 +755,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV18greaterThanOrEqualAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV18greaterThanOrEqualACSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
                     <a name="//apple_ref/swift/Method/greaterThanOrEqual(keyPath:value:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV18greaterThanOrEqualAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ">greaterThanOrEqual(keyPath:value:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV18greaterThanOrEqualACSS7keyPath_AA0A10Comparable_p5valuetFZ">greaterThanOrEqual(keyPath:value:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -613,7 +772,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">greaterThanOrEqual</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">greaterThanOrEqual</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -658,9 +817,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV8lessThanAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV8lessThanACSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
                     <a name="//apple_ref/swift/Method/lessThan(keyPath:value:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV8lessThanAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ">lessThan(keyPath:value:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV8lessThanACSS7keyPath_AA0A10Comparable_p5valuetFZ">lessThan(keyPath:value:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -675,7 +834,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">lessThan</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">lessThan</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -720,9 +879,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV15lessThanOrEqualAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV15lessThanOrEqualACSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
                     <a name="//apple_ref/swift/Method/lessThanOrEqual(keyPath:value:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV15lessThanOrEqualAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ">lessThanOrEqual(keyPath:value:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV15lessThanOrEqualACSS7keyPath_AA0A10Comparable_p5valuetFZ">lessThanOrEqual(keyPath:value:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -737,7 +896,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">lessThanOrEqual</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">lessThanOrEqual</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -782,9 +941,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV8containsAA0aB10Descriptor_pSS7keyPath_SS9subStringtFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV8containsACSS7keyPath_SS9subStringtFZ"></a>
                     <a name="//apple_ref/swift/Method/contains(keyPath:subString:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV8containsAA0aB10Descriptor_pSS7keyPath_SS9subStringtFZ">contains(keyPath:subString:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV8containsACSS7keyPath_SS9subStringtFZ">contains(keyPath:subString:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -799,7 +958,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">contains</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">subString</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">contains</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">subString</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -844,9 +1003,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV10startsWithAA0aB10Descriptor_pSS7keyPath_SS6prefixtFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV10startsWithACSS7keyPath_SS6prefixtFZ"></a>
                     <a name="//apple_ref/swift/Method/startsWith(keyPath:prefix:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV10startsWithAA0aB10Descriptor_pSS7keyPath_SS6prefixtFZ">startsWith(keyPath:prefix:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV10startsWithACSS7keyPath_SS6prefixtFZ">startsWith(keyPath:prefix:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -861,7 +1020,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">startsWith</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">prefix</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">startsWith</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">prefix</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -906,9 +1065,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV8endsWithAA0aB10Descriptor_pSS7keyPath_SS6suffixtFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV8endsWithACSS7keyPath_SS6suffixtFZ"></a>
                     <a name="//apple_ref/swift/Method/endsWith(keyPath:suffix:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV8endsWithAA0aB10Descriptor_pSS7keyPath_SS6suffixtFZ">endsWith(keyPath:suffix:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV8endsWithACSS7keyPath_SS6suffixtFZ">endsWith(keyPath:suffix:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -923,7 +1082,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">endsWith</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">suffix</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">endsWith</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">suffix</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -968,9 +1127,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A6FilterV13arrayContainsAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
+                    <a name="/s:5Rapid0A6FilterV13arrayContainsACSS7keyPath_AA0A10Comparable_p5valuetFZ"></a>
                     <a name="//apple_ref/swift/Method/arrayContains(keyPath:value:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A6FilterV13arrayContainsAA0aB10Descriptor_pSS7keyPath_AA0A10Comparable_p5valuetFZ">arrayContains(keyPath:value:)</a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV13arrayContainsACSS7keyPath_AA0A10Comparable_p5valuetFZ">arrayContains(keyPath:value:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -985,7 +1144,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">arrayContains</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">arrayContains</span><span class="p">(</span><span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:5Rapid0A10ComparableP">RapidComparable</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RapidFilter</span></code></pre>
 
                         </div>
                       </div>
@@ -1032,7 +1191,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="https://www.rapidrealtime.com" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-16)</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapidrealtime.com" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-17)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

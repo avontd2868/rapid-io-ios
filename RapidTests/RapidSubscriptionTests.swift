@@ -178,7 +178,7 @@ extension RapidTests {
             return
         }
         
-        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(keyPath: RapidFilter.docIdKey, relation: .equal, value: "1")).subscribe(block: { _ in }) as? RapidCollectionSub else {
+        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilter(keyPath: RapidFilter.docIdKey, relation: .equal, value: "1")).subscribe(block: { _ in }) as? RapidCollectionSub else {
             XCTFail("Subscription of wrong type")
             return
         }

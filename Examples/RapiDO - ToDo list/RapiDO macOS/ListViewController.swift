@@ -24,7 +24,7 @@ class ListViewController: NSViewController {
     
     fileprivate var subscription: RapidSubscription?
     fileprivate var ordering: RapidOrdering?
-    fileprivate var filter: RapidFilterDescriptor?
+    fileprivate var filter: RapidFilter?
     
     lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -60,7 +60,7 @@ class ListViewController: NSViewController {
     }
 
     @IBAction func filter(_ sender: AnyObject) {
-        var operands = [RapidFilterDescriptor]()
+        var operands = [RapidFilter]()
         
         if let item = completionPopUp.selectedItem {
             let index = completionPopUp.index(of: item)
@@ -74,7 +74,7 @@ class ListViewController: NSViewController {
         }
         
         // Create filter for selected tags
-        var tags = [RapidFilterDescriptor]()
+        var tags = [RapidFilter]()
         if homeCheckBox.state.rawValue > 0 {
             tags.append(RapidFilter.arrayContains(keyPath: Task.tagsAttributeName, value: Tag.home.rawValue))
         }

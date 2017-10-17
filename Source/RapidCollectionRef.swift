@@ -26,7 +26,7 @@ public struct RapidCollectionRef: RapidInstanceWithSocketManager {
     public let collectionName: String
     
     /// Filters assigned to the collection instance
-    public internal(set) var subscriptionFilter: RapidFilterDescriptor?
+    public internal(set) var subscriptionFilter: RapidFilter?
     
     /// Order descriptors assigned to the collection instance
     public internal(set) var subscriptionOrdering: [RapidOrdering]?
@@ -34,7 +34,7 @@ public struct RapidCollectionRef: RapidInstanceWithSocketManager {
     /// Pagination information assigned to the collection instance
     public internal(set) var subscriptionPaging: RapidPaging?
 
-    init(id: String, handler: RapidHandler!, filter: RapidFilterDescriptor? = nil, ordering: [RapidOrdering]? = nil, paging: RapidPaging? = nil) {
+    init(id: String, handler: RapidHandler!, filter: RapidFilter? = nil, ordering: [RapidOrdering]? = nil, paging: RapidPaging? = nil) {
         self.collectionName = id
         self.handler = handler
         self.subscriptionFilter = filter
@@ -63,7 +63,7 @@ public struct RapidCollectionRef: RapidInstanceWithSocketManager {
     ///
     /// - Parameter filter: Filter object
     /// - Returns: The collection with the filter assigned
-    public func filter(by filter: RapidFilterDescriptor) -> RapidCollectionRef {
+    public func filter(by filter: RapidFilter) -> RapidCollectionRef {
         var collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.filtered(by: filter)
         return collection
@@ -74,9 +74,9 @@ public struct RapidCollectionRef: RapidInstanceWithSocketManager {
     /// When the collection already contains a filter the new filter is combined with the original one with logical AND
     ///
     /// - Parameter filter: Filter object
-    public mutating func filtered(by filter: RapidFilterDescriptor) {
+    public mutating func filtered(by filter: RapidFilter) {
         if let previousFilter = self.subscriptionFilter {
-            let compoundFilter = RapidFilterCompound(compoundOperator: .and, operands: [previousFilter, filter])
+            let compoundFilter = RapidFilter(compoundOperator: .and, operands: [previousFilter, filter])
             self.subscriptionFilter = compoundFilter
         }
         else {

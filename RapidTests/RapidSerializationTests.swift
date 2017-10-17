@@ -87,7 +87,7 @@ extension RapidTests {
     func testInvalidSimpleFilter() {
         let sub = RapidCollectionSub(
             collectionID: testCollectionName,
-            filter: RapidFilterSimple(keyPath: "name", relation: .greaterThanOrEqual),
+            filter: RapidFilter(keyPath: "name", relation: .greaterThanOrEqual),
             ordering: nil,
             paging: nil,
             handler: nil,
@@ -286,7 +286,7 @@ extension RapidTests {
     
     func testSubscriptionFilter() {
         let collection = self.rapid.collection(named: "users")
-            .filter(by: RapidFilterSimple(keyPath: "text", relation: .equal, value: "texty text"))
+            .filter(by: RapidFilter(keyPath: "text", relation: .equal, value: "texty text"))
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         

@@ -19,7 +19,7 @@ class ListViewController: UIViewController {
     
     fileprivate var subscription: RapidSubscription?
     fileprivate var ordering = RapidOrdering(keyPath: Task.createdAttributeName, ordering: .descending)
-    fileprivate var filter: RapidFilterDescriptor?
+    fileprivate var filter: RapidFilter?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -202,7 +202,7 @@ extension ListViewController: FilterViewControllerDelegate {
         controller.dismiss(animated: true, completion: nil)
     }
     
-    func filterViewControllerDidFinish(_ controller: FilterViewController, withFilter filter: RapidFilterDescriptor?) {
+    func filterViewControllerDidFinish(_ controller: FilterViewController, withFilter filter: RapidFilter?) {
         self.filter = filter
         subscribe()
         controller.dismiss(animated: true, completion: nil)

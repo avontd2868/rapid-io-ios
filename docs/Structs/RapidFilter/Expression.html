@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Relation Enum Reference</title>
+    <title>Expression Enum Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,18 +10,18 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/Relation" class="dashAnchor"></a>
-    <a title="Relation Enum Reference"></a>
+    <a name="//apple_ref/swift/Enum/Expression" class="dashAnchor"></a>
+    <a title="Expression Enum Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../../index.html">Rapid Docs</a> (82% documented)</p>
+        <p><a href="../../index.html">Rapid Docs</a> (81% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
         <a href="../../index.html">Rapid Reference</a>
         <img id="carat" src="../../img/carat.png" />
-        Relation Enum Reference
+        Expression Enum Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -102,9 +102,6 @@
                 <a href="../../Protocols/RapidFetchReference.html">RapidFetchReference</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Protocols/RapidFilterDescriptor.html">RapidFilterDescriptor</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../../Protocols/RapidMergeReference.html">RapidMergeReference</a>
               </li>
               <li class="nav-group-task">
@@ -155,16 +152,13 @@
                 <a href="../../Structs/RapidFilter.html">RapidFilter</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Structs/RapidFilterCompound.html">RapidFilterCompound</a>
+                <a href="../../Structs/RapidFilter/Expression.html">– Expression</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Structs/RapidFilterCompound/Operator.html">– Operator</a>
+                <a href="../../Structs/RapidFilter/Operator.html">– Operator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Structs/RapidFilterSimple.html">RapidFilterSimple</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Structs/RapidFilterSimple/Relation.html">– Relation</a>
+                <a href="../../Structs/RapidFilter/Relation.html">– Relation</a>
               </li>
               <li class="nav-group-task">
                 <a href="../../Structs/RapidOrdering.html">RapidOrdering</a>
@@ -238,25 +232,18 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Relation</h1>
+            <h1>Expression</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">Expression</span></code></pre>
 
                 </div>
               </div>
-            <p>Type of relation to a specified value</p>
+            <p>Type of filter</p>
 
 <ul>
-<li>equal: Property value is equal to a reference value</li>
-<li>greaterThanOrEqual: Property value is greater than or equal to a reference value</li>
-<li>lessThanOrEqual: Property value is less than or equal to a reference value</li>
-<li>greaterThan: Parameter value is greater than a reference value</li>
-<li>lessThan: Property value is less than a reference value</li>
-<li>contains: Property value contains a reference value as a substring</li>
-<li>startsWith: Property value starts with a reference value</li>
-<li>endsWith: Property value ends with a reference value</li>
-<li>arrayContains: Property array contains a reference value</li>
+<li>compound: Filter that combines one or more <code>Expression</code>s with a logical operator</li>
+<li>simple: Filter that describes simple relation between an attribute and a specified value</li>
 </ul>
 
           </section>
@@ -266,9 +253,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO5equalA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/equal" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO5equalA2EmF">equal</a>
+                    <a name="/s:5Rapid0A6FilterV10ExpressionO8compoundAeC8OperatorO8operator_SayAEG8operandstcAEmF"></a>
+                    <a name="//apple_ref/swift/Element/compound" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV10ExpressionO8compoundAeC8OperatorO8operator_SayAEG8operandstcAEmF">compound</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -283,7 +270,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">Expression</span></code></pre>
 
                         </div>
                       </div>
@@ -297,9 +284,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO18greaterThanOrEqualA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/greaterThanOrEqual" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO18greaterThanOrEqualA2EmF">greaterThanOrEqual</a>
+                    <a name="/s:5Rapid0A6FilterV10ExpressionO6simpleAESS7keyPath_AC8RelationO8relationypSg5valuetcAEmF"></a>
+                    <a name="//apple_ref/swift/Element/simple" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Rapid0A6FilterV10ExpressionO6simpleAESS7keyPath_AC8RelationO8relationypSg5valuetcAEmF">simple</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -314,224 +301,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO15lessThanOrEqualA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/lessThanOrEqual" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO15lessThanOrEqualA2EmF">lessThanOrEqual</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO11greaterThanA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/greaterThan" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO11greaterThanA2EmF">greaterThan</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO8lessThanA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/lessThan" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO8lessThanA2EmF">lessThan</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO8containsA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/contains" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO8containsA2EmF">contains</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO10startsWithA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/startsWith" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO10startsWithA2EmF">startsWith</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO8endsWithA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/endsWith" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO8endsWithA2EmF">endsWith</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Rapid0A12FilterSimpleV8RelationO13arrayContainsA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/arrayContains" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Rapid0A12FilterSimpleV8RelationO13arrayContainsA2EmF">arrayContains</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relation</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">indirect</span> <span class="kd">enum</span> <span class="kt">Expression</span></code></pre>
 
                         </div>
                       </div>
@@ -543,7 +313,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="https://www.rapidrealtime.com" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-16)</p>
+          <p>&copy; 2017 <a class="link" href="https://www.rapidrealtime.com" target="_blank" rel="external">Jan Schwarz</a>. All rights reserved. (Last updated: 2017-10-17)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

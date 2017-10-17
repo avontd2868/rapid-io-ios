@@ -17,7 +17,7 @@ class RapidCollectionSub {
     let collectionID: String
     
     /// Subscription filter
-    let filter: RapidFilterDescriptor?
+    let filter: RapidFilter?
     
     /// Subscription ordering
     let ordering: [RapidOrdering]?
@@ -43,7 +43,7 @@ class RapidCollectionSub {
     ///   - paging: Subscription paging
     ///   - handler: Subscription handler
     ///   - handlerWithChanges: Subscription handler with lists of changes
-    init(collectionID: String, filter: RapidFilterDescriptor?, ordering: [RapidOrdering]?, paging: RapidPaging?, handler: RapidCollectionSubscriptionHandler?, handlerWithChanges: RapidCollectionSubscriptionHandlerWithChanges?) {
+    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, handler: RapidCollectionSubscriptionHandler?, handlerWithChanges: RapidCollectionSubscriptionHandlerWithChanges?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
@@ -144,7 +144,7 @@ class RapidDocumentSub {
         self.documentID = documentID
         self.handler = handler
         
-        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
+        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilter(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
     }
 }
 

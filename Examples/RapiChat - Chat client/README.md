@@ -10,7 +10,7 @@
 ## Getting started
 
 - Create your account at Rapid [website](https://www.rapidrealtime.com/signup)
-- Create a chat demo project on your [dashboard](https://dashboard.rapidrealtime.com)
+- Create a chat [demo project](https://www.rapidrealtime.com/demo)
 - Clone or download [Rapid SDK](https://github.com/rapid-io/rapid-io-ios)
 - Go to `Examples/RapidChat` folder and open `RapiChat.xcodeproj` project in Xcode
 - Replace `<YOUR API KEY>` string either in `AppDelegate` class for iOS or in `ChannelsViewController` class for macOS with an API key from your chat demo project from your [dashboard](https://dashboard.rapidrealtime.com)

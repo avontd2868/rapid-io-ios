@@ -109,7 +109,7 @@ public enum RapidError: Error {
     /// - invalidLimit: Limit is greater than `RapidPaging.takeLimit`
     public enum InvalidDataReason {
         case serializationFailure(message: String?)
-        case invalidFilter(filter: RapidFilterDescriptor)
+        case invalidFilter(filter: RapidFilter.Expression)
         case invalidDocument(document: [AnyHashable: Any])
         case invalidIdentifierFormat(identifier: Any?)
         case invalidKeyPath(keyPath: String)

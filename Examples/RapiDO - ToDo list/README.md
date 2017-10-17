@@ -11,8 +11,8 @@
 ## Getting started
 
 - Create your account at Rapid [website](https://www.rapidrealtime.com/demo)
-- Create a todo demo project on your [dashboard](https://dashboard.rapidrealtime.com)
-- Clone or download [rapidrealtime.com SDK](https://github.com/rapid-io/rapid-io-ios)
+- Create a todo [demo project](https://www.rapidrealtime.com/demo)
+- Clone or download [Rapid SDK](https://github.com/rapid-io/rapid-io-ios)
 - Go to `Examples/RapiDO` folder and open `RapiDO.xcodeproj` project in Xcode
 - Replace `<YOUR API KEY>` string either in `AppDelegate` class for iOS and tvOS or in `ListViewController` class for macOS with an API key from your todo demo project from your [dashboard](https://dashboard.rapidrealtime.com)
 

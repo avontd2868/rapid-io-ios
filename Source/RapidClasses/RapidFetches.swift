@@ -15,7 +15,7 @@ class RapidCollectionFetch {
     let collectionID: String
     
     /// Fetch filter
-    let filter: RapidFilterDescriptor?
+    let filter: RapidFilter?
     
     /// Fetch ordering
     let ordering: [RapidOrdering]?
@@ -48,7 +48,7 @@ class RapidCollectionFetch {
     ///   - paging: Subscription paging
     ///   - cache: Cache handler
     ///   - completion: Completion handler
-    init(collectionID: String, filter: RapidFilterDescriptor?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, completion: RapidCollectionFetchCompletion?) {
+    init(collectionID: String, filter: RapidFilter?, ordering: [RapidOrdering]?, paging: RapidPaging?, cache: RapidCacheHandler?, completion: RapidCollectionFetchCompletion?) {
         self.collectionID = collectionID
         self.filter = filter
         self.ordering = ordering
@@ -142,7 +142,7 @@ class RapidDocumentFetch {
     ///   - cache: Cache handler
     ///   - completion: Completion handler
     init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDocumentFetchCompletion?) {
-        let filter = RapidFilterSimple(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID)
+        let filter = RapidFilter(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID)
         self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, cache: nil, completion: nil)
         
         self.documentID = documentID
