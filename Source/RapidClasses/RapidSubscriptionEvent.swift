@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 22/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation

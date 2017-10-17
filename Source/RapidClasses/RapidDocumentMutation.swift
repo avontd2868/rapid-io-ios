@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 28/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -15,13 +15,13 @@ struct RapidEmptyWriteRequest: RapidWriteRequest {
 // MARK: Document mutation
 
 /// Document mutation request
-class RapidDocumentMutation: NSObject, RapidMutationRequest {
+class RapidDocumentMutation: RapidMutationRequest {
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
     
     /// Document JSON
-    let value: [AnyHashable: Any]
+    let value: [String: Any]
     
     /// Collection ID
     let collectionID: String
@@ -52,7 +52,7 @@ class RapidDocumentMutation: NSObject, RapidMutationRequest {
     ///   - documentID: Document ID
     ///   - value: Document JSON
     ///   - completion: Mutation completion
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], cache: RapidCacheHandler?, completion: RapidDocumentMutationCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], cache: RapidCacheHandler?, completion: RapidDocumentMutationCompletion?) {
         self.value = value
         self.collectionID = collectionID
         self.documentID = documentID
@@ -112,7 +112,7 @@ extension RapidDocumentMutation: RapidWriteRequest {
 
 // MARK: On-connect mutation
 
-class RapidDocumentOnConnectMutation: NSObject {
+class RapidDocumentOnConnectMutation {
     
     let mutation: RapidDocumentMutation!
     
@@ -121,7 +121,7 @@ class RapidDocumentOnConnectMutation: NSObject {
     internal(set) var actionID: String?
     internal(set) weak var delegate: RapidOnConnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnConnectActionCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], completion: RapidDocumentRegisterOnConnectActionCompletion?) {
         self.completion = completion
         
         self.mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)
@@ -183,7 +183,7 @@ extension RapidDocumentOnConnectMutation: RapidWriteRequest {
 
 // MARK: On-disconnect mutation
 
-class RapidDocumentOnDisconnectMutation: NSObject {
+class RapidDocumentOnDisconnectMutation {
     
     let mutation: RapidDocumentMutation!
     
@@ -192,7 +192,7 @@ class RapidDocumentOnDisconnectMutation: NSObject {
     internal(set) var actionID: String?
     internal(set) weak var delegate: RapidOnDisconnectActionDelegate?
     
-    init(collectionID: String, documentID: String, value: [AnyHashable: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
+    init(collectionID: String, documentID: String, value: [String: Any], completion: RapidDocumentRegisterOnDisonnectActionCompletion?) {
         self.completion = completion
         
         self.mutation = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: nil, completion: nil)

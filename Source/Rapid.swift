@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 14/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -37,7 +37,20 @@ public enum RapidResult<Value> {
     case failure(error: RapidError)
 }
 
-/// Class representing a connection to Rapid.io database
+/// Logging level
+///
+/// - off: Logging is completely turned off
+/// - critical: Show only critical messages e.g. reason of Rapid SDK intentional crash
+/// - info: Show info about what is going on in Rapid SDK
+/// - debug: Show info about what is going on in Rapid SDK along with I/O data description
+public enum RapidLogLevel: Int {
+    case off
+    case critical
+    case info
+    case debug
+}
+
+/// Class representing a connection to Rapid database
 open class Rapid: NSObject {
     
     /// All instances which have been initialized
@@ -59,10 +72,10 @@ open class Rapid: NSObject {
     
     /// Placeholder for a server timestamp
     ///
-    /// When Rapid.io tries to write a json to a database it replaces every occurance of `serverTimestamp` with Unix timestamp
+    /// When Rapid tries to write a json to a database it replaces every occurance of `serverTimestamp` with Unix timestamp
     public static let serverTimestamp = "__TIMESTAMP__"
     
-    /// API key that serves to connect to Rapid.io database
+    /// API key that serves to connect to Rapid database
     public let apiKey: String
     
     /// Optional timeout in seconds for requests. If `timeout` is nil requests never end up with timeout error
@@ -87,6 +100,16 @@ open class Rapid: NSObject {
         }
     }
     
+    /// Default `JSONEncoder` used to encode objects in mutations and merges
+    public var encoder: RapidJSONEncoder {
+        return handler.encoder
+    }
+    
+    /// Default `JSONDecoder` used to decode JSONs in subscriptions and fetches
+    public var decoder: RapidJSONDecoder {
+        return handler.decoder
+    }
+
     /// Current connection state of Rapid instance
     public var connectionState: RapidConnectionState {
         return handler.state
@@ -170,27 +193,27 @@ open class Rapid: NSObject {
         handler.socketManager.deauthorize(deauthRequest: request)
     }
     
-    /// Create a new object representing Rapid.io collection
+    /// Create a new object representing Rapid collection
     ///
     /// - parameter named: Collection name
     ///
-    /// - returns: New object representing Rapid.io collection
+    /// - returns: New object representing Rapid collection
     open func collection(named name: String) -> RapidCollectionRef {
         return RapidCollectionRef(id: name, handler: handler)
     }
     
-    /// Creates a new object representing Rapid.io channel
+    /// Creates a new object representing Rapid channel
     ///
     /// - Parameter name: Channel name
-    /// - Returns: New object representing Rapid.io channel
+    /// - Returns: New object representing Rapid channel
     open func channel(named name: String) -> RapidChannelRef {
         return RapidChannelRef(name: name, handler: handler)
     }
     
-    /// Creates a new object representing multiple Rapid.io channels identified by a name prefix
+    /// Creates a new object representing multiple Rapid channels identified by a name prefix
     ///
     /// - Parameter prefix: Channel name prefix
-    /// - Returns: New object representing multiple Rapid.io channels
+    /// - Returns: New object representing multiple Rapid channels
     open func channels(nameStartsWith prefix: String) -> RapidChannelsRef {
         return RapidChannelsRef(prefix: prefix, handler: handler)
     }
@@ -252,7 +275,7 @@ public extension Rapid {
     }
     
     /// Log level
-    class var logLevel: RapidLogger.Level {
+    class var logLevel: RapidLogLevel {
         get {
             return RapidLogger.level
         }
@@ -289,6 +312,18 @@ public extension Rapid {
         }
     }
     
+    /// Default `JSONEncoder` used to encode objects in mutations and merges
+    class var encoder: RapidJSONEncoder {
+        let instance = try! shared()
+        return instance.encoder
+    }
+    
+    /// Default `JSONDecoder` used to decode JSONs in subscriptions and fetches
+    class var decoder: RapidJSONDecoder {
+        let instance = try! shared()
+        return instance.decoder
+    }
+
     /// Current connection state of shared Rapid instance
     class var connectionState: RapidConnectionState {
         return try! shared().connectionState
@@ -361,27 +396,27 @@ public extension Rapid {
         _ = try! shared()
     }
     
-    /// Create a new object representing Rapid.io collection
+    /// Create a new object representing Rapid collection
     ///
     /// - parameter named: Collection name
     ///
-    /// - returns: New object representing Rapid.io collection
+    /// - returns: New object representing Rapid collection
     class func collection(named: String) -> RapidCollectionRef {
         return try! shared().collection(named: named)
     }
     
-    /// Create a new object representing Rapid.io channel
+    /// Create a new object representing Rapid channel
     ///
     /// - Parameter name: Channel name
-    /// - Returns: New object representing Rapid.io channel
+    /// - Returns: New object representing Rapid channel
     class func channel(named name: String) -> RapidChannelRef {
         return try! shared().channel(named: name)
     }
     
-    /// Creates a new object representing multiple Rapid.io channels identified by a name prefix
+    /// Creates a new object representing multiple Rapid channels identified by a name prefix
     ///
     /// - Parameter prefix: Channel name prefix
-    /// - Returns: New object representing multiple Rapid.io channels
+    /// - Returns: New object representing multiple Rapid channels
     class func channels(nameStartsWith prefix: String) -> RapidChannelsRef {
         return try! shared().channels(nameStartsWith: prefix)
     }

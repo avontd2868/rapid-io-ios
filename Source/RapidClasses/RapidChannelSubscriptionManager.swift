@@ -3,13 +3,13 @@
 //  Rapid
 //
 //  Created by Jan on 07/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
 
 /// Class that handles all channel subscriptions which listen to the same channel
-class RapidChanSubManager: NSObject, RapidSubscriptionManager {
+class RapidChanSubManager: RapidSubscriptionManager {
     
     /// Hash that identifies subscriptions handled by the class
     ///
@@ -39,8 +39,6 @@ class RapidChanSubManager: NSObject, RapidSubscriptionManager {
     init(withSubscriptionID subscriptionID: String, subscription: RapidChanSubInstance, delegate: RapidSubscriptionManagerDelegate?) {
         self.subscriptionID = subscriptionID
         self.delegate = delegate
-        
-        super.init()
         
         state = .registering
         appendSubscription(subscription)

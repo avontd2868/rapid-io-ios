@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 17/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -82,8 +82,6 @@ protocol RapidSubscriptionManagerDelegate: class {
     
     /// Cache handler
     var cacheHandler: RapidCacheHandler? { get }
-    
-    var authorization: RapidAuthorization? { get }
     
     /// Method for unregistering a subscription
     ///

@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 13/04/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import XCTest
@@ -186,7 +186,7 @@ extension RapidTests {
         
             self.rapid.collection(named: self.testCollectionName)
                 .order(by: RapidOrdering(keyPath: "name", ordering: .ascending))
-                .subscribe(block: { result in
+                .fetch(completion: { result in
                     guard case .success(let documents) = result else {
                         XCTFail("Error")
                         promise.fulfill()

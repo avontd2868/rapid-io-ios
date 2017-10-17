@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 16/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -587,10 +587,6 @@ internal extension RapidSocketManager {
 
 // MARK: Subscription handler delegate
 extension RapidSocketManager: RapidSubscriptionManagerDelegate {
-    
-    var authorization: RapidAuthorization? {
-        return auth
-    }
     
     func unsubscribe(handler: RapidUnsubscriptionManager) {
         websocketQueue.async { [weak self] in

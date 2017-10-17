@@ -3,7 +3,7 @@
 //  ExampleApp
 //
 //  Created by Jan on 08/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import UIKit
@@ -77,7 +77,7 @@ class TaskViewController: UIViewController {
         let tags = tagsTableView.selectedTags.map({$0.rawValue})
         
         // Create task dictionary
-        let task: [AnyHashable: Any] = [
+        let task: [String: Any] = [
             Task.titleAttributeName: title,
             Task.descriptionAttributeName: description,
             Task.createdAttributeName: self.task?.createdAt.isoString ?? Date().isoString,

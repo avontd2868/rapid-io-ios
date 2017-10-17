@@ -3,13 +3,13 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 17/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
 
 /// Collection fetch object
-class RapidCollectionFetch: NSObject {
+class RapidCollectionFetch {
     
     /// Collection ID
     let collectionID: String
@@ -72,7 +72,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
     
     /// Subscription identifier
     var subscriptionHash: String {
-        return "collection#\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
+        return "collection#\(collectionID)#\(filter?.filterHash ?? "")#\(ordering?.map({ $0.orderingHash }).joined(separator: "|") ?? "")#\(paging?.pagingHash ?? "")"
     }
 
     func receivedData(_ documents: [RapidDocument]) {
@@ -103,7 +103,7 @@ extension RapidCollectionFetch: RapidFetchInstance {
 // MARK: Document fetch
 
 /// Document fetch object
-class RapidDocumentFetch: NSObject {
+class RapidDocumentFetch {
     
     /// Document identifier
     let documentID: String
@@ -142,7 +142,7 @@ class RapidDocumentFetch: NSObject {
     ///   - cache: Cache handler
     ///   - completion: Completion handler
     init(collectionID: String, documentID: String, cache: RapidCacheHandler?, completion: RapidDocumentFetchCompletion?) {
-        let filter = RapidFilterSimple(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID)
+        let filter = RapidFilter(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID)
         self.collectionFetch = RapidCollectionFetch(collectionID: collectionID, filter: filter, ordering: nil, paging: nil, cache: nil, completion: nil)
         
         self.documentID = documentID

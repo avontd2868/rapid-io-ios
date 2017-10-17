@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 14/07/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import Foundation
 // MARK: Document delete
 
 /// Document merge request
-class RapidDocumentDelete: NSObject, RapidMutationRequest {
+class RapidDocumentDelete: RapidMutationRequest {
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false
@@ -97,7 +97,7 @@ extension RapidDocumentDelete: RapidWriteRequest {
 
 // MARK: On-connect merge
 
-class RapidDocumentOnConnectDelete: NSObject {
+class RapidDocumentOnConnectDelete {
     
     let delete: RapidDocumentDelete!
     
@@ -168,7 +168,7 @@ extension RapidDocumentOnConnectDelete: RapidWriteRequest {
 
 // MARK: On-disconnect delete
 
-class RapidDocumentOnDisconnectDelete: NSObject {
+class RapidDocumentOnDisconnectDelete {
     
     let delete: RapidDocumentDelete!
     

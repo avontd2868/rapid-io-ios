@@ -3,7 +3,7 @@
 //  RapiChat
 //
 //  Created by Jan on 29/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Cocoa
@@ -54,7 +54,7 @@ class MessageCellView: NSTableCellView {
         senderLabel.textColor = message.isMyMessage ? NSColor.appRed : .appBlue
         senderLabel.stringValue = message.sender
 
-        messageTextLabel.stringValue = message.text
+        messageTextLabel.stringValue = message.text ?? ""
         
         updateDateFormatterStyleWithDate(message.sentDate)
         timeLabel.stringValue = dateFormatter.string(from: message.sentDate)

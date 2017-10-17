@@ -3,7 +3,7 @@
 //  RapiChat
 //
 //  Created by Jan on 28/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import UIKit

@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 07/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import Foundation
 // MARK: Unsubscription manager
 
 // Wrapper for `RapidSubscriptionManager` that handles unsubscription
-class RapidUnsubscriptionManager: NSObject {
+class RapidUnsubscriptionManager {
     
     let shouldSendOnReconnect = false
     

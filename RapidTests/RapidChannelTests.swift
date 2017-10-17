@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 07/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import XCTest
@@ -211,4 +211,24 @@ extension RapidTests {
         
         waitForExpectations(timeout: 20, handler: nil)
     }
+    
+    func testTooLargeChannelMessage() {
+        let promise = expectation(description: "Publish to channel")
+        
+        let longString = Array(0...3000).map({ String($0) }).reduce("", { $0 + $1 })
+        
+        self.rapid.channel(named: self.testChannelName).publish(message: ["message": longString]) { result in
+            if case .failure(let error) = result, case .invalidRequest(let message) = error {
+                XCTAssertNotNil(message, "No message")
+            }
+            else {
+                XCTFail("Succeeded")
+            }
+            
+            promise.fulfill()
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
 }

@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 28/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import Foundation
 // MARK: Collection subscription
 
 /// Collection subscription object
-class RapidCollectionSub: NSObject {
+class RapidCollectionSub {
     
     /// Collection ID
     let collectionID: String
@@ -66,7 +66,7 @@ extension RapidCollectionSub: RapidColSubInstance {
     
     /// Subscription identifier
     var subscriptionHash: String {
-        return "collection#\(collectionID)#\(filter?.subscriptionHash ?? "")#\(ordering?.map({ $0.subscriptionHash }).joined(separator: "|") ?? "")#\(paging?.subscriptionHash ?? "")"
+        return "collection#\(collectionID)#\(filter?.filterHash ?? "")#\(ordering?.map({ $0.orderingHash }).joined(separator: "|") ?? "")#\(paging?.pagingHash ?? "")"
     }
     
     var subscriptionTake: Int? {
@@ -116,7 +116,7 @@ extension RapidCollectionSub: RapidSubscription {
 /// Document subscription object
 ///
 /// The class is a wrapper for `RapidCollectionSub`. Internally, it creates collection subscription filtered by `RapidFilterSimple.documentIdKey` = `documentID`
-class RapidDocumentSub: NSObject {
+class RapidDocumentSub {
     
     /// Collection ID
     let collectionID: String
@@ -144,9 +144,7 @@ class RapidDocumentSub: NSObject {
         self.documentID = documentID
         self.handler = handler
         
-        super.init()
-        
-        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
+        self.subscription = RapidCollectionSub(collectionID: collectionID, filter: RapidFilter(keyPath: RapidFilter.docIdKey, relation: .equal, value: documentID), ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
     }
 }
 

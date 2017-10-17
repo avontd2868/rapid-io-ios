@@ -3,7 +3,7 @@
 //  ExampleMacOSApp
 //
 //  Created by Jan on 15/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Cocoa
@@ -148,8 +148,8 @@ fileprivate extension ListViewController {
         tasks.removeAll()
         tableView.reloadData()
         
-        // Get Rapid.io collection reference with a given name
-        let collection = Rapid.collection(named: Constants.collectionName)
+        // Get Rapid collection reference with a given name
+        var collection = Rapid.collection(named: Constants.collectionName)
         
         // If a filter is set, modify the collection reference with it
         if let filter = filter {

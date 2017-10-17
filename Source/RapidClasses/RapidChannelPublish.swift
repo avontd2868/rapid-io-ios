@@ -3,13 +3,13 @@
 //  Rapid
 //
 //  Created by Jan on 07/06/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
 
 /// Request for publishing message to a channel
-class RapidChannelPublish: NSObject {
+class RapidChannelPublish {
     
     /// Request should timeout only if `Rapid.timeout` is set
     let alwaysTimeout = false

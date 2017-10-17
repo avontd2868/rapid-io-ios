@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 17/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -156,7 +156,7 @@ class RapidSerialization {
         }
         
         json[Fetch.CollectionID.name] = try RapidValidator.validate(identifier: fetch.collectionID)
-        json[Fetch.Filter.name] = try serialize(filter: fetch.filter)
+        json[Fetch.Filter.name] = try serialize(filter: fetch.filter?.expression)
         json[Fetch.Ordering.name] = try serialize(ordering: fetch.ordering)
         json[Fetch.Limit.name] = fetch.paging?.take
         //TODO: Include skip
@@ -181,7 +181,7 @@ class RapidSerialization {
         }
         
         json[CollectionSubscription.CollectionID.name] = try RapidValidator.validate(identifier: subscription.collectionID)
-        json[CollectionSubscription.Filter.name] = try serialize(filter: subscription.filter)
+        json[CollectionSubscription.Filter.name] = try serialize(filter: subscription.filter?.expression)
         json[CollectionSubscription.Ordering.name] = try serialize(ordering: subscription.ordering)
         json[CollectionSubscription.Limit.name] = subscription.paging?.take
         //TODO: Include skip
@@ -195,17 +195,15 @@ class RapidSerialization {
     ///
     /// - Parameter filter: Filter object
     /// - Returns: JSON dictionary
-    class func serialize(filter: RapidFilter?) throws -> [AnyHashable: Any]? {
-        if let filter = filter {
-            switch filter {
-            case let filter as RapidFilterSimple:
-                return try serialize(simpleFilter: filter)
+    class func serialize(filter: RapidFilter.Expression?) throws -> [AnyHashable: Any]? {
+        if let expression = filter {
+            switch expression {
+            case .simple(let keyPath, let relation, let value):
+                return try serialize(simpleFilterWithKeypath: keyPath, relation: relation, value: value)
                 
-            case let filter as RapidFilterCompound:
-                return try serialize(compoundFilter: filter)
+            case .compound(let op, let operands):
+                return try serialize(compoundFilterWithOperator: op, operands: operands)
                 
-            default:
-                throw RapidError.invalidData(reason: .invalidFilter(filter: filter))
             }
         }
         else {
@@ -217,50 +215,50 @@ class RapidSerialization {
     ///
     /// - Parameter simpleFilter: Simple filter object
     /// - Returns: JSON dictionary
-    class func serialize(simpleFilter: RapidFilterSimple) throws -> [AnyHashable: Any] {
-        guard RapidValidator.isValid(keyPath: simpleFilter.keyPath) else {
-            throw RapidError.invalidData(reason: .invalidKeyPath(keyPath: simpleFilter.keyPath))
+    class func serialize(simpleFilterWithKeypath keyPath: String, relation: RapidFilter.Relation, value: Any?) throws -> [AnyHashable: Any] {
+        guard RapidValidator.isValid(keyPath: keyPath) else {
+            throw RapidError.invalidData(reason: .invalidKeyPath(keyPath: keyPath))
         }
         
-        if simpleFilter.keyPath == RapidFilter.docIdKey {
-            if let value = simpleFilter.value as? String {
+        if keyPath == RapidFilter.docIdKey {
+            if let value = value as? String {
                 try RapidValidator.validate(identifier: value)
             }
             else {
-                throw RapidError.invalidData(reason: .invalidIdentifierFormat(identifier: simpleFilter.value))
+                throw RapidError.invalidData(reason: .invalidIdentifierFormat(identifier: value))
             }
         }
         
-        switch simpleFilter.relation {
+        switch relation {
         case .equal:
-            return [simpleFilter.keyPath: simpleFilter.value ?? NSNull()]
+            return [keyPath: value ?? NSNull()]
             
-        case .greaterThanOrEqual where simpleFilter.value != nil:
-            return [simpleFilter.keyPath: ["gte": simpleFilter.value]]
+        case .greaterThanOrEqual where value != nil:
+            return [keyPath: ["gte": value]]
             
-        case .lessThanOrEqual where simpleFilter.value != nil:
-            return [simpleFilter.keyPath: ["lte": simpleFilter.value]]
+        case .lessThanOrEqual where value != nil:
+            return [keyPath: ["lte": value]]
             
-        case .greaterThan where simpleFilter.value != nil:
-            return [simpleFilter.keyPath: ["gt": simpleFilter.value]]
+        case .greaterThan where value != nil:
+            return [keyPath: ["gt": value]]
             
-        case .lessThan where simpleFilter.value != nil:
-            return [simpleFilter.keyPath: ["lt": simpleFilter.value]]
+        case .lessThan where value != nil:
+            return [keyPath: ["lt": value]]
             
-        case .contains where simpleFilter.value != nil && simpleFilter.value is String:
-            return [simpleFilter.keyPath: ["cnt": simpleFilter.value]]
+        case .contains where value != nil && value is String:
+            return [keyPath: ["cnt": value]]
             
-        case .startsWith where simpleFilter.value != nil && simpleFilter.value is String:
-            return [simpleFilter.keyPath: ["pref": simpleFilter.value]]
+        case .startsWith where value != nil && value is String:
+            return [keyPath: ["pref": value]]
             
-        case .endsWith where simpleFilter.value != nil && simpleFilter.value is String:
-            return [simpleFilter.keyPath: ["suf": simpleFilter.value]]
+        case .endsWith where value != nil && value is String:
+            return [keyPath: ["suf": value]]
             
-        case .arrayContains where simpleFilter.value != nil:
-            return [simpleFilter.keyPath: ["arr-cnt": simpleFilter.value]]
+        case .arrayContains where value != nil:
+            return [keyPath: ["arr-cnt": value]]
             
         default:
-            throw RapidError.invalidData(reason: .invalidFilter(filter: simpleFilter))
+            throw RapidError.invalidData(reason: .invalidFilter(filter: .simple(keyPath: keyPath, relation: relation, value: value)))
         }
     }
     
@@ -268,24 +266,24 @@ class RapidSerialization {
     ///
     /// - Parameter compoundFilter: Compound filter object
     /// - Returns: JSON dictionary
-    class func serialize(compoundFilter: RapidFilterCompound) throws -> [AnyHashable: Any] {
-        switch compoundFilter.compoundOperator {
-        case .and where compoundFilter.operands.count > 0:
-            return ["and": try compoundFilter.operands.map({ try serialize(filter: $0) })]
+    class func serialize(compoundFilterWithOperator compoundOperator: RapidFilter.Operator, operands: [RapidFilter.Expression]) throws -> [AnyHashable: Any] {
+        switch compoundOperator {
+        case .and where operands.count > 0:
+            return ["and": try operands.map({ try serialize(filter: $0) })]
             
-        case .or where compoundFilter.operands.count > 0:
-            return ["or": try compoundFilter.operands.map({ try serialize(filter: $0) })]
+        case .or where operands.count > 0:
+            return ["or": try operands.map({ try serialize(filter: $0) })]
             
-        case .not where compoundFilter.operands.count == 1:
-            if let filter = compoundFilter.operands.first, let serializedFilter = try serialize(filter: filter) {
+        case .not where operands.count == 1:
+            if let filter = operands.first, let serializedFilter = try serialize(filter: filter) {
                 return ["not": serializedFilter]
             }
             else {
-                throw RapidError.invalidData(reason: .invalidFilter(filter: compoundFilter))
+                throw RapidError.invalidData(reason: .invalidFilter(filter: .compound(operator: compoundOperator, operands: operands)))
             }
             
         default:
-            throw RapidError.invalidData(reason: .invalidFilter(filter: compoundFilter))
+            throw RapidError.invalidData(reason: .invalidFilter(filter: .compound(operator: compoundOperator, operands: operands)))
         }
     }
     

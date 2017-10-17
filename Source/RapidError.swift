@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 16/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -75,13 +75,14 @@ struct RapidErrorInstance: RapidServerResponse {
 /// Errors which can be thrown by Rapid SDK
 ///
 /// - permissionDenied: Client doesn't have permissons to read or write specified data
-/// - server: Internal Rapid.io server error
-/// - invalidRequest: Client sent an invalid request to Rapid.io server. Please update Rapid SDK. If your Rapid SDK is up to date, please report an issue at https://github.com/rapid-io/rapid-io-ios
+/// - server: Internal Rapid server error
+/// - invalidRequest: Client sent an invalid request to Rapid server.
 /// - connectionTerminated: Websocket connection expired and needs to be reestablished
 /// - invalidData: Data provided by a developer (collection name, document ID, document mutation value etc.) are in an invalid format
 /// - timeout: Request timeout
 /// - invalidAuthToken: Authorization token is invalid
 /// - executionFailed: Optimistic concurrency write to a document failed
+/// - decodingFailed: Deserialization from JSON to decodable object failed
 /// - cancelled: Request cancelled
 /// - `default`: General error
 public enum RapidError: Error {
@@ -94,6 +95,7 @@ public enum RapidError: Error {
     case timeout
     case invalidAuthToken(message: String?)
     case executionFailed(reason: ExecutionError)
+    case decodingFailed(messaage: String)
     case cancelled
     case `default`
     
@@ -107,7 +109,7 @@ public enum RapidError: Error {
     /// - invalidLimit: Limit is greater than `RapidPaging.takeLimit`
     public enum InvalidDataReason {
         case serializationFailure(message: String?)
-        case invalidFilter(filter: RapidFilter)
+        case invalidFilter(filter: RapidFilter.Expression)
         case invalidDocument(document: [AnyHashable: Any])
         case invalidIdentifierFormat(identifier: Any?)
         case invalidKeyPath(keyPath: String)

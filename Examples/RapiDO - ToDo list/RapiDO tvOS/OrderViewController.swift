@@ -3,7 +3,7 @@
 //  ExampleApp
 //
 //  Created by Jan on 05/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import UIKit
@@ -78,7 +78,7 @@ class OrderViewController: UIViewController {
         let keyPath = OrderingAttribute.allValues[attributeControl.selectedSegmentIndex].attributeName
         // Get an ordering type
         let type: RapidOrdering.Ordering = typeControl.selectedSegmentIndex == 0 ? .ascending : .descending
-        // Create Rapid.io ordering instance
+        // Create Rapid ordering instance
         let ordering = RapidOrdering(keyPath: keyPath, ordering: type)
         
         delegate?.orderViewControllerDidFinish(self, withOrdering: ordering)

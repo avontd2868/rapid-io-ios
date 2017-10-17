@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 05/04/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import XCTest
@@ -28,12 +28,6 @@ extension RapidTests {
     
     func testJSONValidationInvalidValue() {
         let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: ["name": self], cache: nil, completion: nil)
-        
-        XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
-    }
-    
-    func testJSONalidationInvalidKey() {
-        let mut = RapidDocumentMutation(collectionID: testCollectionName, documentID: "1", value: [self: "a"], cache: nil, completion: nil)
         
         XCTAssertThrowsError(try mut.serialize(withIdentifiers: [:]), "JSON validation")
     }
@@ -93,7 +87,7 @@ extension RapidTests {
     func testInvalidSimpleFilter() {
         let sub = RapidCollectionSub(
             collectionID: testCollectionName,
-            filter: RapidFilterSimple(keyPath: "name", relation: .greaterThanOrEqual),
+            filter: RapidFilter(keyPath: "name", relation: .greaterThanOrEqual),
             ordering: nil,
             paging: nil,
             handler: nil,
@@ -272,7 +266,7 @@ extension RapidTests {
     func testCollectionSubscription() {
         let subscription = RapidCollectionSub(collectionID: "users", filter: nil, ordering: nil, paging: nil, handler: nil, handlerWithChanges: nil)
         
-        let json: [AnyHashable: Any] = [
+        let json: [String: Any] = [
             "sub": [
                 "col-id": subscription.collectionID
             ]
@@ -292,11 +286,11 @@ extension RapidTests {
     
     func testSubscriptionFilter() {
         let collection = self.rapid.collection(named: "users")
-            .filter(by: RapidFilterSimple(keyPath: "text", relation: .equal, value: "texty text"))
+            .filter(by: RapidFilter(keyPath: "text", relation: .equal, value: "texty text"))
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let json: [AnyHashable: Any] = [
+        let json: [String: Any] = [
             "sub": [
                 "col-id": sub.collectionID,
                 "filter": ["text": "texty text"]
@@ -321,7 +315,7 @@ extension RapidTests {
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let json: [AnyHashable: Any] = [
+        let json: [String: Any] = [
             "sub": [
                 "col-id": sub.collectionID,
                 "order": [
@@ -345,11 +339,11 @@ extension RapidTests {
     func testSubscriptionComplexFilter() {
         let collection = self.rapid.collection(named: "users")
             .filter(by:
-                RapidFilterCompound.and([
-                    RapidFilterCompound.or([
+                RapidFilter.and([
+                    RapidFilter.or([
                         RapidFilter.equal(keyPath: "sender", value: "john123"),
-                        RapidFilterSimple.greaterThanOrEqual(keyPath: "urgency", value: 1),
-                        RapidFilterSimple.lessThanOrEqual(keyPath: "priority", value: 2)
+                        RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
+                        RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
                         ]),
                     RapidFilter.not(RapidFilter.isNull(keyPath: "receiver"))
                     ]))
@@ -365,7 +359,7 @@ extension RapidTests {
         
         let sub = RapidCollectionSub(collectionID: collection.collectionName, filter: collection.subscriptionFilter, ordering: collection.subscriptionOrdering, paging: collection.subscriptionPaging, handler: nil, handlerWithChanges: nil)
         
-        let json: [AnyHashable: Any] = [
+        let json: [String: Any] = [
             "sub": [
                 "col-id": sub.collectionID,
                 "filter": [
@@ -535,8 +529,8 @@ extension RapidTests {
     func testSubscriptionHashes() {
         let collection = self.rapid.collection(named: testCollectionName)
             .filter(by:
-                RapidFilterCompound.and([
-                    RapidFilterCompound.or([
+                RapidFilter.and([
+                    RapidFilter.or([
                         RapidFilter.equal(keyPath: "sender", value: "john123"),
                         RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
                         RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
@@ -563,8 +557,8 @@ extension RapidTests {
     func testSubscriptionHashComparison() {
         let collection1 = self.rapid.collection(named: testCollectionName)
             .filter(by:
-                RapidFilterCompound.and([
-                    RapidFilterCompound.or([
+                RapidFilter.and([
+                    RapidFilter.or([
                         RapidFilter.equal(keyPath: "sender", value: "john123"),
                         RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
                         RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)
@@ -584,9 +578,9 @@ extension RapidTests {
                     RapidFilter.greaterThan(keyPath: "urgency", value: 2)
                     ]))
             .filter(by:
-                RapidFilterCompound.and([
+                RapidFilter.and([
                     RapidFilter.not(RapidFilter.isNull(keyPath: "receiver")),
-                    RapidFilterCompound.or([
+                    RapidFilter.or([
                         RapidFilter.greaterThanOrEqual(keyPath: "urgency", value: 1),
                         RapidFilter.equal(keyPath: "sender", value: "john123"),
                         RapidFilter.lessThanOrEqual(keyPath: "priority", value: 2)

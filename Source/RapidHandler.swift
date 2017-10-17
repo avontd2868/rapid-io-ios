@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 17/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -68,7 +68,7 @@ extension RapidInstanceWithSocketManager {
 }
 
 /// General dependency object containing managers
-class RapidHandler: NSObject {
+class RapidHandler {
     
     let apiKey: String
     
@@ -108,6 +108,14 @@ class RapidHandler: NSObject {
         }
     }
     
+    lazy var encoder: RapidJSONEncoder = {
+        return RapidJSONEncoder()
+    }()
+    
+    lazy var decoder: RapidJSONDecoder = {
+        return RapidJSONDecoder()
+    }()
+
     var timeout: TimeInterval? {
         get {
             return socketManager.timeout
@@ -131,8 +139,6 @@ class RapidHandler: NSObject {
         
         self.apiKey = apiKey
         
-        super.init()
-        
         socketManager.cacheHandler = self
     }
 
@@ -143,7 +149,7 @@ extension RapidHandler: RapidCacheHandler {
     func loadSubscriptionValue(forSubscription subscription: RapidColSubManager, completion: @escaping ([RapidCachableObject]?) -> Void) {
         cache?.loadDataset(forKey: subscription.subscriptionHash, secret: socketManager.auth?.token, completion: completion)
     }
-
+    
     func storeDataset(_ dataset: [RapidCachableObject], forSubscription subscription: RapidSubscriptionHashable) {
         cache?.save(dataset: dataset, forKey: subscription.subscriptionHash, secret: socketManager.auth?.token)
     }

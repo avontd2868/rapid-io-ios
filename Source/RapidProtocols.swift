@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 13/07/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -17,10 +17,10 @@ public protocol RapidSubscription {
     func unsubscribe()
 }
 
-/// Protocol describing Rapid.io reference that defines data subscription
+/// Protocol describing Rapid reference that defines data subscription
 public protocol RapidSubscriptionReference {
     associatedtype SubscriptionResult
-    
+
     /// Subscribe for listening to data changes
     ///
     /// - Parameter block: Subscription handler that provides a client either with an error or with up-to-date data
@@ -29,17 +29,17 @@ public protocol RapidSubscriptionReference {
     func subscribe(block: @escaping (RapidResult<SubscriptionResult>) -> Void) -> RapidSubscription
 }
 
-/// Protocol describing Rapid.io reference that defines data fetch
+/// Protocol describing Rapid reference that defines data fetch
 public protocol RapidFetchReference {
     associatedtype FetchResult
-    
+
     /// Fetch data
     ///
     /// - Parameter completion: Completion handler that provides a client either with an error or with data
     func fetch(completion: @escaping (RapidResult<FetchResult>) -> Void)
 }
 
-/// Protocol describing Rapid.io request that modifies data in a database
+/// Protocol describing Rapid request that modifies data in a database
 public protocol RapidWriteRequest {
     /// Cancel the request
     ///
@@ -50,10 +50,13 @@ public protocol RapidWriteRequest {
     func cancel()
 }
 
-/// Protocol describing Rapid.io reference that defines data mutation
+/// Protocol describing Rapid reference that defines data mutation
 public protocol RapidMutationReference {
     //associatedtype MutationValue
     associatedtype MutationResult
+    
+    /// Default JSON encoder
+    var encoder: RapidJSONEncoder { get }
     
     /// Mutate data
     ///
@@ -64,17 +67,32 @@ public protocol RapidMutationReference {
     ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    func mutate(value: [AnyHashable: Any], completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest
+    func mutate(value: [String: Any], completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest
 }
 
 extension RapidMutationReference {
     
+    /// Mutate data
+    ///
+    /// Current data are deleted and replaced by the provided data
+    ///
+    /// - Parameters:
+    ///   - encodableValue: Encodable object with new data
+    ///   - encoder: JSON encoder that should be used instead of a default one
+    ///   - completion: Mutation completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    public func mutate<T>(encodableValue: T, completion: ((RapidResult<MutationResult>) -> Void)?) -> RapidWriteRequest where T: Encodable {
+    public func mutate<T>(encodableValue: T, encoder: JSONEncoder? = nil, completion: ((RapidResult<MutationResult>) -> Void)? = nil) -> RapidWriteRequest where T: Encodable {
         do {
-            let data = try JSONEncoder().encode(encodableValue)
-            let dict = try data.json() ?? [:]
-            return mutate(value: dict, completion: completion)
+            let enc = encoder ?? self.encoder
+            let data = try enc.encode(encodableValue)
+            var dict = try data.json() ?? [:]
+            
+            if let rapidEncoder = enc as? RapidJSONEncoder {
+                rapidEncoder.rapidDocumentStripoffKeys.forEach({ dict.removeValue(forKey: $0) })
+            }
+
+            return self.mutate(value: dict, completion: completion)
         }
         catch let error {
             completion?(RapidResult.failure(error: RapidError.invalidData(reason: RapidError.InvalidDataReason.serializationFailure(message: error.localizedDescription))))
@@ -83,11 +101,13 @@ extension RapidMutationReference {
     }
 }
 
-/// Protocol describing Rapid.io reference that defines data merge
+/// Protocol describing Rapid reference that defines data merge
 public protocol RapidMergeReference {
-    associatedtype MergeValue
     associatedtype MergeResult
     
+    /// Default JSON encoder
+    var encoder: RapidJSONEncoder { get }
+
     /// Merge current data with a provided data
     ///
     /// - Parameters:
@@ -95,10 +115,39 @@ public protocol RapidMergeReference {
     ///   - completion: Merge completion handler which provides a client with an error if any error occurs
     /// - Returns: `RapidWriteRequest` instance
     @discardableResult
-    func merge(value: MergeValue, completion: ((RapidResult<MergeResult>) -> Void)?) -> RapidWriteRequest
+    func merge(value: [String: Any], completion: ((RapidResult<MergeResult>) -> Void)?) -> RapidWriteRequest
 }
 
-/// Protocol describing Rapid.io reference that defines data deletion
+extension RapidMergeReference {
+    
+    /// Merge current data with a provided data
+    ///
+    /// - Parameters:
+    ///   - encodableValue: Encodable object with new data
+    ///   - encoder: JSON encoder that should be used instead of a default one
+    ///   - completion: Merge completion handler which provides a client with an error if any error occurs
+    /// - Returns: `RapidWriteRequest` instance
+    @discardableResult
+    public func merge<T>(encodableValue: T, encoder: JSONEncoder? = nil, completion: ((RapidResult<MergeResult>) -> Void)? = nil) -> RapidWriteRequest where T: Encodable {
+        do {
+            let enc = encoder ?? self.encoder
+            let data = try enc.encode(encodableValue)
+            var dict = try data.json() ?? [:]
+            
+            if let rapidEncoder = enc as? RapidJSONEncoder {
+                rapidEncoder.rapidDocumentStripoffKeys.forEach({ dict.removeValue(forKey: $0) })
+            }
+            
+            return self.merge(value: dict, completion: completion)
+        }
+        catch let error {
+            completion?(RapidResult.failure(error: RapidError.invalidData(reason: RapidError.InvalidDataReason.serializationFailure(message: error.localizedDescription))))
+            return RapidEmptyWriteRequest()
+        }
+    }
+}
+
+/// Protocol describing Rapid reference that defines data deletion
 public protocol RapidDeletionReference {
     associatedtype DeletionResult
     

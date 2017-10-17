@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 27/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import XCTest
@@ -178,7 +178,7 @@ extension RapidTests {
             return
         }
         
-        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilterSimple(keyPath: RapidFilterSimple.docIdKey, relation: .equal, value: "1")).subscribe(block: { _ in }) as? RapidCollectionSub else {
+        guard let sub2 = self.rapid.collection(named: "users").filter(by: RapidFilter(keyPath: RapidFilter.docIdKey, relation: .equal, value: "1")).subscribe(block: { _ in }) as? RapidCollectionSub else {
             XCTFail("Subscription of wrong type")
             return
         }
@@ -1443,7 +1443,7 @@ extension RapidTests {
                     return
                 }
                 
-                let testStruct = try? document.decode(toType: RapidTestStruct.self)
+                let testStruct = try? document.decode(toType: RapidTestStruct.self, decoder: RapidTestStruct.decoder)
                 
                 XCTAssertEqual(testStruct?.name, "First document", "Wrong document")
                 XCTAssertEqual(testStruct?.id, document.id)
@@ -1459,9 +1459,129 @@ extension RapidTests {
         waitForExpectations(timeout: 15, handler: nil)
     }
     
-    func testDecodableDocumentArray() {
+    func testFetchDecodableDocument() {
         let promise = expectation(description: "Subscription update")
         
+        updateDecoderForTestStruct()
+        
+        mutate(documentID: "1", value: ["name": "First document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(decodableType: RapidTestStruct.self) { result in
+                guard case .success(let testStruct) = result else {
+                    XCTFail("Error")
+                    promise.fulfill()
+                    return
+                }
+                
+                XCTAssertEqual(testStruct.name, "First document", "Wrong document")
+                XCTAssertEqual(testStruct.id, "1")
+                XCTAssertEqual(testStruct.collection, self.testCollectionName)
+                XCTAssertNotNil(testStruct.etag)
+                XCTAssertNotNil(testStruct.createdAt)
+                XCTAssertNotNil(testStruct.modifiedAt)
+                
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testFetchDecodableDocumentUndecodable() {
+        let promise = expectation(description: "Subscription update")
+        
+        updateDecoderForTestStruct()
+
+        mutate(documentID: "1", value: ["noName": "First document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").fetch(decodableType: RapidTestStruct.self) { result in
+                guard case .failure(let error) = result else {
+                    XCTFail("Succeeded")
+                    promise.fulfill()
+                    return
+                }
+                
+                guard case .decodingFailed = error else {
+                    XCTFail("Wrong error")
+                    promise.fulfill()
+                    return
+                }
+                
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+
+    func testSubscribeToDecodableDocument() {
+        let promise = expectation(description: "Subscription update")
+        
+        updateDecoderForTestStruct()
+
+        mutate(documentID: "1", value: ["name": "First document"]) { _ in
+            var initialValue = true
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(decodableType: RapidTestStruct.self) { result in
+                guard initialValue else {
+                    return
+                }
+                
+                initialValue = false
+                
+                guard case .success(let testStruct) = result else {
+                    XCTFail("Error")
+                    promise.fulfill()
+                    return
+                }
+                
+                XCTAssertEqual(testStruct.name, "First document", "Wrong document")
+                XCTAssertEqual(testStruct.id, "1")
+                XCTAssertEqual(testStruct.collection, self.testCollectionName)
+                XCTAssertNotNil(testStruct.etag)
+                XCTAssertNotNil(testStruct.createdAt)
+                XCTAssertNotNil(testStruct.modifiedAt)
+                
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+
+    func testSubscribeToDecodableDocumentUndecodable() {
+        let promise = expectation(description: "Subscription update")
+        
+        mutate(documentID: "1", value: ["name": "First document"]) { _ in
+            var initialValue = true
+            self.rapid.collection(named: self.testCollectionName).document(withID: "1").subscribe(decodableType: RapidTestStruct.self) { result in
+                guard initialValue else {
+                    return
+                }
+                
+                initialValue = false
+                
+                guard case .failure(let error) = result else {
+                    XCTFail("Succeeded")
+                    promise.fulfill()
+                    return
+                }
+                
+                guard case .decodingFailed = error else {
+                    XCTFail("Wrong error")
+                    promise.fulfill()
+                    return
+                }
+
+                promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+
+    func testDecodableDocumentArray() {
+        let promise = expectation(description: "Subscription update")
+
         mutate(documentID: "1", value: ["name": "First document"])
         mutate(documentID: "2", value: ["name": "Second document"]) { _ in
             
@@ -1486,8 +1606,8 @@ extension RapidTests {
                         return
                     }
                     
-                    let testArray = try? documents.decode(toType: RapidTestStruct.self)
-                    let testFlatArray = documents.flatDecode(toType: RapidTestStruct.self)
+                    let testArray = try? documents.decode(toType: RapidTestStruct.self, decoder: RapidTestStruct.decoder)
+                    let testFlatArray = documents.flatDecode(toType: RapidTestStruct.self, decoder: RapidTestStruct.decoder)
                     
                     XCTAssertEqual(testArray?[0].name, "First document", "Wrong document")
                     XCTAssertEqual(testArray?[1].name, "Second document", "Wrong document")
@@ -1506,12 +1626,269 @@ extension RapidTests {
         
         waitForExpectations(timeout: 15, handler: nil)
     }
+
+    func testFetchDecodableCollection() {
+        let promise = expectation(description: "Subscription update")
+        
+        updateDecoderForTestStruct()
+
+        mutate(documentID: "1", value: ["name": "First document"])
+        mutate(documentID: "2", value: ["name": "Second document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by:
+                    RapidFilter.or(
+                        [
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"),
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
+                        ]
+                )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+                .fetch(decodableType: RapidTestStruct.self) { result in
+                    guard case .success(let testArray) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    guard testArray.count == 2 else {
+                        XCTFail("Wrong number of documents")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    XCTAssertEqual(testArray[0].name, "First document", "Wrong document")
+                    XCTAssertEqual(testArray[1].name, "Second document", "Wrong document")
+                    
+                    promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+
+    func testFetchDecodableCollectionUndecodable() {
+        let promise = expectation(description: "Subscription update")
+        
+        updateDecoderForTestStruct()
+
+        mutate(documentID: "1", value: ["noName": "First document"])
+        mutate(documentID: "2", value: ["noName": "Second document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by:
+                    RapidFilter.or(
+                        [
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"),
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
+                        ]
+                )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+                .fetch(decodableType: RapidTestStruct.self) { result in
+                    guard case .failure(let error) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    guard case .decodingFailed = error else {
+                        XCTFail("Wrong error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+
+    func testSubscribeToDecodableCollection() {
+        let promise = expectation(description: "Subscription update")
+        
+        var initial = true
+        
+        updateDecoderForTestStruct()
+
+        mutate(documentID: "1", value: ["name": "First document"])
+        mutate(documentID: "2", value: ["name": "Second document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by:
+                    RapidFilter.or(
+                        [
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"),
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
+                        ]
+                )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+                .subscribe(decodableType: RapidTestStruct.self) { result in
+                    guard initial else {
+                        return
+                    }
+                    
+                    initial = false
+                    
+                    guard case .success(let testArray) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    guard testArray.count == 2 else {
+                        XCTFail("Wrong number of documents")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    XCTAssertEqual(testArray[0].name, "First document", "Wrong document")
+                    XCTAssertEqual(testArray[1].name, "Second document", "Wrong document")
+                    
+                    promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+
+    func testSubscribeWithChangesToDecodableCollection() {
+        let promise = expectation(description: "Subscription update")
+        
+        var initial = true
+        
+        updateDecoderForTestStruct()
+
+        mutate(documentID: "1", value: ["name": "First document"])
+        mutate(documentID: "2", value: ["name": "Second document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by:
+                    RapidFilter.or(
+                        [
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"),
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
+                        ]
+                )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+                .subscribeWithChanges(decodableType: RapidTestStruct.self) { result in
+                    guard initial else {
+                        return
+                    }
+                    
+                    initial = false
+                    
+                    guard case .success(let tuple) = result else {
+                        XCTFail("Error")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    guard tuple.documents.count == 2 else {
+                        XCTFail("Wrong number of documents")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    XCTAssertEqual(tuple.documents[0].name, "First document", "Wrong document")
+                    XCTAssertEqual(tuple.documents[1].name, "Second document", "Wrong document")
+                    
+                    promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+
+    func testSubscribeToDecodableCollectionUndecodable() {
+        let promise = expectation(description: "Subscription update")
+        
+        var initial = true
+        
+        updateDecoderForTestStruct()
+
+        mutate(documentID: "1", value: ["noName": "First document"])
+        mutate(documentID: "2", value: ["noName": "Second document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by:
+                    RapidFilter.or(
+                        [
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"),
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
+                        ]
+                )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+                .subscribe(decodableType: RapidTestStruct.self) { result in
+                    guard initial else {
+                        return
+                    }
+                    
+                    initial = false
+                    
+                    guard case .failure(let error) = result else {
+                        XCTFail("Success")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    guard case .decodingFailed = error else {
+                        XCTFail("Wrong error")
+                        promise.fulfill()
+                        return
+                    }
+
+                    promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
+    
+    func testSubscribeWithChangesToDecodableCollectionUndecodable() {
+        let promise = expectation(description: "Subscription update")
+        
+        var initial = true
+        
+        updateDecoderForTestStruct()
+
+        mutate(documentID: "1", value: ["noName": "First document"])
+        mutate(documentID: "2", value: ["noName": "Second document"]) { _ in
+            
+            self.rapid.collection(named: self.testCollectionName)
+                .filter(by:
+                    RapidFilter.or(
+                        [
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "1"),
+                            RapidFilter.equal(keyPath: RapidFilter.docIdKey, value: "2")
+                        ]
+                )).order(by: RapidOrdering(keyPath: RapidOrdering.docIdKey, ordering: .ascending))
+                .subscribeWithChanges(decodableType: RapidTestStruct.self) { result in
+                    guard initial else {
+                        return
+                    }
+                    
+                    initial = false
+                    
+                    guard case .failure(let error) = result else {
+                        XCTFail("Success")
+                        promise.fulfill()
+                        return
+                    }
+                    
+                    guard case .decodingFailed = error else {
+                        XCTFail("Wrong error")
+                        promise.fulfill()
+                        return
+                    }
+
+                    promise.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 15, handler: nil)
+    }
 }
 
 // MARK: Helper methods
 extension RapidTests {
     
-    func mutate(documentID: String?, value: [AnyHashable: Any]?, completion: RapidDocumentMutationCompletion? = nil) {
+    func mutate(documentID: String?, value: [String: Any]?, completion: RapidDocumentMutationCompletion? = nil) {
         if let id = documentID, let value = value {
             self.rapid.collection(named: testCollectionName).document(withID: id).mutate(value: value, completion: completion)
         }
@@ -1523,41 +1900,31 @@ extension RapidTests {
         }
     }
     
+    func updateDecoderForTestStruct() {
+        self.rapid.decoder.dateDecodingStrategy = .secondsSince1970
+        self.rapid.decoder.rapidDocumentDecodingKeys = RapidTestStruct.metadataKeys
+    }
+    
 }
 
 struct RapidTestStruct: Codable {
-    enum CodingKeys: String, CodingKey {
-        case name = "name"
-        case id = "$documentId"
-        case collection = "$collectionName"
-        case createdAt = "$createdAt"
-        case modifiedAt = "$modifiedAt"
-        case etag = "$etag"
-    }
     
+    static let metadataKeys = RapidJSONDecoder.RapidDocumentDecodingKeys(documentIdKey: "id", collectionNameKey: "collection", createdAtKey: "createdAt", modifiedAtKey: "modifiedAt", etagKey: "etag")
+    static let stripoffKeys = ["id", "collection", "createdAt", "modifiedAt", "etag"]
+    
+    static var decoder: RapidJSONDecoder {
+        let dec = RapidJSONDecoder()
+        dec.rapidDocumentDecodingKeys = metadataKeys
+        dec.dateDecodingStrategy = .secondsSince1970
+        return dec
+    }
+
     let name: String
     let id: String
     let collection: String
     let createdAt: Date
     let modifiedAt: Date
     let etag: String
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        name = try container.decode(String.self, forKey: .name)
-        id = try container.decode(String.self, forKey: .id)
-        collection = try container.decode(String.self, forKey: .collection)
-        createdAt = Date(timeIntervalSince1970: try container.decode(TimeInterval.self, forKey: .createdAt))
-        modifiedAt = Date(timeIntervalSince1970: try container.decode(TimeInterval.self, forKey: .modifiedAt))
-        etag = try container.decode(String.self, forKey: .etag)
-        
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(name, forKey: .name)
-    }
     
     init(name: String) {
         self.name = name

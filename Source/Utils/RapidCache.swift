@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 16/04/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 import Foundation
 
@@ -13,18 +13,18 @@ protocol RapidCachableObject: NSCoding {
 }
 
 /// Class for handling data cache
-class RapidCache: NSObject {
+class RapidCache {
     
     /// URL of a file with info about cached data
     internal var cacheInfoURL: URL {
         return cacheDir.appendingPathComponent("00.dat")
     }
-
+    
     /// URL of a file with info about data reference counts
     internal var referenceCountInfoURL: URL {
         return cacheDir.appendingPathComponent("01.dat")
     }
-
+    
     /// Shared file manager
     internal let fileManager: FileManager
     
@@ -118,8 +118,6 @@ class RapidCache: NSObject {
         }
         
         diskQueue = DispatchQueue(label: "io.rapid.cache.disk", qos: .utility)
-        
-        super.init()
         
         // Prune cached data
         diskQueue.async {
@@ -362,12 +360,12 @@ internal extension RapidCache {
     /// - Returns: Cached data if there are any
     func loadDataset(forKey key: String, secret: String?) -> [RapidCachableObject]? {
         let hash = self.hash(forKey: key)
-
+        
         // Check in-memory cache info first
         if self.cacheInfo[hash]?[key] == nil {
             return nil
         }
-
+        
         // Get array of object IDs, otherwise return nil
         let linkDict = self.linkDictionary(forHash: hash)
         guard let linkArray = linkDict[key] else {
@@ -512,7 +510,7 @@ internal extension RapidCache {
         saveObjects(objects: cache, pointers: linkDict[key], withSecret: secret)
         
         linkDict[key] = cache.map({ [$0.groupID, $0.objectID] })
-
+        
         // Put down a timestamp of data modification
         if var dict = cacheInfo[hash] {
             dict[key] = Date().timeIntervalSince1970
@@ -717,7 +715,7 @@ internal extension RapidCache {
         var sortedValues = cacheInfo
             .values
             .reduce([(String, TimeInterval)](), { temp, dict in
-                let tuples = dict.map({ tuple in tuple })
+                let tuples = dict.map({ (key, value) in (key, value) })
                 return temp + tuples
             })
             .sorted(by: { $0.1 < $1.1 })

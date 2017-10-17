@@ -3,7 +3,7 @@
 //  ExampleApp
 //
 //  Created by Jan on 05/05/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import UIKit
@@ -76,30 +76,31 @@ fileprivate extension FilterViewController {
     
     func setupUI() {
         
-        if let filter = filter as? RapidFilterCompound {
+        if let expression = filter?.expression, case .compound(_, let operands) = expression {
             var tagsSet = false
             var completionSet = false
             
-            for operand in filter.operands {
-                if let doneFilter = operand as? RapidFilterSimple {
+            for operand in operands {
+                switch operand {
+                case .simple(_, _, let value):
                     completionSet = true
                     
-                    let done = doneFilter.value as? Bool ?? false
+                    let done = value as? Bool ?? false
                     let index = done ? 0 : 2
                     segmentedControl.selectedSegmentIndex = index
-                }
-                else if let tagOrFilter = operand as? RapidFilterCompound {
+                    
+                case .compound(_, let operands):
                     tagsSet = true
                     
                     var tags = [Tag]()
-                    for case let tagFilter as RapidFilterSimple in tagOrFilter.operands {
-                        switch tagFilter.value as? String {
+                    for case .simple(_, _, let value) in operands {
+                        switch value as? String {
                         case .some(Tag.home.rawValue):
                             tags.append(.home)
                             
                         case .some(Tag.work.rawValue):
                             tags.append(.work)
-
+                            
                         case .some(Tag.other.rawValue):
                             tags.append(.other)
                             

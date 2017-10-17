@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan on 14/07/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -131,7 +131,7 @@ class RapidDocumentExecution: RapidExecution {
     /// - Parameters:
     ///   - value: Value to be written
     ///   - document: `RapidDocument` returned from fetch
-    internal func write(value: [AnyHashable: Any], forDocument document: RapidDocument) {
+    internal func write(value: [String: Any], forDocument document: RapidDocument) {
         let request = RapidDocumentMutation(collectionID: collectionID, documentID: documentID, value: value, cache: cacheHandler, completion: { [weak self] result in
             switch result {
             case .failure(let error):

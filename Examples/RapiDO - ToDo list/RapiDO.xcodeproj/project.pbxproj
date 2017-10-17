@@ -355,7 +355,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0900;
-				ORGANIZATIONNAME = Rapid.io;
+				ORGANIZATIONNAME = Rapid;
 				TargetAttributes = {
 					C13EABC31EF9175000264F4E = {
 						CreatedOnToolsVersion = 8.3.3;

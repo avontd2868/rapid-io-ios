@@ -2,9 +2,28 @@
 All notable changes to this project will be documented in this file.
 
 #### 1.x Releases
-- `1.2.x` Releases - [1.2.0](#120)
+- `1.2.x` Releases - [1.2.0](#120) | [1.2.1](#121)
 - `1.1.x` Releases - [1.1.0](#110) | [1.1.1](#111) | [1.1.2](#112)
 - `1.0.x` Releases - [1.0.0](#100) | [1.0.1](#101) | [1.0.2](#102)
+
+---
+
+## [1.2.1](https://github.com/rapid-io/rapid-io-ios/releases/tag/1.2.1)
+Released on 2017-10-17.
+
+#### Added
+
+- Deserialize `RapidDocument`s from subscriptions and fetches directly into objects that conform to Decodable protocol
+
+- Mutate and merge documents with objects that conform to Encodable protocol
+
+- Implement support for encoding/decoding customizations
+
+#### Updated
+
+- Convert classes into structures
+
+- Change subscription filter implementation
 
 ---
 
@@ -105,7 +124,7 @@ Released on 2017-06-02
 
 #### Added
 
-- Connect to Rapid.io database
+- Connect to Rapid database
 - Subscribe to changes
 - Mutate database
 - Authenticate

@@ -3,7 +3,7 @@
 //  Rapid
 //
 //  Created by Jan Schwarz on 16/03/2017.
-//  Copyright © 2017 Rapid.io. All rights reserved.
+//  Copyright © 2017 Rapid. All rights reserved.
 //
 
 import Foundation
@@ -17,8 +17,8 @@ public typealias RapidCollectionSubscriptionHandlerWithChanges = (_ result: Rapi
 /// Collection fetch completion handler which provides a client either with an error or with an array of documents
 public typealias RapidCollectionFetchCompletion = RapidCollectionSubscriptionHandler
 
-/// Class representing Rapid.io collection
-open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
+/// Rapid collection reference
+public struct RapidCollectionRef: RapidInstanceWithSocketManager {
     
     internal weak var handler: RapidHandler?
     
@@ -45,7 +45,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// Get an instance of a Rapid document reference with a new unique ID in the collection
     ///
     /// - Returns: Instance of `RapidDocument` in the collection with a new unique ID
-    open func newDocument() -> RapidDocumentRef {
+    public func newDocument() -> RapidDocumentRef {
         return document(withID: Rapid.uniqueID)
     }
     
@@ -53,7 +53,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///
     /// - Parameter id: Document ID
     /// - Returns: Instance of a `RapidDocument` in the collection with a specified ID
-    open func document(withID id: String) -> RapidDocumentRef {
+    public func document(withID id: String) -> RapidDocumentRef {
         return try! document(id: id)
     }
     
@@ -63,8 +63,8 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///
     /// - Parameter filter: Filter object
     /// - Returns: The collection with the filter assigned
-    open func filter(by filter: RapidFilter) -> RapidCollectionRef {
-        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+    public func filter(by filter: RapidFilter) -> RapidCollectionRef {
+        var collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.filtered(by: filter)
         return collection
     }
@@ -74,9 +74,9 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// When the collection already contains a filter the new filter is combined with the original one with logical AND
     ///
     /// - Parameter filter: Filter object
-    open func filtered(by filter: RapidFilter) {
+    public mutating func filtered(by filter: RapidFilter) {
         if let previousFilter = self.subscriptionFilter {
-            let compoundFilter = RapidFilterCompound(compoundOperator: .and, operands: [previousFilter, filter])
+            let compoundFilter = RapidFilter(compoundOperator: .and, operands: [previousFilter, filter])
             self.subscriptionFilter = compoundFilter
         }
         else {
@@ -90,8 +90,8 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///
     /// - Parameter ordering: Ordering object
     /// - Returns: The collection with the ordering assigned
-    open func order(by ordering: RapidOrdering) -> RapidCollectionRef {
-        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+    public func order(by ordering: RapidOrdering) -> RapidCollectionRef {
+        var collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
     }
@@ -101,7 +101,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// When the collection already contains an ordering the original ordering is overwriten by the new one
     ///
     /// - Parameter ordering: Ordering object
-    open func ordered(by ordering: RapidOrdering) {
+    public mutating func ordered(by ordering: RapidOrdering) {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
@@ -117,7 +117,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///
     /// - Parameter ordering: Array of ordering objects
     /// - Returns: The collection with the ordering array assigned
-    open func order(by ordering: [RapidOrdering]) -> RapidCollectionRef {
+    public func order(by ordering: [RapidOrdering]) -> RapidCollectionRef {
         let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.ordered(by: ordering)
         return collection
@@ -128,7 +128,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// When the collection already contains an ordering the new ordering is appended to the original one
     ///
     /// - Parameter ordering: Array of ordering objects
-    open func ordered(by ordering: [RapidOrdering]) {
+    public func ordered(by ordering: [RapidOrdering]) {
         if self.subscriptionOrdering == nil {
             self.subscriptionOrdering = []
         }
@@ -142,8 +142,8 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// - Parameters:
     ///   - take: Maximum number of documents to be returned
     /// - Returns: The collection with the limit assigned
-    open func limit(to take: Int) -> RapidCollectionRef {
-        let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
+    public func limit(to take: Int) -> RapidCollectionRef {
+        var collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.limited(to: take)
         return collection
     }
@@ -154,7 +154,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///
     /// - Parameters:
     ///   - take: Maximum number of documents to be returned
-    open func limited(to take: Int) {
+    public mutating func limited(to take: Int) {
         self.subscriptionPaging = RapidPaging(take: take)
     }
 
@@ -167,7 +167,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     ///   - take: Maximum number of documents to be returned
     ///   - skip: Number of documents to be skipped
     /// - Returns: The collection with the limit assigned
-    open func limit(to take: Int, skip: Int? = nil) -> RapidCollectionRef {
+    public func limit(to take: Int, skip: Int? = nil) -> RapidCollectionRef {
         let collection = RapidCollectionRef(id: collectionName, handler: handler, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging)
         collection.limited(to: take, skip: skip)
         return collection
@@ -180,7 +180,7 @@ open class RapidCollectionRef: NSObject, RapidInstanceWithSocketManager {
     /// - Parameters:
     ///   - take: Maximum number of documents to be returned
     ///   - skip: Number of documents to be skipped
-    open func limited(to take: Int, skip: Int? = nil) {
+    public func limited(to take: Int, skip: Int? = nil) {
         self.subscriptionPaging = RapidPaging(skip: skip, take: take)
     }*/
 }
@@ -194,7 +194,7 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     /// - Parameter block: Subscription handler that provides a client either with an error or with an array of documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribe(block: @escaping RapidCollectionSubscriptionHandler) -> RapidSubscription {
+    public func subscribe(block: @escaping RapidCollectionSubscriptionHandler) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: block, handlerWithChanges: nil)
         
         socketManager.subscribe(toCollection: subscription)
@@ -206,17 +206,76 @@ extension RapidCollectionRef: RapidSubscriptionReference {
     ///
     /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
     ///
+    /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decoder: JSON decoder that should be used instead of a default one
+    /// - Parameter block: Subscription handler that provides a client either with an error or with an array of documents
+    /// - Returns: Subscription object which can be used for unsubscribing
+    @discardableResult
+    public func subscribe<T>(decodableType type: T.Type, decoder: JSONDecoder? = nil, block: @escaping (_ result: RapidResult<[T]>) -> Void) -> RapidSubscription where T: Decodable {
+        return self.subscribe { result in
+            switch result {
+            case .failure(let error):
+                block(RapidResult.failure(error: error))
+                
+            case .success(let documents):
+                do {
+                    let dec = decoder ?? self.handler?.decoder
+                    let object = try documents.decode(toType: type, decoder: dec)
+                    block(RapidResult.success(value: object))
+                }
+                catch let error {
+                    block(RapidResult.failure(error: RapidError.decodingFailed(messaage: error.localizedDescription)))
+                }
+            }
+        }
+    }
+
+    /// Subscribe for listening to the collection changes
+    ///
+    /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
+    ///
     /// - Parameter block: Subscription handler that provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
     /// - Returns: Subscription object which can be used for unsubscribing
     @discardableResult
-    open func subscribeWithChanges(block: @escaping RapidCollectionSubscriptionHandlerWithChanges) -> RapidSubscription {
+    public func subscribeWithChanges(block: @escaping RapidCollectionSubscriptionHandlerWithChanges) -> RapidSubscription {
         let subscription = RapidCollectionSub(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, handler: nil, handlerWithChanges: block)
         
         socketManager.subscribe(toCollection: subscription)
         
         return subscription
     }
-    
+
+    /// Subscribe for listening to the collection changes
+    ///
+    /// Only filters, orderings and limits that are assigned to the collection by the time of creating a subscription are applied
+    ///
+    /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decoder: JSON decoder that should be used instead of a default one
+    /// - Parameter block: Subscription handler that provides a client either with an error or with an array of all documents plus with arrays of new, updated and removed documents
+    /// - Returns: Subscription object which can be used for unsubscribing
+    @discardableResult
+    public func subscribeWithChanges<T>(decodableType type: T.Type, decoder: JSONDecoder? = nil, block: @escaping (_ result: RapidResult<(documents: [T], added: [T], updated: [T], removed: [T])>) -> Void) -> RapidSubscription where T: Decodable {
+        return self.subscribeWithChanges { result in
+            switch result {
+            case .failure(let error):
+                block(RapidResult.failure(error: error))
+                
+            case .success(let tuple):
+                do {
+                    let dec = decoder ?? self.handler?.decoder
+                    let documents = try tuple.documents.decode(toType: type, decoder: dec)
+                    let added = try tuple.added.decode(toType: type, decoder: dec)
+                    let updated = try tuple.updated.decode(toType: type, decoder: dec)
+                    let removed = try tuple.removed.decode(toType: type, decoder: dec)
+                    block(RapidResult.success(value: (documents, added, updated, removed)))
+                }
+                catch let error {
+                    block(RapidResult.failure(error: RapidError.decodingFailed(messaage: error.localizedDescription)))
+                }
+            }
+        }
+    }
+
 }
 
 extension RapidCollectionRef: RapidFetchReference {
@@ -226,10 +285,36 @@ extension RapidCollectionRef: RapidFetchReference {
     /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
     ///
     /// - Parameter completion: Fetch completion handler that provides a client either with an error or with an array of documents
-    open func fetch(completion: @escaping RapidCollectionFetchCompletion) {
+    public func fetch(completion: @escaping RapidCollectionFetchCompletion) {
         let fetch = RapidCollectionFetch(collectionID: collectionName, filter: subscriptionFilter, ordering: subscriptionOrdering, paging: subscriptionPaging, cache: handler, completion: completion)
         
         socketManager.fetch(fetch)
+    }
+    
+    /// Fetch collection
+    ///
+    /// Only documents that match filters, orderings and limits that are assigned to the collection by the time of calling the function, are retured
+    ///
+    /// - Parameter decodableType: Type of object to which should be json coming from Rapid server deserialized
+    /// - Parameter decoder: JSON decoder that should be used instead of a default one
+    /// - Parameter completion: Fetch completion handler that provides a client either with an error or with an array of documents
+    public func fetch<T>(decodableType type: T.Type, decoder: JSONDecoder? = nil, completion: @escaping (_ result: RapidResult<[T]>) -> Void) where T : Decodable {
+        self.fetch { result in
+            switch result {
+            case .failure(let error):
+                completion(RapidResult.failure(error: error))
+                
+            case .success(let documents):
+                do {
+                    let dec = decoder ?? self.handler?.decoder
+                    let object = try documents.decode(toType: type, decoder: dec)
+                    completion(RapidResult.success(value: object))
+                }
+                catch let error {
+                    completion(RapidResult.failure(error: RapidError.decodingFailed(messaage: error.localizedDescription)))
+                }
+            }
+        }
     }
 
 }
